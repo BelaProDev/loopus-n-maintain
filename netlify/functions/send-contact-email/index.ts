@@ -1,7 +1,7 @@
-import { Handler } from "@netlify/functions";
-import * as nodemailer from "nodemailer";
+const { Handler } = require("@netlify/functions");
+const nodemailer = require("nodemailer");
 
-const handler: Handler = async (event) => {
+const handler = async (event) => {
   // Handle CORS
   if (event.httpMethod === "OPTIONS") {
     return {
@@ -73,4 +73,4 @@ const handler: Handler = async (event) => {
   }
 };
 
-export { handler };
+exports.handler = handler;
