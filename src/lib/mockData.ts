@@ -3,7 +3,7 @@ export const mockContentData = [
     ref: { id: '1' },
     data: {
       key: 'hero_title',
-      type: 'text',
+      type: 'text' as const,
       translations: {
         en: 'Welcome to Our Platform',
         fr: 'Bienvenue sur Notre Plateforme',
@@ -17,7 +17,7 @@ export const mockContentData = [
     ref: { id: '2' },
     data: {
       key: 'about_description',
-      type: 'textarea',
+      type: 'textarea' as const,
       translations: {
         en: 'Our comprehensive platform helps you manage everything.',
         fr: 'Notre plateforme complète vous aide à tout gérer.',

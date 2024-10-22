@@ -7,7 +7,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { mockContentData } from "@/lib/mockData";
 
-const languages = ['en', 'fr', 'es', 'de', 'it'];
+const languages = ['en', 'fr', 'es', 'de', 'it'] as const;
 
 interface Translation {
   [key: string]: string;
@@ -29,12 +29,14 @@ const Koalax = () => {
 
   const { data: content } = useQuery<ContentItem[]>({
     queryKey: ['content'],
-    queryFn: () => Promise.resolve(mockContentData)
+    queryFn: async () => {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return mockContentData as ContentItem[];
+    }
   });
 
   const updateMutation = useMutation({
-    mutationFn: async (variables: { ref: any; data: ContentItem['data'] }) => {
-      // Simulate API call
+    mutationFn: async (variables: { ref: ContentItem['ref']; data: ContentItem['data'] }) => {
       await new Promise(resolve => setTimeout(resolve, 500));
       return variables;
     },
