@@ -29,11 +29,7 @@ const Koalax = () => {
 
   const { data: content } = useQuery<ContentItem[]>({
     queryKey: ['content'],
-    queryFn: async () => {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      return mockContentData;
-    },
+    queryFn: () => Promise.resolve(mockContentData)
   });
 
   const updateMutation = useMutation({
