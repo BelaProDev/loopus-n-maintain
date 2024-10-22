@@ -74,9 +74,12 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
       <Header />
       <main className="flex-1 container mx-auto px-4 py-8">
         {!isAuthenticated && (
-          <Alert className="mb-6">
-            <AlertDescription>
-              Please <Button variant="link" className="p-0 text-primary" onClick={() => navigate("/login")}>log in</Button> to access all features and services.
+          <Alert variant="destructive" className="mb-6">
+            <AlertDescription className="flex items-center justify-between">
+              <span>Please log in to access all features and services.</span>
+              <Button variant="outline" size="sm" onClick={() => navigate("/login")}>
+                Log In
+              </Button>
             </AlertDescription>
           </Alert>
         )}

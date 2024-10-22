@@ -6,6 +6,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { Home } from "lucide-react";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -33,7 +34,16 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F5F1EA]">
+    <div className="min-h-screen flex items-center justify-center bg-[#F5F1EA] relative">
+      <Button
+        variant="ghost"
+        size="sm"
+        className="absolute top-4 left-4"
+        onClick={() => navigate("/")}
+      >
+        <Home className="mr-2 h-4 w-4" />
+        Back to Home
+      </Button>
       <Card className="w-[400px] shadow-lg">
         <CardHeader>
           <CardTitle className="text-2xl text-[#2E5984]">Welcome Back</CardTitle>
