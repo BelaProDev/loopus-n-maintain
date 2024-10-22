@@ -16,13 +16,15 @@ const Header = () => {
     <header className="border-b bg-gradient-to-r from-primary to-accent text-white shadow-lg">
       <div className="container mx-auto px-4 py-4">
         <nav className="flex items-center justify-between">
-          <Link to="/" className="text-2xl font-semibold text-white flex items-center gap-2">
-            <img 
-              src="/forest-lidar.png" 
-              alt="CraftCoordination" 
-              className="h-8 w-auto object-contain"
-            />
-            CraftCoordination
+          <Link to="/" className="text-2xl font-semibold text-white flex items-center gap-2 relative">
+            <div className="mix-blend-difference md:mix-blend-overlay">
+              <img 
+                src="/forest-lidar.png" 
+                alt="CraftCoordination" 
+                className="h-8 w-auto object-contain invert md:invert-0"
+              />
+            </div>
+            <span className="mix-blend-difference">CraftCoordination</span>
           </Link>
 
           {/* Desktop Menu */}
