@@ -23,7 +23,11 @@ from = "/architecture"
 to = "/index.html"
 status = 200
 
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
 [[redirects]]
 from = "/*"
-to = "https://crft-coord.netlify.app"
-status = 301
+to = "/index.html"
+status = 200
