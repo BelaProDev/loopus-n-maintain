@@ -52,7 +52,7 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
     window.open(whatsappUrl, "_blank");
   };
 
-  const handleContactSubmit = (e: React.FormEvent) => {
+  const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isAuthenticated) {
       toast({
@@ -63,10 +63,39 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
       navigate("/login");
       return;
     }
-    toast({
-      title: "Message sent",
-      description: "We'll get back to you as soon as possible.",
-    });
+
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    const name = formData.get('name') as string;
+    const email = formData.get('email') as string;
+    const message = formData.get('message') as string;
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-contact-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({ name, email, message }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send message');
+      }
+
+      toast({
+        title: "Message sent",
+        description: "We'll get back to you as soon as possible.",
+      });
+      form.reset();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to send message. Please try again later.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -123,15 +152,15 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
               <form onSubmit={handleContactSubmit} className="space-y-4">
                 <div>
                   <Label htmlFor="name">Name</Label>
-                  <Input id="name" required />
+                  <Input id="name" name="name" required />
                 </div>
                 <div>
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" required />
+                  <Input id="email" name="email" type="email" required />
                 </div>
                 <div>
                   <Label htmlFor="message">Message</Label>
-                  <Textarea id="message" required />
+                  <Textarea id="message" name="message" required />
                 </div>
                 <Button type="submit" className="w-full">
                   <Send className="mr-2 h-4 w-4" />
