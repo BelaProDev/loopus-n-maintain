@@ -13,6 +13,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
+// Define types for component props
 interface ServiceLayoutProps {
   title: string;
   description: string;
@@ -20,17 +21,36 @@ interface ServiceLayoutProps {
   faqs: { question: string; answer: string }[];
 }
 
+/**
+ * ServiceLayout Component
+ * 
+ * A reusable layout for service pages that includes:
+ * - Service description
+ * - Common issues checklist
+ * - WhatsApp contact button
+ * - Contact form
+ * - FAQs section
+ */
 const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayoutProps) => {
+  // State and hooks
   const [selectedIssues, setSelectedIssues] = useState<string[]>([]);
   const { toast } = useToast();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
+  /**
+   * Gets the WhatsApp number for the specific service
+   * from environment variables
+   */
   const getWhatsAppNumber = (service: string) => {
     const envVar = `app_whatss_${service.toLowerCase()}`;
     return import.meta.env[envVar] || "";
   };
 
+  /**
+   * Handles WhatsApp contact button click
+   * Requires authentication and constructs message with selected issues
+   */
   const handleWhatsAppContact = () => {
     if (!isAuthenticated) {
       toast({
@@ -52,6 +72,10 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
     window.open(whatsappUrl, "_blank");
   };
 
+  /**
+   * Handles contact form submission
+   * Sends email via Netlify function
+   */
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isAuthenticated) {
@@ -98,10 +122,12 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
     }
   };
 
+  // Render component
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1 container mx-auto px-4 py-8">
+        {/* Authentication warning */}
         {!isAuthenticated && (
           <Alert variant="destructive" className="mb-6">
             <AlertDescription className="flex items-center justify-between">
@@ -112,6 +138,8 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
             </AlertDescription>
           </Alert>
         )}
+
+        {/* Service description */}
         <div className="glass-effect rounded-lg p-8 mb-8">
           <h1 className="text-4xl font-serif text-[#2E5984] mb-4">{title}</h1>
           <p className="text-lg text-gray-700 mb-8">{description}</p>

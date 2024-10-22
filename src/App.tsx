@@ -4,6 +4,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
+
+// Import page components
 import Index from "./pages/Index";
 import Electrics from "./pages/Electrics";
 import Plumbing from "./pages/Plumbing";
@@ -13,8 +15,19 @@ import Architecture from "./pages/Architecture";
 import Login from "./pages/Login";
 import Koalax from "./pages/Koalax";
 
+// Initialize React Query client
 const queryClient = new QueryClient();
 
+/**
+ * Root Application Component
+ * 
+ * Provides:
+ * - React Query for data fetching
+ * - Authentication context
+ * - Toast notifications
+ * - Tooltips
+ * - Routing
+ */
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
