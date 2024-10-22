@@ -8,6 +8,7 @@ import Plumbing from "./pages/Plumbing";
 import Ironwork from "./pages/Ironwork";
 import Woodwork from "./pages/Woodwork";
 import Architecture from "./pages/Architecture";
+import Login from "./pages/Login";
 
 const queryClient = new QueryClient();
 
@@ -18,6 +19,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/electrics" element={<Electrics />} />
           <Route path="/plumbing" element={<Plumbing />} />
           <Route path="/ironwork" element={<Ironwork />} />
