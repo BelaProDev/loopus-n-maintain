@@ -22,11 +22,9 @@ const Header = () => {
       setIsOffline(!navigator.onLine);
     };
 
-    // Listen to network status changes
     window.addEventListener('online', handleStatusChange);
     window.addEventListener('offline', handleStatusChange);
 
-    // Cleanup
     return () => {
       window.removeEventListener('online', handleStatusChange);
       window.removeEventListener('offline', handleStatusChange);
@@ -50,11 +48,11 @@ const Header = () => {
             <div className="mix-blend-difference md:mix-blend-overlay">
               <img 
                 src="/forest-lidar.png" 
-                alt="CraftCoordination" 
+                alt="Loopus&Maintain" 
                 className="h-8 w-auto object-contain invert md:invert-0"
               />
             </div>
-            <span className="mix-blend-difference">CraftCoordination</span>
+            <span className="mix-blend-difference">Loopus&Maintain</span>
           </Link>
 
           {/* Desktop Menu */}

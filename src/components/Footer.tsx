@@ -26,7 +26,7 @@ const Footer = () => {
             <Button variant="ghost" size="sm" asChild>
               <Link to="/koalax">
                 <Settings className="h-4 w-4 mr-2" />
-                Koalax Admin
+                Loopus Admin
               </Link>
             </Button>
             <Button variant="ghost" size="sm">
@@ -36,7 +36,7 @@ const Footer = () => {
           </div>
 
           <div className="text-sm text-gray-300">
-            © 2024 MaintenancePro. All rights reserved.
+            © 2024 Loopus&Maintain. All rights reserved.
           </div>
         </div>
       </div>

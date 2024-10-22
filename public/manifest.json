@@ -1,7 +1,7 @@
 {
-  "name": "CraftCoordination",
-  "short_name": "CraftCoord",
-  "description": "Professional maintenance and craft services coordination platform",
+  "name": "Loopus&Maintain",
+  "short_name": "Loopus",
+  "description": "Professional maintenance and craft services coordination platform. Manage electrical, plumbing, ironwork, woodworking, and architectural services efficiently.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#F5F1EA",
