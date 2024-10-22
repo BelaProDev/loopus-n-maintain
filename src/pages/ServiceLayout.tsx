@@ -5,10 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { Phone, Send } from "lucide-react";
+import { Phone, Send, Home } from "lucide-react";
 import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface ServiceLayoutProps {
   title: string;
@@ -20,18 +23,46 @@ interface ServiceLayoutProps {
 const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayoutProps) => {
   const [selectedIssues, setSelectedIssues] = useState<string[]>([]);
   const { toast } = useToast();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  const getWhatsAppNumber = (service: string) => {
+    const envVar = `app_whatss_${service.toLowerCase()}`;
+    return import.meta.env[envVar] || "";
+  };
 
   const handleWhatsAppContact = () => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to access this feature",
+        variant: "destructive",
+      });
+      navigate("/login");
+      return;
+    }
+
+    const service = title.split(" ")[0].toLowerCase();
+    const whatsappNumber = getWhatsAppNumber(service);
     const issues = selectedIssues
       .map(id => commonIssues.find(issue => issue.id === id)?.label)
       .join(", ");
     const message = `Hello, I need help with the following issues: ${issues}`;
-    const whatsappUrl = `https://wa.me/1234567890?text=${encodeURIComponent(message)}`; // Replace with actual WhatsApp number
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank");
   };
 
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isAuthenticated) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to access this feature",
+        variant: "destructive",
+      });
+      navigate("/login");
+      return;
+    }
     toast({
       title: "Message sent",
       description: "We'll get back to you as soon as possible.",
@@ -42,6 +73,13 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1 container mx-auto px-4 py-8">
+        {!isAuthenticated && (
+          <Alert className="mb-6">
+            <AlertDescription>
+              Please <Button variant="link" className="p-0 text-primary" onClick={() => navigate("/login")}>log in</Button> to access all features and services.
+            </AlertDescription>
+          </Alert>
+        )}
         <div className="glass-effect rounded-lg p-8 mb-8">
           <h1 className="text-4xl font-serif text-[#2E5984] mb-4">{title}</h1>
           <p className="text-lg text-gray-700 mb-8">{description}</p>
