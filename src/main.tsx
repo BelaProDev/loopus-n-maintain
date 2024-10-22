@@ -13,15 +13,37 @@ root.render(
   </StrictMode>
 );
 
-// Register Service Worker
+// Register Service Worker with improved error handling
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
       .then(registration => {
-        console.log('ServiceWorker registration successful');
+        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        
+        // Handle updates
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          if (newWorker) {
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                // New content is available, notify user if needed
+                console.log('New content is available; please refresh.');
+              }
+            });
+          }
+        });
       })
       .catch(err => {
-        console.log('ServiceWorker registration failed: ', err);
+        console.error('ServiceWorker registration failed: ', err);
       });
+  });
+
+  // Handle offline/online status
+  window.addEventListener('online', () => {
+    console.log('Application is online');
+  });
+  
+  window.addEventListener('offline', () => {
+    console.log('Application is offline');
   });
 }
