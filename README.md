@@ -1,3 +1,74 @@
+# CraftCoordination
+
+A comprehensive maintenance and craft services coordination platform built with React, TypeScript, and Vite.
+
+## Environment Variables
+
+### Email Configuration
+Set up the following environment variables in your Netlify dashboard for the contact form functionality:
+
+```env
+SMTP_HOSTNAME=smtp.example.com
+SMTP_PORT=587
+SMTP_USERNAME=your-smtp-username
+SMTP_PASSWORD=your-smtp-password
+SMTP_FROM_EMAIL=noreply@yourdomain.com
+CONTACT_FORM_RECIPIENTS=recipient1@domain.com,recipient2@domain.com
+```
+
+### Authentication Configuration
+Configure these environment variables for the authentication system:
+
+```env
+VITE_AUTH_TOKEN_KEY=your-auth-token-key
+VITE_AUTH_REFRESH_TOKEN_KEY=your-refresh-token-key
+VITE_AUTH_API_URL=your-auth-api-url
+```
+
+## Development
+
+This project uses Vite with React and TypeScript. To get started:
+
+1. Clone the repository
+2. Install dependencies:
+```bash
+npm install
+```
+3. Start the development server:
+```bash
+npm run dev
+```
+
+## Features
+
+- Professional maintenance service coordination
+- Specialized sections for different craft services
+- Responsive design
+- Contact form with email notifications
+- User authentication system
+- Interactive service request system
+
+## Built With
+
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- shadcn/ui
+- React Router
+- React Query
+- Netlify Functions
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+
+---
+---
+---
+---
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
