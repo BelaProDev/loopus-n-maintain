@@ -1,0 +1,29 @@
+[[redirects]]
+from = "/ironwork"
+to = "/index.html"
+status = 200
+
+[[redirects]]
+from = "/electrics"
+to = "/index.html"
+status = 200
+
+[[redirects]]
+from = "/plumbing"
+to = "/index.html"
+status = 200
+
+[[redirects]]
+from = "/woodwork"
+to = "/index.html"
+status = 200
+
+[[redirects]]
+from = "/architecture"
+to = "/index.html"
+status = 200
+
+[[redirects]]
+from = "/*"
+to = "https://crft-coord.netlify.app"
+status = 301
