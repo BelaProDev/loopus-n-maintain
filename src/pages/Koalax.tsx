@@ -10,6 +10,25 @@ import Header from "@/components/Header";
 
 const languages = ['en', 'fr', 'es', 'de', 'it'];
 
+interface Translation {
+  [key: string]: string;
+}
+
+interface ContentItem {
+  ref: {
+    id: string;
+  };
+  data: {
+    key: string;
+    type: 'text' | 'textarea';
+    translations: Translation;
+  };
+}
+
+interface FaunaResponse {
+  data: ContentItem[];
+}
+
 const Koalax = () => {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -21,10 +40,10 @@ const Koalax = () => {
     return null;
   }
 
-  const { data: content, isLoading } = useQuery({
+  const { data: content, isLoading } = useQuery<ContentItem[]>({
     queryKey: ['content'],
     queryFn: async () => {
-      const result = await client.query(
+      const result = await client.query<FaunaResponse>(
         q.Map(
           q.Paginate(q.Documents(q.Collection('structure_tool-ofthe-year'))),
           q.Lambda('ref', q.Get(q.Var('ref')))
@@ -35,7 +54,7 @@ const Koalax = () => {
   });
 
   const updateMutation = useMutation({
-    mutationFn: async (variables: { ref: any; data: any }) => {
+    mutationFn: async (variables: { ref: any; data: ContentItem['data'] }) => {
       return await client.query(
         q.Update(variables.ref, { data: variables.data })
       );
@@ -67,7 +86,7 @@ const Koalax = () => {
         <h1 className="text-3xl font-bold mb-8">Back Office - Content Management</h1>
         
         <div className="grid gap-8">
-          {content?.map((item: any) => (
+          {content?.map((item) => (
             <div key={item.ref.id} className="bg-card p-6 rounded-lg shadow">
               <h2 className="text-xl font-semibold mb-4">{item.data.key}</h2>
               
