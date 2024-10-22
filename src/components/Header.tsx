@@ -1,7 +1,9 @@
-import { Menu } from "lucide-react";
+import { Menu, WifiOff } from "lucide-react";
 import { Button } from "./ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Badge } from "./ui/badge";
 
 const maintenanceFields = [
   { name: "Electrics", path: "/electrics" },
@@ -12,8 +14,36 @@ const maintenanceFields = [
 ];
 
 const Header = () => {
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+
+  useEffect(() => {
+    // Update network status
+    const handleStatusChange = () => {
+      setIsOffline(!navigator.onLine);
+    };
+
+    // Listen to network status changes
+    window.addEventListener('online', handleStatusChange);
+    window.addEventListener('offline', handleStatusChange);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('online', handleStatusChange);
+      window.removeEventListener('offline', handleStatusChange);
+    };
+  }, []);
+
   return (
-    <header className="border-b bg-gradient-to-r from-primary to-accent text-white shadow-lg">
+    <header className="border-b bg-gradient-to-r from-primary to-accent text-white shadow-lg relative">
+      {isOffline && (
+        <Badge 
+          variant="destructive" 
+          className="absolute top-2 right-2 md:right-4 flex items-center gap-1 z-50"
+        >
+          <WifiOff className="h-3 w-3" />
+          Offline
+        </Badge>
+      )}
       <div className="container mx-auto px-4 py-4">
         <nav className="flex items-center justify-between">
           <Link to="/" className="text-2xl font-semibold text-white flex items-center gap-2 relative">
