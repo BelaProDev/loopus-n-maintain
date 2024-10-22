@@ -66,22 +66,22 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
 
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
-    const name = formData.get('name') as string;
-    const email = formData.get('email') as string;
-    const message = formData.get('message') as string;
-
+    
     try {
       const response = await fetch('/.netlify/functions/send-contact-email', {
         method: 'POST',
+        body: JSON.stringify({
+          name: formData.get('name'),
+          email: formData.get('email'),
+          message: formData.get('message'),
+          service: title
+        }),
         headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name, email, message }),
+          'Content-Type': 'application/json'
+        }
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to send message');
-      }
+      if (!response.ok) throw new Error('Failed to send message');
 
       toast({
         title: "Message sent",
@@ -94,6 +94,7 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
         description: "Failed to send message. Please try again later.",
         variant: "destructive",
       });
+      console.error('Error:', error);
     }
   };
 
