@@ -10,8 +10,6 @@ import Ironwork from "./pages/Ironwork";
 import Woodwork from "./pages/Woodwork";
 import Architecture from "./pages/Architecture";
 import Login from "./pages/Login";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
 
 const queryClient = new QueryClient();
 
@@ -22,7 +20,6 @@ const App = () => (
         <Toaster />
         <BrowserRouter>
           <div className="flex flex-col min-h-screen">
-            <Header />
             <main className="flex-grow">
               <Routes>
                 <Route path="/" element={<Index />} />
@@ -34,7 +31,6 @@ const App = () => (
                 <Route path="/architecture" element={<Architecture />} />
               </Routes>
             </main>
-            <Footer />
           </div>
         </BrowserRouter>
       </TooltipProvider>
