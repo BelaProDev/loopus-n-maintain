@@ -1,4 +1,5 @@
 import { Links, Meta, Scripts, ScrollRestoration } from "@remix-run/react";
+import { Toaster } from "./components/ui/sonner";
 
 export default function Root() {
   return (
@@ -11,6 +12,7 @@ export default function Root() {
       </head>
       <body>
         <div id="root"></div>
+        <Toaster />
         <ScrollRestoration />
         <Scripts />
       </body>
