@@ -17,7 +17,6 @@ const Header = () => {
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
   useEffect(() => {
-    // Update network status
     const handleStatusChange = () => {
       setIsOffline(!navigator.onLine);
     };
@@ -32,13 +31,11 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="border-b shadow-lg relative">
-      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-transparent pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-r from-primary to-accent" style={{ zIndex: -1 }} />
+    <header className="border-b shadow-lg relative bg-gradient-to-r from-[#F5F1EA] to-primary">
       {isOffline && (
         <Badge 
           variant="destructive" 
-          className="absolute top-2 right-2 md:right-4 flex items-center gap-1 z-50"
+          className="absolute top-2 right-2 md:right-4 flex items-center gap-1 z-50 font-semibold"
         >
           <WifiOff className="h-3 w-3" />
           Offline
@@ -46,15 +43,15 @@ const Header = () => {
       )}
       <div className="container mx-auto px-4 py-4">
         <nav className="flex items-center justify-between relative z-10">
-          <Link to="/" className="text-2xl font-semibold text-white flex items-center gap-2">
-            <div className="md:mix-blend-overlay">
+          <Link to="/" className="text-2xl font-bold text-primary flex items-center gap-2">
+            <div>
               <img 
                 src="/forest-lidar.png" 
                 alt="Loopus&Maintain" 
                 className="h-8 w-auto object-contain"
               />
             </div>
-            <span className="text-white">Loopus&Maintain</span>
+            <span className="text-primary">Loopus&Maintain</span>
           </Link>
 
           {/* Desktop Menu */}
@@ -63,7 +60,7 @@ const Header = () => {
               <Link
                 key={field.name}
                 to={field.path}
-                className="text-white hover:text-secondary transition-colors"
+                className="text-primary hover:text-accent font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md px-2 py-1"
               >
                 {field.name}
               </Link>
@@ -73,17 +70,21 @@ const Header = () => {
           {/* Mobile Menu */}
           <Sheet>
             <SheetTrigger asChild className="md:hidden">
-              <Button variant="ghost" size="icon" className="text-white hover:text-secondary">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="text-primary hover:bg-primary/10 focus:ring-2 focus:ring-primary"
+              >
                 <Menu className="h-6 w-6" />
               </Button>
             </SheetTrigger>
-            <SheetContent className="bg-gradient-to-r from-primary to-accent text-white">
+            <SheetContent className="bg-[#F5F1EA] border-l border-primary/20">
               <div className="flex flex-col space-y-4 mt-8">
                 {maintenanceFields.map((field) => (
                   <Link
                     key={field.name}
                     to={field.path}
-                    className="text-lg text-white hover:text-secondary transition-colors"
+                    className="text-lg text-primary hover:text-accent font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded-md px-2 py-1"
                   >
                     {field.name}
                   </Link>
