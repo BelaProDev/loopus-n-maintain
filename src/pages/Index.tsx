@@ -4,6 +4,7 @@ import { Building2, Wrench, Zap, Hammer, PencilRuler } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { useAuth } from "@/contexts/AuthContext";
 
 const services = [
   {
@@ -40,32 +41,35 @@ const services = [
 
 const Index = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F5F1EA]">
       <Header />
       <main className="flex-1">
-        <div className="bg-[#2E5984] text-white py-16">
+        <div id="hero" className="bg-[#2E5984] text-white py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl">
               <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                Professional Maintenance Management
+                Loopus & Maintain
               </h1>
               <p className="text-xl mb-8">
-                Streamline your maintenance operations across multiple disciplines
+                Welcome, would you like to log in?
               </p>
-              <Button 
-                onClick={() => navigate("/login")}
-                size="lg" 
-                className="bg-white text-[#2E5984] hover:bg-gray-100"
-              >
-                Sign In
-              </Button>
+              {!isAuthenticated && (
+                <Button 
+                  onClick={() => navigate("/login")}
+                  size="lg" 
+                  className="bg-white text-[#2E5984] hover:bg-gray-100"
+                >
+                  Sign In
+                </Button>
+              )}
             </div>
           </div>
         </div>
 
-        <div className="container mx-auto px-4 py-16">
+        <div id="services" className="container mx-auto px-4 py-16">
           <h2 className="text-3xl font-bold text-center mb-12 text-[#2E5984]">
             Our Services
           </h2>

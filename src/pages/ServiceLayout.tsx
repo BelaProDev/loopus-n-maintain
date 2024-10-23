@@ -114,12 +114,12 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
           </Alert>
         )}
 
-        <div className={styles.glassEffect}>
+        <div id="overview" className={styles.glassEffect}>
           <h1 className={styles.title}>{title}</h1>
           <p className={styles.description}>{description}</p>
 
-          <div className={styles.serviceGrid}>
-            <Card className={styles.woodTexture}>
+          <div id="service-options" className={styles.serviceGrid}>
+            <Card id="quick-help" className={styles.woodTexture}>
               <h2 className={styles.subtitle}>Quick Help</h2>
               <div className={styles.formGroup}>
                 {commonIssues.map((issue) => (
@@ -147,7 +147,7 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
               </div>
             </Card>
 
-            <Card className={styles.woodTexture}>
+            <Card id="contact-form" className={styles.woodTexture}>
               <h2 className={styles.subtitle}>Contact Form</h2>
               <form onSubmit={handleContactSubmit} className={styles.formGroup}>
                 <div>
@@ -170,7 +170,7 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
             </Card>
           </div>
 
-          <div className={styles.faqContainer}>
+          <div id="faq" className={styles.faqContainer}>
             <h2 className={styles.subtitle}>Frequently Asked Questions</h2>
             <div className="space-y-6">
               {faqs.map((faq, index) => (
