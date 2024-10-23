@@ -12,7 +12,6 @@ import Footer from "@/components/Footer";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { styles } from "@/lib/styles";
 
 interface ServiceLayoutProps {
   title: string;
@@ -67,22 +66,22 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
 
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
-    
+    const name = formData.get('name') as string;
+    const email = formData.get('email') as string;
+    const message = formData.get('message') as string;
+
     try {
       const response = await fetch('/.netlify/functions/send-contact-email', {
         method: 'POST',
-        body: JSON.stringify({
-          name: formData.get('name'),
-          email: formData.get('email'),
-          message: formData.get('message'),
-          service: title
-        }),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email, message }),
       });
 
-      if (!response.ok) throw new Error('Failed to send message');
+      if (!response.ok) {
+        throw new Error('Failed to send message');
+      }
 
       toast({
         title: "Message sent",
@@ -95,14 +94,13 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
         description: "Failed to send message. Please try again later.",
         variant: "destructive",
       });
-      console.error('Error:', error);
     }
   };
 
   return (
-    <div className={styles.container}>
+    <div className="min-h-screen flex flex-col">
       <Header />
-      <main className={styles.mainContent}>
+      <main className="flex-1 container mx-auto px-4 py-8">
         {!isAuthenticated && (
           <Alert variant="destructive" className="mb-6">
             <AlertDescription className="flex items-center justify-between">
@@ -113,15 +111,15 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
             </AlertDescription>
           </Alert>
         )}
+        <div className="glass-effect rounded-lg p-8 mb-8">
+          <h1 className="text-4xl font-serif text-[#2E5984] mb-4">{title}</h1>
+          <p className="text-lg text-gray-700 mb-8">{description}</p>
 
-        <div className={styles.glassEffect}>
-          <h1 className={styles.title}>{title}</h1>
-          <p className={styles.description}>{description}</p>
-
-          <div className={styles.serviceGrid}>
-            <Card className={styles.woodTexture}>
-              <h2 className={styles.subtitle}>Quick Help</h2>
-              <div className={styles.formGroup}>
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Quick Help Section */}
+            <Card className="p-6 wood-texture">
+              <h2 className="text-2xl font-serif text-[#2E5984] mb-4">Quick Help</h2>
+              <div className="space-y-4">
                 {commonIssues.map((issue) => (
                   <div key={issue.id} className="flex items-center space-x-2">
                     <Checkbox
@@ -147,9 +145,10 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
               </div>
             </Card>
 
-            <Card className={styles.woodTexture}>
-              <h2 className={styles.subtitle}>Contact Form</h2>
-              <form onSubmit={handleContactSubmit} className={styles.formGroup}>
+            {/* Contact Form */}
+            <Card className="p-6 wood-texture">
+              <h2 className="text-2xl font-serif text-[#2E5984] mb-4">Contact Form</h2>
+              <form onSubmit={handleContactSubmit} className="space-y-4">
                 <div>
                   <Label htmlFor="name">Name</Label>
                   <Input id="name" name="name" required />
@@ -170,13 +169,14 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
             </Card>
           </div>
 
-          <div className={styles.faqContainer}>
-            <h2 className={styles.subtitle}>Frequently Asked Questions</h2>
+          {/* FAQ Section */}
+          <div className="mt-12">
+            <h2 className="text-2xl font-serif text-[#2E5984] mb-6">Frequently Asked Questions</h2>
             <div className="space-y-6">
               {faqs.map((faq, index) => (
-                <div key={index} className={styles.faqItem}>
-                  <h3 className={styles.faqQuestion}>{faq.question}</h3>
-                  <p className={styles.faqAnswer}>{faq.answer}</p>
+                <div key={index} className="glass-effect p-4 rounded-lg">
+                  <h3 className="font-semibold text-lg text-[#2E5984] mb-2">{faq.question}</h3>
+                  <p className="text-gray-700">{faq.answer}</p>
                 </div>
               ))}
             </div>

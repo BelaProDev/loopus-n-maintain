@@ -20,14 +20,14 @@ const Login = () => {
     try {
       await login(email, password);
       toast({
-        title: "Authentication Successful",
-        description: "Welcome to your account",
+        title: "Login Successful",
+        description: "Welcome back!",
       });
       navigate("/");
     } catch (error) {
       toast({
-        title: "Authentication Failed",
-        description: "Invalid credentials. Please try again.",
+        title: "Login Failed",
+        description: "Please check your credentials and try again.",
         variant: "destructive",
       });
     }
@@ -42,21 +42,21 @@ const Login = () => {
         onClick={() => navigate("/")}
       >
         <Home className="mr-2 h-4 w-4" />
-        Return to Home
+        Back to Home
       </Button>
       <Card className="w-[400px] shadow-lg">
         <CardHeader>
-          <CardTitle className="text-2xl text-[#2E5984]">Sign In</CardTitle>
-          <CardDescription>Access your maintenance management account</CardDescription>
+          <CardTitle className="text-2xl text-[#2E5984]">Welcome Back</CardTitle>
+          <CardDescription>Enter your credentials to access your account</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="Enter your email address"
+                placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
