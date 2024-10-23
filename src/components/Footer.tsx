@@ -1,4 +1,4 @@
-import { Home, Settings, HelpCircle } from "lucide-react";
+import { Home, Settings } from "lucide-react";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
 
@@ -10,8 +10,8 @@ const Footer = () => {
           <div className="mb-4 md:mb-0">
             <h3 className="text-xl font-semibold mb-2">Emergency Contact</h3>
             <div className="flex items-center space-x-2">
-              <a href="tel:1-800-MAINTAIN" className="hover:underline">
-                1-800-MAINTAIN
+              <a href="tel:+32489127067" className="hover:underline">
+                +32 489 12 70 67
               </a>
             </div>
           </div>
@@ -28,10 +28,6 @@ const Footer = () => {
                 <Settings className="h-4 w-4 mr-2" />
                 Loopus Admin
               </Link>
-            </Button>
-            <Button variant="ghost" size="sm">
-              <HelpCircle className="h-4 w-4 mr-2" />
-              Help
             </Button>
           </div>
 
