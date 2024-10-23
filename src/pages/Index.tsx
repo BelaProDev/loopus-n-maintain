@@ -60,9 +60,10 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F5F1EA]">
+      <StlViewer />
       <Header />
-      <main className="flex-1">
-        <div className="bg-[#2E5984] text-white py-16">
+      <main className="flex-1 relative">
+        <div className="bg-[#2E5984]/90 backdrop-blur-sm text-white py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl">
               <h1 className="text-4xl md:text-5xl font-bold mb-4">
@@ -85,19 +86,12 @@ const Index = () => {
         </div>
 
         <div className="container mx-auto px-4 py-16">
-          <div className="mb-16">
-            <h2 className="text-3xl font-bold text-center mb-8 text-[#2E5984]">
-              Interactive 3D Visualization
-            </h2>
-            <StlViewer />
-          </div>
-
           <h2 className="text-3xl font-bold text-center mb-12 text-[#2E5984]">
             {texts.home.services.title}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service) => (
-              <Card key={service.title} className="border-none shadow-lg hover:shadow-xl transition-shadow">
+              <Card key={service.title} className="border-none shadow-lg hover:shadow-xl transition-shadow backdrop-blur-sm bg-white/80">
                 <CardHeader>
                   <div className="flex items-center space-x-4">
                     <service.icon className="h-8 w-8 text-[#2E5984]" />

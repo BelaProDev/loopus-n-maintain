@@ -5,7 +5,7 @@ import * as THREE from 'three';
 
 function Model() {
   const geometry = React.useMemo(() => {
-    const geometry = new THREE.BoxGeometry(1, 1, 1); // Fallback geometry while STL loads
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
     return geometry;
   }, []);
 
@@ -19,6 +19,8 @@ function Model() {
         clearcoat={1}
         clearcoatRoughness={0.2}
         envMapIntensity={1}
+        transparent={true}
+        opacity={0.1}
       />
     </mesh>
   );
@@ -26,7 +28,7 @@ function Model() {
 
 export default function StlViewer() {
   return (
-    <div className="w-full h-[600px] bg-gradient-to-b from-secondary/30 to-secondary/10 rounded-lg shadow-2xl">
+    <div className="fixed inset-0 -z-10 opacity-30">
       <Canvas
         camera={{ position: [0, 0, 100], fov: 45 }}
         gl={{ antialias: true }}
@@ -36,17 +38,18 @@ export default function StlViewer() {
           <Stage
             environment="city"
             intensity={0.5}
-            shadows={{ type: 'contact', opacity: 0.5, blur: 2 }}
+            shadows={{ type: 'contact', opacity: 0.2, blur: 2 }}
           >
             <Model />
           </Stage>
         </Suspense>
         <OrbitControls 
-          autoRotate={false}
-          enableZoom={true}
-          enablePan={true}
-          minDistance={50}
-          maxDistance={200}
+          autoRotate={true}
+          autoRotateSpeed={0.5}
+          enableZoom={false}
+          enablePan={false}
+          minPolarAngle={Math.PI / 2}
+          maxPolarAngle={Math.PI / 2}
         />
       </Canvas>
     </div>
