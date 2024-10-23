@@ -11,18 +11,38 @@ export default function handleRequest(
   responseHeaders: Headers,
 ) {
   return new Promise((resolve, reject) => {
+    let didError = false;
+    const body = new PassThrough();
+
     const { pipe, abort } = renderToPipeableStream(
       <StaticRouter location={request.url}>
         <App />
       </StaticRouter>,
       {
         onShellReady() {
-          const body = new PassThrough();
           responseHeaders.set("Content-Type", "text/html");
+          
+          const responseStream = new ReadableStream({
+            start(controller) {
+              const reader = body.on('data', (chunk) => {
+                controller.enqueue(chunk);
+              });
+              
+              body.on('end', () => {
+                controller.close();
+              });
+
+              body.on('error', (err) => {
+                controller.error(err);
+                reject(err);
+              });
+            },
+          });
+
           resolve(
-            new Response(body, {
+            new Response(responseStream, {
               headers: responseHeaders,
-              status: responseStatusCode,
+              status: didError ? 500 : responseStatusCode,
             })
           );
           pipe(body);
@@ -31,8 +51,8 @@ export default function handleRequest(
           reject(error);
         },
         onError(error: unknown) {
+          didError = true;
           console.error(error);
-          responseStatusCode = 500;
         },
       }
     );
