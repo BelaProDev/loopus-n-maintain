@@ -43,12 +43,12 @@ const Header = () => {
       )}
       <div className="container mx-auto px-4 py-4">
         <nav className="flex items-center justify-between relative z-10">
-          <Link to="/" className="text-2xl font-bold text-primary flex items-center gap-2">
+          <Link to="/" className="text-2xl font-['Playfair_Display'] font-bold text-primary flex items-center gap-2">
             <div>
               <img 
                 src="/forest-lidar.png" 
                 alt="Loopus&Maintain" 
-                className="h-8 w-auto object-contain"
+                className="h-12 w-auto object-contain" // Increased from h-8 to h-12
               />
             </div>
             <span className="text-[#2E5984]">Loopus&Maintain</span>
@@ -60,7 +60,7 @@ const Header = () => {
               <Link
                 key={field.name}
                 to={field.path}
-                className="text-[#2E5984] hover:text-[#4A90E2] font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#2E5984] focus:ring-offset-2 rounded-md px-2 py-1"
+                className="text-[#2E5984] hover:text-[#4A90E2] font-['Playfair_Display'] font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#2E5984] focus:ring-offset-2 rounded-md px-2 py-1"
               >
                 {field.name}
               </Link>
@@ -84,7 +84,7 @@ const Header = () => {
                   <Link
                     key={field.name}
                     to={field.path}
-                    className="text-lg text-[#2E5984] hover:text-[#4A90E2] font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#2E5984] rounded-md px-2 py-1"
+                    className="text-lg text-[#2E5984] hover:text-[#4A90E2] font-['Playfair_Display'] font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#2E5984] rounded-md px-2 py-1"
                   >
                     {field.name}
                   </Link>
