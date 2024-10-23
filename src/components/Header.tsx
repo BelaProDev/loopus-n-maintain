@@ -31,7 +31,7 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="border-b shadow-lg relative bg-gradient-to-r from-[#F5F1EA] to-primary">
+    <header className="border-b shadow-lg relative bg-[#F5F1EA]">
       {isOffline && (
         <Badge 
           variant="destructive" 
