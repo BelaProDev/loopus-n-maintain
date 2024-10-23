@@ -1,101 +1,66 @@
-# CraftCoordination
+# Loopus & Maintain
 
-A comprehensive building maintenance and professional craft services platform designed for property managers, building owners, and facility maintenance teams.
+A professional building maintenance and craft services platform available at [loopus-n-maintain.netlify.app](https://loopus-n-maintain.netlify.app/)
 
-## Overview
+## Services
 
-CraftCoordination is a Progressive Web App (PWA) specializing in coordinating essential maintenance services:
-- Electrical work (24/7 emergency service available)
-- Professional plumbing solutions
-- Custom ironwork and structural repairs
-- Expert woodworking and carpentry
-- Architectural consultation and planning
+Access our specialized services:
+- [Electrical Services](https://loopus-n-maintain.netlify.app/electrics)
+- [Plumbing Solutions](https://loopus-n-maintain.netlify.app/plumbing)
+- [Ironwork Services](https://loopus-n-maintain.netlify.app/ironwork)
+- [Woodworking](https://loopus-n-maintain.netlify.app/woodwork)
+- [Architectural Planning](https://loopus-n-maintain.netlify.app/architecture)
 
-## ✨ Features Built with GPT Engineer ✨
+## Core Features
 
-🌸 Complete Authentication System  
-🌺 Multiple Service Modules:
-  - Electrics
-  - Plumbing
-  - Ironwork
-  - Woodwork
-  - Architecture  
-🌷 Responsive UI with shadcn/ui Components  
-🌹 3D Visualization Capabilities  
-🌻 Contact Forms with Email Integration  
-🌼 Admin Dashboard (Koalax)  
-🌸 Proper Error Handling and Loading States  
-🌺 Consistent Styling with Tailwind CSS  
-
-## Key Features
-
-- 🏗️ Streamlined service request system
+- 🏗️ Service request management
 - 🚨 24/7 Emergency response
-- 📱 Mobile-friendly PWA with offline capabilities
-- 🌐 Multi-language support for diverse clients
-- 📧 Instant notification system
-- 🔐 Secure client portal
-- 📊 Comprehensive maintenance tracking (Koalax)
+- 📱 PWA with offline support
+- 📧 Email notifications
+- 🔐 Secure authentication
+- 📊 Maintenance tracking
 
-## Getting Started
+## Tech Stack
 
-1. Clone the repository
-2. Install dependencies:
-```bash
-npm install
-```
-3. Start the development server:
-```bash
-npm run dev
-```
-
-## Environment Variables
-
-Create a `.env` file with:
-
-```env
-# Email Configuration
-SMTP_HOSTNAME=smtp.example.com
-SMTP_PORT=587
-SMTP_USERNAME=your-username
-SMTP_PASSWORD=your-password
-SMTP_FROM_EMAIL=noreply@yourdomain.com
-CONTACT_FORM_RECIPIENTS=email1@domain.com,email2@domain.com
-
-# WhatsApp Integration (Optional)
-VITE_WHATSAPP_ELECTRICS=+1234567890
-VITE_WHATSAPP_PLUMBING=+1234567890
-VITE_WHATSAPP_IRONWORK=+1234567890
-VITE_WHATSAPP_WOODWORK=+1234567890
-VITE_WHATSAPP_ARCHITECTURE=+1234567890
-```
+- React 18 + TypeScript
+- Vite
+- TailwindCSS + shadcn/ui
+- Tanstack Query
+- Netlify Functions
 
 ## Project Structure
 
 ```
 src/
-├── components/     # Reusable UI components
-├── contexts/      # React context providers
-├── hooks/         # Custom React hooks
-├── lib/           # Utility functions and configurations
-├── pages/         # Main route components
-└── types/         # TypeScript type definitions
+├── components/     # UI components & shadcn/ui
+├── contexts/      # Auth context
+├── data/         # Static content
+├── hooks/        # Custom hooks
+├── lib/          # Utils & configurations
+├── pages/        # Route components
+└── types/        # TypeScript definitions
 ```
 
-## Built With
+## Quick Start
 
-- React + TypeScript
-- Vite
-- Tailwind CSS
-- shadcn/ui
-- React Router
-- React Query
-- Netlify Functions
+1. Clone and install:
+```bash
+npm install
+```
 
-## Credits
+2. Configure environment:
+```env
+SMTP_HOSTNAME=
+SMTP_USERNAME=
+SMTP_PASSWORD=
+CONTACT_FORM_RECIPIENTS=
+```
 
-This project was developed with the assistance of GPT Engineer, showcasing the potential of AI-assisted development in creating robust, maintainable applications.
+3. Run development server:
+```bash
+npm run dev
+```
 
 ## License
 
-MIT License - See LICENSE file for details
+MIT License
