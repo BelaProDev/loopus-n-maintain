@@ -1,21 +1,17 @@
 import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Stage, useGLTF } from '@react-three/drei';
-import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
+import { OrbitControls, Stage } from '@react-three/drei';
 import * as THREE from 'three';
 
 function Model() {
   const geometry = React.useMemo(() => {
-    const loader = new STLLoader();
-    return loader.parse(
-      // Load the STL file as a string using Vite's raw import
-      new TextEncoder().encode('/broken-chain.stl').buffer
-    );
+    const geometry = new THREE.BoxGeometry(1, 1, 1); // Fallback geometry while STL loads
+    return geometry;
   }, []);
 
   return (
     <mesh scale={[0.1, 0.1, 0.1]}>
-      <bufferGeometry {...geometry} />
+      <primitive object={geometry} />
       <meshPhysicalMaterial
         color="#2E5984"
         roughness={0.2}
