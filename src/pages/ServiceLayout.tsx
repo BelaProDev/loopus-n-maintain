@@ -102,9 +102,9 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
   return (
     <div className={styles.container}>
       <Header />
-      <main className={styles.mainContent}>
+      <main id="service-content" className={styles.mainContent}>
         {!isAuthenticated && (
-          <Alert variant="destructive" className="mb-6">
+          <Alert variant="destructive" className="mb-6" role="alert">
             <AlertDescription className="flex items-center justify-between">
               <span>Please log in to access all features and services.</span>
               <Button variant="outline" size="sm" onClick={() => navigate("/login")}>
@@ -114,74 +114,103 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
           </Alert>
         )}
 
-        <div className={styles.glassEffect}>
-          <h1 className={styles.title}>{title}</h1>
+        <section aria-labelledby="service-title" className={styles.glassEffect}>
+          <h1 id="service-title" className={styles.title}>{title}</h1>
           <p className={styles.description}>{description}</p>
 
           <div className={styles.serviceGrid}>
             <Card className={styles.woodTexture}>
-              <h2 className={styles.subtitle}>Quick Help</h2>
-              <div className={styles.formGroup}>
-                {commonIssues.map((issue) => (
-                  <div key={issue.id} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={issue.id}
-                      checked={selectedIssues.includes(issue.id)}
-                      onCheckedChange={(checked) => {
-                        setSelectedIssues(checked
-                          ? [...selectedIssues, issue.id]
-                          : selectedIssues.filter(i => i !== issue.id)
-                        );
-                      }}
-                    />
-                    <Label htmlFor={issue.id}>{issue.label}</Label>
-                  </div>
-                ))}
+              <section aria-labelledby="quick-help-title">
+                <h2 id="quick-help-title" className={styles.subtitle}>Quick Help</h2>
+                <fieldset className={styles.formGroup}>
+                  <legend className="sr-only">Common Issues</legend>
+                  <ul className="space-y-2 list-none p-0">
+                    {commonIssues.map((issue) => (
+                      <li key={issue.id}>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id={issue.id}
+                            checked={selectedIssues.includes(issue.id)}
+                            onCheckedChange={(checked) => {
+                              setSelectedIssues(checked
+                                ? [...selectedIssues, issue.id]
+                                : selectedIssues.filter(i => i !== issue.id)
+                              );
+                            }}
+                          />
+                          <Label htmlFor={issue.id}>{issue.label}</Label>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </fieldset>
                 <Button
                   onClick={handleWhatsAppContact}
                   className="w-full mt-4 bg-green-600 hover:bg-green-700"
+                  aria-label="Contact support via WhatsApp"
                 >
-                  <Phone className="mr-2 h-4 w-4" />
+                  <Phone className="mr-2 h-4 w-4" aria-hidden="true" />
                   Contact via WhatsApp
                 </Button>
-              </div>
+              </section>
             </Card>
 
             <Card className={styles.woodTexture}>
-              <h2 className={styles.subtitle}>Contact Form</h2>
-              <form onSubmit={handleContactSubmit} className={styles.formGroup}>
-                <div>
-                  <Label htmlFor="name">Name</Label>
-                  <Input id="name" name="name" required />
-                </div>
-                <div>
-                  <Label htmlFor="email">Email</Label>
-                  <Input id="email" name="email" type="email" required />
-                </div>
-                <div>
-                  <Label htmlFor="message">Message</Label>
-                  <Textarea id="message" name="message" required />
-                </div>
-                <Button type="submit" className="w-full">
-                  <Send className="mr-2 h-4 w-4" />
-                  Send Message
-                </Button>
-              </form>
+              <section aria-labelledby="contact-form-title">
+                <h2 id="contact-form-title" className={styles.subtitle}>Contact Form</h2>
+                <form onSubmit={handleContactSubmit} className={styles.formGroup}>
+                  <div role="group" aria-labelledby="personal-info">
+                    <span id="personal-info" className="sr-only">Personal Information</span>
+                    <div>
+                      <Label htmlFor="name">Name</Label>
+                      <Input 
+                        id="name" 
+                        name="name" 
+                        required 
+                        aria-required="true"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="email">Email</Label>
+                      <Input 
+                        id="email" 
+                        name="email" 
+                        type="email" 
+                        required 
+                        aria-required="true"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <Label htmlFor="message">Message</Label>
+                    <Textarea 
+                      id="message" 
+                      name="message" 
+                      required 
+                      aria-required="true"
+                    />
+                  </div>
+                  <Button type="submit" className="w-full">
+                    <Send className="mr-2 h-4 w-4" aria-hidden="true" />
+                    Send Message
+                  </Button>
+                </form>
+              </section>
             </Card>
           </div>
 
-          <div className={styles.faqContainer}>
-            <h2 className={styles.subtitle}>Frequently Asked Questions</h2>
-            <div className="space-y-6">
+          <section aria-labelledby="faq-title" className={styles.faqContainer}>
+            <h2 id="faq-title" className={styles.subtitle}>Frequently Asked Questions</h2>
+            <ul className="space-y-6 list-none p-0">
               {faqs.map((faq, index) => (
-                <div key={index} className={styles.faqItem}>
+                <li key={index} className={styles.faqItem}>
                   <h3 className={styles.faqQuestion}>{faq.question}</h3>
                   <p className={styles.faqAnswer}>{faq.answer}</p>
-                </div>
+                </li>
               ))}
-            </div>
-          </div>
-        </div>
+            </ul>
+          </section>
+        </section>
       </main>
       <Footer />
     </div>
