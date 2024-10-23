@@ -60,13 +60,12 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F5F1EA]">
-      <StlViewer />
       <Header />
-      <main className="flex-1 relative">
-        <div className="bg-[#2E5984]/90 backdrop-blur-sm text-white py-16">
+      <main id="main-content" className="flex-1">
+        <section aria-labelledby="hero-title" className="bg-[#2E5984]/90 backdrop-blur-sm text-white py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl">
-              <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              <h1 id="hero-title" className="text-4xl md:text-5xl font-bold mb-4">
                 {texts.home.hero.title}
               </h1>
               <p className="text-xl mb-8">
@@ -77,41 +76,47 @@ const Index = () => {
                   onClick={() => navigate("/login")}
                   size="lg" 
                   className="bg-white text-[#2E5984] hover:bg-gray-100"
+                  aria-label="Sign in to access all features"
                 >
                   Sign In
                 </Button>
               )}
             </div>
           </div>
-        </div>
+        </section>
 
-        <div className="container mx-auto px-4 py-16">
-          <h2 className="text-3xl font-bold text-center mb-12 text-[#2E5984]">
+        <section aria-labelledby="services-title" className="container mx-auto px-4 py-16">
+          <h2 id="services-title" className="text-3xl font-bold text-center mb-12 text-[#2E5984]">
             {texts.home.services.title}
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 list-none p-0">
             {services.map((service) => (
-              <Card key={service.title} className="border-none shadow-lg hover:shadow-xl transition-shadow backdrop-blur-sm bg-white/80">
-                <CardHeader>
-                  <div className="flex items-center space-x-4">
-                    <service.icon className="h-8 w-8 text-[#2E5984]" />
-                    <CardTitle>{service.title}</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-4">{service.description}</p>
-                  <Button 
-                    onClick={() => navigate(service.path)}
-                    variant="outline" 
-                    className="w-full"
-                  >
-                    Learn More
-                  </Button>
-                </CardContent>
-              </Card>
+              <li key={service.title}>
+                <Card className="border-none shadow-lg hover:shadow-xl transition-shadow backdrop-blur-sm bg-white/80">
+                  <CardHeader>
+                    <div className="flex items-center space-x-4">
+                      <service.icon className="h-8 w-8 text-[#2E5984]" aria-hidden="true" />
+                      <CardTitle>{service.title}</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-gray-600 mb-4">{service.description}</p>
+                    <Button 
+                      onClick={() => navigate(service.path)}
+                      variant="outline" 
+                      className="w-full"
+                      aria-label={`Learn more about ${service.title}`}
+                    >
+                      Learn More
+                    </Button>
+                  </CardContent>
+                </Card>
+              </li>
             ))}
-          </div>
-        </div>
+          </ul>
+        </section>
+
+        <StlViewer />
       </main>
       <Footer />
     </div>

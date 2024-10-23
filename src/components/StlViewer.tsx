@@ -10,7 +10,7 @@ function Model() {
   }, []);
 
   return (
-    <mesh scale={[0.1, 0.1, 0.1]}>
+    <mesh scale={[0.1, 0.1, 0.1]} aria-hidden="true">
       <primitive object={geometry} />
       <meshPhysicalMaterial
         color="#2E5984"
@@ -28,7 +28,7 @@ function Model() {
 
 export default function StlViewer() {
   return (
-    <div className="fixed inset-0 -z-10 opacity-70">
+    <section aria-label="3D Model Visualization" className="h-[400px] relative my-16 bg-gray-50/50">
       <Canvas
         camera={{ position: [0, 0, 100], fov: 45 }}
         gl={{ antialias: true }}
@@ -52,6 +52,6 @@ export default function StlViewer() {
           maxPolarAngle={Math.PI / 2}
         />
       </Canvas>
-    </div>
+    </section>
   );
 }
