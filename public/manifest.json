@@ -1,26 +1,26 @@
 {
-  "name": "CraftCoordination",
-  "short_name": "CraftCoord",
-  "description": "Professional maintenance and craft services coordination platform",
+  "name": "Loopus&Maintain - Professional Building Maintenance Services",
+  "short_name": "Loopus",
+  "description": "Your trusted partner for professional building maintenance. 24/7 emergency services, licensed experts, and comprehensive maintenance solutions for property managers and homeowners.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#1a1a1a",
-  "theme_color": "#1a1a1a",
+  "background_color": "#F5F1EA",
+  "theme_color": "#2E5984",
   "icons": [
     {
-      "src": "/pwa-192x192.png",
+      "src": "/forest-lidar.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "/pwa-512x512.png",
+      "src": "/forest-lidar.png",
       "sizes": "512x512",
-      "type": "image/png"
-    },
-    {
-      "src": "/apple-touch-icon.png",
-      "sizes": "180x180",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
-  ]
+  ],
+  "orientation": "portrait",
+  "categories": ["business", "maintenance", "property services", "home services"],
+  "prefer_related_applications": false
 }
