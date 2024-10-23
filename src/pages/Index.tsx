@@ -34,7 +34,7 @@ const services = [
   {
     icon: PencilRuler,
     title: "Architecture",
-    description: "Architectural design and planning",
+    description: "Architectural design, planning and other services",
     path: "/architecture",
   },
 ];
