@@ -1,14 +1,7 @@
-import { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
-import nodemailer from "nodemailer";
+const { Handler } = require("@netlify/functions");
+const nodemailer = require("nodemailer");
 
-interface ContactFormData {
-  name: string;
-  email: string;
-  message: string;
-  service?: string;
-}
-
-const handler: Handler = async (event: HandlerEvent, context: HandlerContext) => {
+const handler = async (event) => {
   // Handle CORS
   if (event.httpMethod === "OPTIONS") {
     return {
@@ -26,7 +19,7 @@ const handler: Handler = async (event: HandlerEvent, context: HandlerContext) =>
   }
 
   try {
-    const { name, email, message, service }: ContactFormData = JSON.parse(event.body || "{}");
+    const { name, email, message } = JSON.parse(event.body || "{}");
 
     // Create transporter
     const transporter = nodemailer.createTransport({
@@ -49,13 +42,13 @@ const handler: Handler = async (event: HandlerEvent, context: HandlerContext) =>
     await transporter.sendMail({
       from: process.env.SMTP_FROM_EMAIL,
       to: recipientEmails,
-      subject: `New Contact Form Submission - CraftCoordination${service ? ` (${service})` : ''}`,
+      subject: "New Contact Form Submission - CraftCoordination",
       text: `
         New Contact Form Submission
         
         Name: ${name}
         Email: ${email}
-        ${service ? `Service: ${service}\n` : ''}
+        
         Message:
         ${message}
       `,
@@ -80,4 +73,4 @@ const handler: Handler = async (event: HandlerEvent, context: HandlerContext) =>
   }
 };
 
-export { handler };
+exports.handler = handler;

@@ -1,122 +1,89 @@
-import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Building2, Wrench, Zap, Hammer, PencilRuler } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/components/ui/use-toast";
-import texts from "@/data/website-texts.json";
-import StlViewer from "@/components/StlViewer";
 
 const services = [
   {
     icon: Zap,
-    title: texts.home.services.electrics.title,
-    description: texts.home.services.electrics.description,
+    title: "Electrics",
+    description: "Professional electrical maintenance and repairs",
     path: "/electrics",
   },
   {
     icon: Wrench,
-    title: texts.home.services.plumbing.title,
-    description: texts.home.services.plumbing.description,
+    title: "Plumbing",
+    description: "Expert plumbing solutions and maintenance",
     path: "/plumbing",
   },
   {
     icon: Building2,
-    title: texts.home.services.ironwork.title,
-    description: texts.home.services.ironwork.description,
+    title: "Ironwork",
+    description: "Structural and decorative ironwork services",
     path: "/ironwork",
   },
   {
     icon: Hammer,
-    title: texts.home.services.woodwork.title,
-    description: texts.home.services.woodwork.description,
+    title: "Woodwork",
+    description: "Custom woodworking and carpentry services",
     path: "/woodwork",
   },
   {
     icon: PencilRuler,
-    title: texts.home.services.architecture.title,
-    description: texts.home.services.architecture.description,
+    title: "Architecture",
+    description: "Architectural design and planning",
     path: "/architecture",
   },
 ];
 
 const Index = () => {
-  const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
-  const { toast } = useToast();
-
-  React.useEffect(() => {
-    if (isAuthenticated) {
-      toast({
-        title: "Welcome back!",
-        description: "You have successfully logged in.",
-        className: "bg-green-500 text-white",
-      });
-    }
-  }, [isAuthenticated]);
-
   return (
-    <div className="min-h-screen flex flex-col bg-[#F5F1EA]">
+    <div className="min-h-screen flex flex-col bg-secondary">
       <Header />
-      <main id="main-content" className="flex-1">
-        <section aria-labelledby="hero-title" className="bg-[#2E5984]/90 backdrop-blur-sm text-white py-16">
+      <main className="flex-1">
+        {/* Hero Section */}
+        <div className="bg-primary text-white py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl">
-              <h1 id="hero-title" className="text-4xl md:text-5xl font-bold mb-4">
-                {texts.home.hero.title}
+              <h1 className="text-4xl md:text-5xl font-bold mb-4">
+                Professional Maintenance Management
               </h1>
               <p className="text-xl mb-8">
-                {texts.home.hero.subtitle}
+                Streamline your maintenance operations across multiple disciplines
               </p>
-              {!isAuthenticated && (
-                <Button 
-                  onClick={() => navigate("/login")}
-                  size="lg" 
-                  className="bg-white text-[#2E5984] hover:bg-gray-100"
-                  aria-label="Sign in to access all features"
-                >
-                  Sign In
-                </Button>
-              )}
+              <Button asChild size="lg" className="bg-white text-primary hover:bg-gray-100">
+                <Link to="/login">Get Started</Link>
+              </Button>
             </div>
           </div>
-        </section>
+        </div>
 
-        <section aria-labelledby="services-title" className="container mx-auto px-4 py-16">
-          <h2 id="services-title" className="text-3xl font-bold text-center mb-12 text-[#2E5984]">
-            {texts.home.services.title}
+        {/* Services Section */}
+        <div className="container mx-auto px-4 py-16">
+          <h2 className="text-3xl font-bold text-center mb-12 text-primary">
+            Our Services
           </h2>
-          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 list-none p-0">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service) => (
-              <li key={service.title}>
-                <Card className="border-none shadow-lg hover:shadow-xl transition-shadow backdrop-blur-sm bg-white/80">
-                  <CardHeader>
-                    <div className="flex items-center space-x-4">
-                      <service.icon className="h-8 w-8 text-[#2E5984]" aria-hidden="true" />
-                      <CardTitle>{service.title}</CardTitle>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-600 mb-4">{service.description}</p>
-                    <Button 
-                      onClick={() => navigate(service.path)}
-                      variant="outline" 
-                      className="w-full"
-                      aria-label={`Learn more about ${service.title}`}
-                    >
-                      Learn More
-                    </Button>
-                  </CardContent>
-                </Card>
-              </li>
+              <Card key={service.title} className="border-none shadow-lg hover:shadow-xl transition-shadow">
+                <CardHeader>
+                  <div className="flex items-center space-x-4">
+                    <service.icon className="h-8 w-8 text-primary" />
+                    <CardTitle>{service.title}</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600 mb-4">{service.description}</p>
+                  <Button asChild variant="outline" className="w-full">
+                    <Link to={service.path}>View Details</Link>
+                  </Button>
+                </CardContent>
+              </Card>
             ))}
-          </ul>
-        </section>
-
-        <StlViewer />
+          </div>
+        </div>
       </main>
       <Footer />
     </div>
