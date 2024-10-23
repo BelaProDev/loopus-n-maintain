@@ -15,6 +15,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+interface ContentItem {
+  ref: {
+    id: string;
+  };
+  data: {
+    key: string;
+    type: 'text' | 'textarea';
+    translations: Record<string, string>;
+  };
+}
+
 // Mock registered users data
 const mockUsers = [
   { id: 1, email: "user1@example.com", registeredAt: "2024-02-20" },
@@ -80,7 +91,7 @@ const Koalax = () => {
             <TableBody>
               {users?.map((user) => (
                 <TableRow key={user.id}>
-                  <TableCell>{user.id}</TableCell>
+                  <TableCell>{String(user.id)}</TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell>{user.registeredAt}</TableCell>
                 </TableRow>
@@ -103,7 +114,7 @@ const Koalax = () => {
                     </label>
                     {item.data.type === 'text' ? (
                       <Input
-                        defaultValue={text}
+                        value={text}
                         onChange={(e) => {
                           const newTranslations = {
                             ...item.data.translations,
@@ -120,7 +131,7 @@ const Koalax = () => {
                       />
                     ) : (
                       <Textarea
-                        defaultValue={text}
+                        value={text}
                         onChange={(e) => {
                           const newTranslations = {
                             ...item.data.translations,
