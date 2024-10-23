@@ -6,60 +6,44 @@
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
-
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
-
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-
     --primary: 210 40% 98%;
     --primary-foreground: 222.2 47.4% 11.2%;
-
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
-
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
-
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
-
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
   }
 
   * {
-    @apply border-border;
+    @apply border-border font-mono;
   }
 
   body {
-    @apply bg-[#F5F1EA] text-foreground min-h-screen font-['Nunito'] text-base;
+    @apply bg-[#F5F1EA] text-foreground min-h-screen font-mono text-base;
   }
 
-  h1 {
-    @apply text-4xl md:text-5xl font-['Playfair_Display'] font-bold;
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-mono;
   }
 
-  h2 {
-    @apply text-3xl md:text-4xl font-['Playfair_Display'] font-semibold;
-  }
-
-  h3 {
-    @apply text-2xl md:text-3xl font-['Playfair_Display'] font-medium;
-  }
-
-  p, li, a {
-    @apply text-lg md:text-xl leading-relaxed;
+  p, li, a, input, textarea, button, label {
+    @apply font-mono;
   }
 
   /* Improved contrast for form elements */
   input, textarea, select {
-    @apply bg-white border-primary/30 focus:border-primary text-primary placeholder-primary/60 font-['Nunito'] text-lg !important;
+    @apply bg-white border-primary/30 focus:border-primary text-primary placeholder-primary/60 font-mono text-lg !important;
   }
 
   /* Enhanced focus states */
@@ -74,7 +58,7 @@
 
   /* Improved text contrast */
   .text-primary {
-    @apply text-[#2E5984] font-semibold font-['Playfair_Display'];
+    @apply text-[#2E5984] font-semibold font-mono;
   }
 
   /* Enhanced button contrast */
@@ -94,12 +78,12 @@
 
   /* Navigation text */
   .nav-text {
-    @apply text-lg md:text-xl font-['Nunito'];
+    @apply text-lg md:text-xl font-mono;
   }
 
   /* Card titles */
   .card-title {
-    @apply text-2xl font-['Playfair_Display'] font-bold;
+    @apply text-2xl font-mono font-bold;
   }
 
   /* Card content */
