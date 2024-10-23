@@ -24,6 +24,16 @@ to = "/index.html"
 status = 200
 
 [[redirects]]
+from = "/koalax"
+to = "/index.html"
+status = 200
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+  external_node_modules = ["nodemailer"]
+
+[[redirects]]
 from = "/*"
-to = "https://crft-coord.netlify.app"
-status = 301
+to = "/index.html"
+status = 200
