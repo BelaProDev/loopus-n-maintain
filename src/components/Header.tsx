@@ -32,7 +32,9 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="border-b bg-gradient-to-r from-primary to-accent text-white shadow-lg relative">
+    <header className="border-b shadow-lg relative">
+      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-r from-primary to-accent" style={{ zIndex: -1 }} />
       {isOffline && (
         <Badge 
           variant="destructive" 
@@ -43,16 +45,16 @@ const Header = () => {
         </Badge>
       )}
       <div className="container mx-auto px-4 py-4">
-        <nav className="flex items-center justify-between">
-          <Link to="/" className="text-2xl font-semibold text-white flex items-center gap-2 relative">
-            <div className="mix-blend-difference md:mix-blend-overlay">
+        <nav className="flex items-center justify-between relative z-10">
+          <Link to="/" className="text-2xl font-semibold text-white flex items-center gap-2">
+            <div className="md:mix-blend-overlay">
               <img 
                 src="/forest-lidar.png" 
                 alt="Loopus&Maintain" 
-                className="h-8 w-auto object-contain invert md:invert-0"
+                className="h-8 w-auto object-contain"
               />
             </div>
-            <span className="mix-blend-difference">Loopus&Maintain</span>
+            <span className="text-white">Loopus&Maintain</span>
           </Link>
 
           {/* Desktop Menu */}
