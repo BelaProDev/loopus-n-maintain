@@ -17,9 +17,9 @@ const ServiceHeader = ({ title, description }: ServiceHeaderProps) => {
       {!isAuthenticated && (
         <Alert variant="destructive" className="mb-6">
           <AlertDescription className="flex items-center justify-between flex-wrap gap-4">
-            <span>Please log in to access all features and services.</span>
+            <span>Sign in required to access all features and services.</span>
             <Button variant="outline" size="sm" onClick={() => navigate("/login")}>
-              Log In
+              Sign In
             </Button>
           </AlertDescription>
         </Alert>

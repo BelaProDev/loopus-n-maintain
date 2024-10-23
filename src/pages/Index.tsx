@@ -54,7 +54,7 @@ const Index = () => {
                 Streamline your maintenance operations across multiple disciplines
               </p>
               <Button asChild size="lg" className="bg-white text-primary hover:bg-gray-100">
-                <Link to="/login">Get Started</Link>
+                <Link to="/login">Sign In</Link>
               </Button>
             </div>
           </div>
@@ -77,7 +77,7 @@ const Index = () => {
                 <CardContent>
                   <p className="text-gray-600 mb-4">{service.description}</p>
                   <Button asChild variant="outline" className="w-full">
-                    <Link to={service.path}>View Details</Link>
+                    <Link to={service.path}>Learn More</Link>
                   </Button>
                 </CardContent>
               </Card>
