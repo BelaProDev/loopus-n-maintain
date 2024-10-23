@@ -53,17 +53,19 @@ const Index = () => {
               <h1 className="text-4xl md:text-5xl font-bold mb-4">
                 Loopus & Maintain
               </h1>
-              <p className="text-xl mb-8">
-                Welcome, would you like to log in?
-              </p>
               {!isAuthenticated && (
-                <Button 
-                  onClick={() => navigate("/login")}
-                  size="lg" 
-                  className="bg-white text-[#2E5984] hover:bg-gray-100"
-                >
-                  Sign In
-                </Button>
+                <>
+                  <p className="text-xl mb-8">
+                    Welcome, would you like to log in?
+                  </p>
+                  <Button 
+                    onClick={() => navigate("/login")}
+                    size="lg" 
+                    className="bg-white text-[#2E5984] hover:bg-gray-100"
+                  >
+                    Sign In
+                  </Button>
+                </>
               )}
             </div>
           </div>
