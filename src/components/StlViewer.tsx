@@ -12,7 +12,7 @@ function Model() {
 
   return (
     <mesh scale={[0.1, 0.1, 0.1]} aria-hidden="true">
-      <primitive object={geometry} />
+      <primitive object={geometry} attach="geometry" />
       <meshPhysicalMaterial
         color="#2E5984"
         roughness={0.2}
@@ -33,7 +33,7 @@ function CanvasContent() {
       <Stage
         environment="city"
         intensity={0.5}
-        shadows={{ type: 'contact', opacity: 0.2, blur: 2 }}
+        shadows={false}
       >
         <Model />
       </Stage>
@@ -54,7 +54,6 @@ export default function StlViewer() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Check for WebGL support
     try {
       const canvas = document.createElement('canvas');
       const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
@@ -66,12 +65,12 @@ export default function StlViewer() {
     }
   }, []);
 
-  if (!hasWebGL) {
+  if (!hasWebGL || error) {
     return (
       <section aria-label="3D Model Visualization" className="h-[400px] relative my-16 bg-gray-50/50 flex items-center justify-center">
         <Alert variant="destructive">
           <AlertDescription>
-            Your browser does not support WebGL, which is required for 3D visualization.
+            {error || "Your browser does not support WebGL, which is required for 3D visualization."}
           </AlertDescription>
         </Alert>
       </section>
@@ -81,14 +80,17 @@ export default function StlViewer() {
   return (
     <section aria-label="3D Model Visualization" className="h-[400px] relative my-16 bg-gray-50/50">
       <Canvas
-        camera={{ position: [0, 0, 100], fov: 45 }}
+        camera={{ position: [0, 0, 5], fov: 45 }}
         gl={{ 
           antialias: true,
           alpha: true,
-          preserveDrawingBuffer: true,
-          failIfMajorPerformanceCaveat: true
+          powerPreference: "default",
+          failIfMajorPerformanceCaveat: false
         }}
-        dpr={[1, 2]}
+        dpr={window.devicePixelRatio}
+        onCreated={({ gl }) => {
+          gl.setClearColor(new THREE.Color(0xffffff), 0);
+        }}
         onError={(e) => {
           console.error('Three.js Error:', e);
           setError('Failed to initialize 3D viewer');
@@ -96,11 +98,6 @@ export default function StlViewer() {
       >
         <CanvasContent />
       </Canvas>
-      {error && (
-        <Alert variant="destructive" className="absolute top-4 left-4 right-4">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
     </section>
   );
 }
