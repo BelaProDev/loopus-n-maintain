@@ -1,9 +1,10 @@
-import { Menu, WifiOff } from "lucide-react";
+import { Menu, WifiOff, LogOut } from "lucide-react";
 import { Button } from "./ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Badge } from "./ui/badge";
+import { useAuth } from "@/contexts/AuthContext";
 
 const maintenanceFields = [
   { name: "Electrics", path: "/electrics" },
@@ -15,6 +16,7 @@ const maintenanceFields = [
 
 const Header = () => {
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
+  const { isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
     const handleStatusChange = () => {
@@ -47,15 +49,15 @@ const Header = () => {
             <div>
               <img 
                 src="/forest-lidar.png" 
-                alt="Loopus&Maintain" 
+                alt="Loopus & Maintain" 
                 className="h-8 w-auto object-contain"
               />
             </div>
-            <span className="text-[#2E5984]">Loopus&Maintain</span>
+            <span className="text-[#2E5984]">Loopus & Maintain</span>
           </Link>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex space-x-6">
+          <div className="hidden md:flex items-center space-x-6">
             {maintenanceFields.map((field) => (
               <Link
                 key={field.name}
@@ -65,6 +67,16 @@ const Header = () => {
                 {field.name}
               </Link>
             ))}
+            {isAuthenticated && (
+              <Button
+                onClick={logout}
+                variant="outline"
+                className="flex items-center gap-2 text-[#2E5984] hover:text-[#4A90E2]"
+              >
+                <LogOut className="h-4 w-4" />
+                Logout
+              </Button>
+            )}
           </div>
 
           {/* Mobile Menu */}
@@ -89,6 +101,16 @@ const Header = () => {
                     {field.name}
                   </Link>
                 ))}
+                {isAuthenticated && (
+                  <Button
+                    onClick={logout}
+                    variant="outline"
+                    className="flex items-center gap-2 text-[#2E5984] hover:text-[#4A90E2]"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Logout
+                  </Button>
+                )}
               </div>
             </SheetContent>
           </Sheet>
