@@ -1,6 +1,21 @@
 import { createRequestHandler } from "@remix-run/node";
-import * as build from "@remix-run/dev/server-build";
+import { renderToPipeableStream } from "react-dom/server";
+import { StaticRouter } from "react-router-dom/server";
+import App from "./src/App";
 
-const handler = createRequestHandler(build, process.env.NODE_ENV);
+const handler = (request) => {
+  return new Promise((resolve) => {
+    const { pipe } = renderToPipeableStream(
+      <StaticRouter location={request.url}>
+        <App />
+      </StaticRouter>,
+      {
+        onShellReady() {
+          resolve(pipe);
+        },
+      }
+    );
+  });
+};
 
-export default handler;
+export default createRequestHandler({ build: handler });

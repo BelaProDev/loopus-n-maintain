@@ -1,11 +1,4 @@
-import {
-  Links,
-  LiveReload,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-} from "@remix-run/react";
+import { Links, Meta, Scripts, ScrollRestoration } from "@remix-run/react";
 
 export default function Root() {
   return (
@@ -17,10 +10,9 @@ export default function Root() {
         <Links />
       </head>
       <body>
-        <Outlet />
+        <div id="root"></div>
         <ScrollRestoration />
         <Scripts />
-        <LiveReload />
       </body>
     </html>
   );
