@@ -4,8 +4,12 @@ import { OrbitControls, useGLTF, Stage } from '@react-three/drei';
 import * as THREE from 'three';
 
 function Model() {
-  const { nodes } = useGLTF('/broken-chain.stl');
-  const meshRef = useRef();
+  const { nodes } = useGLTF('/broken-chain.stl') as unknown as {
+    nodes: {
+      mesh: THREE.Mesh<THREE.BufferGeometry, THREE.Material>
+    }
+  };
+  const meshRef = useRef<THREE.Mesh>();
 
   useFrame((state) => {
     if (meshRef.current) {
@@ -14,7 +18,11 @@ function Model() {
   });
 
   return (
-    <mesh ref={meshRef} geometry={nodes.mesh} scale={[2, 2, 2]}>
+    <mesh 
+      ref={meshRef} 
+      geometry={nodes.mesh.geometry} 
+      scale={[2, 2, 2]}
+    >
       <meshPhysicalMaterial
         color="#2E5984"
         roughness={0.2}
