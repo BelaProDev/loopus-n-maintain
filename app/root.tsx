@@ -8,16 +8,11 @@ import {
 } from "@remix-run/react";
 import { json, LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { Toaster } from "~/components/ui/sonner";
-import { AuthProvider } from "~/lib/auth";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { TooltipProvider } from "~/components/ui/tooltip";
+import { AppProviders } from "~/components/providers/AppProviders";
+import { ServiceWorkerInit } from "~/components/ServiceWorkerInit";
 
 import styles from "~/styles/app.css";
 import fontStyles from "~/styles/fonts.css";
-
-const queryClient = new QueryClient();
 
 export const links = () => [
   { rel: "stylesheet", href: styles },
@@ -42,38 +37,25 @@ export default function App() {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <meta name="theme-color" content="#2E5984" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <Meta />
         <Links />
       </head>
       <body className="h-full bg-[#F5F1EA]">
-        <QueryClientProvider client={queryClient}>
-          <AuthProvider>
-            <TooltipProvider>
-              <Toaster />
-              <Outlet />
-              <ScrollRestoration />
-              <Scripts />
-              <LiveReload />
-              {process.env.NODE_ENV === "development" && <ReactQueryDevtools />}
-              <script
-                dangerouslySetInnerHTML={{
-                  __html: `window.ENV = ${JSON.stringify(data.ENV)}`,
-                }}
-              />
-              <script
-                dangerouslySetInnerHTML={{
-                  __html: `
-                    if ('serviceWorker' in navigator) {
-                      window.addEventListener('load', () => {
-                        navigator.serviceWorker.register('/sw.js');
-                      });
-                    }
-                  `,
-                }}
-              />
-            </TooltipProvider>
-          </AuthProvider>
-        </QueryClientProvider>
+        <AppProviders>
+          <Outlet />
+          <ScrollRestoration />
+          <Scripts />
+          <LiveReload />
+          <ServiceWorkerInit />
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `window.ENV = ${JSON.stringify(data.ENV)}`,
+            }}
+          />
+        </AppProviders>
       </body>
     </html>
   );
