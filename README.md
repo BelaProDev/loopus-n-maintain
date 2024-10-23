@@ -1,24 +1,25 @@
 # CraftCoordination
 
-A comprehensive maintenance and craft services coordination platform built with React, TypeScript, and Vite.
+A comprehensive building maintenance and professional craft services platform designed for property managers, building owners, and facility maintenance teams.
 
 ## Overview
 
-CraftCoordination is a Progressive Web App (PWA) that helps coordinate various maintenance services including:
-- Electrical work
-- Plumbing
-- Ironwork
-- Woodworking
-- Architectural services
+CraftCoordination is a Progressive Web App (PWA) specializing in coordinating essential maintenance services:
+- Electrical work (24/7 emergency service available)
+- Professional plumbing solutions
+- Custom ironwork and structural repairs
+- Expert woodworking and carpentry
+- Architectural consultation and planning
 
 ## Key Features
 
-- 🏗️ Service-specific request forms
-- 📱 PWA with offline support
-- 🌐 Multi-language content management
-- 📧 Contact form with email notifications
-- 🔐 User authentication
-- 📊 Admin dashboard (Koalax)
+- 🏗️ Streamlined service request system
+- 🚨 24/7 Emergency response
+- 📱 Mobile-friendly PWA with offline capabilities
+- 🌐 Multi-language support for diverse clients
+- 📧 Instant notification system
+- 🔐 Secure client portal
+- 📊 Comprehensive maintenance tracking (Koalax)
 
 ## Getting Started
 
