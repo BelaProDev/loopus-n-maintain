@@ -22,7 +22,7 @@ const Architecture = () => {
   return (
     <ServiceLayout
       title="Architectural Services"
-      description="Professional architectural design and planning services. We help bring your vision to life with expert guidance through every phase of your project."
+      description="Professional architectural design, planning and other services. We help bring your vision to life with expert guidance through every phase of your project."
       commonIssues={commonIssues}
       faqs={faqs}
     />
