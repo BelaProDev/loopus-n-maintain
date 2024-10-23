@@ -3,14 +3,11 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Stage } from '@react-three/drei';
 import * as THREE from 'three';
 
-interface GLTFResult {
-  nodes: {
-    mesh: THREE.Mesh;
-  };
+interface ModelProps {
+  geometry: THREE.BufferGeometry;
 }
 
-function Model() {
-  const { nodes } = useGLTF('/broken-chain.stl') as unknown as GLTFResult;
+function Model({ geometry }: ModelProps) {
   const meshRef = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
@@ -22,7 +19,7 @@ function Model() {
   return (
     <mesh 
       ref={meshRef} 
-      geometry={nodes.mesh.geometry}
+      geometry={geometry}
       scale={[2, 2, 2]}
     >
       <meshPhysicalMaterial
@@ -37,6 +34,22 @@ function Model() {
   );
 }
 
+function Scene() {
+  const { nodes } = useGLTF('/broken-chain.stl') as unknown as { 
+    nodes: { mesh: THREE.Mesh<THREE.BufferGeometry> }
+  };
+
+  return (
+    <Stage
+      environment="city"
+      intensity={0.5}
+      shadows={{ type: 'contact', opacity: 0.5, blur: 2 }}
+    >
+      <Model geometry={nodes.mesh.geometry} />
+    </Stage>
+  );
+}
+
 export default function StlViewer() {
   return (
     <div className="w-full h-[600px] bg-gradient-to-b from-secondary/30 to-secondary/10 rounded-lg shadow-2xl">
@@ -45,15 +58,9 @@ export default function StlViewer() {
         gl={{ antialias: true }}
         dpr={[1, 2]}
       >
-        <Stage
-          environment="city"
-          intensity={0.5}
-          contactShadow={{ opacity: 0.5, blur: 2 }}
-        >
-          <Suspense fallback={null}>
-            <Model />
-          </Suspense>
-        </Stage>
+        <Suspense fallback={null}>
+          <Scene />
+        </Suspense>
         <OrbitControls 
           autoRotate={false}
           enableZoom={true}
