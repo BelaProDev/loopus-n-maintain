@@ -76,6 +76,9 @@ src/
 - React Query
 - Netlify Functions
 
-## License
+---
+---
+---
+nxt-prmpt ; :)
 
-MIT License - See LICENSE file for details
+upgrade the contact forms javascript error handling and notifications : of each activities sectors ( proper error handling in netlify function as second filter at submit ). add char counters per iputs also please
