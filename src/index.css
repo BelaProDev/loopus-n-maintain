@@ -38,15 +38,72 @@
   }
 
   body {
-    @apply bg-[#F5F1EA] text-foreground min-h-screen;
+    @apply bg-[#F5F1EA] text-foreground min-h-screen font-['Nunito'] text-base;
   }
 
+  h1 {
+    @apply text-4xl md:text-5xl font-['Playfair_Display'] font-bold;
+  }
+
+  h2 {
+    @apply text-3xl md:text-4xl font-['Playfair_Display'] font-semibold;
+  }
+
+  h3 {
+    @apply text-2xl md:text-3xl font-['Playfair_Display'] font-medium;
+  }
+
+  p, li, a {
+    @apply text-lg md:text-xl leading-relaxed;
+  }
+
+  /* Improved contrast for form elements */
   input, textarea, select {
-    @apply bg-gradient-to-r from-white to-[#F5F1EA] border-[#2E5984]/20 focus:border-[#2E5984] !important;
+    @apply bg-white border-primary/30 focus:border-primary text-primary placeholder-primary/60 font-['Nunito'] text-lg !important;
   }
 
-  .glass-effect {
-    backdrop-filter: blur(8px);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(245, 241, 234, 0.9));
+  /* Enhanced focus states */
+  a:focus, button:focus {
+    @apply outline-none ring-2 ring-primary ring-offset-2;
+  }
+
+  /* Better contrast for disabled states */
+  [disabled] {
+    @apply opacity-70 cursor-not-allowed;
+  }
+
+  /* Improved text contrast */
+  .text-primary {
+    @apply text-[#2E5984] font-semibold font-['Playfair_Display'];
+  }
+
+  /* Enhanced button contrast */
+  .button-primary {
+    @apply bg-primary text-white hover:bg-primary/90 focus:ring-2 focus:ring-primary focus:ring-offset-2 text-lg;
+  }
+
+  /* Better contrast for alerts and notifications */
+  .alert {
+    @apply border-2 font-medium text-lg;
+  }
+
+  /* Enhanced mobile menu contrast */
+  .mobile-menu {
+    @apply bg-white shadow-lg border-l border-primary/20;
+  }
+
+  /* Navigation text */
+  .nav-text {
+    @apply text-lg md:text-xl font-['Nunito'];
+  }
+
+  /* Card titles */
+  .card-title {
+    @apply text-2xl font-['Playfair_Display'] font-bold;
+  }
+
+  /* Card content */
+  .card-content {
+    @apply text-lg leading-relaxed;
   }
 }

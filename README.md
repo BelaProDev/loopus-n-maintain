@@ -1,33 +1,27 @@
 # CraftCoordination
 
-A comprehensive maintenance and craft services coordination platform built with React, TypeScript, and Vite.
+A comprehensive building maintenance and professional craft services platform designed for property managers, building owners, and facility maintenance teams.
 
-## Environment Variables
+## Overview
 
-### Email Configuration
-Set up the following environment variables in your Netlify dashboard for the contact form functionality:
+CraftCoordination is a Progressive Web App (PWA) specializing in coordinating essential maintenance services:
+- Electrical work (24/7 emergency service available)
+- Professional plumbing solutions
+- Custom ironwork and structural repairs
+- Expert woodworking and carpentry
+- Architectural consultation and planning
 
-```env
-SMTP_HOSTNAME=smtp.example.com
-SMTP_PORT=587
-SMTP_USERNAME=your-smtp-username
-SMTP_PASSWORD=your-smtp-password
-SMTP_FROM_EMAIL=noreply@yourdomain.com
-CONTACT_FORM_RECIPIENTS=recipient1@domain.com,recipient2@domain.com
-```
+## Key Features
 
-### Authentication Configuration
-Configure these environment variables for the authentication system:
+- 🏗️ Streamlined service request system
+- 🚨 24/7 Emergency response
+- 📱 Mobile-friendly PWA with offline capabilities
+- 🌐 Multi-language support for diverse clients
+- 📧 Instant notification system
+- 🔐 Secure client portal
+- 📊 Comprehensive maintenance tracking (Koalax)
 
-```env
-VITE_AUTH_TOKEN_KEY=your-auth-token-key
-VITE_AUTH_REFRESH_TOKEN_KEY=your-refresh-token-key
-VITE_AUTH_API_URL=your-auth-api-url
-```
-
-## Development
-
-This project uses Vite with React and TypeScript. To get started:
+## Getting Started
 
 1. Clone the repository
 2. Install dependencies:
@@ -39,19 +33,42 @@ npm install
 npm run dev
 ```
 
-## Features
+## Environment Variables
 
-- Professional maintenance service coordination
-- Specialized sections for different craft services
-- Responsive design
-- Contact form with email notifications
-- User authentication system
-- Interactive service request system
+Create a `.env` file with:
+
+```env
+# Email Configuration
+SMTP_HOSTNAME=smtp.example.com
+SMTP_PORT=587
+SMTP_USERNAME=your-username
+SMTP_PASSWORD=your-password
+SMTP_FROM_EMAIL=noreply@yourdomain.com
+CONTACT_FORM_RECIPIENTS=email1@domain.com,email2@domain.com
+
+# WhatsApp Integration (Optional)
+VITE_WHATSAPP_ELECTRICS=+1234567890
+VITE_WHATSAPP_PLUMBING=+1234567890
+VITE_WHATSAPP_IRONWORK=+1234567890
+VITE_WHATSAPP_WOODWORK=+1234567890
+VITE_WHATSAPP_ARCHITECTURE=+1234567890
+```
+
+## Project Structure
+
+```
+src/
+├── components/     # Reusable UI components
+├── contexts/      # React context providers
+├── hooks/         # Custom React hooks
+├── lib/           # Utility functions and configurations
+├── pages/         # Main route components
+└── types/         # TypeScript type definitions
+```
 
 ## Built With
 
-- React
-- TypeScript
+- React + TypeScript
 - Vite
 - Tailwind CSS
 - shadcn/ui
@@ -61,61 +78,4 @@ npm run dev
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-
----
----
----
----
-
-# React + TypeScript + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+MIT License - See LICENSE file for details
