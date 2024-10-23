@@ -4,42 +4,57 @@ import { Building2, Wrench, Zap, Hammer, PencilRuler } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/components/ui/use-toast";
+import texts from "@/data/website-texts.json";
 
 const services = [
   {
     icon: Zap,
-    title: "Electrics",
-    description: "Professional electrical maintenance and repairs",
+    title: texts.home.services.electrics.title,
+    description: texts.home.services.electrics.description,
     path: "/electrics",
   },
   {
     icon: Wrench,
-    title: "Plumbing",
-    description: "Expert plumbing solutions and maintenance",
+    title: texts.home.services.plumbing.title,
+    description: texts.home.services.plumbing.description,
     path: "/plumbing",
   },
   {
     icon: Building2,
-    title: "Ironwork",
-    description: "Structural and decorative ironwork services",
+    title: texts.home.services.ironwork.title,
+    description: texts.home.services.ironwork.description,
     path: "/ironwork",
   },
   {
     icon: Hammer,
-    title: "Woodwork",
-    description: "Custom woodworking and carpentry services",
+    title: texts.home.services.woodwork.title,
+    description: texts.home.services.woodwork.description,
     path: "/woodwork",
   },
   {
     icon: PencilRuler,
-    title: "Architecture",
-    description: "Architectural design and planning",
+    title: texts.home.services.architecture.title,
+    description: texts.home.services.architecture.description,
     path: "/architecture",
   },
 ];
 
 const Index = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+  const { toast } = useToast();
+
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      toast({
+        title: "Welcome back!",
+        description: "You have successfully logged in.",
+        className: "bg-green-500 text-white",
+      });
+    }
+  }, [isAuthenticated]);
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F5F1EA]">
@@ -49,25 +64,27 @@ const Index = () => {
           <div className="container mx-auto px-4">
             <div className="max-w-3xl">
               <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                Professional Maintenance Management
+                {texts.home.hero.title}
               </h1>
               <p className="text-xl mb-8">
-                Streamline your maintenance operations across multiple disciplines
+                {texts.home.hero.subtitle}
               </p>
-              <Button 
-                onClick={() => navigate("/login")}
-                size="lg" 
-                className="bg-white text-[#2E5984] hover:bg-gray-100"
-              >
-                Sign In
-              </Button>
+              {!isAuthenticated && (
+                <Button 
+                  onClick={() => navigate("/login")}
+                  size="lg" 
+                  className="bg-white text-[#2E5984] hover:bg-gray-100"
+                >
+                  Sign In
+                </Button>
+              )}
             </div>
           </div>
         </div>
 
         <div className="container mx-auto px-4 py-16">
           <h2 className="text-3xl font-bold text-center mb-12 text-[#2E5984]">
-            Our Services
+            {texts.home.services.title}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service) => (
