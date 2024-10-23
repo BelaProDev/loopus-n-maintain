@@ -3,13 +3,15 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Stage } from '@react-three/drei';
 import * as THREE from 'three';
 
-function Model() {
-  const { nodes } = useGLTF('/broken-chain.stl') as unknown as {
-    nodes: {
-      mesh: THREE.Mesh<THREE.BufferGeometry, THREE.Material>
-    }
+interface GLTFResult {
+  nodes: {
+    mesh: THREE.Mesh;
   };
-  const meshRef = useRef<THREE.Mesh>();
+}
+
+function Model() {
+  const { nodes } = useGLTF('/broken-chain.stl') as unknown as GLTFResult;
+  const meshRef = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
     if (meshRef.current) {
@@ -20,7 +22,7 @@ function Model() {
   return (
     <mesh 
       ref={meshRef} 
-      geometry={nodes.mesh.geometry} 
+      geometry={nodes.mesh.geometry}
       scale={[2, 2, 2]}
     >
       <meshPhysicalMaterial
