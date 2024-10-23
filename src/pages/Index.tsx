@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 import texts from "@/data/website-texts.json";
+import StlViewer from "@/components/StlViewer";
 
 const services = [
   {
@@ -84,6 +85,13 @@ const Index = () => {
         </div>
 
         <div className="container mx-auto px-4 py-16">
+          <div className="mb-16">
+            <h2 className="text-3xl font-bold text-center mb-8 text-[#2E5984]">
+              Interactive 3D Visualization
+            </h2>
+            <StlViewer />
+          </div>
+
           <h2 className="text-3xl font-bold text-center mb-12 text-[#2E5984]">
             {texts.home.services.title}
           </h2>

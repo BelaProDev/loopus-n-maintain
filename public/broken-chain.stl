@@ -1,0 +1,11 @@
+solid ASCII
+  facet normal 0 0 0
+    outer loop
+      vertex 0 0 0
+      vertex 1 0 0
+      vertex 1 1 0
+    endloop
+  endfacet
+  // ... Basic STL file content representing a broken chain
+  // Note: This is a simplified example. You should replace this with a proper STL file
+endsolid
