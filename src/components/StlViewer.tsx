@@ -20,7 +20,7 @@ function Model() {
         clearcoatRoughness={0.2}
         envMapIntensity={1}
         transparent={true}
-        opacity={0.1}
+        opacity={0.8}
       />
     </mesh>
   );
@@ -28,7 +28,7 @@ function Model() {
 
 export default function StlViewer() {
   return (
-    <div className="fixed inset-0 -z-10 opacity-30">
+    <div className="fixed inset-0 -z-10 opacity-70">
       <Canvas
         camera={{ position: [0, 0, 100], fov: 45 }}
         gl={{ antialias: true }}
