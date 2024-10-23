@@ -1,27 +1,21 @@
-import React, { Suspense, useRef } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Stage } from '@react-three/drei';
+import React, { Suspense } from 'react';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, Stage, useGLTF } from '@react-three/drei';
+import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
 import * as THREE from 'three';
 
-interface ModelProps {
-  geometry: THREE.BufferGeometry;
-}
-
-function Model({ geometry }: ModelProps) {
-  const meshRef = useRef<THREE.Mesh>(null);
-
-  useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.y += 0.005;
-    }
-  });
+function Model() {
+  const geometry = React.useMemo(() => {
+    const loader = new STLLoader();
+    return loader.parse(
+      // Load the STL file as a string using Vite's raw import
+      new TextEncoder().encode('/broken-chain.stl').buffer
+    );
+  }, []);
 
   return (
-    <mesh 
-      ref={meshRef} 
-      geometry={geometry}
-      scale={[2, 2, 2]}
-    >
+    <mesh scale={[0.1, 0.1, 0.1]}>
+      <bufferGeometry {...geometry} />
       <meshPhysicalMaterial
         color="#2E5984"
         roughness={0.2}
@@ -34,22 +28,6 @@ function Model({ geometry }: ModelProps) {
   );
 }
 
-function Scene() {
-  const { nodes } = useGLTF('/broken-chain.stl') as unknown as { 
-    nodes: { mesh: THREE.Mesh<THREE.BufferGeometry> }
-  };
-
-  return (
-    <Stage
-      environment="city"
-      intensity={0.5}
-      shadows={{ type: 'contact', opacity: 0.5, blur: 2 }}
-    >
-      <Model geometry={nodes.mesh.geometry} />
-    </Stage>
-  );
-}
-
 export default function StlViewer() {
   return (
     <div className="w-full h-[600px] bg-gradient-to-b from-secondary/30 to-secondary/10 rounded-lg shadow-2xl">
@@ -59,7 +37,13 @@ export default function StlViewer() {
         dpr={[1, 2]}
       >
         <Suspense fallback={null}>
-          <Scene />
+          <Stage
+            environment="city"
+            intensity={0.5}
+            shadows={{ type: 'contact', opacity: 0.5, blur: 2 }}
+          >
+            <Model />
+          </Stage>
         </Suspense>
         <OrbitControls 
           autoRotate={false}
