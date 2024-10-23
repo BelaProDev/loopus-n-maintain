@@ -1,7 +1,6 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import Index from "./pages/Index";
@@ -11,7 +10,6 @@ import Ironwork from "./pages/Ironwork";
 import Woodwork from "./pages/Woodwork";
 import Architecture from "./pages/Architecture";
 import Login from "./pages/Login";
-import Koalax from "./pages/Koalax";
 
 const queryClient = new QueryClient();
 
@@ -31,14 +29,12 @@ const App = () => (
                 <Route path="/ironwork" element={<Ironwork />} />
                 <Route path="/woodwork" element={<Woodwork />} />
                 <Route path="/architecture" element={<Architecture />} />
-                <Route path="/koalax" element={<Koalax />} />
               </Routes>
             </main>
           </div>
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
-    <ReactQueryDevtools />
   </QueryClientProvider>
 );
 
