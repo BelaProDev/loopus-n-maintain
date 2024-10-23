@@ -51,7 +51,7 @@ const Header = () => {
                 className="h-8 w-auto object-contain"
               />
             </div>
-            <span className="text-primary">Loopus&Maintain</span>
+            <span className="text-[#2E5984]">Loopus&Maintain</span>
           </Link>
 
           {/* Desktop Menu */}
@@ -60,7 +60,7 @@ const Header = () => {
               <Link
                 key={field.name}
                 to={field.path}
-                className="text-primary hover:text-accent font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md px-2 py-1"
+                className="text-[#2E5984] hover:text-[#4A90E2] font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#2E5984] focus:ring-offset-2 rounded-md px-2 py-1"
               >
                 {field.name}
               </Link>
@@ -73,18 +73,18 @@ const Header = () => {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="text-primary hover:bg-primary/10 focus:ring-2 focus:ring-primary"
+                className="text-[#2E5984] hover:bg-[#2E5984]/10 focus:ring-2 focus:ring-[#2E5984]"
               >
                 <Menu className="h-6 w-6" />
               </Button>
             </SheetTrigger>
-            <SheetContent className="bg-[#F5F1EA] border-l border-primary/20">
+            <SheetContent className="bg-[#F5F1EA] border-l border-[#2E5984]/20">
               <div className="flex flex-col space-y-4 mt-8">
                 {maintenanceFields.map((field) => (
                   <Link
                     key={field.name}
                     to={field.path}
-                    className="text-lg text-primary hover:text-accent font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded-md px-2 py-1"
+                    className="text-lg text-[#2E5984] hover:text-[#4A90E2] font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#2E5984] rounded-md px-2 py-1"
                   >
                     {field.name}
                   </Link>
