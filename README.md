@@ -11,6 +11,22 @@ CraftCoordination is a Progressive Web App (PWA) specializing in coordinating es
 - Expert woodworking and carpentry
 - Architectural consultation and planning
 
+## ✨ Features Built with GPT Engineer ✨
+
+🌸 Complete Authentication System  
+🌺 Multiple Service Modules:
+  - Electrics
+  - Plumbing
+  - Ironwork
+  - Woodwork
+  - Architecture  
+🌷 Responsive UI with shadcn/ui Components  
+🌹 3D Visualization Capabilities  
+🌻 Contact Forms with Email Integration  
+🌼 Admin Dashboard (Koalax)  
+🌸 Proper Error Handling and Loading States  
+🌺 Consistent Styling with Tailwind CSS  
+
 ## Key Features
 
 - 🏗️ Streamlined service request system
@@ -75,6 +91,10 @@ src/
 - React Router
 - React Query
 - Netlify Functions
+
+## Credits
+
+This project was developed with the assistance of GPT Engineer, showcasing the potential of AI-assisted development in creating robust, maintainable applications.
 
 ## License
 
