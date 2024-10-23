@@ -14,55 +14,67 @@ const urlsToCache = [
   '/login'
 ];
 
+// Helper function to check if a request requires authentication
+const requiresAuth = (url) => {
+  const protectedPaths = ['/koalax'];
+  return protectedPaths.some(path => url.includes(path));
+};
+
 // Install event - cache initial resources
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => cache.addAll(urlsToCache))
   );
-  self.skipWaiting(); // Ensure new service worker takes over immediately
+  self.skipWaiting();
 });
 
-// Fetch event - network-first strategy with fallback to cache
+// Fetch event - network-first strategy with auth handling
 self.addEventListener('fetch', (event) => {
   event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        // Check if we received a valid response
-        if (!response || response.status !== 200 || response.type !== 'basic') {
-          return response;
+    (async () => {
+      try {
+        // Check if request requires authentication
+        if (requiresAuth(event.request.url)) {
+          const session = await clients.matchAll().then(clients => 
+            clients.some(client => 
+              client.url.includes('craft_coordination_session=true')
+            )
+          );
+
+          if (!session) {
+            return Response.redirect('/login', 302);
+          }
         }
 
-        // Clone the response as it can only be consumed once
-        const responseToCache = response.clone();
-
-        // Add the response to cache
-        caches.open(CACHE_NAME)
-          .then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
-
+        // Try network first
+        const response = await fetch(event.request);
+        
+        // Cache successful responses
+        if (response.ok && response.type === 'basic') {
+          const cache = await caches.open(CACHE_NAME);
+          cache.put(event.request, response.clone());
+        }
+        
         return response;
-      })
-      .catch(() => {
-        // If network request fails, try to get from cache
-        return caches.match(event.request)
-          .then((response) => {
-            if (response) {
-              return response;
-            }
-            
-            // For navigation requests, return index.html from cache
-            if (event.request.mode === 'navigate') {
-              return caches.match('/index.html');
-            }
-            
-            return new Response('Network error happened', {
-              status: 408,
-              headers: { 'Content-Type': 'text/plain' },
-            });
-          });
-      })
+      } catch (error) {
+        // Fallback to cache
+        const cachedResponse = await caches.match(event.request);
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        
+        // For navigation requests, return index.html
+        if (event.request.mode === 'navigate') {
+          return caches.match('/index.html');
+        }
+        
+        return new Response('Network error happened', {
+          status: 408,
+          headers: { 'Content-Type': 'text/plain' },
+        });
+      }
+    })()
   );
 });
 
@@ -79,6 +91,5 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
-  // Ensure the new service worker takes control immediately
   return self.clients.claim();
 });
