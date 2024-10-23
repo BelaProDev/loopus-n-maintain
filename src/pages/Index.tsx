@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Building2, Wrench, Zap, Hammer, PencilRuler } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -39,11 +39,12 @@ const services = [
 ];
 
 const Index = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen flex flex-col bg-[#F5F1EA]">
       <Header />
       <main className="flex-1">
-        {/* Hero Section */}
         <div className="bg-[#2E5984] text-white py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl">
@@ -53,14 +54,17 @@ const Index = () => {
               <p className="text-xl mb-8">
                 Streamline your maintenance operations across multiple disciplines
               </p>
-              <Button asChild size="lg" className="bg-white text-[#2E5984] hover:bg-gray-100">
-                <Link to="/login">Sign In</Link>
+              <Button 
+                onClick={() => navigate("/login")}
+                size="lg" 
+                className="bg-white text-[#2E5984] hover:bg-gray-100"
+              >
+                Sign In
               </Button>
             </div>
           </div>
         </div>
 
-        {/* Services Section */}
         <div className="container mx-auto px-4 py-16">
           <h2 className="text-3xl font-bold text-center mb-12 text-[#2E5984]">
             Our Services
@@ -76,8 +80,12 @@ const Index = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600 mb-4">{service.description}</p>
-                  <Button asChild variant="outline" className="w-full">
-                    <Link to={service.path}>Learn More</Link>
+                  <Button 
+                    onClick={() => navigate(service.path)}
+                    variant="outline" 
+                    className="w-full"
+                  >
+                    Learn More
                   </Button>
                 </CardContent>
               </Card>

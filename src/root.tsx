@@ -6,14 +6,8 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { AuthProvider } from "./contexts/AuthContext";
-import { TooltipProvider } from "./components/ui/tooltip";
-import { Toaster } from "./components/ui/sonner";
 
-const queryClient = new QueryClient();
-
-export default function App() {
+export default function Root() {
   return (
     <html lang="en">
       <head>
@@ -23,14 +17,7 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <QueryClientProvider client={queryClient}>
-          <AuthProvider>
-            <TooltipProvider>
-              <Toaster />
-              <Outlet />
-            </TooltipProvider>
-          </AuthProvider>
-        </QueryClientProvider>
+        <Outlet />
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
