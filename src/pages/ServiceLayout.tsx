@@ -12,8 +12,8 @@ import Footer from "@/components/Footer";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { styles } from "@/lib/styles";
 
-// Define types for component props
 interface ServiceLayoutProps {
   title: string;
   description: string;
@@ -21,36 +21,17 @@ interface ServiceLayoutProps {
   faqs: { question: string; answer: string }[];
 }
 
-/**
- * ServiceLayout Component
- * 
- * A reusable layout for service pages that includes:
- * - Service description
- * - Common issues checklist
- * - WhatsApp contact button
- * - Contact form
- * - FAQs section
- */
 const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayoutProps) => {
-  // State and hooks
   const [selectedIssues, setSelectedIssues] = useState<string[]>([]);
   const { toast } = useToast();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  /**
-   * Gets the WhatsApp number for the specific service
-   * from environment variables
-   */
   const getWhatsAppNumber = (service: string) => {
     const envVar = `app_whatss_${service.toLowerCase()}`;
     return import.meta.env[envVar] || "";
   };
 
-  /**
-   * Handles WhatsApp contact button click
-   * Requires authentication and constructs message with selected issues
-   */
   const handleWhatsAppContact = () => {
     if (!isAuthenticated) {
       toast({
@@ -72,10 +53,6 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
     window.open(whatsappUrl, "_blank");
   };
 
-  /**
-   * Handles contact form submission
-   * Sends email via Netlify function
-   */
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isAuthenticated) {
@@ -122,12 +99,10 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
     }
   };
 
-  // Render component
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className={styles.container}>
       <Header />
-      <main className="flex-1 container mx-auto px-4 py-8">
-        {/* Authentication warning */}
+      <main className={styles.mainContent}>
         {!isAuthenticated && (
           <Alert variant="destructive" className="mb-6">
             <AlertDescription className="flex items-center justify-between">
@@ -139,16 +114,14 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
           </Alert>
         )}
 
-        {/* Service description */}
-        <div className="glass-effect rounded-lg p-8 mb-8">
-          <h1 className="text-4xl font-serif text-[#2E5984] mb-4">{title}</h1>
-          <p className="text-lg text-gray-700 mb-8">{description}</p>
+        <div className={styles.glassEffect}>
+          <h1 className={styles.title}>{title}</h1>
+          <p className={styles.description}>{description}</p>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Quick Help Section */}
-            <Card className="p-6 wood-texture">
-              <h2 className="text-2xl font-serif text-[#2E5984] mb-4">Quick Help</h2>
-              <div className="space-y-4">
+          <div className={styles.serviceGrid}>
+            <Card className={styles.woodTexture}>
+              <h2 className={styles.subtitle}>Quick Help</h2>
+              <div className={styles.formGroup}>
                 {commonIssues.map((issue) => (
                   <div key={issue.id} className="flex items-center space-x-2">
                     <Checkbox
@@ -174,10 +147,9 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
               </div>
             </Card>
 
-            {/* Contact Form */}
-            <Card className="p-6 wood-texture">
-              <h2 className="text-2xl font-serif text-[#2E5984] mb-4">Contact Form</h2>
-              <form onSubmit={handleContactSubmit} className="space-y-4">
+            <Card className={styles.woodTexture}>
+              <h2 className={styles.subtitle}>Contact Form</h2>
+              <form onSubmit={handleContactSubmit} className={styles.formGroup}>
                 <div>
                   <Label htmlFor="name">Name</Label>
                   <Input id="name" name="name" required />
@@ -198,14 +170,13 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
             </Card>
           </div>
 
-          {/* FAQ Section */}
-          <div className="mt-12">
-            <h2 className="text-2xl font-serif text-[#2E5984] mb-6">Frequently Asked Questions</h2>
+          <div className={styles.faqContainer}>
+            <h2 className={styles.subtitle}>Frequently Asked Questions</h2>
             <div className="space-y-6">
               {faqs.map((faq, index) => (
-                <div key={index} className="glass-effect p-4 rounded-lg">
-                  <h3 className="font-semibold text-lg text-[#2E5984] mb-2">{faq.question}</h3>
-                  <p className="text-gray-700">{faq.answer}</p>
+                <div key={index} className={styles.faqItem}>
+                  <h3 className={styles.faqQuestion}>{faq.question}</h3>
+                  <p className={styles.faqAnswer}>{faq.answer}</p>
                 </div>
               ))}
             </div>
