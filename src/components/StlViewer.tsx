@@ -5,14 +5,18 @@ import * as THREE from 'three';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 function Model() {
-  const geometry = React.useMemo(() => {
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    return geometry;
+  const [geometry, setGeometry] = useState<THREE.BufferGeometry | null>(null);
+
+  useEffect(() => {
+    const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
+    setGeometry(boxGeometry);
   }, []);
+
+  if (!geometry) return null;
 
   return (
     <mesh scale={[0.1, 0.1, 0.1]} aria-hidden="true">
-      <primitive object={geometry} attach="geometry" />
+      <bufferGeometry attach="geometry" {...geometry} />
       <meshPhysicalMaterial
         color="#2E5984"
         roughness={0.2}
