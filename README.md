@@ -1,7 +1,9 @@
 # Loopus & Maintain
 
 A comprehensive building maintenance and professional craft services platform designed for property managers, building owners, and facility maintenance teams.
-
+---
+---
+---
 ## Overview
 
 Loopus & Maintain APP is a Progressive Web App (PWA) specializing in coordinating essential maintenance services:
