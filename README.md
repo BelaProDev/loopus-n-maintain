@@ -81,4 +81,4 @@ src/
 ---
 nxt-prmpt ; :)
 
-upgrade the contact forms javascript error handling and notifications : of each activities sectors ( proper error handling in netlify function as second filter at submit ). add char counters per iputs also please
+```more text padding in inputs in the contact forms```
