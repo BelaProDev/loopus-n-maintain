@@ -55,6 +55,7 @@ const ValidatedInput = ({
     maxLength,
     onBlur: handleBlur,
     className: cn(
+      "px-4 py-3", // Increased padding
       error ? "border-red-500" : "",
       className
     )
