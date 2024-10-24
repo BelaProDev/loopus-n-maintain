@@ -4,7 +4,7 @@ A comprehensive building maintenance and professional craft services platform de
 
 ## Overview
 
-Loopus & Maintain is a Progressive Web App (PWA) specializing in coordinating essential maintenance services:
+Loopus & Maintain APP is a Progressive Web App (PWA) specializing in coordinating essential maintenance services:
 - Electrical work (24/7 emergency service available)
 - Professional plumbing solutions
 - Custom ironwork and structural repairs
