@@ -4,7 +4,7 @@ A comprehensive building maintenance and professional craft services platform de
 
 ## Overview
 
-CraftCoordination is a Progressive Web App (PWA) specializing in coordinating essential maintenance services:
+Loopus & Maintain is a Progressive Web App (PWA) specializing in coordinating essential maintenance services:
 - Electrical work (24/7 emergency service available)
 - Professional plumbing solutions
 - Custom ironwork and structural repairs
@@ -79,6 +79,6 @@ src/
 ---
 ---
 ---
-nxt-prmpt ; :)
+## TODO :
 
 ```more text padding in inputs in the contact forms```
