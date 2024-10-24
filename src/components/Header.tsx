@@ -50,7 +50,7 @@ const Header = () => {
               <img 
                 src="/forest-lidar.png" 
                 alt="Loopus & Maintain" 
-                className="h-8 w-auto object-contain"
+                className="h-8 w-auto object-contain border border-[#2e5984] border-solid p-0.5"
               />
             </div>
             <span className="text-[#2E5984]">Loopus & Maintain</span>
