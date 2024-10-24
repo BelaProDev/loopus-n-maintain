@@ -37,7 +37,7 @@ export const validateField = (name: string, value: string): string | null => {
 
   switch (name) {
     case 'name':
-      if (!nameRegex.test(value)) {
+      if (value && !nameRegex.test(value)) {
         return "Name can only contain letters, spaces, hyphens, and apostrophes";
       }
       break;

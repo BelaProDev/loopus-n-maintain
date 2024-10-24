@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { Phone } from "lucide-react";
 import Header from "@/components/Header";
@@ -25,7 +27,7 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
   const navigate = useNavigate();
 
   const getWhatsAppNumber = (service: string) => {
-    const envVar = `app_whatss_${service.toLowerCase()}`;
+    const envVar = `VITE_WHATSAPP_${service.toUpperCase()}`;
     return import.meta.env[envVar] || "";
   };
 
