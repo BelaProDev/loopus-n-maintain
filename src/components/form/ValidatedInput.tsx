@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { validateField } from '@/lib/formValidation';
+import { cn } from "@/lib/utils";
 
 interface ValidatedInputProps {
   id: string;
@@ -14,6 +15,7 @@ interface ValidatedInputProps {
   required?: boolean;
   maxLength?: number;
   isTextarea?: boolean;
+  className?: string;
 }
 
 const ValidatedInput = ({
@@ -25,7 +27,8 @@ const ValidatedInput = ({
   onChange,
   required = false,
   maxLength,
-  isTextarea = false
+  isTextarea = false,
+  className
 }: ValidatedInputProps) => {
   const [error, setError] = useState<string | null>(null);
   const [touched, setTouched] = useState(false);
@@ -51,7 +54,10 @@ const ValidatedInput = ({
     required,
     maxLength,
     onBlur: handleBlur,
-    className: error ? "border-red-500" : undefined
+    className: cn(
+      error ? "border-red-500" : "",
+      className
+    )
   };
 
   return (

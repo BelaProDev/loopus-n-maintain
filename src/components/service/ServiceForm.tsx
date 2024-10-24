@@ -74,7 +74,7 @@ const ServiceForm = ({ title, isAuthenticated }: ServiceFormProps) => {
   };
 
   return (
-    <Card className="p-6">
+    <Card className="p-6 border border-[#2e5984] border-solid">
       <form onSubmit={handleSubmit} className="space-y-4">
         <ValidatedInput
           id="name"
@@ -84,6 +84,7 @@ const ServiceForm = ({ title, isAuthenticated }: ServiceFormProps) => {
           onChange={handleInputChange}
           required
           maxLength={50}
+          className="border border-[#2e5984] border-solid p-0.5"
         />
         <ValidatedInput
           id="email"
@@ -93,6 +94,7 @@ const ServiceForm = ({ title, isAuthenticated }: ServiceFormProps) => {
           value={formData.email}
           onChange={handleInputChange}
           required
+          className="border border-[#2e5984] border-solid p-0.5"
         />
         <ValidatedInput
           id="message"
@@ -103,6 +105,7 @@ const ServiceForm = ({ title, isAuthenticated }: ServiceFormProps) => {
           required
           maxLength={500}
           isTextarea
+          className="border border-[#2e5984] border-solid p-0.5"
         />
         <Button type="submit" className="w-full" disabled={isSubmitting}>
           <Send className="mr-2 h-4 w-4" />
