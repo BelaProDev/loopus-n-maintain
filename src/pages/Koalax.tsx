@@ -117,6 +117,7 @@ const Koalax = () => {
         onSubmit={handleEmailSubmit}
         isLoading={isCreating || isUpdating}
       />
+      <div className="m-4 p-12 bg-gray-50 rounded-lg shadow flex justify-center align-center">
 
     # Loopus & Maintain
 
@@ -250,8 +251,7 @@ _________
 _________
 
 _________
-
-
+</div>
       <Footer />
     </div>
   );
