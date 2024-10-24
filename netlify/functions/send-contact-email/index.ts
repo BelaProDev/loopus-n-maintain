@@ -1,6 +1,35 @@
 import { Handler } from '@netlify/functions';
 import nodemailer from 'nodemailer';
 
+interface FormData {
+  name: string;
+  email: string;
+  message: string;
+  service: string;
+}
+
+const validateInput = (data: FormData) => {
+  const errors: string[] = [];
+
+  if (!data.name || data.name.length < 2 || data.name.length > 50) {
+    errors.push("Name must be between 2 and 50 characters");
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!data.email || !emailRegex.test(data.email)) {
+    errors.push("Invalid email address");
+  }
+
+  if (!data.message || data.message.length < 10 || data.message.length > 500) {
+    errors.push("Message must be between 10 and 500 characters");
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors
+  };
+};
+
 const handler: Handler = async (event) => {
   // Handle CORS
   if (event.httpMethod === "OPTIONS") {
@@ -15,11 +44,28 @@ const handler: Handler = async (event) => {
   }
 
   if (event.httpMethod !== "POST") {
-    return { statusCode: 405, body: "Method Not Allowed" };
+    return { 
+      statusCode: 405, 
+      body: JSON.stringify({ error: "Method Not Allowed" }),
+      headers: { "Access-Control-Allow-Origin": "*" }
+    };
   }
 
   try {
-    const { name, email, message } = JSON.parse(event.body || "{}");
+    const data: FormData = JSON.parse(event.body || "{}");
+    
+    // Server-side validation
+    const validation = validateInput(data);
+    if (!validation.isValid) {
+      return {
+        statusCode: 400,
+        headers: { "Access-Control-Allow-Origin": "*" },
+        body: JSON.stringify({ 
+          error: "Validation failed", 
+          details: validation.errors 
+        })
+      };
+    }
 
     // Create transporter
     const transporter = nodemailer.createTransport({
@@ -42,33 +88,33 @@ const handler: Handler = async (event) => {
     await transporter.sendMail({
       from: process.env.SMTP_FROM_EMAIL,
       to: recipientEmails,
-      subject: "New Contact Form Submission - CraftCoordination",
+      subject: `New Contact Form Submission - ${data.service}`,
       text: `
         New Contact Form Submission
-        
-        Name: ${name}
-        Email: ${email}
+
+        Service: ${data.service}
+        Name: ${data.name}
+        Email: ${data.email}
         
         Message:
-        ${message}
+        ${data.message}
       `,
     });
 
     return {
       statusCode: 200,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      },
+      headers: { "Access-Control-Allow-Origin": "*" },
       body: JSON.stringify({ message: "Email sent successfully" }),
     };
   } catch (error) {
     console.error("Error sending email:", error);
     return {
       statusCode: 500,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify({ error: "Failed to send email" }),
+      headers: { "Access-Control-Allow-Origin": "*" },
+      body: JSON.stringify({ 
+        error: "Failed to send email",
+        details: error instanceof Error ? error.message : "Unknown error"
+      }),
     };
   }
 };

@@ -13,6 +13,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { styles } from "@/lib/styles";
+import { validateFormInput } from "@/lib/formValidation";
 
 interface ServiceLayoutProps {
   title: string;
@@ -23,9 +24,16 @@ interface ServiceLayoutProps {
 
 const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayoutProps) => {
   const [selectedIssues, setSelectedIssues] = useState<string[]>([]);
+  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
   const getWhatsAppNumber = (service: string) => {
     const envVar = `app_whatss_${service.toLowerCase()}`;
@@ -65,16 +73,26 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
       return;
     }
 
-    const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
+    const validation = validateFormInput(formData.name, formData.email, formData.message);
+    
+    if (!validation.isValid) {
+      Object.values(validation.errors).forEach(error => {
+        toast({
+          title: "Validation Error",
+          description: error,
+          variant: "destructive",
+        });
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
     
     try {
       const response = await fetch('/.netlify/functions/send-contact-email', {
         method: 'POST',
         body: JSON.stringify({
-          name: formData.get('name'),
-          email: formData.get('email'),
-          message: formData.get('message'),
+          ...formData,
           service: title
         }),
         headers: {
@@ -82,20 +100,25 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
         }
       });
 
-      if (!response.ok) throw new Error('Failed to send message');
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send message');
+      }
 
       toast({
-        title: "Message sent",
-        description: "We'll get back to you as soon as possible.",
+        title: "Success",
+        description: "Message sent successfully. We'll get back to you soon.",
       });
-      form.reset();
+      setFormData({ name: "", email: "", message: "" });
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to send message. Please try again later.",
+        description: error instanceof Error ? error.message : "Failed to send message. Please try again later.",
         variant: "destructive",
       });
-      console.error('Error:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -152,19 +175,42 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
               <form onSubmit={handleContactSubmit} className={styles.formGroup}>
                 <div>
                   <Label htmlFor="name">Name</Label>
-                  <Input id="name" name="name" required />
+                  <Input
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    required
+                    maxLength={50}
+                  />
+                  <p className="text-xs text-gray-500 mt-1">{formData.name.length}/50 characters</p>
                 </div>
                 <div>
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" name="email" type="email" required />
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                  />
                 </div>
                 <div>
                   <Label htmlFor="message">Message</Label>
-                  <Textarea id="message" name="message" required />
+                  <Textarea
+                    id="message"
+                    name="message"
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    required
+                    maxLength={500}
+                  />
+                  <p className="text-xs text-gray-500 mt-1">{formData.message.length}/500 characters</p>
                 </div>
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full" disabled={isSubmitting}>
                   <Send className="mr-2 h-4 w-4" />
-                  Send Message
+                  {isSubmitting ? "Sending..." : "Send Message"}
                 </Button>
               </form>
             </Card>
