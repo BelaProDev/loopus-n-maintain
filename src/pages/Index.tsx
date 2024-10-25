@@ -8,43 +8,43 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
 import { animations } from "@/lib/animations";
 
-const services = [
-  {
-    icon: Zap,
-    title: "Electrics",
-    description: "Professional electrical maintenance and repairs",
-    path: "/electrics",
-  },
-  {
-    icon: Wrench,
-    title: "Plumbing",
-    description: "Expert plumbing solutions and maintenance",
-    path: "/plumbing",
-  },
-  {
-    icon: Building2,
-    title: "Ironwork",
-    description: "Structural and decorative ironwork services",
-    path: "/ironwork",
-  },
-  {
-    icon: Hammer,
-    title: "Woodwork",
-    description: "Custom woodworking and carpentry services",
-    path: "/woodwork",
-  },
-  {
-    icon: PencilRuler,
-    title: "Architecture",
-    description: "Architectural design, planning and other services",
-    path: "/architecture",
-  },
-];
-
 const Index = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const { t } = useTranslation();
+
+  const services = [
+    {
+      icon: Zap,
+      title: t('electrical_services'),
+      description: t('electrical_description'),
+      path: "/electrics",
+    },
+    {
+      icon: Wrench,
+      title: t('plumbing_services'),
+      description: t('plumbing_description'),
+      path: "/plumbing",
+    },
+    {
+      icon: Building2,
+      title: t('ironwork_services'),
+      description: t('ironwork_description'),
+      path: "/ironwork",
+    },
+    {
+      icon: Hammer,
+      title: t('woodwork_services'),
+      description: t('woodwork_description'),
+      path: "/woodwork",
+    },
+    {
+      icon: PencilRuler,
+      title: t('architecture_services'),
+      description: t('architecture_description'),
+      path: "/architecture",
+    },
+  ];
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F5F1EA]">
@@ -57,7 +57,7 @@ const Index = () => {
                 {t('welcome')}
               </h1>
               {!isAuthenticated && (
-                <div className={animations.fadeInSlide}>
+                <div className={`${animations.fadeInSlide} delay-200`}>
                   <p className="text-xl mb-8">
                     {t('welcomeMessage')}
                   </p>
@@ -83,16 +83,19 @@ const Index = () => {
               <Card 
                 key={service.title} 
                 className={`border-none shadow-lg ${animations.cardHover} ${animations.fadeInSlide}`}
-                style={{ animationDelay: `${index * 100}ms` }}
+                style={{ 
+                  animationDelay: `${index * 150}ms`,
+                  transition: 'all 0.5s ease-in-out'
+                }}
               >
                 <CardHeader>
                   <div className="flex items-center space-x-4">
                     <service.icon className="h-8 w-8 text-[#2E5984]" />
-                    <CardTitle>{t(service.title.toLowerCase())}</CardTitle>
+                    <CardTitle>{service.title}</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-600 mb-4">{t(`${service.title.toLowerCase()}_description`)}</p>
+                  <p className="text-gray-600 mb-4">{service.description}</p>
                   <Button 
                     onClick={() => navigate(service.path)}
                     variant="outline" 
