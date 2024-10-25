@@ -58,6 +58,7 @@ const Header = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-6">
+            <LanguageSwitcher />
             {maintenanceFields.map((field) => (
               <Link
                 key={field.name}
