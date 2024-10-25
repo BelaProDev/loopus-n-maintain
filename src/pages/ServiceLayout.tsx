@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { styles } from "@/lib/styles";
 import ServiceForm from "@/components/service/ServiceForm";
+import { useTranslation } from "react-i18next";
 
 interface ServiceLayoutProps {
   title: string;
@@ -25,6 +26,7 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
   const { toast } = useToast();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const getWhatsAppNumber = (service: string) => {
     const envVar = `VITE_WHATSAPP_${service.toUpperCase()}`;
@@ -59,9 +61,9 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
         {!isAuthenticated && (
           <Alert variant="destructive" className="mb-6">
             <AlertDescription className="flex items-center justify-between">
-              <span>Please log in to access all features and services.</span>
+              <span>{t('sign_in_required')}</span>
               <Button variant="outline" size="sm" onClick={() => navigate("/login")}>
-                Log In
+                {t('signIn')}
               </Button>
             </AlertDescription>
           </Alert>
@@ -73,7 +75,7 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
 
           <div id="service-options" className={styles.serviceGrid}>
             <Card id="quick-help" className={styles.woodTexture}>
-              <h2 className={styles.subtitle}>Quick Help</h2>
+              <h2 className={styles.subtitle}>{t('quick_help')}</h2>
               <div className={styles.formGroup}>
                 {commonIssues.map((issue) => (
                   <div key={issue.id} className="flex items-center space-x-2">
@@ -95,7 +97,7 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
                   className="w-full mt-4 bg-green-600 hover:bg-green-700"
                 >
                   <Phone className="mr-2 h-4 w-4" />
-                  Contact via WhatsApp
+                  {t('contact_whatsapp')}
                 </Button>
               </div>
             </Card>
@@ -104,7 +106,7 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
           </div>
 
           <div id="faq" className={styles.faqContainer}>
-            <h2 className={styles.subtitle}>Frequently Asked Questions</h2>
+            <h2 className={styles.subtitle}>{t('faq')}</h2>
             <div className="space-y-6">
               {faqs.map((faq, index) => (
                 <div key={index} className={styles.faqItem}>
