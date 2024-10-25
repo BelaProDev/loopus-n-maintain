@@ -2,7 +2,7 @@ import { Client, query as q } from 'faunadb';
 
 const client = new Client({
   secret: import.meta.env.VITE_FAUNA_SECRET_KEY || 'fnAFuf4jtpAAy8lNKmRRSr7l4MIOWWs6aR1PmFnk',
-  domain: 'db.eu.fauna.com', // Changed to EU domain
+  domain: 'db.fauna.com', // Changed to US domain
 });
 
 interface FaunaResponse<T> {

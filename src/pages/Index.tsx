@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTranslation } from "react-i18next";
+import { animations } from "@/lib/animations";
 
 const services = [
   {
@@ -42,56 +44,61 @@ const services = [
 const Index = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const { t } = useTranslation();
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F5F1EA]">
       <Header />
       <main className="flex-1">
-        <div id="hero" className="bg-[#2E5984] text-white py-16">
+        <div id="hero" className={`bg-[#2E5984] text-white py-16 ${animations.fadeIn}`}>
           <div className="container mx-auto px-4">
             <div className="max-w-3xl">
-              <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                Loopus & Maintain
+              <h1 className={`text-4xl md:text-5xl font-bold mb-4 ${animations.fadeInSlide}`}>
+                {t('welcome')}
               </h1>
               {!isAuthenticated && (
-                <>
+                <div className={animations.fadeInSlide}>
                   <p className="text-xl mb-8">
-                    Welcome, would you like to log in?
+                    {t('welcomeMessage')}
                   </p>
                   <Button 
                     onClick={() => navigate("/login")}
                     size="lg" 
-                    className="bg-white text-[#2E5984] hover:bg-gray-100"
+                    className={`bg-white text-[#2E5984] hover:bg-gray-100 ${animations.buttonHover}`}
                   >
-                    Sign In
+                    {t('signIn')}
                   </Button>
-                </>
+                </div>
               )}
             </div>
           </div>
         </div>
 
-        <div id="services" className="container mx-auto px-4 py-16">
+        <div id="services" className={`container mx-auto px-4 py-16 ${animations.fadeIn}`}>
           <h2 className="text-3xl font-bold text-center mb-12 text-[#2E5984]">
-            Our Services
+            {t('ourServices')}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {services.map((service) => (
-              <Card key={service.title} className="border-none shadow-lg hover:shadow-xl transition-shadow">
+            {services.map((service, index) => (
+              <Card 
+                key={service.title} 
+                className={`border-none shadow-lg ${animations.cardHover} ${animations.fadeInSlide}`}
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
                 <CardHeader>
                   <div className="flex items-center space-x-4">
                     <service.icon className="h-8 w-8 text-[#2E5984]" />
-                    <CardTitle>{service.title}</CardTitle>
+                    <CardTitle>{t(service.title.toLowerCase())}</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-600 mb-4">{service.description}</p>
+                  <p className="text-gray-600 mb-4">{t(`${service.title.toLowerCase()}_description`)}</p>
                   <Button 
                     onClick={() => navigate(service.path)}
                     variant="outline" 
-                    className="w-full"
+                    className={`w-full ${animations.buttonHover}`}
                   >
-                    Learn More
+                    {t('learnMore')}
                   </Button>
                 </CardContent>
               </Card>
