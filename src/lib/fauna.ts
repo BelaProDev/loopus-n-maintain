@@ -1,9 +1,8 @@
 import { Client, query as q } from 'faunadb';
 
 const client = new Client({
-  //secret: import.meta.env.VITE_FAUNA_SECRET_KEY || 'fnacapi_omd2ZXJzaW9uAWdwYXlsb2FkWFiiYmlkcjQxMjYzODQzOTcxMTcwMzYyNmZzZWNyZXR4OFg1bi96RCtxK3lDM05ZQUV3ZkVhN0JaVnF2K1lxdVhSTUp0cXBmdDhZVjhrTHMvb0hZeDd0Zz09',
-  secret: 'fnAFuf4jtpAAy8lNKmRRSr7l4MIOWWs6aR1PmFnk',
-  domain: 'db.fauna.com',
+  secret: import.meta.env.VITE_FAUNA_SECRET_KEY,
+  domain: 'db.fauna.com', // Changed to US domain
 });
 
 interface FaunaResponse<T> {
@@ -23,13 +22,18 @@ interface EmailData {
 
 export const faunaQueries = {
   getAllEmails: async () => {
-    const response = await client.query<FaunaResponse<FaunaDocument<EmailData>>>(
-      q.Map(
-        q.Paginate(q.Documents(q.Collection('emails'))),
-        q.Lambda('ref', q.Get(q.Var('ref')))
-      )
-    );
-    return response.data;
+    try {
+      const response = await client.query<FaunaResponse<FaunaDocument<EmailData>>>(
+        q.Map(
+          q.Paginate(q.Documents(q.Collection('emails'))),
+          q.Lambda('ref', q.Get(q.Var('ref')))
+        )
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Fauna DB Error:', error);
+      return [];
+    }
   },
 
   createEmail: async (data: EmailData) => {
