@@ -1,4 +1,4 @@
-import { Client, fql } from 'faunadb';
+import { Client, Collection, Create, Delete, Documents, Get, Lambda, Map, Paginate, Query, Ref, Update, Var } from 'faunadb';
 
 const client = new Client({
   secret: import.meta.env.VITE_FAUNA_SECRET_KEY,
@@ -24,16 +24,10 @@ export const faunaQueries = {
   getAllEmails: async () => {
     try {
       const response = await client.query<FaunaResponse<FaunaDocument<EmailData>>>(
-        fql`
-          emails.all() {
-            id,
-            data: {
-              email,
-              name,
-              type
-            }
-          }
-        `
+        Map(
+          Paginate(Documents(Collection('emails'))),
+          Lambda('ref', Get(Var('ref')))
+        )
       );
       return response.data;
     } catch (error) {
@@ -44,37 +38,21 @@ export const faunaQueries = {
 
   createEmail: async (data: EmailData) => {
     return await client.query<FaunaDocument<EmailData>>(
-      fql`
-        emails.create({
-          data: {
-            email: ${data.email},
-            name: ${data.name},
-            type: ${data.type}
-          }
-        })
-      `
+      Create(Collection('emails'), { data })
     );
   },
 
   updateEmail: async (id: string, data: EmailData) => {
     return await client.query<FaunaDocument<EmailData>>(
-      fql`
-        emails.byId(${id}).update({
-          data: {
-            email: ${data.email},
-            name: ${data.name},
-            type: ${data.type}
-          }
-        })
-      `
+      Update(Ref(Collection('emails'), id), { data })
     );
   },
 
   deleteEmail: async (id: string) => {
     return await client.query<FaunaDocument<EmailData>>(
-      fql`emails.byId(${id}).delete()`
+      Delete(Ref(Collection('emails'), id))
     );
   }
 };
 
-export { client, fql };
+export { client, Query };
