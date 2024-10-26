@@ -1,18 +1,8 @@
-import { Client, Collection, Create, Delete, Documents, Get, Lambda, Map, Paginate, Query, Ref, Update, Var } from 'faunadb';
+import { Client, fql } from 'fauna';
 
 const client = new Client({
   secret: import.meta.env.VITE_FAUNA_SECRET_KEY,
-  domain: 'db.fauna.com',
 });
-
-interface FaunaResponse<T> {
-  data: T[];
-}
-
-interface FaunaDocument<T> {
-  ref: { id: string };
-  data: T;
-}
 
 interface EmailData {
   email: string;
@@ -23,13 +13,22 @@ interface EmailData {
 export const faunaQueries = {
   getAllEmails: async () => {
     try {
-      const response = await client.query<FaunaResponse<FaunaDocument<EmailData>>>(
-        Map(
-          Paginate(Documents(Collection('emails'))),
-          Lambda('ref', Get(Var('ref')))
-        )
-      );
-      return response.data;
+      const result = await client.query(fql`
+        let emails = Emails.all()
+        {
+          data: emails.map(email => {
+            {
+              ref: { id: email.id },
+              data: {
+                email: email.data.email,
+                name: email.data.name,
+                type: email.data.type
+              }
+            }
+          })
+        }
+      `);
+      return result.data;
     } catch (error) {
       console.error('Fauna DB Error:', error);
       return [];
@@ -37,22 +36,36 @@ export const faunaQueries = {
   },
 
   createEmail: async (data: EmailData) => {
-    return await client.query<FaunaDocument<EmailData>>(
-      Create(Collection('emails'), { data })
-    );
+    return await client.query(fql`
+      Emails.create({
+        data: {
+          email: ${data.email},
+          name: ${data.name},
+          type: ${data.type}
+        }
+      })
+    `);
   },
 
   updateEmail: async (id: string, data: EmailData) => {
-    return await client.query<FaunaDocument<EmailData>>(
-      Update(Ref(Collection('emails'), id), { data })
-    );
+    return await client.query(fql`
+      let email = Emails.byId(${id})
+      email.update({
+        data: {
+          email: ${data.email},
+          name: ${data.name},
+          type: ${data.type}
+        }
+      })
+    `);
   },
 
   deleteEmail: async (id: string) => {
-    return await client.query<FaunaDocument<EmailData>>(
-      Delete(Ref(Collection('emails'), id))
-    );
+    return await client.query(fql`
+      let email = Emails.byId(${id})
+      email.delete()
+    `);
   }
 };
 
-export { client, Query };
+export { client };
