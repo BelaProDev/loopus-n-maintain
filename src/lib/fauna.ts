@@ -1,8 +1,8 @@
-import { Client, query as q } from 'faunadb';
+import { Client, fql } from 'faunadb';
 
 const client = new Client({
   secret: import.meta.env.VITE_FAUNA_SECRET_KEY,
-  domain: 'db.fauna.com', // Changed to US domain
+  domain: 'db.fauna.com',
 });
 
 interface FaunaResponse<T> {
@@ -24,10 +24,16 @@ export const faunaQueries = {
   getAllEmails: async () => {
     try {
       const response = await client.query<FaunaResponse<FaunaDocument<EmailData>>>(
-        q.Map(
-          q.Paginate(q.Documents(q.Collection('emails'))),
-          q.Lambda('ref', q.Get(q.Var('ref')))
-        )
+        fql`
+          emails.all() {
+            id,
+            data: {
+              email,
+              name,
+              type
+            }
+          }
+        `
       );
       return response.data;
     } catch (error) {
@@ -38,21 +44,37 @@ export const faunaQueries = {
 
   createEmail: async (data: EmailData) => {
     return await client.query<FaunaDocument<EmailData>>(
-      q.Create(q.Collection('emails'), { data })
+      fql`
+        emails.create({
+          data: {
+            email: ${data.email},
+            name: ${data.name},
+            type: ${data.type}
+          }
+        })
+      `
     );
   },
 
   updateEmail: async (id: string, data: EmailData) => {
     return await client.query<FaunaDocument<EmailData>>(
-      q.Update(q.Ref(q.Collection('emails'), id), { data })
+      fql`
+        emails.byId(${id}).update({
+          data: {
+            email: ${data.email},
+            name: ${data.name},
+            type: ${data.type}
+          }
+        })
+      `
     );
   },
 
   deleteEmail: async (id: string) => {
     return await client.query<FaunaDocument<EmailData>>(
-      q.Delete(q.Ref(q.Collection('emails'), id))
+      fql`emails.byId(${id}).delete()`
     );
   }
 };
 
-export { client, q };
+export { client, fql };
