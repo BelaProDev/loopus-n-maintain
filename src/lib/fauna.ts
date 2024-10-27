@@ -15,8 +15,8 @@ export const faunaQueries = {
     try {
       const result = await client.query(fql`
         let emails = Collection("emails")
-        emails.documents().map(lambda { email } => {
-          {
+        emails.documents().map(
+          lambda email -> {
             ref: { id: email.id() },
             data: {
               email: email.data.email,
@@ -24,7 +24,7 @@ export const faunaQueries = {
               type: email.data.type
             }
           }
-        })
+        )
       `);
       return result.data;
     } catch (error) {
