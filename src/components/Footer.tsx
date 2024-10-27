@@ -32,7 +32,9 @@ const Footer = () => {
           </div>
 
           <div className="text-sm text-gray-300">
-            © 2024 Loopus&Maintain. All rights reserved.
+            <Link to="https://github.com/BelaProDev/loopus-n-maintain#readme">
+              © 2024 Loopus&Maintain. Docs.
+            </Link>
           </div>
         </div>
       </div>
