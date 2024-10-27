@@ -14,9 +14,10 @@ export const faunaQueries = {
   getAllEmails: async () => {
     try {
       const result = await client.query(fql`
-        Collection.all('emails').map(email => {
+        let emails = Collection("emails")
+        emails.documents().map(lambda { email } => {
           {
-            ref: { id: email.id },
+            ref: { id: email.id() },
             data: {
               email: email.data.email,
               name: email.data.name,
@@ -34,25 +35,25 @@ export const faunaQueries = {
 
   createEmail: async (data: EmailData) => {
     return await client.query(fql`
-      let doc = Collection.create('emails', {
+      let emails = Collection("emails")
+      emails.create({
         data: {
-          email: "${data.email}",
-          name: "${data.name}",
-          type: "${data.type}"
+          email: ${data.email},
+          name: ${data.name},
+          type: ${data.type}
         }
       })
-      doc
     `);
   },
 
   updateEmail: async (id: string, data: EmailData) => {
     return await client.query(fql`
-      let doc = Collection.byId('emails', "${id}")
+      let doc = Collection("emails").document(${id})
       doc.update({
         data: {
-          email: "${data.email}",
-          name: "${data.name}",
-          type: "${data.type}"
+          email: ${data.email},
+          name: ${data.name},
+          type: ${data.type}
         }
       })
     `);
@@ -60,7 +61,7 @@ export const faunaQueries = {
 
   deleteEmail: async (id: string) => {
     return await client.query(fql`
-      let doc = Collection.byId('emails', "${id}")
+      let doc = Collection("emails").document(${id})
       doc.delete()
     `);
   }
