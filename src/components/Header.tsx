@@ -5,8 +5,6 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Badge } from "./ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
-import LanguageSwitcher from "./ui/language-switcher";
-import { useTranslation } from "react-i18next";
 
 const maintenanceFields = [
   { name: "Electrics", path: "/electrics" },
@@ -19,7 +17,6 @@ const maintenanceFields = [
 const Header = () => {
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
   const { isAuthenticated, logout } = useAuth();
-  const { t } = useTranslation();
 
   useEffect(() => {
     const handleStatusChange = () => {
@@ -61,14 +58,13 @@ const Header = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-6">
-            <LanguageSwitcher />
             {maintenanceFields.map((field) => (
               <Link
                 key={field.name}
                 to={field.path}
                 className="text-[#2E5984] hover:text-[#4A90E2] font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#2E5984] focus:ring-offset-2 rounded-md px-2 py-1"
               >
-                {t(field.name.toLowerCase())}
+                {field.name}
               </Link>
             ))}
             {isAuthenticated && (
@@ -78,7 +74,7 @@ const Header = () => {
                 className="flex items-center gap-2 text-[#2E5984] hover:text-[#4A90E2]"
               >
                 <LogOut className="h-4 w-4" />
-                {t('signOut')}
+                Logout
               </Button>
             )}
           </div>
@@ -96,14 +92,13 @@ const Header = () => {
             </SheetTrigger>
             <SheetContent className="bg-[#F5F1EA] border-l border-[#2E5984]/20">
               <div className="flex flex-col space-y-4 mt-8">
-                <LanguageSwitcher />
                 {maintenanceFields.map((field) => (
                   <Link
                     key={field.name}
                     to={field.path}
                     className="text-lg text-[#2E5984] hover:text-[#4A90E2] font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#2E5984] rounded-md px-2 py-1"
                   >
-                    {t(field.name.toLowerCase())}
+                    {field.name}
                   </Link>
                 ))}
                 {isAuthenticated && (
@@ -113,7 +108,7 @@ const Header = () => {
                     className="flex items-center gap-2 text-[#2E5984] hover:text-[#4A90E2]"
                   >
                     <LogOut className="h-4 w-4" />
-                    {t('signOut')}
+                    Logout
                   </Button>
                 )}
               </div>
