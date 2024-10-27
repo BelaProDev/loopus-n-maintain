@@ -1,8 +1,7 @@
 import { Client, query as q } from 'faunadb';
 
 const client = new Client({
-  //secret: import.meta.env.VITE_FAUNA_SECRET_KEY || 'fnacapi_omd2ZXJzaW9uAWdwYXlsb2FkWFiiYmlkcjQxMjYzODQzOTcxMTcwMzYyNmZzZWNyZXR4OFg1bi96RCtxK3lDM05ZQUV3ZkVhN0JaVnF2K1lxdVhSTUp0cXBmdDhZVjhrTHMvb0hZeDd0Zz09',
-  secret: 'fnAFuf4jtpAAy8lNKmRRSr7l4MIOWWs6aR1PmFnk',
+  secret: import.meta.env.VITE_FAUNA_SECRET_KEY || 'fnacapi_omd2ZXJzaW9uAWdwYXlsb2FkWFiiYmlkcjQxMjYzODQzOTcxMTcwMzYyNmZzZWNyZXR4OFg1bi96RCtxK3lDM05ZQUV3ZkVhN0JaVnF2K1lxdVhSTUp0cXBmdDhZVjhrTHMvb0hZeDd0Zz09',
   domain: 'db.fauna.com',
 });
 

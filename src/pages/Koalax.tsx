@@ -14,7 +14,6 @@ const KOALAX_PASSWORD = "miaou00";
 const Koalax = () => {
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const bypAuthenticated = true;
   const [editingEmail, setEditingEmail] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
@@ -63,8 +62,7 @@ const Koalax = () => {
     setEditingEmail(null);
   };
 
-  //if (!isAuthenticated || 1 === 1) {
-    if (!bypAuthenticated) {
+  if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <form onSubmit={handlePasswordSubmit} className="space-y-4">
