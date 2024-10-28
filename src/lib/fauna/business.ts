@@ -58,9 +58,20 @@ export const businessQueries = {
   // Invoice queries
   createInvoice: async (data: Omit<Invoice, 'id'>) => {
     try {
+      // Convert invoice items to a simple object structure for Fauna
+      const invoiceData = {
+        ...data,
+        items: data.items.map(item => ({
+          description: item.description,
+          quantity: item.quantity,
+          unitPrice: item.unitPrice,
+          total: item.total,
+        }))
+      };
+
       return await client.query(fql`
         Collection.byName("invoices").create({
-          data: ${data}
+          data: ${invoiceData}
         })
       `);
     } catch (error) {
