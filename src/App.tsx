@@ -22,6 +22,7 @@ import Woodwork from "./pages/Woodwork";
 import Architecture from "./pages/Architecture";
 import Login from "./pages/Login";
 import Koalax from "./pages/Koalax";
+import Documentation from "./pages/Documentation";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ const App = () => {
               <Route path="/woodwork" element={<Woodwork />} />
               <Route path="/architecture" element={<Architecture />} />
               <Route path="/koalax" element={<Koalax />} />
+              <Route path="/docs" element={<Documentation />} />
             </Routes>
           </div>
           <ReactQueryDevtools />
