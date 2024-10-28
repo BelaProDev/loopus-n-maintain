@@ -15,13 +15,13 @@ export const faunaQueries = {
     try {
       const result = await client.query(fql`
         Collection("emails").documents().map(
-          x -> {
+          function($doc) {
             {
-              ref: { id: x.id() },
+              ref: { id: $doc.id() },
               data: {
-                email: x.email,
-                name: x.name,
-                type: x.type
+                email: $doc.email,
+                name: $doc.name,
+                type: $doc.type
               }
             }
           }
