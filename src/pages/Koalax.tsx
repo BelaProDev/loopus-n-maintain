@@ -5,11 +5,12 @@ import { useToast } from "@/components/ui/use-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useEmails } from "@/hooks/useEmails";
-import { Plus, Mail, Settings, FileText } from "lucide-react";
+import { Plus, Mail, Settings, FileText, Building2 } from "lucide-react";
 import EmailTable from "./Koalax/EmailTable";
 import EmailDialog from "./Koalax/EmailDialog";
 import ContentEditor from "./Koalax/ContentEditor";
 import SiteSettings from "./Koalax/SiteSettings";
+import BusinessManagement from "./Koalax/components/BusinessManagement";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const KOALAX_PASSWORD = "miaou00";
@@ -103,6 +104,10 @@ const Koalax = () => {
               <Settings className="w-4 h-4 mr-2" />
               Site Settings
             </TabsTrigger>
+            <TabsTrigger value="business">
+              <Building2 className="w-4 h-4 mr-2" />
+              Business
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="emails">
@@ -139,6 +144,10 @@ const Koalax = () => {
 
           <TabsContent value="settings">
             <SiteSettings />
+          </TabsContent>
+
+          <TabsContent value="business">
+            <BusinessManagement />
           </TabsContent>
         </Tabs>
       </div>

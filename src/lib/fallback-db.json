@@ -1,34 +1,7 @@
 {
-  "emails": [
-    {
-      "ref": { "id": "fallback-1" },
-      "data": {
-        "email": "support@craftcoordination.com",
-        "name": "Support Team",
-        "type": "support",
-        "createdAt": 1677649200000,
-        "updatedAt": 1677649200000
-      }
-    }
-  ],
-  "content": [
-    {
-      "ref": { "id": "fallback-content-1" },
-      "data": {
-        "key": "hero_title",
-        "type": "text",
-        "content": "Welcome to Craft Coordination",
-        "language": "en",
-        "lastModified": 1677649200000,
-        "modifiedBy": "system"
-      }
-    }
-  ],
-  "whatsapp": {
-    "electrics": "+1234567890",
-    "plumbing": "+1234567890",
-    "ironwork": "+1234567890",
-    "woodwork": "+1234567890",
-    "architecture": "+1234567890"
-  }
+  "emails": [],
+  "content": [],
+  "clients": [],
+  "providers": [],
+  "invoices": []
 }
