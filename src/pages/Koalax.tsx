@@ -5,10 +5,11 @@ import { useToast } from "@/components/ui/use-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useEmails } from "@/hooks/useEmails";
-import { Plus } from "lucide-react";
+import { Plus, Mail, Settings, FileText } from "lucide-react";
 import EmailTable from "./Koalax/EmailTable";
 import EmailDialog from "./Koalax/EmailDialog";
 import ContentEditor from "./Koalax/ContentEditor";
+import SiteSettings from "./Koalax/SiteSettings";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const KOALAX_PASSWORD = "miaou00";
@@ -90,8 +91,18 @@ const Koalax = () => {
       <div className="container mx-auto p-8 flex-1">
         <Tabs defaultValue="emails" className="space-y-4">
           <TabsList>
-            <TabsTrigger value="emails">Email Management</TabsTrigger>
-            <TabsTrigger value="content">Content Management</TabsTrigger>
+            <TabsTrigger value="emails">
+              <Mail className="w-4 h-4 mr-2" />
+              Email Management
+            </TabsTrigger>
+            <TabsTrigger value="content">
+              <FileText className="w-4 h-4 mr-2" />
+              Content Management
+            </TabsTrigger>
+            <TabsTrigger value="settings">
+              <Settings className="w-4 h-4 mr-2" />
+              Site Settings
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="emails">
@@ -124,6 +135,10 @@ const Koalax = () => {
               <h1 className="text-3xl font-bold">Content Management</h1>
               <ContentEditor />
             </div>
+          </TabsContent>
+
+          <TabsContent value="settings">
+            <SiteSettings />
           </TabsContent>
         </Tabs>
       </div>
