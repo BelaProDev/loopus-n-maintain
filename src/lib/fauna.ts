@@ -1,5 +1,5 @@
 import { Client, fql } from 'fauna';
-import { sha256 } from 'crypto-js';
+import { SHA256 } from 'crypto-js';
 
 const client = new Client({
   secret: import.meta.env.VITE_FAUNA_SECRET_KEY,
@@ -9,9 +9,9 @@ interface EmailData {
   email: string;
   name: string;
   type: string;
-  password: string;
-  createdAt: number;
-  updatedAt: number;
+  password?: string; // Made optional since not all operations need it
+  createdAt?: number;
+  updatedAt?: number;
 }
 
 interface ContentData {
@@ -27,8 +27,7 @@ export const faunaQueries = {
   getAllEmails: async () => {
     try {
       const result = await client.query(fql`
-        let emails = Collection.byName("emails")
-        emails.all().documents
+        Collection.byName("emails").all().documents
       `);
       return result.data.map((doc: any) => ({
         ref: { id: doc.id },
@@ -46,37 +45,38 @@ export const faunaQueries = {
     }
   },
 
-  createEmail: async (data: Omit<EmailData, 'createdAt' | 'updatedAt'>) => {
+  createEmail: async (data: EmailData) => {
     const timestamp = Date.now();
-    const hashedPassword = sha256(data.password).toString();
+    const hashedPassword = data.password ? SHA256(data.password).toString() : undefined;
     
     return await client.query(fql`
-      let emails = Collection.byName("emails")
-      emails.create({
-        email: ${data.email},
-        name: ${data.name},
-        type: ${data.type},
-        password: ${hashedPassword},
-        createdAt: ${timestamp},
-        updatedAt: ${timestamp}
+      Collection.byName("emails").create({
+        data: {
+          email: ${data.email},
+          name: ${data.name},
+          type: ${data.type},
+          password: ${hashedPassword},
+          createdAt: ${timestamp},
+          updatedAt: ${timestamp}
+        }
       })
     `);
   },
 
   updateEmail: async (id: string, data: Partial<EmailData>) => {
     return await client.query(fql`
-      let doc = Collection.byName("emails").document(${id})
-      doc.update({
-        ...${data},
-        updatedAt: ${Date.now()}
+      Collection.byName("emails").document(${id}).update({
+        data: {
+          ...${data},
+          updatedAt: ${Date.now()}
+        }
       })
     `);
   },
 
   deleteEmail: async (id: string) => {
     return await client.query(fql`
-      let doc = Collection.byName("emails").document(${id})
-      doc.delete()
+      Collection.byName("emails").document(${id}).delete()
     `);
   },
 
@@ -84,8 +84,7 @@ export const faunaQueries = {
   getContent: async (key: string, language: string = 'en') => {
     try {
       const result = await client.query(fql`
-        let contents = Collection.byName("contents")
-        contents.firstWhere(.key == ${key} && .language == ${language})
+        Collection.byName("contents").firstWhere(.data.key == ${key} && .data.language == ${language})
       `);
       return result.data;
     } catch {
@@ -95,23 +94,27 @@ export const faunaQueries = {
 
   updateContent: async (data: ContentData) => {
     return await client.query(fql`
-      let contents = Collection.byName("contents")
-      let existing = contents.firstWhere(.key == ${data.key} && .language == ${data.language})
+      let collection = Collection.byName("contents")
+      let existing = collection.firstWhere(.data.key == ${data.key} && .data.language == ${data.language})
       
       if (existing != null) {
         existing.update({
-          content: ${data.content},
-          lastModified: ${Date.now()},
-          modifiedBy: ${data.modifiedBy}
+          data: {
+            content: ${data.content},
+            lastModified: ${Date.now()},
+            modifiedBy: ${data.modifiedBy}
+          }
         })
       } else {
-        contents.create({
-          key: ${data.key},
-          type: ${data.type},
-          content: ${data.content},
-          language: ${data.language},
-          lastModified: ${Date.now()},
-          modifiedBy: ${data.modifiedBy}
+        collection.create({
+          data: {
+            key: ${data.key},
+            type: ${data.type},
+            content: ${data.content},
+            language: ${data.language},
+            lastModified: ${Date.now()},
+            modifiedBy: ${data.modifiedBy}
+          }
         })
       }
     `);

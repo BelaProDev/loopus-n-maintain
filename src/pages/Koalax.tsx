@@ -8,6 +8,8 @@ import { useEmails } from "@/hooks/useEmails";
 import { Plus } from "lucide-react";
 import EmailTable from "./Koalax/EmailTable";
 import EmailDialog from "./Koalax/EmailDialog";
+import ContentEditor from "./Koalax/ContentEditor";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const KOALAX_PASSWORD = "miaou00";
 
@@ -21,7 +23,6 @@ const Koalax = () => {
 
   const {
     emails,
-    isLoading,
     createEmail,
     updateEmail,
     deleteEmail,
@@ -51,6 +52,7 @@ const Koalax = () => {
       email: formData.get("email") as string,
       name: formData.get("name") as string,
       type: formData.get("type") as string,
+      password: "default123", // Default password for new email accounts
     };
 
     if (editingEmail) {
@@ -63,8 +65,7 @@ const Koalax = () => {
     setEditingEmail(null);
   };
 
-  //if (!isAuthenticated || 1 === 1) {
-    if (!bypAuthenticated) {
+  if (!bypAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <form onSubmit={handlePasswordSubmit} className="space-y-4">
@@ -87,28 +88,44 @@ const Koalax = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
       <div className="container mx-auto p-8 flex-1">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Email Management</h1>
-          <Button onClick={() => {
-            setEditingEmail(null);
-            setIsDialogOpen(true);
-          }}>
-            <Plus className="mr-2 h-4 w-4" />
-            Add Email
-          </Button>
-        </div>
+        <Tabs defaultValue="emails" className="space-y-4">
+          <TabsList>
+            <TabsTrigger value="emails">Email Management</TabsTrigger>
+            <TabsTrigger value="content">Content Management</TabsTrigger>
+          </TabsList>
 
-        <div className="bg-white rounded-lg shadow">
-          <EmailTable
-            emails={emails}
-            onEdit={(email) => {
-              setEditingEmail(email);
-              setIsDialogOpen(true);
-            }}
-            onDelete={deleteEmail}
-            isDeleting={isDeleting}
-          />
-        </div>
+          <TabsContent value="emails">
+            <div className="flex justify-between items-center mb-8">
+              <h1 className="text-3xl font-bold">Email Management</h1>
+              <Button onClick={() => {
+                setEditingEmail(null);
+                setIsDialogOpen(true);
+              }}>
+                <Plus className="mr-2 h-4 w-4" />
+                Add Email
+              </Button>
+            </div>
+
+            <div className="bg-white rounded-lg shadow">
+              <EmailTable
+                emails={emails}
+                onEdit={(email) => {
+                  setEditingEmail(email);
+                  setIsDialogOpen(true);
+                }}
+                onDelete={deleteEmail}
+                isDeleting={isDeleting}
+              />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="content">
+            <div className="space-y-4">
+              <h1 className="text-3xl font-bold">Content Management</h1>
+              <ContentEditor />
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
       <EmailDialog
         isOpen={isDialogOpen}
