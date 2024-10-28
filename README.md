@@ -1,9 +1,7 @@
 # Loopus & Maintain
 
 A comprehensive building maintenance and professional craft services platform designed for property managers, building owners, and facility maintenance teams.
----
----
----
+
 ## Overview
 
 Loopus & Maintain APP is a Progressive Web App (PWA) specializing in coordinating essential maintenance services:
@@ -22,6 +20,12 @@ Loopus & Maintain APP is a Progressive Web App (PWA) specializing in coordinatin
 - 📧 Instant notification system
 - 🔐 Secure client portal
 - 📊 Comprehensive maintenance tracking (Koalax)
+- 🔄 Fallback database system for offline functionality
+- ⚙️ Advanced site settings management:
+  - WhatsApp integration for each service
+  - Logo and PWA assets management
+  - Navigation menu customization
+  - Content management system
 
 ## Getting Started
 
@@ -48,12 +52,15 @@ SMTP_PASSWORD=your-password
 SMTP_FROM_EMAIL=noreply@yourdomain.com
 CONTACT_FORM_RECIPIENTS=email1@domain.com,email2@domain.com
 
-# WhatsApp Integration (Optional)
+# WhatsApp Integration
 VITE_WHATSAPP_ELECTRICS=+1234567890
 VITE_WHATSAPP_PLUMBING=+1234567890
 VITE_WHATSAPP_IRONWORK=+1234567890
 VITE_WHATSAPP_WOODWORK=+1234567890
 VITE_WHATSAPP_ARCHITECTURE=+1234567890
+
+# Database Configuration
+VITE_FAUNA_SECRET_KEY=your-fauna-secret-key
 ```
 
 ## Project Structure
@@ -64,7 +71,9 @@ src/
 ├── contexts/      # React context providers
 ├── hooks/         # Custom React hooks
 ├── lib/           # Utility functions and configurations
+│   └── fallback-db.json  # Offline fallback database
 ├── pages/         # Main route components
+│   └── Koalax/   # Admin interface components
 └── types/         # TypeScript type definitions
 ```
 
@@ -77,10 +86,4 @@ src/
 - React Router
 - React Query
 - Netlify Functions
-
----
----
----
-## TODO :
-
-```more text padding in inputs in the contact forms```
+- FaunaDB with offline fallback
