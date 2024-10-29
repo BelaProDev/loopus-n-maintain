@@ -35,7 +35,7 @@ export const faunaQueries = {
 
     try {
       const result = await client.query(fql`
-        Collection.byName("emails")!.documents().all()
+        Collection.byName("emails").all()
       `);
       return result.data.map((doc: any) => ({
         ref: { id: doc.id },
@@ -69,7 +69,7 @@ export const faunaQueries = {
       });
       
       return await client.query(fql`
-        Collection.byName("emails")!.create({
+        Collection.byName("emails").create({
           data: ${sanitizedData}
         })
       `);
@@ -92,7 +92,7 @@ export const faunaQueries = {
       });
       
       return await client.query(fql`
-        Collection.byName("emails")!.document(${id})!.update({
+        Collection.byName("emails").where(.id == ${id}).first().update({
           data: ${sanitizedData}
         })
       `);
@@ -110,7 +110,7 @@ export const faunaQueries = {
 
     try {
       return await client.query(fql`
-        Collection.byName("emails")!.document(${id})!.delete()
+        Collection.byName("emails").where(.id == ${id}).first().delete()
       `);
     } catch (error) {
       return handleFaunaError(error, { success: true });
@@ -123,7 +123,7 @@ export const faunaQueries = {
 
     try {
       const result = await client.query(fql`
-        Collection.byName("contents")!.documents().all()
+        Collection.byName("contents").all()
       `);
       return result.data;
     } catch (error) {
@@ -137,7 +137,7 @@ export const faunaQueries = {
 
     try {
       const result = await client.query(fql`
-        Collection.byName("contents")!.firstWhere(.data.key == ${key} && .data.language == ${language})
+        Collection.byName("contents").where(.data.key == ${key} && .data.language == ${language}).first()
       `);
       return result;
     } catch (error) {
@@ -155,8 +155,8 @@ export const faunaQueries = {
     try {
       const sanitizedData = sanitizeForFauna(data);
       return await client.query(fql`
-        let collection = Collection.byName("contents")!
-        let existing = collection.firstWhere(.data.key == ${data.key} && .data.language == ${data.language})
+        let collection = Collection.byName("contents")
+        let existing = collection.where(.data.key == ${data.key} && .data.language == ${data.language}).first()
         
         if (existing != null) {
           existing.update({
