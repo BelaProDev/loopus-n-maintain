@@ -3,8 +3,10 @@ import * as pdfFonts from "pdfmake/build/vfs_fonts";
 import { Document, Packer, Paragraph, TextRun } from "docx";
 import type { Invoice } from "@/types/business";
 
-// Initialize pdfMake with fonts
-(pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
+// Safely initialize pdfMake with fonts
+if (typeof window !== 'undefined') {
+  pdfMake.vfs = pdfFonts.pdfMake?.vfs;
+}
 
 export const exportToPDF = async (invoice: Invoice) => {
   const docDefinition = {
