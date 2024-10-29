@@ -1,10 +1,15 @@
 import { Client, fql } from 'fauna';
-import { Client as BusinessClient, Provider, Invoice } from '@/types/business';
+import { Client as BusinessClient, Provider, Invoice, InvoiceItem } from '@/types/business';
 import { handleFaunaError } from './utils';
 
 const client = new Client({
   secret: import.meta.env.VITE_FAUNA_SECRET_KEY,
 });
+
+// Helper function to convert complex types for Fauna
+const sanitizeForFauna = <T extends object>(data: T): Record<string, unknown> => {
+  return JSON.parse(JSON.stringify(data));
+};
 
 export const businessQueries = {
   // Client queries
@@ -12,7 +17,7 @@ export const businessQueries = {
     try {
       return await client.query(fql`
         Collection.byName("clients").create({
-          data: ${data}
+          data: ${sanitizeForFauna(data)}
         })
       `);
     } catch (error) {
@@ -36,7 +41,7 @@ export const businessQueries = {
     try {
       return await client.query(fql`
         Collection.byName("providers").create({
-          data: ${data}
+          data: ${sanitizeForFauna(data)}
         })
       `);
     } catch (error) {
@@ -58,9 +63,10 @@ export const businessQueries = {
   // Invoice queries
   createInvoice: async (data: Omit<Invoice, 'id'>) => {
     try {
+      const sanitizedData = sanitizeForFauna(data);
       return await client.query(fql`
         Collection.byName("invoices").create({
-          data: ${data}
+          data: ${sanitizedData}
         })
       `);
     } catch (error) {

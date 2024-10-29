@@ -1,6 +1,31 @@
 {
   "emails": [],
-  "content": [],
+  "content": [
+    {
+      "key": "home_hero_title",
+      "type": "text",
+      "content": "Welcome to Loopus & Maintain",
+      "language": "en",
+      "lastModified": 1709744400000,
+      "modifiedBy": "admin"
+    },
+    {
+      "key": "home_hero_description",
+      "type": "textarea",
+      "content": "Professional maintenance services for your property",
+      "language": "en",
+      "lastModified": 1709744400000,
+      "modifiedBy": "admin"
+    },
+    {
+      "key": "services_intro",
+      "type": "wysiwyg",
+      "content": "Discover our range of professional services",
+      "language": "en",
+      "lastModified": 1709744400000,
+      "modifiedBy": "admin"
+    }
+  ],
   "clients": [],
   "providers": [],
   "invoices": []
