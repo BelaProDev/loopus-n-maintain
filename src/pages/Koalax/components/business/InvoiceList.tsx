@@ -136,8 +136,8 @@ const InvoiceList = () => {
           {invoices?.map((invoice: Invoice) => (
             <TableRow key={invoice.id}>
               <TableCell>{invoice.number}</TableCell>
-              <TableCell>{format(new Date(invoice.date), 'PP')}</TableCell>
-              <TableCell>{format(new Date(invoice.dueDate), 'PP')}</TableCell>
+              <TableCell>{format(new Date(invoice.date), 'PPP')}</TableCell>
+              <TableCell>{format(new Date(invoice.dueDate), 'PPP')}</TableCell>
               <TableCell>€{invoice.totalAmount.toFixed(2)}</TableCell>
               <TableCell>
                 <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(invoice.status)}`}>
