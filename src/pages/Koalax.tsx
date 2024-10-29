@@ -55,12 +55,24 @@ const Koalax = () => {
       email: formData.get("email") as string,
       name: formData.get("name") as string,
       type: formData.get("type") as string,
-      password: "default123", // Default password for new email accounts
+      password: formData.get("password") as string || undefined, // Only include if provided
     };
 
     if (editingEmail) {
+      // Only update password if a new one is provided
+      if (!emailData.password) {
+        delete emailData.password;
+      }
       updateEmail({ id: editingEmail.ref.id, data: emailData });
     } else {
+      if (!emailData.password) {
+        toast({
+          title: "Error",
+          description: "Password is required for new email accounts",
+          variant: "destructive",
+        });
+        return;
+      }
       createEmail(emailData);
     }
     setIsDialogOpen(false);

@@ -7,6 +7,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
 
 interface EmailDialogProps {
   isOpen: boolean;
@@ -23,6 +25,37 @@ const EmailDialog = ({
   onSubmit,
   isLoading,
 }: EmailDialogProps) => {
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const { toast } = useToast();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Only validate passwords for new emails or when changing password
+    if (!editingEmail || password) {
+      if (password.length < 6) {
+        toast({
+          title: "Invalid Password",
+          description: "Password must be at least 6 characters long",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (password !== confirmPassword) {
+        toast({
+          title: "Password Mismatch",
+          description: "Passwords do not match",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+    
+    onSubmit(e);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent>
@@ -31,7 +64,7 @@ const EmailDialog = ({
             {editingEmail ? "Edit Email" : "Add New Email"}
           </DialogTitle>
         </DialogHeader>
-        <form onSubmit={onSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium mb-1">Name</label>
             <Input
@@ -62,8 +95,23 @@ const EmailDialog = ({
             <Input
               name="password"
               type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder={editingEmail ? "Leave blank to keep current password" : "Enter password"}
               minLength={6}
+              required={!editingEmail}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Confirm Password</label>
+            <Input
+              name="confirmPassword"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Confirm password"
+              minLength={6}
+              required={!editingEmail}
             />
           </div>
           <Button

@@ -1,15 +1,13 @@
 import { getFaunaClient, handleFaunaError, sanitizeForFauna } from './utils';
 import { fql } from 'fauna';
-import fallbackDb from '../fallback-db.json';
 import { SHA256 } from 'crypto-js';
+import fallbackDb from '../fallback-db.json';
 
 export interface EmailData {
   email: string;
   name: string;
   type: string;
   password?: string;
-  createdAt?: number;
-  updatedAt?: number;
 }
 
 export const emailQueries = {
@@ -21,11 +19,12 @@ export const emailQueries = {
       const result = await client.query(fql`
         Collection.byName("emails").all().map(doc => {
           {
-            id: doc.id,
-            ts: doc.ts,
-            email: doc.data.email,
-            name: doc.data.name,
-            type: doc.data.type
+            ref: { id: doc.id },
+            data: {
+              email: doc.data.email,
+              name: doc.data.name,
+              type: doc.data.type
+            }
           }
         })
       `);
@@ -44,9 +43,7 @@ export const emailQueries = {
       const hashedPassword = data.password ? SHA256(data.password).toString() : undefined;
       
       const sanitizedData = sanitizeForFauna({
-        email: data.email,
-        name: data.name,
-        type: data.type,
+        ...data,
         password: hashedPassword,
         createdAt: timestamp,
         updatedAt: timestamp
@@ -56,12 +53,7 @@ export const emailQueries = {
         Collection.byName("emails").create(${sanitizedData})
       `);
     } catch (error) {
-      return handleFaunaError(error, {
-        id: `fallback-${Date.now()}`,
-        ...data,
-        createdAt: Date.now(),
-        updatedAt: Date.now()
-      });
+      return handleFaunaError(error, null);
     }
   },
 
@@ -81,7 +73,7 @@ export const emailQueries = {
         doc.update(${sanitizedData})
       `);
     } catch (error) {
-      return handleFaunaError(error, { id, ...data });
+      return handleFaunaError(error, null);
     }
   },
 
