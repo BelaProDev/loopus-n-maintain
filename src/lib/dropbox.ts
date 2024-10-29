@@ -6,15 +6,7 @@ const getDropboxClient = () => {
   if (!token) {
     throw new Error('Dropbox access token is not configured');
   }
-  return new Dropbox({ 
-    accessToken: token,
-    scope: [
-      'files.metadata.read',
-      'files.metadata.write',
-      'files.content.read',
-      'files.content.write'
-    ]
-  });
+  return new Dropbox({ accessToken: token });
 };
 
 export const uploadFile = async (file: File, path: string) => {
@@ -31,10 +23,9 @@ export const uploadFile = async (file: File, path: string) => {
     const arrayBuffer = await file.arrayBuffer();
     const fileContent = new Uint8Array(arrayBuffer);
 
-    // Clean and validate path
-    const cleanPath = path.replace(/^\/+/, '').replace(/\/+$/, '');
+    // Clean and validate path, ensuring it's in the loopusandmaintain folder
     const fileName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-    const sanitizedPath = cleanPath ? `/${cleanPath}/${fileName}` : `/${fileName}`;
+    const sanitizedPath = `/loopusandmaintain/${path.replace(/^\/+/, '')}/${fileName}`.replace(/\/+/g, '/');
 
     const response = await dbx.filesUpload({
       path: sanitizedPath,
@@ -61,7 +52,7 @@ export const listFiles = async (path: string = '') => {
   if (!dbx) throw new Error('Dropbox client not initialized');
 
   try {
-    const sanitizedPath = path ? `/${path.replace(/^\/+/, '')}` : '';
+    const sanitizedPath = path ? `/loopusandmaintain/${path.replace(/^\/+/, '')}` : '/loopusandmaintain';
     const response = await dbx.filesListFolder({
       path: sanitizedPath,
     });
@@ -81,8 +72,9 @@ export const downloadFile = async (path: string): Promise<Blob> => {
   if (!dbx) throw new Error('Dropbox client not initialized');
 
   try {
+    const sanitizedPath = path.startsWith('/loopusandmaintain') ? path : `/loopusandmaintain/${path}`;
     const response = await dbx.filesDownload({
-      path: path,
+      path: sanitizedPath,
     });
     const result = response.result as unknown as DropboxDownloadResponse;
     return result.fileBlob;
