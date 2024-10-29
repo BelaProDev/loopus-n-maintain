@@ -1,23 +1,19 @@
 import { Client, fql } from 'fauna';
-import { Client as BusinessClient, Provider, Invoice, InvoiceItem } from '@/types/business';
-import { handleFaunaError } from './utils';
+import { Client as BusinessClient, Provider, Invoice } from '@/types/business';
+import { handleFaunaError, sanitizeForFauna } from './utils';
 
 const client = new Client({
   secret: import.meta.env.VITE_FAUNA_SECRET_KEY,
 });
 
-// Helper function to convert complex types for Fauna
-const sanitizeForFauna = <T extends object>(data: T): Record<string, unknown> => {
-  return JSON.parse(JSON.stringify(data));
-};
-
 export const businessQueries = {
   // Client queries
   createClient: async (data: Omit<BusinessClient, 'id'>) => {
     try {
+      const sanitizedData = sanitizeForFauna(data);
       return await client.query(fql`
         Collection.byName("clients").create({
-          data: ${sanitizeForFauna(data)}
+          data: ${sanitizedData}
         })
       `);
     } catch (error) {
@@ -39,9 +35,10 @@ export const businessQueries = {
   // Provider queries
   createProvider: async (data: Omit<Provider, 'id'>) => {
     try {
+      const sanitizedData = sanitizeForFauna(data);
       return await client.query(fql`
         Collection.byName("providers").create({
-          data: ${sanitizeForFauna(data)}
+          data: ${sanitizedData}
         })
       `);
     } catch (error) {
@@ -87,9 +84,10 @@ export const businessQueries = {
 
   updateInvoiceStatus: async (id: string, status: Invoice['status']) => {
     try {
+      const sanitizedData = sanitizeForFauna({ status });
       return await client.query(fql`
         Collection.byName("invoices").document(${id}).update({
-          data: { status: ${status} }
+          data: ${sanitizedData}
         })
       `);
     } catch (error) {

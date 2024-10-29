@@ -1,6 +1,7 @@
-import { Client, fql } from 'fauna';
+import { Client, fql, QueryArgument } from 'fauna';
 import { SHA256 } from 'crypto-js';
 import fallbackDb from './fallback-db.json';
+import { sanitizeForFauna } from './fauna/utils';
 
 const client = new Client({
   secret: import.meta.env.VITE_FAUNA_SECRET_KEY,
@@ -23,11 +24,6 @@ interface ContentData {
   lastModified: number;
   modifiedBy: string;
 }
-
-const handleFaunaError = (error: any, fallbackData: any) => {
-  console.error('Fauna DB Error:', error);
-  return fallbackData;
-};
 
 export const faunaQueries = {
   getAllEmails: async () => {
@@ -54,17 +50,18 @@ export const faunaQueries = {
     try {
       const timestamp = Date.now();
       const hashedPassword = data.password ? SHA256(data.password).toString() : undefined;
+      const sanitizedData = sanitizeForFauna({
+        email: data.email,
+        name: data.name,
+        type: data.type,
+        password: hashedPassword,
+        createdAt: timestamp,
+        updatedAt: timestamp
+      });
       
       return await client.query(fql`
         Collection.byName("emails").create({
-          data: {
-            email: ${data.email},
-            name: ${data.name},
-            type: ${data.type},
-            password: ${hashedPassword},
-            createdAt: ${timestamp},
-            updatedAt: ${timestamp}
-          }
+          data: ${sanitizedData}
         })
       `);
     } catch (error) {
@@ -77,12 +74,14 @@ export const faunaQueries = {
 
   updateEmail: async (id: string, data: Partial<EmailData>) => {
     try {
+      const sanitizedData = sanitizeForFauna({
+        ...data,
+        updatedAt: Date.now()
+      });
+      
       return await client.query(fql`
         Collection.byName("emails").document(${id}).update({
-          data: {
-            ...${data},
-            updatedAt: ${Date.now()}
-          }
+          data: ${sanitizedData}
         })
       `);
     } catch (error) {
@@ -119,46 +118,36 @@ export const faunaQueries = {
       const result = await client.query(fql`
         Collection.byName("contents").firstWhere(.data.key == ${key} && .data.language == ${language})
       `);
-      return result.data;
+      return result;
     } catch (error) {
       return handleFaunaError(
         error,
-        fallbackDb.content.find(c => c.data.key === key && c.data.language === language)
+        fallbackDb.content.find(c => c.key === key && c.language === language)
       );
     }
   },
 
   updateContent: async (data: ContentData) => {
     try {
+      const sanitizedData = sanitizeForFauna(data);
       return await client.query(fql`
         let collection = Collection.byName("contents")
         let existing = collection.firstWhere(.data.key == ${data.key} && .data.language == ${data.language})
         
         if (existing != null) {
           existing.update({
-            data: {
-              content: ${data.content},
-              lastModified: ${Date.now()},
-              modifiedBy: ${data.modifiedBy}
-            }
+            data: ${sanitizedData}
           })
         } else {
           collection.create({
-            data: {
-              key: ${data.key},
-              type: ${data.type},
-              content: ${data.content},
-              language: ${data.language},
-              lastModified: ${Date.now()},
-              modifiedBy: ${data.modifiedBy}
-            }
+            data: ${sanitizedData}
           })
         }
       `);
     } catch (error) {
       return handleFaunaError(error, {
         ref: { id: `fallback-${Date.now()}` },
-        data: { ...data, lastModified: Date.now() }
+        data
       });
     }
   }
