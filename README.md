@@ -4,7 +4,7 @@ A comprehensive building maintenance and professional craft services platform de
 
 ## Overview
 
-Loopus & Maintain APP is a Progressive Web App (PWA) specializing in coordinating essential maintenance services:
+Loopus & Maintain APP is a Progressive Web App (PWA) specializing in coordinating essential maintenance services across five key areas:
 - Electrical work (24/7 emergency service available)
 - Professional plumbing solutions
 - Custom ironwork and structural repairs
@@ -21,11 +21,24 @@ Loopus & Maintain APP is a Progressive Web App (PWA) specializing in coordinatin
 - 🔐 Secure client portal
 - 📊 Comprehensive maintenance tracking (Koalax)
 - 🔄 Fallback database system for offline functionality
-- ⚙️ Advanced site settings management:
-  - WhatsApp integration for each service
-  - Logo and PWA assets management
-  - Navigation menu customization
-  - Content management system
+- 📄 Advanced document management with Dropbox integration
+- 📊 Business management per activity
+- 🔄 Export capabilities (PDF, DOCX)
+- 📝 Content management system with fallback database
+
+## Admin Features
+
+### Content Management
+- Text content editing with live preview
+- Database fallback system
+- Multi-language support
+
+### Business Management
+- Activity-specific dashboards
+- Client and provider management
+- Invoice generation and tracking
+- Document storage with Dropbox
+- Export functionality (PDF/DOCX)
 
 ## Getting Started
 

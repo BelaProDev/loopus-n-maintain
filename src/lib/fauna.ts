@@ -103,6 +103,17 @@ export const faunaQueries = {
     }
   },
 
+  getAllContent: async () => {
+    try {
+      const result = await client.query(fql`
+        Collection.byName("contents").all().documents
+      `);
+      return result.data;
+    } catch (error) {
+      return handleFaunaError(error, fallbackDb.content);
+    }
+  },
+
   getContent: async (key: string, language: string = 'en') => {
     try {
       const result = await client.query(fql`

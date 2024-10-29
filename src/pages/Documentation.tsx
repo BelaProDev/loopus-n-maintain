@@ -7,13 +7,13 @@ const Documentation = () => {
     <div className="min-h-screen flex flex-col bg-[#F5F1EA]">
       <Header />
       <main className="flex-1 container mx-auto px-4 py-8">
-        <Card className="p-8">
+        <Card className="p-4 md:p-8">
           <h1 className="text-4xl font-bold mb-8">Documentation</h1>
           
           <section className="space-y-6">
             <h2 className="text-2xl font-semibold">Overview</h2>
             <p className="text-gray-700">
-              Loopus & Maintain APP is a Progressive Web App (PWA) specializing in coordinating essential maintenance services:
+              Loopus & Maintain APP is a Progressive Web App (PWA) specializing in coordinating essential maintenance services across five key areas: Electrical, Plumbing, Ironwork, Woodwork, and Architecture.
             </p>
             <ul className="list-disc pl-6 space-y-2 text-gray-700">
               <li>Electrical work (24/7 emergency service available)</li>
@@ -35,16 +35,32 @@ const Documentation = () => {
               <li>🔐 Secure client portal</li>
               <li>📊 Comprehensive maintenance tracking (Koalax)</li>
               <li>🔄 Fallback database system for offline functionality</li>
+              <li>📄 Advanced document management with Dropbox integration</li>
+              <li>📊 Business management per activity</li>
+              <li>🔄 Export capabilities (PDF, DOCX)</li>
+              <li>📝 Content management system with fallback database</li>
             </ul>
           </section>
 
           <section className="mt-8 space-y-6">
-            <h2 className="text-2xl font-semibold">Site Settings Management</h2>
+            <h2 className="text-2xl font-semibold">Admin Features</h2>
             <ul className="list-disc pl-6 space-y-2 text-gray-700">
-              <li>WhatsApp integration for each service</li>
-              <li>Logo and PWA assets management</li>
-              <li>Navigation menu customization</li>
-              <li>Content management system</li>
+              <li>Content Management
+                <ul className="list-disc pl-6 mt-2">
+                  <li>Text content editing with live preview</li>
+                  <li>Database fallback system</li>
+                  <li>Multi-language support</li>
+                </ul>
+              </li>
+              <li>Business Management
+                <ul className="list-disc pl-6 mt-2">
+                  <li>Activity-specific dashboards</li>
+                  <li>Client and provider management</li>
+                  <li>Invoice generation and tracking</li>
+                  <li>Document storage with Dropbox</li>
+                  <li>Export functionality (PDF/DOCX)</li>
+                </ul>
+              </li>
             </ul>
           </section>
 
