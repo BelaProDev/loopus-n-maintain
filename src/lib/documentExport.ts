@@ -5,7 +5,7 @@ import type { Invoice } from "@/types/business";
 
 // Safely initialize pdfMake with fonts
 if (typeof window !== 'undefined') {
-  pdfMake.vfs = pdfFonts.pdfMake?.vfs;
+  (pdfMake as any).vfs = (pdfFonts as any).pdfMake.vfs;
 }
 
 export const exportToPDF = async (invoice: Invoice) => {
