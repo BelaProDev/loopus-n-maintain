@@ -1,11 +1,13 @@
 import { getFaunaClient, handleFaunaError, sanitizeForFauna } from './utils';
 import { fql } from 'fauna';
 import fallbackDb from '../fallback-db.json';
+import { SHA256 } from 'crypto-js';
 
 export interface EmailData {
   email: string;
   name: string;
   type: string;
+  password?: string;
   createdAt?: number;
   updatedAt?: number;
 }
@@ -39,10 +41,13 @@ export const emailQueries = {
 
     try {
       const timestamp = Date.now();
+      const hashedPassword = data.password ? SHA256(data.password).toString() : undefined;
+      
       const sanitizedData = sanitizeForFauna({
         email: data.email,
         name: data.name,
         type: data.type,
+        password: hashedPassword,
         createdAt: timestamp,
         updatedAt: timestamp
       });
@@ -67,6 +72,7 @@ export const emailQueries = {
     try {
       const sanitizedData = sanitizeForFauna({
         ...data,
+        password: data.password ? SHA256(data.password).toString() : undefined,
         updatedAt: Date.now()
       });
       
