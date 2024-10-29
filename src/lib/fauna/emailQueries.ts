@@ -17,16 +17,19 @@ export const emailQueries = {
 
     try {
       const result = await client.query(fql`
-        Collection.byName("emails").all().map(doc => {
-          {
-            ref: { id: doc.id },
-            data: {
-              email: doc.data.email,
-              name: doc.data.name,
-              type: doc.data.type
+        let docs = Collection.byName("emails").all()
+        {
+          data: docs.map(doc => {
+            {
+              ref: { id: doc.id },
+              data: {
+                email: doc.data.email,
+                name: doc.data.name,
+                type: doc.data.type
+              }
             }
-          }
-        })
+          })
+        }
       `);
       return result.data;
     } catch (error) {
@@ -42,16 +45,25 @@ export const emailQueries = {
       const timestamp = Date.now();
       const hashedPassword = data.password ? SHA256(data.password).toString() : undefined;
       
-      const sanitizedData = sanitizeForFauna({
-        ...data,
-        password: hashedPassword,
-        createdAt: timestamp,
-        updatedAt: timestamp
-      });
+      const sanitizedData = {
+        data: {
+          email: data.email,
+          name: data.name,
+          type: data.type,
+          password: hashedPassword,
+          createdAt: timestamp,
+          updatedAt: timestamp
+        }
+      };
       
-      return await client.query(fql`
-        Collection.byName("emails").create(${sanitizedData})
+      const result = await client.query(fql`
+        let doc = Collection.byName("emails").create(${sanitizedData})
+        {
+          ref: { id: doc.id },
+          data: doc.data
+        }
       `);
+      return result;
     } catch (error) {
       return handleFaunaError(error, null);
     }
@@ -62,16 +74,23 @@ export const emailQueries = {
     if (!client) throw new Error('Fauna client not initialized');
 
     try {
-      const sanitizedData = sanitizeForFauna({
-        ...data,
-        password: data.password ? SHA256(data.password).toString() : undefined,
-        updatedAt: Date.now()
-      });
+      const sanitizedData = {
+        data: {
+          ...data,
+          password: data.password ? SHA256(data.password).toString() : undefined,
+          updatedAt: Date.now()
+        }
+      };
       
-      return await client.query(fql`
+      const result = await client.query(fql`
         let doc = Collection.byName("emails").where(.id == ${id}).first()
-        doc.update(${sanitizedData})
+        let updated = doc.update(${sanitizedData})
+        {
+          ref: { id: updated.id },
+          data: updated.data
+        }
       `);
+      return result;
     } catch (error) {
       return handleFaunaError(error, null);
     }
