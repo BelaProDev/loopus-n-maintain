@@ -6,7 +6,15 @@ const getDropboxClient = () => {
   if (!token) {
     throw new Error('Dropbox access token is not configured');
   }
-  return new Dropbox({ accessToken: token });
+  return new Dropbox({ 
+    accessToken: token,
+    scope: [
+      'files.metadata.read',
+      'files.metadata.write',
+      'files.content.read',
+      'files.content.write'
+    ]
+  });
 };
 
 export const uploadFile = async (file: File, path: string) => {
