@@ -9,11 +9,27 @@ const getDropboxClient = () => {
   return new Dropbox({ accessToken: token });
 };
 
+const ensureRootFolder = async (dbx: Dropbox) => {
+  try {
+    await dbx.filesCreateFolderV2({
+      path: '/loopusandmaintain',
+      autorename: false
+    });
+  } catch (error: any) {
+    // Ignore error if folder already exists
+    if (error?.error?.['.tag'] !== 'path_lookup') {
+      console.error('Error creating root folder:', error);
+    }
+  }
+};
+
 export const uploadFile = async (file: File, path: string) => {
   const dbx = getDropboxClient();
   if (!dbx) throw new Error('Dropbox client not initialized');
 
   try {
+    await ensureRootFolder(dbx);
+
     // Validate file size (max 150MB for Dropbox API)
     if (file.size > 150 * 1024 * 1024) {
       throw new Error('File size exceeds 150MB limit');
@@ -52,6 +68,7 @@ export const listFiles = async (path: string = '') => {
   if (!dbx) throw new Error('Dropbox client not initialized');
 
   try {
+    await ensureRootFolder(dbx);
     const sanitizedPath = path ? `/loopusandmaintain/${path.replace(/^\/+/, '')}` : '/loopusandmaintain';
     const response = await dbx.filesListFolder({
       path: sanitizedPath,
@@ -72,6 +89,7 @@ export const downloadFile = async (path: string): Promise<Blob> => {
   if (!dbx) throw new Error('Dropbox client not initialized');
 
   try {
+    await ensureRootFolder(dbx);
     const sanitizedPath = path.startsWith('/loopusandmaintain') ? path : `/loopusandmaintain/${path}`;
     const response = await dbx.filesDownload({
       path: sanitizedPath,
