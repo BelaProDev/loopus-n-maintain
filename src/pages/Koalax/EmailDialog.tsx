@@ -57,6 +57,15 @@ const EmailDialog = ({
               required
             />
           </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Password</label>
+            <Input
+              name="password"
+              type="password"
+              placeholder={editingEmail ? "Leave blank to keep current password" : "Enter password"}
+              minLength={6}
+            />
+          </div>
           <Button
             type="submit"
             disabled={isLoading}
