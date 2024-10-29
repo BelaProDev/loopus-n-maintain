@@ -4,40 +4,50 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { settingsQueries } from "@/lib/fauna/settingsQueries";
 
 const WhatsAppSettings = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
-  const handleWhatsAppUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    const formData = new FormData(e.currentTarget);
-    const numbers = {
-      electrics: formData.get("electrics"),
-      plumbing: formData.get("plumbing"),
-      ironwork: formData.get("ironwork"),
-      woodwork: formData.get("woodwork"),
-      architecture: formData.get("architecture"),
-    };
+  const { data: numbers, isLoading } = useQuery({
+    queryKey: ['whatsapp-numbers'],
+    queryFn: settingsQueries.getWhatsAppNumbers
+  });
 
-    try {
-      // TODO: Implement API endpoint
+  const updateMutation = useMutation({
+    mutationFn: settingsQueries.updateWhatsAppNumbers,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['whatsapp-numbers'] });
       toast({
         title: "Success",
         description: "WhatsApp numbers updated successfully",
       });
-    } catch (error) {
+    },
+    onError: () => {
       toast({
         title: "Error",
         description: "Failed to update WhatsApp numbers",
         variant: "destructive",
       });
-    } finally {
-      setIsSubmitting(false);
     }
+  });
+
+  const handleWhatsAppUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const newNumbers = {
+      electrics: formData.get("electrics") as string,
+      plumbing: formData.get("plumbing") as string,
+      ironwork: formData.get("ironwork") as string,
+      woodwork: formData.get("woodwork") as string,
+      architecture: formData.get("architecture") as string,
+    };
+    updateMutation.mutate(newNumbers);
   };
+
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <Card className="p-6">
@@ -53,12 +63,12 @@ const WhatsAppSettings = () => {
                 name={service}
                 type="tel"
                 placeholder={`Enter ${service} WhatsApp number`}
-                defaultValue={import.meta.env[`VITE_WHATSAPP_${service.toUpperCase()}`]}
+                defaultValue={numbers?.[service as keyof typeof numbers]}
               />
             </div>
           ))}
         </div>
-        <Button type="submit" disabled={isSubmitting}>
+        <Button type="submit" disabled={updateMutation.isPending}>
           Update WhatsApp Numbers
         </Button>
       </form>

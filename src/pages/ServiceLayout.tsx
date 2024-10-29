@@ -12,6 +12,8 @@ import { useNavigate } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { styles } from "@/lib/styles";
 import ServiceForm from "@/components/service/ServiceForm";
+import { useQuery } from "@tanstack/react-query";
+import { settingsQueries } from "@/lib/fauna/settingsQueries";
 
 interface ServiceLayoutProps {
   title: string;
@@ -26,10 +28,10 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  const getWhatsAppNumber = (service: string) => {
-    const envVar = `VITE_WHATSAPP_${service.toUpperCase()}`;
-    return import.meta.env[envVar] || "";
-  };
+  const { data: whatsappNumbers } = useQuery({
+    queryKey: ['whatsapp-numbers'],
+    queryFn: settingsQueries.getWhatsAppNumbers
+  });
 
   const handleWhatsAppContact = () => {
     if (!isAuthenticated) {
@@ -43,7 +45,7 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
     }
 
     const service = title.split(" ")[0].toLowerCase();
-    const whatsappNumber = getWhatsAppNumber(service);
+    const whatsappNumber = whatsappNumbers?.[service as keyof typeof whatsappNumbers] || "";
     const issues = selectedIssues
       .map(id => commonIssues.find(issue => issue.id === id)?.label)
       .join(", ");
