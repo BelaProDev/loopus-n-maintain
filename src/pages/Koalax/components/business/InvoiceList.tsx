@@ -8,6 +8,7 @@ import { Invoice } from "@/types/business";
 import InvoiceDialog from "./InvoiceDialog";
 import { useToast } from "@/components/ui/use-toast";
 import { format } from "date-fns";
+import { exportToPDF, exportToDOCX } from "@/lib/documentExport";
 
 const InvoiceList = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -35,6 +36,41 @@ const InvoiceList = () => {
       });
     }
   });
+
+  const handleExport = async (invoice: Invoice, type: 'pdf' | 'docx') => {
+    try {
+      let blob: Blob;
+      let filename: string;
+
+      if (type === 'pdf') {
+        blob = await exportToPDF(invoice);
+        filename = `${invoice.number}.pdf`;
+      } else {
+        blob = await exportToDOCX(invoice);
+        filename = `${invoice.number}.docx`;
+      }
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: "Success",
+        description: `Invoice exported as ${type.toUpperCase()}`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: `Failed to export invoice as ${type.toUpperCase()}`,
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -109,11 +145,22 @@ const InvoiceList = () => {
                 </span>
               </TableCell>
               <TableCell className="text-right space-x-2">
-                <Button variant="ghost" size="sm">
-                  <Eye className="w-4 h-4" />
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => handleExport(invoice, 'pdf')}
+                >
+                  PDF
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => handleExport(invoice, 'docx')}
+                >
+                  DOCX
                 </Button>
                 <Button variant="ghost" size="sm">
-                  <Download className="w-4 h-4" />
+                  <Eye className="w-4 h-4" />
                 </Button>
               </TableCell>
             </TableRow>
