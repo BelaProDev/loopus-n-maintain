@@ -40,20 +40,17 @@ const InvoiceList = () => {
   const handleExport = async (invoice: Invoice, type: 'pdf' | 'docx') => {
     try {
       let blob: Blob;
-      let filename: string;
-
+      
       if (type === 'pdf') {
-        blob = await exportToPDF(invoice);
-        filename = `${invoice.number}.pdf`;
+        blob = await exportToPDF(invoice) as Blob;
       } else {
         blob = await exportToDOCX(invoice);
-        filename = `${invoice.number}.docx`;
       }
 
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = filename;
+      link.download = `${invoice.number}.${type}`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

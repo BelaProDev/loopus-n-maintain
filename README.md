@@ -2,107 +2,73 @@
 
 A comprehensive building maintenance and professional craft services platform designed for property managers, building owners, and facility maintenance teams.
 
-## Overview
+## Features
 
-Loopus & Maintain APP is a Progressive Web App (PWA) specializing in coordinating essential maintenance services across five key areas:
-- Electrical work (24/7 emergency service available)
-- Professional plumbing solutions
-- Custom ironwork and structural repairs
-- Expert woodworking and carpentry
-- Architectural consultation and planning
+- 🏗️ Service Management
+  - Streamlined service request system
+  - 24/7 Emergency response
+  - Five key service areas: Electrical, Plumbing, Ironwork, Woodwork, Architecture
 
-## Key Features
+- 📱 Technical Features
+  - Progressive Web App (PWA)
+  - Mobile-first responsive design
+  - Offline capabilities
+  - Multi-language support
 
-- 🏗️ Streamlined service request system
-- 🚨 24/7 Emergency response
-- 📱 Mobile-friendly PWA with offline capabilities
-- 🌐 Multi-language support for diverse clients
-- 📧 Instant notification system
-- 🔐 Secure client portal
-- 📊 Comprehensive maintenance tracking (Koalax)
-- 🔄 Fallback database system for offline functionality
-- 📄 Advanced document management with Dropbox integration
-- 📊 Business management system with client and provider tracking
-- 🔄 Export capabilities (PDF, DOCX)
-- 📝 Content management system with fallback database
-
-## Business Management Features
-
-### Client Management
-- Complete client profile management
-- Contact information tracking
-- Company details and VAT number handling
-- Client history and interaction logging
-
-### Service Provider Management
-- Provider profile and specialty tracking
-- Availability status monitoring
-- Service categorization
-- Provider rating system
-
-### Invoice Management
-- Invoice creation and editing
-- Payment status tracking
-- Automated numbering system
-- PDF export functionality
+- 🔐 Admin Dashboard (Koalax)
+  - Client & Provider Management
+  - Invoice Generation (PDF/DOCX export)
+  - Document Management with Dropbox integration
+  - Content Management System
+  - Email Management
 
 ## Getting Started
 
 1. Clone the repository
-2. Install dependencies:
-```bash
-npm install
-```
-3. Start the development server:
-```bash
-npm run dev
-```
-
-## Environment Variables
-
-Create a `.env` file with:
+2. Install dependencies: `npm install`
+3. Set up environment variables:
 
 ```env
 # Email Configuration
-SMTP_HOSTNAME=smtp.example.com
-SMTP_PORT=587
-SMTP_USERNAME=your-username
-SMTP_PASSWORD=your-password
-SMTP_FROM_EMAIL=noreply@yourdomain.com
-CONTACT_FORM_RECIPIENTS=email1@domain.com,email2@domain.com
+SMTP_HOSTNAME=
+SMTP_PORT=
+SMTP_USERNAME=
+SMTP_PASSWORD=
+SMTP_FROM_EMAIL=
+CONTACT_FORM_RECIPIENTS=
 
 # WhatsApp Integration
-VITE_WHATSAPP_ELECTRICS=+1234567890
-VITE_WHATSAPP_PLUMBING=+1234567890
-VITE_WHATSAPP_IRONWORK=+1234567890
-VITE_WHATSAPP_WOODWORK=+1234567890
-VITE_WHATSAPP_ARCHITECTURE=+1234567890
+VITE_WHATSAPP_ELECTRICS=
+VITE_WHATSAPP_PLUMBING=
+VITE_WHATSAPP_IRONWORK=
+VITE_WHATSAPP_WOODWORK=
+VITE_WHATSAPP_ARCHITECTURE=
 
-# Database Configuration
-VITE_FAUNA_SECRET_KEY=your-fauna-secret-key
+# Database & Storage
+VITE_FAUNA_SECRET_KEY=
+VITE_DROPBOX_ACCESS_TOKEN=
 ```
 
-## Project Structure
+4. Start development server: `npm run dev`
 
-```
-src/
-├── components/     # Reusable UI components
-├── contexts/      # React context providers
-├── hooks/         # Custom React hooks
-├── lib/           # Utility functions and configurations
-│   └── fallback-db.json  # Offline fallback database
-├── pages/         # Main route components
-│   └── Koalax/   # Admin interface components
-└── types/         # TypeScript type definitions
-```
-
-## Built With
+## Tech Stack
 
 - React + TypeScript
 - Vite
-- Tailwind CSS
-- shadcn/ui
-- React Router
-- React Query
-- Netlify Functions
-- FaunaDB with offline fallback
+- TanStack Query
+- Tailwind CSS + shadcn/ui
+- FaunaDB
+- Dropbox API
+- PDF/DOCX Generation
+
+## PWA Features
+
+- Offline-first architecture
+- Service Worker implementation
+- Fallback database for offline functionality
+- Push notifications support
+- Responsive design for all devices
+
+## Documentation
+
+For detailed documentation about components and features, visit `/docs` in the application.

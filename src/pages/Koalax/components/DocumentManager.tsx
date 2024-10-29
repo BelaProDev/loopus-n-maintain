@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
-import { Upload, Download, Folder, File } from "lucide-react";
+import { Upload, Download, Folder, File, ArrowLeft } from "lucide-react";
 import * as dropbox from "@/lib/dropbox";
 
 const DocumentManager = () => {
@@ -39,14 +39,20 @@ const DocumentManager = () => {
 
   const handleDownload = async (path: string, filename: string) => {
     try {
-      const result = await dropbox.downloadFile(path);
-      // Create download link
+      const blob = await dropbox.downloadFile(path);
+      const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
-      link.href = URL.createObjectURL(result.fileBlob);
+      link.href = url;
       link.download = filename;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      toast({
+        title: "Success",
+        description: "File downloaded successfully",
+      });
     } catch (error) {
       toast({
         title: "Error",
@@ -56,10 +62,27 @@ const DocumentManager = () => {
     }
   };
 
+  const handleNavigate = (path: string) => {
+    setCurrentPath(path);
+  };
+
+  const handleBack = () => {
+    const newPath = currentPath.split('/').slice(0, -1).join('/');
+    setCurrentPath(newPath);
+  };
+
   return (
     <Card className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Document Management</h2>
+        <div className="flex items-center gap-4">
+          <h2 className="text-2xl font-bold">Document Management</h2>
+          {currentPath && (
+            <Button variant="ghost" size="sm" onClick={handleBack}>
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back
+            </Button>
+          )}
+        </div>
         <div className="flex gap-2">
           <Input
             type="file"
@@ -87,7 +110,10 @@ const DocumentManager = () => {
                 key={file.id}
                 className="flex items-center justify-between p-2 hover:bg-accent rounded-md"
               >
-                <div className="flex items-center gap-2">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer"
+                  onClick={() => file[".tag"] === "folder" && handleNavigate(`${currentPath}/${file.name}`)}
+                >
                   {file[".tag"] === "folder" ? (
                     <Folder className="w-4 h-4" />
                   ) : (

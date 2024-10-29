@@ -1,4 +1,4 @@
-import { Dropbox } from 'dropbox';
+import { Dropbox, files } from 'dropbox';
 
 const dbx = new Dropbox({ 
   accessToken: import.meta.env.VITE_DROPBOX_ACCESS_TOKEN 
@@ -29,12 +29,12 @@ export const listFiles = async (path: string = '') => {
   }
 };
 
-export const downloadFile = async (path: string) => {
+export const downloadFile = async (path: string): Promise<Blob> => {
   try {
     const response = await dbx.filesDownload({
-      path: `/${path}`,
-    });
-    return response.result;
+      path: path,
+    }) as { result: files.FileMetadata & { fileBlob: Blob } };
+    return response.result.fileBlob;
   } catch (error) {
     console.error('Dropbox download error:', error);
     throw error;
