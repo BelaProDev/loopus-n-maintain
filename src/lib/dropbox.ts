@@ -29,12 +29,18 @@ export const listFiles = async (path: string = '') => {
   }
 };
 
+interface DropboxDownloadResponse extends files.FileMetadata {
+  fileBlob: Blob;
+}
+
 export const downloadFile = async (path: string): Promise<Blob> => {
   try {
     const response = await dbx.filesDownload({
       path: path,
-    }) as { result: files.FileMetadata & { fileBlob: Blob } };
-    return response.result.fileBlob;
+    });
+    // Cast the response to include fileBlob property
+    const result = response.result as unknown as DropboxDownloadResponse;
+    return result.fileBlob;
   } catch (error) {
     console.error('Dropbox download error:', error);
     throw error;
