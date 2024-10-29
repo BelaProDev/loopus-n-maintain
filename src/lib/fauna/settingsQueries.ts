@@ -10,6 +10,14 @@ interface WhatsAppSettings {
   architecture: string;
 }
 
+const defaultWhatsAppSettings: WhatsAppSettings = {
+  electrics: "",
+  plumbing: "",
+  ironwork: "",
+  woodwork: "",
+  architecture: ""
+};
+
 export const settingsQueries = {
   getWhatsAppNumbers: async () => {
     const client = getFaunaClient();
@@ -21,15 +29,21 @@ export const settingsQueries = {
           .firstWhere(.type == "whatsapp")
         doc.data
       `);
-      return result as WhatsAppSettings;
+      
+      // Type assertion after validating the shape
+      const data = result as unknown as WhatsAppSettings;
+      if (!data || typeof data !== 'object') return defaultWhatsAppSettings;
+      
+      // Ensure all required properties exist
+      return {
+        electrics: data.electrics || "",
+        plumbing: data.plumbing || "",
+        ironwork: data.ironwork || "",
+        woodwork: data.woodwork || "",
+        architecture: data.architecture || ""
+      };
     } catch (error) {
-      return handleFaunaError(error, {
-        electrics: "",
-        plumbing: "",
-        ironwork: "",
-        woodwork: "",
-        architecture: ""
-      });
+      return handleFaunaError(error, defaultWhatsAppSettings);
     }
   },
 
