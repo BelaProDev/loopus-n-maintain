@@ -1,7 +1,7 @@
 import { Client, fql, QueryArgument } from 'fauna';
 import { SHA256 } from 'crypto-js';
 import fallbackDb from './fallback-db.json';
-import { sanitizeForFauna } from './fauna/utils';
+import { handleFaunaError, sanitizeForFauna } from './fauna/utils';
 
 const client = new Client({
   secret: import.meta.env.VITE_FAUNA_SECRET_KEY,
