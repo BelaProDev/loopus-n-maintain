@@ -35,18 +35,23 @@ export const faunaQueries = {
 
     try {
       const result = await client.query(fql`
-        Collection.byName("emails").all()
-      `);
-      return result.data.map((doc: any) => ({
-        ref: { id: doc.id },
-        data: {
-          email: doc.data.email,
-          name: doc.data.name,
-          type: doc.data.type,
-          createdAt: doc.data.createdAt,
-          updatedAt: doc.data.updatedAt
+        let docs = Collection.byName("emails").all()
+        {
+          data: docs.map(doc => {
+            {
+              ref: { id: doc.id },
+              data: {
+                email: doc.data.email,
+                name: doc.data.name,
+                type: doc.data.type,
+                createdAt: doc.data.createdAt,
+                updatedAt: doc.data.updatedAt
+              }
+            }
+          })
         }
-      }));
+      `);
+      return result.data;
     } catch (error) {
       return handleFaunaError(error, fallbackDb.emails);
     }
@@ -68,11 +73,16 @@ export const faunaQueries = {
         updatedAt: timestamp
       });
       
-      return await client.query(fql`
-        Collection.byName("emails").create({
+      const result = await client.query(fql`
+        let doc = Collection.byName("emails").create({
           data: ${sanitizedData}
         })
+        {
+          ref: { id: doc.id },
+          data: doc.data
+        }
       `);
+      return result;
     } catch (error) {
       return handleFaunaError(error, {
         ref: { id: `fallback-${Date.now()}` },
@@ -91,11 +101,17 @@ export const faunaQueries = {
         updatedAt: Date.now()
       });
       
-      return await client.query(fql`
-        Collection.byName("emails").where(.id == ${id}).first().update({
-          data: ${sanitizedData}
-        })
+      const result = await client.query(fql`
+        let doc = Collection.byName("emails")
+          .where(.id == ${id})
+          .first()
+          .update({ data: ${sanitizedData} })
+        {
+          ref: { id: doc.id },
+          data: doc.data
+        }
       `);
+      return result;
     } catch (error) {
       return handleFaunaError(error, {
         ref: { id },
@@ -110,7 +126,10 @@ export const faunaQueries = {
 
     try {
       return await client.query(fql`
-        Collection.byName("emails").where(.id == ${id}).first().delete()
+        Collection.byName("emails")
+          .where(.id == ${id})
+          .first()
+          .delete()
       `);
     } catch (error) {
       return handleFaunaError(error, { success: true });
@@ -123,7 +142,10 @@ export const faunaQueries = {
 
     try {
       const result = await client.query(fql`
-        Collection.byName("contents").all()
+        let docs = Collection.byName("contents").all()
+        {
+          data: docs.map(doc => doc.data)
+        }
       `);
       return result.data;
     } catch (error) {
@@ -137,7 +159,9 @@ export const faunaQueries = {
 
     try {
       const result = await client.query(fql`
-        Collection.byName("contents").where(.data.key == ${key} && .data.language == ${language}).first()
+        Collection.byName("contents")
+          .where(.data.key == ${key} && .data.language == ${language})
+          .first()
       `);
       return result;
     } catch (error) {
@@ -156,7 +180,9 @@ export const faunaQueries = {
       const sanitizedData = sanitizeForFauna(data);
       return await client.query(fql`
         let collection = Collection.byName("contents")
-        let existing = collection.where(.data.key == ${data.key} && .data.language == ${data.language}).first()
+        let existing = collection
+          .where(.data.key == ${data.key} && .data.language == ${data.language})
+          .first()
         
         if (existing != null) {
           existing.update({
