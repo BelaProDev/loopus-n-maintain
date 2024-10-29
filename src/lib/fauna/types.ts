@@ -1,3 +1,5 @@
+import { QueryArgument } from 'fauna';
+
 export interface EmailData {
   email: string;
   name: string;
@@ -13,3 +15,8 @@ export interface ContentData {
   lastModified: number;
   modifiedBy: string;
 }
+
+// Helper type to convert our data types to Fauna-compatible query arguments
+export type ToQueryArg<T> = {
+  [K in keyof T]: T[K];
+} & QueryArgument;

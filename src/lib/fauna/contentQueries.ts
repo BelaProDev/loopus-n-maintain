@@ -1,5 +1,5 @@
 import { getFaunaClient, handleFaunaError } from './client';
-import { ContentData } from './types';
+import { ContentData, ToQueryArg } from './types';
 import { fql } from 'fauna';
 import fallbackDb from '../fallback-db.json';
 
@@ -42,14 +42,15 @@ export const contentQueries = {
     if (!client) throw new Error('Fauna client not initialized');
 
     try {
+      const queryData: ToQueryArg<ContentData> = { ...data };
       const result = await client.query(fql`
         let collection = Collection.byName("contents")!
         let existing = collection!.firstWhere(.data.key == ${data.key} && .data.language == ${data.language})
         
         if (existing != null) {
-          existing.update({ data: ${data} })
+          existing.update({ data: ${queryData} })
         } else {
-          collection!.create({ data: ${data} })
+          collection!.create({ data: ${queryData} })
         }
       `);
       return result;
