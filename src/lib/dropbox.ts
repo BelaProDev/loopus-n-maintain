@@ -14,25 +14,37 @@ export const uploadFile = async (file: File, path: string) => {
   if (!dbx) throw new Error('Dropbox client not initialized');
 
   try {
+    // Validate file size (max 150MB for Dropbox API)
+    if (file.size > 150 * 1024 * 1024) {
+      throw new Error('File size exceeds 150MB limit');
+    }
+
     // Convert File to ArrayBuffer for Dropbox API
     const arrayBuffer = await file.arrayBuffer();
     const fileContent = new Uint8Array(arrayBuffer);
 
-    // Ensure path starts with forward slash and handle spaces
-    const sanitizedPath = `/${path.replace(/^\/+/, '')}/${file.name}`.replace(/ /g, '_');
+    // Clean and validate path
+    const cleanPath = path.replace(/^\/+/, '').replace(/\/+$/, '');
+    const fileName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+    const sanitizedPath = cleanPath ? `/${cleanPath}/${fileName}` : `/${fileName}`;
 
     const response = await dbx.filesUpload({
       path: sanitizedPath,
       contents: fileContent,
       mode: { '.tag': 'overwrite' },
+      autorename: true
     });
     return response.result;
   } catch (error) {
     console.error('Dropbox upload error:', error);
     if (error.status === 400) {
-      throw new Error('Invalid file or path name. Please ensure the file name is valid.');
+      throw new Error('Invalid file or path. Please check the file name and try again.');
+    } else if (error.status === 401) {
+      throw new Error('Authentication failed. Please check your Dropbox token.');
+    } else if (error.status === 429) {
+      throw new Error('Too many requests. Please try again later.');
     }
-    throw error;
+    throw new Error('Failed to upload file. Please try again.');
   }
 };
 
