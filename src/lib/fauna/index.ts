@@ -1,10 +1,4 @@
-import { emailQueries } from './emailQueries';
-import { contentQueries } from './contentQueries';
-
-export const faunaQueries = {
-  ...emailQueries,
-  ...contentQueries
-};
-
-export type { EmailData } from './emailQueries';
-export type { ContentData } from './contentQueries';
+export * from './types';
+export * from './client';
+export * from './emailQueries';
+export * from './contentQueries';

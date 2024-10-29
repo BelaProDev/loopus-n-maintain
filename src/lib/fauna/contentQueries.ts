@@ -1,15 +1,7 @@
-import { getFaunaClient, handleFaunaError, sanitizeForFauna } from './utils';
+import { getFaunaClient, handleFaunaError } from './client';
+import { ContentData } from './types';
 import { fql } from 'fauna';
 import fallbackDb from '../fallback-db.json';
-
-export interface ContentData {
-  key: string;
-  type: 'text' | 'textarea' | 'wysiwyg';
-  content: string;
-  language: string;
-  lastModified: number;
-  modifiedBy: string;
-}
 
 export const contentQueries = {
   getAllContent: async () => {
@@ -18,7 +10,8 @@ export const contentQueries = {
 
     try {
       const result = await client.query(fql`
-        Collection.byName("contents").all().map(doc => doc.data)
+        let collection = Collection.byName("contents")!
+        collection!.documents().map(doc => doc.data)
       `);
       return result.data;
     } catch (error) {
@@ -31,11 +24,11 @@ export const contentQueries = {
     if (!client) throw new Error('Fauna client not initialized');
 
     try {
-      return await client.query(fql`
-        Collection.byName("contents")
-          .where(.data.key == ${key} && .data.language == ${language})
-          .first()
+      const result = await client.query(fql`
+        let collection = Collection.byName("contents")!
+        collection!.firstWhere(.data.key == ${key} && .data.language == ${language})
       `);
+      return result;
     } catch (error) {
       return handleFaunaError(
         error,
@@ -49,21 +42,22 @@ export const contentQueries = {
     if (!client) throw new Error('Fauna client not initialized');
 
     try {
-      const sanitizedData = sanitizeForFauna(data);
-      return await client.query(fql`
-        let collection = Collection.byName("contents")
-        let doc = collection
-          .where(.data.key == ${data.key} && .data.language == ${data.language})
-          .first()
+      const result = await client.query(fql`
+        let collection = Collection.byName("contents")!
+        let existing = collection!.firstWhere(.data.key == ${data.key} && .data.language == ${data.language})
         
-        if (doc == null) {
-          collection.create(${sanitizedData})
+        if (existing != null) {
+          existing.update({ data: ${data} })
         } else {
-          doc.update(${sanitizedData})
+          collection!.create({ data: ${data} })
         }
       `);
+      return result;
     } catch (error) {
-      return handleFaunaError(error, { id: `fallback-${Date.now()}`, ...data });
+      return handleFaunaError(error, {
+        ref: { id: `fallback-${Date.now()}` },
+        data
+      });
     }
   }
 };

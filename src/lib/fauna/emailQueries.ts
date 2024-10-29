@@ -1,14 +1,8 @@
-import { getFaunaClient, handleFaunaError } from './utils';
+import { getFaunaClient, handleFaunaError } from './client';
+import { EmailData } from './types';
 import { fql } from 'fauna';
 import { SHA256 } from 'crypto-js';
 import fallbackDb from '../fallback-db.json';
-
-export interface EmailData {
-  email: string;
-  name: string;
-  type: string;
-  password?: string;
-}
 
 export const emailQueries = {
   getAllEmails: async () => {
@@ -17,11 +11,12 @@ export const emailQueries = {
 
     try {
       const result = await client.query(fql`
-        Collection.byName("emails").all().map(
-          email => {
+        let collection = Collection.byName("emails")!
+        collection!.documents().map(
+          doc => {
             {
-              ref: { id: email.id },
-              data: email.data
+              ref: { id: doc.id },
+              data: doc.data
             }
           }
         )
@@ -41,18 +36,20 @@ export const emailQueries = {
       const hashedPassword = data.password ? SHA256(data.password).toString() : undefined;
       
       const result = await client.query(fql`
-        let newEmail = Collection.byName("emails").create({
-          email: ${data.email},
-          name: ${data.name},
-          type: ${data.type},
-          password: ${hashedPassword},
-          createdAt: ${timestamp},
-          updatedAt: ${timestamp}
+        let collection = Collection.byName("emails")!
+        let doc = collection!.create({
+          data: {
+            email: ${data.email},
+            name: ${data.name},
+            type: ${data.type},
+            password: ${hashedPassword},
+            createdAt: ${timestamp},
+            updatedAt: ${timestamp}
+          }
         })
-        
         {
-          ref: { id: newEmail.id },
-          data: newEmail.data
+          ref: { id: doc.id },
+          data: doc.data
         }
       `);
       return result;
@@ -73,9 +70,9 @@ export const emailQueries = {
       };
       
       const result = await client.query(fql`
-        let email = Collection.byName("emails").where(.id == ${id}).first()
-        let updated = email.update(${updateData})
-        
+        let collection = Collection.byName("emails")!
+        let doc = collection!.firstWhere(.id == ${id})!
+        let updated = doc.update({ data: ${updateData} })
         {
           ref: { id: updated.id },
           data: updated.data
@@ -93,10 +90,9 @@ export const emailQueries = {
 
     try {
       await client.query(fql`
-        Collection.byName("emails")
-          .where(.id == ${id})
-          .first()
-          .delete()
+        let collection = Collection.byName("emails")!
+        let doc = collection!.firstWhere(.id == ${id})!
+        doc.delete()
       `);
       return { success: true };
     } catch (error) {
