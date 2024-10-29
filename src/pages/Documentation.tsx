@@ -43,6 +43,35 @@ const Documentation = () => {
           </section>
 
           <section className="mt-8 space-y-6">
+            <h2 className="text-2xl font-semibold">Business Management Features</h2>
+            <div className="space-y-4">
+              <h3 className="text-xl font-semibold">Client Management</h3>
+              <ul className="list-disc pl-6 space-y-2 text-gray-700">
+                <li>Add and edit client profiles</li>
+                <li>Track client contact information</li>
+                <li>Manage company details and VAT numbers</li>
+                <li>View client history and interactions</li>
+              </ul>
+
+              <h3 className="text-xl font-semibold">Service Provider Management</h3>
+              <ul className="list-disc pl-6 space-y-2 text-gray-700">
+                <li>Manage provider profiles and specialties</li>
+                <li>Track provider availability status</li>
+                <li>Service categorization (Electrics, Plumbing, etc.)</li>
+                <li>Provider rating system</li>
+              </ul>
+
+              <h3 className="text-xl font-semibold">Invoice Management</h3>
+              <ul className="list-disc pl-6 space-y-2 text-gray-700">
+                <li>Create and edit invoices</li>
+                <li>Track payment status</li>
+                <li>Automated invoice numbering</li>
+                <li>Export invoices to PDF</li>
+              </ul>
+            </div>
+          </section>
+
+          <section className="mt-8 space-y-6">
             <h2 className="text-2xl font-semibold">Admin Features</h2>
             <ul className="list-disc pl-6 space-y-2 text-gray-700">
               <li>Content Management
@@ -62,21 +91,6 @@ const Documentation = () => {
                 </ul>
               </li>
             </ul>
-          </section>
-
-          <section className="mt-8 space-y-6">
-            <h2 className="text-2xl font-semibold">Project Structure</h2>
-            <pre className="bg-gray-100 p-4 rounded-lg overflow-x-auto">
-{`src/
-├── components/     # Reusable UI components
-├── contexts/      # React context providers
-├── hooks/         # Custom React hooks
-├── lib/           # Utility functions and configurations
-│   └── fallback-db.json  # Offline fallback database
-├── pages/         # Main route components
-│   └── Koalax/   # Admin interface components
-└── types/         # TypeScript type definitions`}
-            </pre>
           </section>
 
           <section className="mt-8">

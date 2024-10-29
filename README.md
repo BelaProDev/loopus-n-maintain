@@ -22,23 +22,29 @@ Loopus & Maintain APP is a Progressive Web App (PWA) specializing in coordinatin
 - 📊 Comprehensive maintenance tracking (Koalax)
 - 🔄 Fallback database system for offline functionality
 - 📄 Advanced document management with Dropbox integration
-- 📊 Business management per activity
+- 📊 Business management system with client and provider tracking
 - 🔄 Export capabilities (PDF, DOCX)
 - 📝 Content management system with fallback database
 
-## Admin Features
+## Business Management Features
 
-### Content Management
-- Text content editing with live preview
-- Database fallback system
-- Multi-language support
+### Client Management
+- Complete client profile management
+- Contact information tracking
+- Company details and VAT number handling
+- Client history and interaction logging
 
-### Business Management
-- Activity-specific dashboards
-- Client and provider management
-- Invoice generation and tracking
-- Document storage with Dropbox
-- Export functionality (PDF/DOCX)
+### Service Provider Management
+- Provider profile and specialty tracking
+- Availability status monitoring
+- Service categorization
+- Provider rating system
+
+### Invoice Management
+- Invoice creation and editing
+- Payment status tracking
+- Automated numbering system
+- PDF export functionality
 
 ## Getting Started
 
