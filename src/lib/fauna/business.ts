@@ -2,13 +2,19 @@ import { Client, fql } from 'fauna';
 import { Client as BusinessClient, Provider, Invoice } from '@/types/business';
 import { handleFaunaError, sanitizeForFauna } from './utils';
 
-const client = new Client({
-  secret: import.meta.env.VITE_FAUNA_SECRET_KEY,
-});
+const getFaunaClient = () => {
+  if (typeof window === 'undefined') return null;
+  return new Client({
+    secret: import.meta.env.VITE_FAUNA_SECRET_KEY,
+  });
+};
 
 export const businessQueries = {
   // Client queries
   createClient: async (data: Omit<BusinessClient, 'id'>) => {
+    const client = getFaunaClient();
+    if (!client) throw new Error('Fauna client not initialized');
+
     try {
       const sanitizedData = sanitizeForFauna(data);
       return await client.query(fql`
@@ -22,6 +28,9 @@ export const businessQueries = {
   },
 
   getClients: async () => {
+    const client = getFaunaClient();
+    if (!client) throw new Error('Fauna client not initialized');
+
     try {
       const result = await client.query(fql`
         Collection.byName("clients").all().documents
@@ -34,6 +43,9 @@ export const businessQueries = {
 
   // Provider queries
   createProvider: async (data: Omit<Provider, 'id'>) => {
+    const client = getFaunaClient();
+    if (!client) throw new Error('Fauna client not initialized');
+
     try {
       const sanitizedData = sanitizeForFauna(data);
       return await client.query(fql`
@@ -47,6 +59,9 @@ export const businessQueries = {
   },
 
   getProviders: async () => {
+    const client = getFaunaClient();
+    if (!client) throw new Error('Fauna client not initialized');
+
     try {
       const result = await client.query(fql`
         Collection.byName("providers").all().documents
@@ -59,6 +74,9 @@ export const businessQueries = {
 
   // Invoice queries
   createInvoice: async (data: Omit<Invoice, 'id'>) => {
+    const client = getFaunaClient();
+    if (!client) throw new Error('Fauna client not initialized');
+
     try {
       const sanitizedData = sanitizeForFauna(data);
       return await client.query(fql`
@@ -72,6 +90,9 @@ export const businessQueries = {
   },
 
   getInvoices: async () => {
+    const client = getFaunaClient();
+    if (!client) throw new Error('Fauna client not initialized');
+
     try {
       const result = await client.query(fql`
         Collection.byName("invoices").all().documents
@@ -83,6 +104,9 @@ export const businessQueries = {
   },
 
   updateInvoiceStatus: async (id: string, status: Invoice['status']) => {
+    const client = getFaunaClient();
+    if (!client) throw new Error('Fauna client not initialized');
+
     try {
       const sanitizedData = sanitizeForFauna({ status });
       return await client.query(fql`
@@ -96,6 +120,9 @@ export const businessQueries = {
   },
 
   deleteInvoice: async (id: string) => {
+    const client = getFaunaClient();
+    if (!client) throw new Error('Fauna client not initialized');
+
     try {
       return await client.query(fql`
         Collection.byName("invoices").document(${id}).delete()

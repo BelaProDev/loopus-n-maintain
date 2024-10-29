@@ -1,10 +1,16 @@
 import { Dropbox, files } from 'dropbox';
 
-const dbx = new Dropbox({ 
-  accessToken: import.meta.env.VITE_DROPBOX_ACCESS_TOKEN 
-});
+const getDropboxClient = () => {
+  if (typeof window === 'undefined') return null;
+  return new Dropbox({ 
+    accessToken: import.meta.env.VITE_DROPBOX_ACCESS_TOKEN 
+  });
+};
 
 export const uploadFile = async (file: File, path: string) => {
+  const dbx = getDropboxClient();
+  if (!dbx) throw new Error('Dropbox client not initialized');
+
   try {
     const response = await dbx.filesUpload({
       path: `/${path}/${file.name}`,
@@ -18,6 +24,9 @@ export const uploadFile = async (file: File, path: string) => {
 };
 
 export const listFiles = async (path: string = '') => {
+  const dbx = getDropboxClient();
+  if (!dbx) throw new Error('Dropbox client not initialized');
+
   try {
     const response = await dbx.filesListFolder({
       path: `/${path}`,
@@ -34,11 +43,13 @@ interface DropboxDownloadResponse extends files.FileMetadata {
 }
 
 export const downloadFile = async (path: string): Promise<Blob> => {
+  const dbx = getDropboxClient();
+  if (!dbx) throw new Error('Dropbox client not initialized');
+
   try {
     const response = await dbx.filesDownload({
       path: path,
     });
-    // Cast the response to include fileBlob property
     const result = response.result as unknown as DropboxDownloadResponse;
     return result.fileBlob;
   } catch (error) {

@@ -3,9 +3,12 @@ import { SHA256 } from 'crypto-js';
 import fallbackDb from './fallback-db.json';
 import { handleFaunaError, sanitizeForFauna } from './fauna/utils';
 
-const client = new Client({
-  secret: import.meta.env.VITE_FAUNA_SECRET_KEY,
-});
+const getFaunaClient = () => {
+  if (typeof window === 'undefined') return null;
+  return new Client({
+    secret: import.meta.env.VITE_FAUNA_SECRET_KEY,
+  });
+};
 
 interface EmailData {
   email: string;
@@ -27,6 +30,9 @@ interface ContentData {
 
 export const faunaQueries = {
   getAllEmails: async () => {
+    const client = getFaunaClient();
+    if (!client) throw new Error('Fauna client not initialized');
+
     try {
       const result = await client.query(fql`
         Collection.byName("emails").all().documents
@@ -47,6 +53,9 @@ export const faunaQueries = {
   },
 
   createEmail: async (data: EmailData) => {
+    const client = getFaunaClient();
+    if (!client) throw new Error('Fauna client not initialized');
+
     try {
       const timestamp = Date.now();
       const hashedPassword = data.password ? SHA256(data.password).toString() : undefined;
@@ -73,6 +82,9 @@ export const faunaQueries = {
   },
 
   updateEmail: async (id: string, data: Partial<EmailData>) => {
+    const client = getFaunaClient();
+    if (!client) throw new Error('Fauna client not initialized');
+
     try {
       const sanitizedData = sanitizeForFauna({
         ...data,
@@ -93,6 +105,9 @@ export const faunaQueries = {
   },
 
   deleteEmail: async (id: string) => {
+    const client = getFaunaClient();
+    if (!client) throw new Error('Fauna client not initialized');
+
     try {
       return await client.query(fql`
         Collection.byName("emails").document(${id}).delete()
@@ -103,6 +118,9 @@ export const faunaQueries = {
   },
 
   getAllContent: async () => {
+    const client = getFaunaClient();
+    if (!client) throw new Error('Fauna client not initialized');
+
     try {
       const result = await client.query(fql`
         Collection.byName("contents").all().documents
@@ -114,6 +132,9 @@ export const faunaQueries = {
   },
 
   getContent: async (key: string, language: string = 'en') => {
+    const client = getFaunaClient();
+    if (!client) throw new Error('Fauna client not initialized');
+
     try {
       const result = await client.query(fql`
         Collection.byName("contents").firstWhere(.data.key == ${key} && .data.language == ${language})
@@ -128,6 +149,9 @@ export const faunaQueries = {
   },
 
   updateContent: async (data: ContentData) => {
+    const client = getFaunaClient();
+    if (!client) throw new Error('Fauna client not initialized');
+
     try {
       const sanitizedData = sanitizeForFauna(data);
       return await client.query(fql`
@@ -153,4 +177,4 @@ export const faunaQueries = {
   }
 };
 
-export { client };
+export { getFaunaClient as client };

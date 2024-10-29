@@ -1,12 +1,13 @@
-import pdfMake from "pdfmake/build/pdfmake";
-import * as pdfFonts from "pdfmake/build/vfs_fonts";
 import { Document, Packer, Paragraph, TextRun } from "docx";
 import type { Invoice } from "@/types/business";
 
-// Safely initialize pdfMake with fonts
-if (typeof window !== 'undefined') {
-  (pdfMake as any).vfs = (pdfFonts as any).pdfMake.vfs;
-}
+// Dynamically import pdfMake to avoid SSR issues
+const getPdfMake = async () => {
+  const pdfMake = (await import('pdfmake/build/pdfmake')).default;
+  const pdfFonts = await import('pdfmake/build/vfs_fonts');
+  pdfMake.vfs = pdfFonts.pdfMake.vfs;
+  return pdfMake;
+};
 
 export const exportToPDF = async (invoice: Invoice) => {
   const docDefinition = {
@@ -54,6 +55,7 @@ export const exportToPDF = async (invoice: Invoice) => {
     }
   };
 
+  const pdfMake = await getPdfMake();
   return new Promise((resolve) => {
     const pdfDoc = pdfMake.createPdf(docDefinition);
     pdfDoc.getBlob((blob) => {
