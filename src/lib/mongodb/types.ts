@@ -1,7 +1,10 @@
 import { ObjectId } from 'mongodb';
 
-export interface EmailDocument {
+export interface BaseDocument {
   _id?: ObjectId;
+}
+
+export interface EmailDocument extends BaseDocument {
   email: string;
   name: string;
   type: string;
@@ -10,8 +13,7 @@ export interface EmailDocument {
   updatedAt: number;
 }
 
-export interface ContentDocument {
-  _id?: ObjectId;
+export interface ContentDocument extends BaseDocument {
   key: string;
   type: 'text' | 'textarea' | 'wysiwyg';
   content: string;
@@ -20,8 +22,7 @@ export interface ContentDocument {
   modifiedBy: string;
 }
 
-export interface BusinessDocument {
-  _id?: ObjectId;
+export interface BusinessDocument extends BaseDocument {
   name: string;
   email: string;
   phone?: string;
@@ -30,8 +31,7 @@ export interface BusinessDocument {
   type: 'client' | 'provider';
 }
 
-export interface InvoiceDocument {
-  _id?: ObjectId;
+export interface InvoiceDocument extends BaseDocument {
   number: string;
   clientId: string;
   providerId: string;

@@ -33,14 +33,24 @@ const handler: Handler = async (event) => {
 
     let result;
     switch (operation) {
+      case 'listCollections':
+        result = await db.listCollections().toArray();
+        break;
+
+      case 'createCollection':
+        result = await db.createCollection(collection);
+        break;
+
+      case 'createIndex':
+        result = await db.collection(collection).createIndex(data.keys, data.options);
+        break;
+
       case 'find':
         const query = data.query || {};
-        // Convert string IDs to ObjectId if _id is present
         if (query._id) {
           query._id = new ObjectId(query._id);
         }
         result = await db.collection(collection).find(query).toArray();
-        // Convert ObjectIds to strings in the response
         result = result.map(doc => ({
           ...doc,
           _id: doc._id.toString(),
