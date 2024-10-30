@@ -29,6 +29,11 @@ to = "/index.html"
 status = 200
 
 [[redirects]]
+from = "/koalax/dropbox-callback"
+to = "/index.html"
+status = 200
+
+[[redirects]]
 from = "/dropbox/callback"
 to = "/index.html"
 status = 200
