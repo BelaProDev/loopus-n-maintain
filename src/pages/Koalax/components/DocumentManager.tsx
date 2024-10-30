@@ -160,10 +160,10 @@ const DocumentManager = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h2 className="text-2xl font-bold">Document Manager</h2>
         {!isAuthenticated && (
-          <Button onClick={handleLogin}>
+          <Button onClick={handleLogin} className="w-full sm:w-auto">
             <LogIn className="w-4 h-4 mr-2" />
             Connect Dropbox
           </Button>
@@ -172,30 +172,40 @@ const DocumentManager = () => {
 
       {isAuthenticated && (
         <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <DocumentToolbar
-              onCreateInvoiceFolder={handleCreateInvoiceFolder}
-              onFileSelect={handleFileSelect}
-              isUploading={uploadMutation.isPending}
-              onRefresh={refetch}
-              onLogout={() => {
-                dropboxAuth.logout();
-                setIsAuthenticated(false);
-              }}
-              currentPath={currentPath}
-            />
-            <FileListToggle isMacOS={isMacOS} onToggle={setIsMacOS} />
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="w-full sm:flex-1">
+              <DocumentToolbar
+                onCreateInvoiceFolder={handleCreateInvoiceFolder}
+                onFileSelect={handleFileSelect}
+                isUploading={uploadMutation.isPending}
+                onRefresh={refetch}
+                onLogout={() => {
+                  dropboxAuth.logout();
+                  setIsAuthenticated(false);
+                }}
+                currentPath={currentPath}
+              />
+            </div>
+            <div className="w-full sm:w-auto">
+              <FileListToggle isMacOS={isMacOS} onToggle={setIsMacOS} />
+            </div>
           </div>
 
           <BreadcrumbNav currentPath={currentPath} onNavigate={handleNavigate} />
 
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <Input
               placeholder="New folder name"
               value={newFolderName}
               onChange={(e) => setNewFolderName(e.target.value)}
+              className="w-full sm:w-auto sm:flex-1"
             />
-            <Button onClick={handleCreateFolder}>Create Folder</Button>
+            <Button 
+              onClick={handleCreateFolder}
+              className="w-full sm:w-auto"
+            >
+              Create Folder
+            </Button>
           </div>
 
           {isLoading ? (

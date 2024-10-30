@@ -21,8 +21,8 @@ const DocumentToolbar = ({
   const isRootDirectory = currentPath === "/";
 
   return (
-    <div className="flex gap-4">
-      <Button onClick={onRefresh}>
+    <div className="flex flex-wrap gap-2">
+      <Button onClick={onRefresh} className="w-full sm:w-auto">
         <RefreshCw className="w-4 h-4 mr-2" />
         Refresh
       </Button>
@@ -30,11 +30,12 @@ const DocumentToolbar = ({
         onClick={onCreateInvoiceFolder} 
         disabled={!isRootDirectory}
         title={!isRootDirectory ? "Only available in root directory" : ""}
+        className="w-full sm:w-auto"
       >
         <FolderOpen className="w-4 h-4 mr-2" />
         Create Invoices Folder
       </Button>
-      <div className="flex-1" />
+      <div className="flex-1 hidden sm:block" />
       <input
         type="file"
         id="file-upload"
@@ -44,11 +45,16 @@ const DocumentToolbar = ({
       <Button
         onClick={() => document.getElementById("file-upload")?.click()}
         disabled={isUploading}
+        className="w-full sm:w-auto"
       >
         <Upload className="w-4 h-4 mr-2" />
         {isUploading ? "Uploading..." : "Upload File"}
       </Button>
-      <Button variant="outline" onClick={onLogout}>
+      <Button 
+        variant="outline" 
+        onClick={onLogout}
+        className="w-full sm:w-auto"
+      >
         Disconnect Dropbox
       </Button>
     </div>
