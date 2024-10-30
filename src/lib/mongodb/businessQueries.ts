@@ -36,6 +36,33 @@ export const businessQueries = {
     }
   },
 
+  updateClient: async (id: string, data: Partial<BusinessDocument>) => {
+    try {
+      const db = await getMongoClient();
+      if (!db) throw new Error('Database connection failed');
+
+      await db.collection<BusinessDocument>('clients').updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { ...data, updatedAt: Date.now() } }
+      );
+      return { id, ...data };
+    } catch (error) {
+      return handleMongoError(error, null);
+    }
+  },
+
+  deleteClient: async (id: string) => {
+    try {
+      const db = await getMongoClient();
+      if (!db) throw new Error('Database connection failed');
+
+      await db.collection('clients').deleteOne({ _id: new ObjectId(id) });
+      return { success: true };
+    } catch (error) {
+      return handleMongoError(error, { success: false });
+    }
+  },
+
   // Provider queries
   createProvider: async (data: Omit<BusinessDocument, '_id'>) => {
     try {
@@ -55,6 +82,8 @@ export const businessQueries = {
   getProviders: async () => {
     try {
       const db = await getMongoClient();
+      if (!db) throw new Error('Database connection failed');
+      
       const providers = await db.collection<BusinessDocument>('providers')
         .find({ type: 'provider' })
         .toArray();
@@ -64,6 +93,33 @@ export const businessQueries = {
       }));
     } catch (error) {
       return handleMongoError(error, []);
+    }
+  },
+
+  updateProvider: async (id: string, data: Partial<BusinessDocument>) => {
+    try {
+      const db = await getMongoClient();
+      if (!db) throw new Error('Database connection failed');
+
+      await db.collection<BusinessDocument>('providers').updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { ...data, updatedAt: Date.now() } }
+      );
+      return { id, ...data };
+    } catch (error) {
+      return handleMongoError(error, null);
+    }
+  },
+
+  deleteProvider: async (id: string) => {
+    try {
+      const db = await getMongoClient();
+      if (!db) throw new Error('Database connection failed');
+
+      await db.collection('providers').deleteOne({ _id: new ObjectId(id) });
+      return { success: true };
+    } catch (error) {
+      return handleMongoError(error, { success: false });
     }
   },
 

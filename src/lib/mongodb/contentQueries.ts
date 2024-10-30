@@ -3,12 +3,16 @@ import { ContentDocument } from './types';
 import fallbackDb from '../fallback-db.json';
 
 export const contentQueries = {
-  getAllContent: async () => {
+  getAllContent: async (language?: string) => {
     try {
       const db = await getMongoClient();
       if (!db) throw new Error('Database connection failed');
       
-      const content = await db.collection<ContentDocument>('contents').find().toArray();
+      const query = language ? { language } : {};
+      const content = await db.collection<ContentDocument>('contents')
+        .find(query)
+        .sort({ key: 1 })
+        .toArray();
       return content;
     } catch (error) {
       return handleMongoError(error, fallbackDb.content);
@@ -18,6 +22,8 @@ export const contentQueries = {
   getContent: async (key: string, language: string = 'en') => {
     try {
       const db = await getMongoClient();
+      if (!db) throw new Error('Database connection failed');
+
       const content = await db.collection<ContentDocument>('contents').findOne({
         key,
         language
@@ -34,9 +40,16 @@ export const contentQueries = {
   updateContent: async (data: ContentDocument) => {
     try {
       const db = await getMongoClient();
+      if (!db) throw new Error('Database connection failed');
+
       const result = await db.collection<ContentDocument>('contents').updateOne(
         { key: data.key, language: data.language },
-        { $set: data },
+        { 
+          $set: {
+            ...data,
+            lastModified: Date.now()
+          }
+        },
         { upsert: true }
       );
       return { ref: { id: result.upsertedId?.toString() || '' }, data };
@@ -45,6 +58,18 @@ export const contentQueries = {
         ref: { id: `fallback-${Date.now()}` },
         data
       });
+    }
+  },
+
+  deleteContent: async (key: string, language: string) => {
+    try {
+      const db = await getMongoClient();
+      if (!db) throw new Error('Database connection failed');
+
+      await db.collection('contents').deleteOne({ key, language });
+      return { success: true };
+    } catch (error) {
+      return handleMongoError(error, { success: false });
     }
   }
 };

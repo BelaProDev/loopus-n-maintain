@@ -12,8 +12,15 @@ export async function getMongoClient(): Promise<Db | null> {
 
   try {
     if (client && db) {
-      await client.db().command({ ping: 1 });
-      return db;
+      try {
+        await client.db().command({ ping: 1 });
+        return db;
+      } catch (error) {
+        // Connection lost, attempt reconnection
+        await client.close();
+        client = null;
+        db = null;
+      }
     }
 
     if (!import.meta.env.VITE_MONGODB_URI) {
@@ -25,7 +32,9 @@ export async function getMongoClient(): Promise<Db | null> {
         version: ServerApiVersion.v1,
         strict: true,
         deprecationErrors: true,
-      }
+      },
+      connectTimeoutMS: 5000,
+      socketTimeoutMS: 30000,
     });
 
     await client.connect();
