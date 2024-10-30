@@ -15,10 +15,19 @@ import ServiceLayout from './pages/ServiceLayout'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from '@/components/ui/toaster'
 import { AuthProvider } from '@/contexts/AuthContext'
-import { BrowserRouter } from 'react-router-dom'
 
-const queryClient = new QueryClient()
+// Create QueryClient instance
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000,
+      retry: false,
+      refetchOnWindowFocus: false
+    }
+  }
+})
 
+// Create router after styles are loaded
 const router = createBrowserRouter([
   {
     path: '/',
@@ -66,15 +75,23 @@ const router = createBrowserRouter([
   }
 ])
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
+// Wait for styles to load before mounting
+const mount = () => {
+  ReactDOM.createRoot(document.getElementById('root')!).render(
+    <React.StrictMode>
+      <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <RouterProvider router={router} />
           <Toaster />
         </AuthProvider>
-      </BrowserRouter>
-    </QueryClientProvider>
-  </React.StrictMode>
-)
+      </QueryClientProvider>
+    </React.StrictMode>
+  )
+}
+
+// Ensure styles are loaded
+if (document.readyState === 'complete') {
+  mount()
+} else {
+  window.addEventListener('load', mount)
+}
