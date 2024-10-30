@@ -21,7 +21,7 @@ import Ironwork from "./pages/Ironwork";
 import Woodwork from "./pages/Woodwork";
 import Architecture from "./pages/Architecture";
 import Login from "./pages/Login";
-import Koalax from "./pages/Koalax";
+import KoalaxAdmin from "./pages/Koalax"; // Updated import for admin
 import Documentation from "./pages/Documentation";
 import DropboxCallback from "./pages/Koalax/components/document/DropboxCallback";
 
@@ -42,9 +42,9 @@ const App = () => {
               <Route path="/ironwork" element={<Ironwork />} />
               <Route path="/woodwork" element={<Woodwork />} />
               <Route path="/architecture" element={<Architecture />} />
-              <Route path="/koalax" element={<Koalax />} />
+              <Route path="/koalax-admin/*" element={<KoalaxAdmin />} />
               <Route path="/docs" element={<Documentation />} />
-              <Route path="/koalax/dropbox-callback" element={<DropboxCallback />} />
+              <Route path="/koalax-admin/dropbox-callback" element={<DropboxCallback />} />
             </Routes>
           </div>
           <ReactQueryDevtools />

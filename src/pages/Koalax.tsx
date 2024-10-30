@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import Header from "@/components/Header";
@@ -15,7 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DatabaseInit from "./Koalax/DatabaseInit";
 import KoalaxAuth from "./Koalax/KoalaxAuth";
 
-const Koalax = () => {
+const KoalaxAdmin = () => {
   const [isDbInitialized, setIsDbInitialized] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [editingEmail, setEditingEmail] = useState(null);
@@ -81,6 +82,7 @@ const Koalax = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
       <div className="container mx-auto p-8 flex-1">
+        <h1 className="text-3xl font-bold mb-8">Koalax Admin Dashboard</h1>
         <Tabs defaultValue="emails" className="space-y-4">
           <TabsList>
             <TabsTrigger value="emails">
@@ -162,4 +164,4 @@ const Koalax = () => {
   );
 };
 
-export default Koalax;
+export default KoalaxAdmin;
