@@ -7,6 +7,8 @@ import { uploadFile, listFiles, downloadFile, deleteFile, createFolder } from "@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import DocumentToolbar from "./document/DocumentToolbar";
 import FileList from "./document/FileList";
+import MacOSFileList from "./document/MacOSFileList";
+import FileListToggle from "./document/FileListToggle";
 import { dropboxAuth } from "@/lib/auth/dropbox";
 import BreadcrumbNav from "./document/BreadcrumbNav";
 
@@ -14,6 +16,7 @@ const DocumentManager = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [newFolderName, setNewFolderName] = useState("");
   const [currentPath, setCurrentPath] = useState("/");
+  const [isMacOS, setIsMacOS] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -153,6 +156,8 @@ const DocumentManager = () => {
     setCurrentPath(path);
   };
 
+  const FileListComponent = isMacOS ? MacOSFileList : FileList;
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -167,16 +172,19 @@ const DocumentManager = () => {
 
       {isAuthenticated && (
         <div className="space-y-4">
-          <DocumentToolbar
-            onCreateInvoiceFolder={handleCreateInvoiceFolder}
-            onFileSelect={handleFileSelect}
-            isUploading={uploadMutation.isPending}
-            onRefresh={refetch}
-            onLogout={() => {
-              dropboxAuth.logout();
-              setIsAuthenticated(false);
-            }}
-          />
+          <div className="flex justify-between items-center">
+            <DocumentToolbar
+              onCreateInvoiceFolder={handleCreateInvoiceFolder}
+              onFileSelect={handleFileSelect}
+              isUploading={uploadMutation.isPending}
+              onRefresh={refetch}
+              onLogout={() => {
+                dropboxAuth.logout();
+                setIsAuthenticated(false);
+              }}
+            />
+            <FileListToggle isMacOS={isMacOS} onToggle={setIsMacOS} />
+          </div>
 
           <BreadcrumbNav currentPath={currentPath} onNavigate={handleNavigate} />
 
@@ -192,7 +200,7 @@ const DocumentManager = () => {
           {isLoading ? (
             <div>Loading...</div>
           ) : (
-            <FileList
+            <FileListComponent
               files={files}
               onDownload={handleDownload}
               onDelete={handleDelete}
