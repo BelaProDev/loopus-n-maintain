@@ -21,7 +21,7 @@ const DocumentManager = () => {
     queryKey: ['dropbox-files', currentPath],
     queryFn: () => listFiles(currentPath),
     enabled: isAuthenticated,
-    staleTime: 30000, // Cache data for 30 seconds
+    staleTime: 30000,
   });
 
   const uploadMutation = useMutation({
@@ -106,7 +106,6 @@ const DocumentManager = () => {
       {isAuthenticated && (
         <div className="space-y-4">
           <DocumentToolbar
-            onCreateInvoiceFolder={() => createFolderMutation.mutate('/invoices')}
             onFileSelect={handleFileSelect}
             isUploading={uploadMutation.isPending}
             onRefresh={refetch}

@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { FolderOpen, Upload, RefreshCw } from "lucide-react";
 
 interface DocumentToolbarProps {
-  onCreateInvoiceFolder: () => void;
   onFileSelect: (event: React.ChangeEvent<HTMLInputElement>) => void;
   isUploading: boolean;
   onRefresh: () => void;
@@ -11,28 +10,17 @@ interface DocumentToolbarProps {
 }
 
 const DocumentToolbar = ({
-  onCreateInvoiceFolder,
   onFileSelect,
   isUploading,
   onRefresh,
   onLogout,
   currentPath,
 }: DocumentToolbarProps) => {
-  const isRootDirectory = currentPath === "/";
-
   return (
     <div className="flex gap-4">
       <Button onClick={onRefresh}>
         <RefreshCw className="w-4 h-4 mr-2" />
         Refresh
-      </Button>
-      <Button 
-        onClick={onCreateInvoiceFolder} 
-        disabled={!isRootDirectory}
-        title={!isRootDirectory ? "Only available in root directory" : ""}
-      >
-        <FolderOpen className="w-4 h-4 mr-2" />
-        Create Invoices Folder
       </Button>
       <div className="flex-1" />
       <input
