@@ -12,115 +12,48 @@ import Electrics from './pages/Electrics'
 import Ironwork from './pages/Ironwork'
 import Plumbing from './pages/Plumbing'
 import Woodwork from './pages/Woodwork'
-import ServiceLayout from './pages/ServiceLayout'
+import Index from './pages/Index'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from '@/components/ui/toaster'
 import { AuthProvider } from '@/contexts/AuthContext'
-import Index from './pages/Index'
 
-// Polyfill Buffer for the browser environment
 globalThis.Buffer = Buffer;
 
-// Create QueryClient instance with explicit configuration
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 5 * 60 * 1000,
       retry: false,
-      refetchOnWindowFocus: false,
-      initialData: undefined
+      refetchOnWindowFocus: false
     }
   }
 })
 
-// Define routes with explicit paths and elements
-const routes = [
+const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
     children: [
-      {
-        index: true,
-        element: <Index />
-      },
-      {
-        path: 'login',
-        element: <Login />
-      },
-      {
-        path: 'koalax',
-        element: <Koalax />
-      },
-      {
-        path: 'services',
-        element: <ServiceLayout />,
-        children: [
-          {
-            path: 'architecture',
-            element: <Architecture />
-          },
-          {
-            path: 'documentation',
-            element: <Documentation />
-          },
-          {
-            path: 'electrics',
-            element: <Electrics />
-          },
-          {
-            path: 'ironwork',
-            element: <Ironwork />
-          },
-          {
-            path: 'plumbing',
-            element: <Plumbing />
-          },
-          {
-            path: 'woodwork',
-            element: <Woodwork />
-          }
-        ]
-      }
+      { index: true, element: <Index /> },
+      { path: 'login', element: <Login /> },
+      { path: 'koalax', element: <Koalax /> },
+      { path: 'architecture', element: <Architecture /> },
+      { path: 'documentation', element: <Documentation /> },
+      { path: 'electrics', element: <Electrics /> },
+      { path: 'ironwork', element: <Ironwork /> },
+      { path: 'plumbing', element: <Plumbing /> },
+      { path: 'woodwork', element: <Woodwork /> }
     ]
   }
-];
+]);
 
-// Initialize router with explicit error boundary
-const router = createBrowserRouter(routes, {
-  future: {
-    v7_normalizeFormMethod: true,
-  }
-});
-
-// Mount function with proper error handling
-const mount = () => {
-  const root = document.getElementById('root');
-  if (!root) throw new Error('Root element not found');
-  
-  const rootInstance = ReactDOM.createRoot(root);
-  
-  rootInstance.render(
-    <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <RouterProvider router={router} fallbackElement={<div>Loading...</div>} />
-          <Toaster />
-        </AuthProvider>
-      </QueryClientProvider>
-    </React.StrictMode>
-  );
-};
-
-// Ensure DOM and styles are fully loaded before mounting
-const initializeApp = () => {
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      // Small delay to ensure styles are loaded
-      setTimeout(mount, 0);
-    });
-  } else {
-    mount();
-  }
-};
-
-initializeApp();
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <RouterProvider router={router} />
+        <Toaster />
+      </AuthProvider>
+    </QueryClientProvider>
+  </React.StrictMode>
+);
