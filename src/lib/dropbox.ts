@@ -16,8 +16,18 @@ export const getDropboxClient = () => {
 };
 
 const sanitizePath = (path: string) => {
+  // If it's root, return ROOT_FOLDER
   if (path === '/') return ROOT_FOLDER;
-  const cleanPath = path.replace(/\/+/g, '/').replace(/^\//, '');
+  
+  // Remove any double slashes and leading/trailing slashes
+  const cleanPath = path.replace(/\/+/g, '/').replace(/^\/|\/$/g, '');
+  
+  // If the path already includes ROOT_FOLDER, return it as is
+  if (cleanPath.startsWith(ROOT_FOLDER.slice(1))) {
+    return `/${cleanPath}`;
+  }
+  
+  // Otherwise, combine ROOT_FOLDER with the path
   return `${ROOT_FOLDER}/${cleanPath}`;
 };
 
@@ -88,6 +98,7 @@ export const listFiles = async (path: string = '') => {
 
   try {
     const sanitizedPath = sanitizePath(path);
+    console.log('Listing files at path:', sanitizedPath); // Debug log
     const response = await dbx.filesListFolder({
       path: sanitizedPath,
     });
