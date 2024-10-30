@@ -6,43 +6,73 @@ import { AuthProvider } from './contexts/AuthContext';
 import App from './App';
 import { fallbackDB } from './lib/fallback-db';
 
-export async function render(url: string) {
+interface RenderResult {
+  html: string;
+  context: Record<string, any>;
+  state: string;
+  error?: Error;
+}
+
+export async function render(url: string): Promise<RenderResult> {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
         staleTime: 5 * 60 * 1000,
         gcTime: 10 * 60 * 1000,
         retry: false,
+        refetchOnWindowFocus: false,
       },
     },
   });
 
-  // Prefetch initial data
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: ['content'],
-      queryFn: () => fallbackDB.find('content')
-    }),
-    // Add other critical data prefetching here
-  ]);
+  try {
+    // Prefetch initial data with error handling
+    await Promise.all([
+      queryClient.prefetchQuery({
+        queryKey: ['content'],
+        queryFn: () => fallbackDB.find('content')
+      }),
+      queryClient.prefetchQuery({
+        queryKey: ['emails'],
+        queryFn: () => fallbackDB.find('emails')
+      }),
+      queryClient.prefetchQuery({
+        queryKey: ['clients'],
+        queryFn: () => fallbackDB.find('clients')
+      }),
+      queryClient.prefetchQuery({
+        queryKey: ['providers'],
+        queryFn: () => fallbackDB.find('providers')
+      })
+    ]);
 
-  const html = ReactDOMServer.renderToString(
-    <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <StaticRouter location={url}>
-            <App />
-          </StaticRouter>
-        </AuthProvider>
-      </QueryClientProvider>
-    </React.StrictMode>
-  );
+    const html = ReactDOMServer.renderToString(
+      <React.StrictMode>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <StaticRouter location={url}>
+              <App />
+            </StaticRouter>
+          </AuthProvider>
+        </QueryClientProvider>
+      </React.StrictMode>
+    );
 
-  const dehydratedState = JSON.stringify(queryClient.getQueryData(['content']));
+    // Dehydrate query cache
+    const dehydratedState = JSON.stringify(queryClient.getQueriesData());
 
-  return {
-    html,
-    context: {},
-    state: dehydratedState
-  };
+    return {
+      html,
+      context: {},
+      state: dehydratedState
+    };
+  } catch (error) {
+    console.error('Server-side rendering failed:', error);
+    return {
+      html: '',
+      context: {},
+      state: '{}',
+      error: error as Error
+    };
+  }
 }
