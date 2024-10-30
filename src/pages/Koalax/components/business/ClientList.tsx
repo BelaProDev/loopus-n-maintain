@@ -3,9 +3,10 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fallbackDB } from "@/lib/fallback-db";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Client } from "@/types/business";
 import ClientDialog from "./ClientDialog";
+import { ClientActions } from "./ClientActions";
 import { useToast } from "@/components/ui/use-toast";
 
 const ClientList = () => {
@@ -85,25 +86,16 @@ const ClientList = () => {
               <TableCell>{client.phone}</TableCell>
               <TableCell>{client.company}</TableCell>
               <TableCell className="text-right">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
+                <ClientActions
+                  client={client}
+                  onEdit={(client) => {
                     setEditingClient(client);
                     setIsDialogOpen(true);
                   }}
-                >
-                  <Pencil className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
+                  onDelete={() => {
                     // TODO: Implement delete functionality
                   }}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
+                />
               </TableCell>
             </TableRow>
           ))}
