@@ -13,6 +13,7 @@ import SiteSettings from "./Koalax/SiteSettings";
 import BusinessManagement from "./Koalax/components/BusinessManagement";
 import DocumentManager from "./Koalax/components/DocumentManager";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const KOALAX_PASSWORD = "miaou00";
 
@@ -55,11 +56,10 @@ const Koalax = () => {
       email: formData.get("email") as string,
       name: formData.get("name") as string,
       type: formData.get("type") as string,
-      password: formData.get("password") as string || undefined, // Only include if provided
+      password: formData.get("password") as string || undefined,
     };
 
     if (editingEmail) {
-      // Only update password if a new one is provided
       if (!emailData.password) {
         delete emailData.password;
       }
@@ -102,34 +102,41 @@ const Koalax = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
-      <div className="container mx-auto p-8 flex-1">
+      <div className="container mx-auto p-4 md:p-8 flex-1">
         <Tabs defaultValue="emails" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="emails">
-              <Mail className="w-4 h-4 mr-2" />
-              Email Management
-            </TabsTrigger>
-            <TabsTrigger value="content">
-              <FileText className="w-4 h-4 mr-2" />
-              Content Management
-            </TabsTrigger>
-            <TabsTrigger value="settings">
-              <Settings className="w-4 h-4 mr-2" />
-              Site Settings
-            </TabsTrigger>
-            <TabsTrigger value="business">
-              <Building2 className="w-4 h-4 mr-2" />
-              Business
-            </TabsTrigger>
-            <TabsTrigger value="documents">
-              <Folder className="w-4 h-4 mr-2" />
-              Documents
-            </TabsTrigger>
-          </TabsList>
+          <ScrollArea className="w-full">
+            <TabsList className="w-full flex flex-nowrap overflow-x-auto justify-start md:justify-center p-1 mb-2">
+              <TabsTrigger value="emails" className="whitespace-nowrap">
+                <Mail className="w-4 h-4 mr-2" />
+                <span className="hidden sm:inline">Email Management</span>
+                <span className="sm:hidden">Emails</span>
+              </TabsTrigger>
+              <TabsTrigger value="content" className="whitespace-nowrap">
+                <FileText className="w-4 h-4 mr-2" />
+                <span className="hidden sm:inline">Content Management</span>
+                <span className="sm:hidden">Content</span>
+              </TabsTrigger>
+              <TabsTrigger value="settings" className="whitespace-nowrap">
+                <Settings className="w-4 h-4 mr-2" />
+                <span className="hidden sm:inline">Site Settings</span>
+                <span className="sm:hidden">Settings</span>
+              </TabsTrigger>
+              <TabsTrigger value="business" className="whitespace-nowrap">
+                <Building2 className="w-4 h-4 mr-2" />
+                <span className="hidden sm:inline">Business</span>
+                <span className="sm:hidden">Business</span>
+              </TabsTrigger>
+              <TabsTrigger value="documents" className="whitespace-nowrap">
+                <Folder className="w-4 h-4 mr-2" />
+                <span className="hidden sm:inline">Documents</span>
+                <span className="sm:hidden">Docs</span>
+              </TabsTrigger>
+            </TabsList>
+          </ScrollArea>
 
           <TabsContent value="emails">
-            <div className="flex justify-between items-center mb-8">
-              <h1 className="text-3xl font-bold">Email Management</h1>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+              <h1 className="text-2xl md:text-3xl font-bold">Email Management</h1>
               <Button onClick={() => {
                 setEditingEmail(null);
                 setIsDialogOpen(true);
@@ -139,7 +146,7 @@ const Koalax = () => {
               </Button>
             </div>
 
-            <div className="bg-white rounded-lg shadow">
+            <div className="bg-white rounded-lg shadow overflow-x-auto">
               <EmailTable
                 emails={emails}
                 onEdit={(email) => {
@@ -154,7 +161,7 @@ const Koalax = () => {
 
           <TabsContent value="content">
             <div className="space-y-4">
-              <h1 className="text-3xl font-bold">Content Management</h1>
+              <h1 className="text-2xl md:text-3xl font-bold">Content Management</h1>
               <ContentEditor />
             </div>
           </TabsContent>
