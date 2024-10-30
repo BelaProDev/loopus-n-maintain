@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { businessQueries } from "@/lib/mongodb/businessQueries";
+import { fallbackDB } from "@/lib/fallback-db";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Pencil, Trash2, Star } from "lucide-react";
+import { Plus, Pencil, Trash2 } from "lucide-react";
 import { Provider } from "@/types/business";
 import ProviderDialog from "./ProviderDialog";
 import { useToast } from "@/components/ui/use-toast";
@@ -14,46 +14,37 @@ const ProviderList = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: providersData, isLoading } = useQuery({
+  const { data: providers, isLoading } = useQuery({
     queryKey: ['providers'],
-    queryFn: businessQueries.getProviders,
-    select: (data) => data?.map(provider => ({
-      id: provider._id?.toString() || provider.id,
-      name: provider.name,
-      email: provider.email,
-      phone: provider.phone || '',
-      service: provider.service || 'electrics',
-      availability: provider.availability !== undefined ? provider.availability : true,
-      rating: provider.rating
-    })) as Provider[]
+    queryFn: () => fallbackDB.find('providers')
   });
 
   const createMutation = useMutation({
-    mutationFn: businessQueries.createProvider,
+    mutationFn: (data: any) => fallbackDB.insert('providers', data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['providers'] });
       toast({ title: "Success", description: "Provider added successfully" });
       setIsDialogOpen(false);
     },
-    onError: (error) => {
+    onError: () => {
       toast({ 
         title: "Error", 
-        description: error instanceof Error ? error.message : "Failed to add provider", 
+        description: "Failed to add provider", 
         variant: "destructive" 
       });
     }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: businessQueries.deleteProvider,
+    mutationFn: (id: string) => fallbackDB.delete('providers', { id }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['providers'] });
       toast({ title: "Success", description: "Provider deleted successfully" });
     },
-    onError: (error) => {
+    onError: () => {
       toast({ 
         title: "Error", 
-        description: error instanceof Error ? error.message : "Failed to delete provider",
+        description: "Failed to delete provider", 
         variant: "destructive" 
       });
     }
@@ -106,7 +97,7 @@ const ProviderList = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {providersData?.map((provider) => (
+          {providers?.map((provider) => (
             <TableRow key={provider.id}>
               <TableCell>{provider.name}</TableCell>
               <TableCell className="capitalize">{provider.service}</TableCell>

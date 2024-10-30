@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { emailQueries } from "@/lib/mongodb/emailQueries";
 import { useToast } from "@/components/ui/use-toast";
+import { fallbackDB } from "@/lib/fallback-db";
 
 export interface Email {
   ref: { id: string };
@@ -17,11 +17,11 @@ export function useEmails() {
 
   const emailsQuery = useQuery({
     queryKey: ['emails'],
-    queryFn: emailQueries.getAllEmails,
+    queryFn: () => fallbackDB.find('emails'),
   });
 
   const updateEmailMutation = useMutation({
-    mutationFn: (email: Email) => emailQueries.updateEmail(email.ref.id, email.data),
+    mutationFn: (email: Email) => fallbackDB.update('emails', { id: email.ref.id }, email.data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['emails'] });
       toast({ title: "Success", description: "Email updated successfully" });
@@ -32,7 +32,7 @@ export function useEmails() {
   });
 
   const deleteEmailMutation = useMutation({
-    mutationFn: emailQueries.deleteEmail,
+    mutationFn: (id: string) => fallbackDB.delete('emails', { id }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['emails'] });
       toast({ title: "Success", description: "Email deleted successfully" });

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { businessQueries } from "@/lib/mongodb/businessQueries";
+import { fallbackDB } from "@/lib/fallback-db";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, Pencil, Trash2 } from "lucide-react";
@@ -16,11 +16,11 @@ const ClientList = () => {
 
   const { data: clients, isLoading } = useQuery({
     queryKey: ['clients'],
-    queryFn: businessQueries.getClients
+    queryFn: () => fallbackDB.find('clients')
   });
 
   const createMutation = useMutation({
-    mutationFn: businessQueries.createClient,
+    mutationFn: (data: any) => fallbackDB.insert('clients', data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clients'] });
       toast({ title: "Success", description: "Client added successfully" });

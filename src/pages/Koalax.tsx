@@ -41,17 +41,15 @@ const Koalax = () => {
         </TabsContent>
 
         <TabsContent value="settings">
-          <Card className="p-6">
-            <SiteSettings />
-          </Card>
+          <SiteSettings />
         </TabsContent>
 
         <TabsContent value="emails">
           <Card className="p-6">
             <EmailList 
               emails={emails || []}
-              onEdit={updateEmail}
-              onDelete={deleteEmail}
+              onEdit={(email) => updateEmail(email)}
+              onDelete={(id) => deleteEmail(id)}
               isDeleting={isDeleting}
             />
           </Card>

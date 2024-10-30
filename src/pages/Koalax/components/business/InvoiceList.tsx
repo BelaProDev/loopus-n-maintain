@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { fallbackDB } from "@/lib/fallback-db";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { businessQueries } from "@/lib/mongodb/businessQueries";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, Pencil, Trash2 } from "lucide-react";
@@ -21,7 +20,7 @@ const InvoiceList = () => {
   });
 
   const createMutation = useMutation({
-    mutationFn: (data) => fallbackDB.insert('invoices', data),
+    mutationFn: (data: any) => fallbackDB.insert('invoices', data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['invoices'] });
       toast({ title: "Success", description: "Invoice created successfully" });
@@ -37,7 +36,7 @@ const InvoiceList = () => {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => fallbackDB.delete('invoices', { id }),
+    mutationFn: (id: string) => fallbackDB.delete('invoices', { id }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['invoices'] });
       toast({ title: "Success", description: "Invoice deleted successfully" });
