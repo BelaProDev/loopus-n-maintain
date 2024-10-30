@@ -19,11 +19,18 @@ export async function render(url: string): Promise<RenderResult> {
       queries: {
         retry: false,
         refetchOnWindowFocus: false,
+        staleTime: 5 * 60 * 1000,
       },
     },
   });
 
   try {
+    // Prefetch critical data
+    await queryClient.prefetchQuery({
+      queryKey: ['content'],
+      queryFn: () => fallbackDB.find('content')
+    });
+
     const html = ReactDOMServer.renderToString(
       <React.StrictMode>
         <QueryClientProvider client={queryClient}>
@@ -36,10 +43,15 @@ export async function render(url: string): Promise<RenderResult> {
       </React.StrictMode>
     );
 
+    // Dehydrate query cache
+    const state = JSON.stringify(
+      queryClient.getQueriesData(['content'])
+    );
+
     return {
       html,
       context: {},
-      state: '{}'
+      state
     };
   } catch (error) {
     console.error('Server-side rendering failed:', error);

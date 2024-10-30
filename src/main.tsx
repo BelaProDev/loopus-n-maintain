@@ -1,5 +1,5 @@
 import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
+import { createRoot, hydrateRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -22,10 +22,7 @@ const queryClient = new QueryClient({
   },
 });
 
-// Initialize the app without waiting for service worker
-const root = createRoot(container);
-
-root.render(
+const AppWithProviders = () => (
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
@@ -37,14 +34,25 @@ root.render(
   </StrictMode>
 );
 
-// Register service worker after app is rendered
+// Check if we need to hydrate or create new root
+if (container.hasChildNodes()) {
+  hydrateRoot(container, <AppWithProviders />);
+} else {
+  createRoot(container).render(<AppWithProviders />);
+}
+
+// Register service worker only after initial render
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker
-      .register('/sw.js')
-      .catch(error => {
-        console.error('SW registration failed:', error);
+  window.addEventListener('load', async () => {
+    try {
+      const registration = await navigator.serviceWorker.register('/sw.js', {
+        scope: '/',
+        updateViaCache: 'none'
       });
+      console.log('SW registered:', registration.scope);
+    } catch (error) {
+      console.error('SW registration failed:', error);
+    }
   });
 }
 
