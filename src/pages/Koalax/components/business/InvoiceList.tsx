@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { fallbackDB } from "@/lib/fallback-db";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { businessQueries } from "@/lib/mongodb/businessQueries";
 import { Button } from "@/components/ui/button";
@@ -16,11 +17,11 @@ const InvoiceList = () => {
 
   const { data: invoices, isLoading } = useQuery({
     queryKey: ['invoices'],
-    queryFn: businessQueries.getInvoices
+    queryFn: () => fallbackDB.find('invoices')
   });
 
   const createMutation = useMutation({
-    mutationFn: businessQueries.createInvoice,
+    mutationFn: (data) => fallbackDB.insert('invoices', data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['invoices'] });
       toast({ title: "Success", description: "Invoice created successfully" });
@@ -36,7 +37,7 @@ const InvoiceList = () => {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: businessQueries.deleteInvoice,
+    mutationFn: (id) => fallbackDB.delete('invoices', { id }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['invoices'] });
       toast({ title: "Success", description: "Invoice deleted successfully" });
