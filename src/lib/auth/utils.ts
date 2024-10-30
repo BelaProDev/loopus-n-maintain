@@ -1,15 +1,12 @@
-export const generateRandomString = (length: number) => {
-  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let text = '';
-  for (let i = 0; i < length; i++) {
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
-  }
-  return text;
+export const generateCodeVerifier = () => {
+  const array = new Uint8Array(32);
+  crypto.getRandomValues(array);
+  return Array.from(array, (byte) => byte.toString(16).padStart(2, '0')).join('');
 };
 
-export const sha256 = async (plain: string) => {
+export const generateCodeChallenge = async (verifier: string) => {
   const encoder = new TextEncoder();
-  const data = encoder.encode(plain);
+  const data = encoder.encode(verifier);
   const hash = await crypto.subtle.digest('SHA-256', data);
   return btoa(String.fromCharCode(...new Uint8Array(hash)))
     .replace(/\+/g, '-')

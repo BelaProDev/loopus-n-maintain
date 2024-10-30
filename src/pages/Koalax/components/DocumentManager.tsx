@@ -90,7 +90,7 @@ const DocumentManager = () => {
   const handleLogin = async () => {
     try {
       const response = await dropboxAuth.initiateAuth();
-      if (response?.access_token) {
+      if (response && typeof response === 'object' && 'access_token' in response) {
         setIsAuthenticated(true);
         toast({
           title: "Success",
