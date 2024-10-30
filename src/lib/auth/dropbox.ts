@@ -1,4 +1,3 @@
-import { promisify } from 'util';
 import { Dropbox } from 'dropbox';
 
 const DROPBOX_CLIENT_ID = import.meta.env.VITE_DROPBOX_CLIENT_ID;
