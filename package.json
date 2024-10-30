@@ -59,8 +59,6 @@
     "lucide-react": "^0.451.0",
     "mongodb": "^6.10.0",
     "next-themes": "^0.3.0",
-    "pdfmake": "^0.2.14",
-    "pdfmake-browser": "^0.2.11",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
