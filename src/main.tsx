@@ -1,63 +1,74 @@
-import { StrictMode } from "react";
-import { createRoot, hydrateRoot } from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { AuthProvider } from "./contexts/AuthContext";
-import App from "./App";
-import "./index.css";
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import App from './App'
+import './index.css'
+import Login from './pages/Login'
+import Koalax from './pages/Koalax'
+import Architecture from './pages/Architecture'
+import Documentation from './pages/Documentation'
+import Electrics from './pages/Electrics'
+import Ironwork from './pages/Ironwork'
+import Plumbing from './pages/Plumbing'
+import Woodwork from './pages/Woodwork'
+import ServiceLayout from './pages/ServiceLayout'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { Toaster } from '@/components/ui/toaster'
 
-const container = document.getElementById("root");
+const queryClient = new QueryClient()
 
-if (!container) {
-  throw new Error("Failed to find the root element");
-}
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 5 * 60 * 1000,
-      gcTime: 10 * 60 * 1000,
-      retry: false,
-    },
-  },
-});
-
-const AppWithProviders = () => (
-  <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </AuthProvider>
-    </QueryClientProvider>
-  </StrictMode>
-);
-
-// Check if we need to hydrate or create new root
-if (container.hasChildNodes()) {
-  hydrateRoot(container, <AppWithProviders />);
-} else {
-  createRoot(container).render(<AppWithProviders />);
-}
-
-// Register service worker only after initial render
-if ('serviceWorker' in navigator && import.meta.env.PROD) {
-  window.addEventListener('load', async () => {
-    try {
-      const registration = await navigator.serviceWorker.register('/sw.js', {
-        scope: '/',
-        updateViaCache: 'none'
-      });
-      console.log('SW registered:', registration.scope);
-    } catch (error) {
-      console.error('SW registration failed:', error);
-    }
-  });
-}
-
-declare global {
-  interface Window {
-    __INITIAL_STATE__: any;
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <App />,
+    children: [
+      {
+        path: 'login',
+        element: <Login />
+      },
+      {
+        path: 'koalax/*',
+        element: <Koalax />
+      },
+      {
+        path: 'services',
+        element: <ServiceLayout />,
+        children: [
+          {
+            path: 'architecture',
+            element: <Architecture />
+          },
+          {
+            path: 'documentation',
+            element: <Documentation />
+          },
+          {
+            path: 'electrics',
+            element: <Electrics />
+          },
+          {
+            path: 'ironwork',
+            element: <Ironwork />
+          },
+          {
+            path: 'plumbing',
+            element: <Plumbing />
+          },
+          {
+            path: 'woodwork',
+            element: <Woodwork />
+          }
+        ]
+      }
+    ]
   }
-}
+])
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+      <Toaster />
+    </QueryClientProvider>
+  </React.StrictMode>
+)
