@@ -11,15 +11,14 @@ export const emailQueries = {
 
     try {
       const result = await client.query(fql`
-        let collection = Collection.byName("emails")!
-        collection!.documents().map(
-          doc => {
+        Collection.byName("emails")!
+          .documents()
+          .map(doc => {
             {
               ref: { id: doc.id },
               data: doc.data
             }
-          }
-        )
+          })
       `);
       return result.data;
     } catch (error) {
@@ -36,21 +35,17 @@ export const emailQueries = {
       const hashedPassword = data.password ? SHA256(data.password).toString() : undefined;
       
       const result = await client.query(fql`
-        let collection = Collection.byName("emails")!
-        let doc = collection!.create({
-          data: {
-            email: ${data.email},
-            name: ${data.name},
-            type: ${data.type},
-            password: ${hashedPassword},
-            createdAt: ${timestamp},
-            updatedAt: ${timestamp}
-          }
-        })
-        {
-          ref: { id: doc.id },
-          data: doc.data
-        }
+        Collection.byName("emails")!
+          .create({
+            data: {
+              email: ${data.email},
+              name: ${data.name},
+              type: ${data.type},
+              password: ${hashedPassword},
+              createdAt: ${timestamp},
+              updatedAt: ${timestamp}
+            }
+          })
       `);
       return result;
     } catch (error) {
@@ -70,13 +65,9 @@ export const emailQueries = {
       };
       
       const result = await client.query(fql`
-        let collection = Collection.byName("emails")!
-        let doc = collection!.firstWhere(.id == ${id})!
-        let updated = doc.update({ data: ${updateData} })
-        {
-          ref: { id: updated.id },
-          data: updated.data
-        }
+        let doc = Collection.byName("emails")!
+          .firstWhere(.id == ${id})!
+        doc.update({ data: ${updateData} })
       `);
       return result;
     } catch (error) {
@@ -90,9 +81,9 @@ export const emailQueries = {
 
     try {
       await client.query(fql`
-        let collection = Collection.byName("emails")!
-        let doc = collection!.firstWhere(.id == ${id})!
-        doc.delete()
+        Collection.byName("emails")!
+          .firstWhere(.id == ${id})!
+          .delete()
       `);
       return { success: true };
     } catch (error) {
