@@ -6,6 +6,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import App from "./App";
 import "./index.css";
 
+// Remove any usage of util.promisify as it's not available in browser
 const container = document.getElementById("root");
 
 if (!container) {
