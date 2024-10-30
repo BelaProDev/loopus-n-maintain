@@ -1,4 +1,4 @@
-const CACHE_NAME = 'craft-coordination-v2';
+const CACHE_NAME = 'loopusandmaintain-v1';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
