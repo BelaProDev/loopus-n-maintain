@@ -4,10 +4,10 @@ import { format } from "date-fns";
 import { files } from 'dropbox';
 import { Trash2, Download, Folder } from "lucide-react";
 
-type FileMetadata = files.FileMetadataReference | files.FolderMetadataReference;
+type DropboxEntry = files.FileMetadataReference | files.FolderMetadataReference | files.DeletedMetadataReference;
 
 interface FileListProps {
-  files: FileMetadata[] | undefined;
+  files: DropboxEntry[] | undefined;
   onDownload: (path: string | undefined, name: string) => void;
   onDelete: (path: string | undefined) => void;
   onNavigate: (path: string) => void;
@@ -25,8 +25,8 @@ const FileList = ({ files, onDownload, onDelete, onNavigate }: FileListProps) =>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {files?.map((file) => {
-          const key = file.path_lower || file.id;
+        {files?.filter(file => file['.tag'] !== 'deleted').map((file) => {
+          const key = 'path_lower' in file ? file.path_lower : file.id;
           const isFolder = file['.tag'] === 'folder';
           
           return (

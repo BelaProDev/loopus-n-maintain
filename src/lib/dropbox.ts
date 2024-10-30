@@ -1,6 +1,8 @@
 import { dropboxAuth } from './auth/dropbox';
 import { files } from 'dropbox';
 
+type DropboxEntry = files.FileMetadataReference | files.FolderMetadataReference | files.DeletedMetadataReference;
+
 export const uploadFile = async (file: File, path: string) => {
   const client = dropboxAuth.getClient();
   const arrayBuffer = await file.arrayBuffer();
@@ -11,7 +13,7 @@ export const uploadFile = async (file: File, path: string) => {
   return response;
 };
 
-export const listFiles = async (path: string): Promise<files.FileMetadataReference[] | files.FolderMetadataReference[]> => {
+export const listFiles = async (path: string): Promise<DropboxEntry[]> => {
   const client = dropboxAuth.getClient();
   const response = await client.filesListFolder({ path });
   return response.result.entries;

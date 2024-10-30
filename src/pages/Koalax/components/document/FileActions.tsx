@@ -3,10 +3,10 @@ import { downloadFile } from "@/lib/dropbox";
 import { useToast } from "@/components/ui/use-toast";
 import { files } from 'dropbox';
 
-type FileMetadata = files.FileMetadataReference | files.FolderMetadataReference;
+type DropboxEntry = files.FileMetadataReference | files.FolderMetadataReference | files.DeletedMetadataReference;
 
 interface FileActionsProps {
-  file: FileMetadata;
+  file: DropboxEntry;
   onNavigate: (path: string) => void;
   onDelete: (path: string | undefined) => void;
 }
