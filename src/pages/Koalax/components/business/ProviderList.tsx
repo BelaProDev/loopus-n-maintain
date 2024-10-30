@@ -18,13 +18,13 @@ const ProviderList = () => {
     queryKey: ['providers'],
     queryFn: businessQueries.getProviders,
     select: (data) => data?.map(provider => ({
-      id: provider.id,
+      id: provider._id?.toString() || provider.id,
       name: provider.name,
       email: provider.email,
       phone: provider.phone || '',
-      service: provider.type === 'provider' ? 'electrics' : 'electrics', // Default to electrics if not specified
-      availability: true, // Default to available
-      rating: undefined
+      service: provider.service || 'electrics',
+      availability: provider.availability !== undefined ? provider.availability : true,
+      rating: provider.rating
     })) as Provider[]
   });
 
@@ -35,10 +35,25 @@ const ProviderList = () => {
       toast({ title: "Success", description: "Provider added successfully" });
       setIsDialogOpen(false);
     },
-    onError: () => {
+    onError: (error) => {
       toast({ 
         title: "Error", 
-        description: "Failed to add provider", 
+        description: error instanceof Error ? error.message : "Failed to add provider", 
+        variant: "destructive" 
+      });
+    }
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: businessQueries.deleteProvider,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['providers'] });
+      toast({ title: "Success", description: "Provider deleted successfully" });
+    },
+    onError: (error) => {
+      toast({ 
+        title: "Error", 
+        description: error instanceof Error ? error.message : "Failed to delete provider",
         variant: "destructive" 
       });
     }
@@ -54,9 +69,13 @@ const ProviderList = () => {
       email: formData.get("email") as string,
       phone: formData.get("phone") as string,
       service: formData.get("service") as Provider["service"],
-      availability: true,
       type: 'provider' as const
     };
+
+    if (editingProvider) {
+      // TODO: Implement update functionality
+      return;
+    }
 
     createMutation.mutate(providerData);
   };
@@ -87,7 +106,7 @@ const ProviderList = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {providersData?.map((provider: Provider) => (
+          {providersData?.map((provider) => (
             <TableRow key={provider.id}>
               <TableCell>{provider.name}</TableCell>
               <TableCell className="capitalize">{provider.service}</TableCell>
@@ -118,9 +137,7 @@ const ProviderList = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => {
-                    // TODO: Implement delete functionality
-                  }}
+                  onClick={() => deleteMutation.mutate(provider.id)}
                 >
                   <Trash2 className="w-4 h-4" />
                 </Button>
