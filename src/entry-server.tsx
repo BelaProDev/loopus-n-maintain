@@ -17,8 +17,6 @@ export async function render(url: string): Promise<RenderResult> {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 5 * 60 * 1000,
-        gcTime: 10 * 60 * 1000,
         retry: false,
         refetchOnWindowFocus: false,
       },
@@ -26,28 +24,6 @@ export async function render(url: string): Promise<RenderResult> {
   });
 
   try {
-    // Prefetch initial data
-    const prefetchPromises = [
-      queryClient.prefetchQuery({
-        queryKey: ['content'],
-        queryFn: () => fallbackDB.find('content')
-      }),
-      queryClient.prefetchQuery({
-        queryKey: ['emails'],
-        queryFn: () => fallbackDB.find('emails')
-      }),
-      queryClient.prefetchQuery({
-        queryKey: ['clients'],
-        queryFn: () => fallbackDB.find('clients')
-      }),
-      queryClient.prefetchQuery({
-        queryKey: ['providers'],
-        queryFn: () => fallbackDB.find('providers')
-      })
-    ];
-
-    await Promise.all(prefetchPromises);
-
     const html = ReactDOMServer.renderToString(
       <React.StrictMode>
         <QueryClientProvider client={queryClient}>
@@ -60,15 +36,10 @@ export async function render(url: string): Promise<RenderResult> {
       </React.StrictMode>
     );
 
-    // Get the query cache state
-    const state = JSON.stringify(
-      queryClient.getQueriesData({})
-    );
-
     return {
       html,
       context: {},
-      state
+      state: '{}'
     };
   } catch (error) {
     console.error('Server-side rendering failed:', error);
