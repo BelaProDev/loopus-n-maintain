@@ -5,12 +5,13 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './contexts/AuthContext';
 import App from './App';
 
-export async function render(url: string) {
+export function render(url: string) {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
         staleTime: 5 * 60 * 1000,
         gcTime: 10 * 60 * 1000,
+        retry: false,
       },
     },
   });
@@ -27,8 +28,5 @@ export async function render(url: string) {
     </React.StrictMode>
   );
 
-  return {
-    html,
-    context: {},
-  };
+  return { html, context: {} };
 }

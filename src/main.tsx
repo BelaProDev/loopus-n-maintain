@@ -17,6 +17,7 @@ const queryClient = new QueryClient({
     queries: {
       staleTime: 5 * 60 * 1000,
       gcTime: 10 * 60 * 1000,
+      retry: false,
     },
   },
 });
@@ -33,7 +34,6 @@ const app = (
   </StrictMode>
 );
 
-// Use createRoot for client-side rendering
 createRoot(container).render(app);
 
 // Register service worker
