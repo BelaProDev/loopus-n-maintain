@@ -1,4 +1,5 @@
-import ServiceLayout from "./ServiceLayout";
+import ServiceHeader from "@/components/service/ServiceHeader";
+import ServiceForm from "@/components/service/ServiceForm";
 
 const Electrics = () => {
   const commonIssues = [
@@ -20,12 +21,13 @@ const Electrics = () => {
   ];
 
   return (
-    <ServiceLayout
-      title="Electrical Services"
-      description="Professional electrical maintenance and repair services for your home or business. Our certified electricians ensure safe and reliable electrical systems."
-      commonIssues={commonIssues}
-      faqs={faqs}
-    />
+    <div className="space-y-8">
+      <ServiceHeader 
+        title="Electrical Services"
+        description="Professional electrical maintenance and repair services for your home or business. Our certified electricians ensure safe and reliable electrical systems."
+      />
+      <ServiceForm title="Electrical Services" />
+    </div>
   );
 };
 

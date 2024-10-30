@@ -1,4 +1,5 @@
-import ServiceLayout from "./ServiceLayout";
+import ServiceHeader from "@/components/service/ServiceHeader";
+import ServiceForm from "@/components/service/ServiceForm";
 
 const Ironwork = () => {
   const commonIssues = [
@@ -20,12 +21,13 @@ const Ironwork = () => {
   ];
 
   return (
-    <ServiceLayout
-      title="Ironwork Services"
-      description="Professional ironwork services for both functional and decorative needs. Our skilled craftsmen bring strength and beauty to your metal structures."
-      commonIssues={commonIssues}
-      faqs={faqs}
-    />
+    <div className="space-y-8">
+      <ServiceHeader 
+        title="Ironwork Services"
+        description="Professional ironwork services for both functional and decorative needs. Our skilled craftsmen bring strength and beauty to your metal structures."
+      />
+      <ServiceForm title="Ironwork Services" />
+    </div>
   );
 };
 
