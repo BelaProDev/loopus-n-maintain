@@ -10,7 +10,6 @@ A comprehensive building maintenance and professional craft services platform de
   - Five key service areas: Electrical, Plumbing, Ironwork, Woodwork, Architecture
 
 - 📱 Technical Features
-  - Server-Side Rendering (SSR)
   - Progressive Web App (PWA)
   - Mobile-first responsive design
   - Offline capabilities
@@ -22,19 +21,14 @@ A comprehensive building maintenance and professional craft services platform de
   - Document Management with Dropbox integration
   - Content Management System
   - Email Management
-  - Password protected admin space
 
 ## Getting Started
 
 1. Clone the repository
 2. Install dependencies: `npm install`
-3. Set up environment variables in `.env`:
+3. Set up environment variables:
 
 ```env
-# MongoDB Configuration
-VITE_MONGODB_URI=mongodb+srv://your-connection-string
-VITE_MONGODB_DB_NAME=koalax
-
 # Email Configuration
 SMTP_HOSTNAME=
 SMTP_PORT=
@@ -50,17 +44,31 @@ VITE_WHATSAPP_IRONWORK=
 VITE_WHATSAPP_WOODWORK=
 VITE_WHATSAPP_ARCHITECTURE=
 
-# Admin Access
-VITE_ADMIN_KOALAX_MDP=
-
-# Storage & APIs
+# Database & Storage
 VITE_FAUNA_SECRET_KEY=
 VITE_DROPBOX_ACCESS_TOKEN=
 ```
 
-4. Development:
-   - Start development server: `npm run dev`
-   - Build for production: `npm run build`
-   - Preview production build: `npm run preview`
+4. Start development server: `npm run dev`
 
-For more detailed documentation, visit `/docs` in the application.
+## Tech Stack
+
+- React + TypeScript
+- Vite
+- TanStack Query
+- Tailwind CSS + shadcn/ui
+- FaunaDB
+- Dropbox API
+- PDF/DOCX Generation
+
+## PWA Features
+
+- Offline-first architecture
+- Service Worker implementation
+- Fallback database for offline functionality
+- Push notifications support
+- Responsive design for all devices
+
+## Documentation
+
+For detailed documentation about components and features, visit `/docs` in the application.

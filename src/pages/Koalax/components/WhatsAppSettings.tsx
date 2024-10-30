@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fallbackDB } from "@/lib/fallback-db";
+import { settingsQueries } from "@/lib/fauna/settingsQueries";
 
 const WhatsAppSettings = () => {
   const { toast } = useToast();
@@ -13,11 +13,11 @@ const WhatsAppSettings = () => {
 
   const { data: numbers, isLoading } = useQuery({
     queryKey: ['whatsapp-numbers'],
-    queryFn: () => fallbackDB.find('whatsapp-numbers')
+    queryFn: settingsQueries.getWhatsAppNumbers
   });
 
   const updateMutation = useMutation({
-    mutationFn: (numbers: Record<string, string>) => fallbackDB.update('whatsapp-numbers', {}, numbers),
+    mutationFn: settingsQueries.updateWhatsAppNumbers,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['whatsapp-numbers'] });
       toast({
@@ -63,7 +63,7 @@ const WhatsAppSettings = () => {
                 name={service}
                 type="tel"
                 placeholder={`Enter ${service} WhatsApp number`}
-                defaultValue={numbers?.[0]?.[service as keyof typeof numbers[0]]}
+                defaultValue={numbers?.[service as keyof typeof numbers]}
               />
             </div>
           ))}

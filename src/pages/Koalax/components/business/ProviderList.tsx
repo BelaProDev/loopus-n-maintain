@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fallbackDB } from "@/lib/fallback-db";
+import { businessQueries } from "@/lib/fauna/business";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Star } from "lucide-react";
 import { Provider } from "@/types/business";
 import ProviderDialog from "./ProviderDialog";
 import { useToast } from "@/components/ui/use-toast";
@@ -16,11 +16,11 @@ const ProviderList = () => {
 
   const { data: providers, isLoading } = useQuery({
     queryKey: ['providers'],
-    queryFn: () => fallbackDB.find('providers')
+    queryFn: businessQueries.getProviders
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fallbackDB.insert('providers', data),
+    mutationFn: businessQueries.createProvider,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['providers'] });
       toast({ title: "Success", description: "Provider added successfully" });
@@ -30,21 +30,6 @@ const ProviderList = () => {
       toast({ 
         title: "Error", 
         description: "Failed to add provider", 
-        variant: "destructive" 
-      });
-    }
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => fallbackDB.delete('providers', { id }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['providers'] });
-      toast({ title: "Success", description: "Provider deleted successfully" });
-    },
-    onError: () => {
-      toast({ 
-        title: "Error", 
-        description: "Failed to delete provider", 
         variant: "destructive" 
       });
     }
@@ -60,7 +45,7 @@ const ProviderList = () => {
       email: formData.get("email") as string,
       phone: formData.get("phone") as string,
       service: formData.get("service") as Provider["service"],
-      type: 'provider' as const
+      availability: true,
     };
 
     createMutation.mutate(providerData);
@@ -92,12 +77,15 @@ const ProviderList = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {providers?.map((provider) => (
+          {providers?.map((provider: Provider) => (
             <TableRow key={provider.id}>
               <TableCell>{provider.name}</TableCell>
               <TableCell className="capitalize">{provider.service}</TableCell>
               <TableCell>
-                {provider.rating || "N/A"}
+                <div className="flex items-center">
+                  <Star className="w-4 h-4 text-yellow-400 mr-1" />
+                  {provider.rating || "N/A"}
+                </div>
               </TableCell>
               <TableCell>
                 <span className={`px-2 py-1 rounded-full text-xs ${
@@ -120,7 +108,9 @@ const ProviderList = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => deleteMutation.mutate(provider.id)}
+                  onClick={() => {
+                    // TODO: Implement delete functionality
+                  }}
                 >
                   <Trash2 className="w-4 h-4" />
                 </Button>

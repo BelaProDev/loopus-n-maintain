@@ -1,5 +1,4 @@
-import ServiceHeader from "@/components/service/ServiceHeader";
-import ServiceForm from "@/components/service/ServiceForm";
+import ServiceLayout from "./ServiceLayout";
 
 const Architecture = () => {
   const commonIssues = [
@@ -21,13 +20,12 @@ const Architecture = () => {
   ];
 
   return (
-    <div className="space-y-8">
-      <ServiceHeader 
-        title="Architectural Services"
-        description="Professional architectural design, planning and other services. We help bring your vision to life with expert guidance through every phase of your project."
-      />
-      <ServiceForm title="Architectural Services" />
-    </div>
+    <ServiceLayout
+      title="Architectural Services"
+      description="Professional architectural design, planning and other services. We help bring your vision to life with expert guidance through every phase of your project."
+      commonIssues={commonIssues}
+      faqs={faqs}
+    />
   );
 };
 

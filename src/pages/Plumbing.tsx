@@ -1,5 +1,4 @@
-import ServiceHeader from "@/components/service/ServiceHeader";
-import ServiceForm from "@/components/service/ServiceForm";
+import ServiceLayout from "./ServiceLayout";
 
 const Plumbing = () => {
   const commonIssues = [
@@ -21,13 +20,12 @@ const Plumbing = () => {
   ];
 
   return (
-    <div className="space-y-8">
-      <ServiceHeader 
-        title="Plumbing Services"
-        description="Expert plumbing solutions for your home or business. Our skilled plumbers handle everything from minor repairs to major installations."
-      />
-      <ServiceForm title="Plumbing Services" />
-    </div>
+    <ServiceLayout
+      title="Plumbing Services"
+      description="Expert plumbing solutions for your home or business. Our skilled plumbers handle everything from minor repairs to major installations."
+      commonIssues={commonIssues}
+      faqs={faqs}
+    />
   );
 };
 

@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fallbackDB } from "@/lib/fallback-db";
+import { businessQueries } from "@/lib/fauna/business";
+import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Plus, Pencil, Trash2 } from "lucide-react";
 import { Client } from "@/types/business";
-import { useToast } from "@/components/ui/use-toast";
 import ClientDialog from "./ClientDialog";
-import ClientListHeader from "./ClientListHeader";
-import ClientTable from "./ClientTable";
-import { dbSync } from "@/lib/db-sync";
+import { useToast } from "@/components/ui/use-toast";
 
 const ClientList = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -16,19 +16,11 @@ const ClientList = () => {
 
   const { data: clients, isLoading } = useQuery({
     queryKey: ['clients'],
-    queryFn: () => fallbackDB.find('clients')
+    queryFn: businessQueries.getClients
   });
 
   const createMutation = useMutation({
-    mutationFn: async (data: any) => {
-      const result = await fallbackDB.insert('clients', data);
-      await dbSync.addPendingChange({
-        table: 'clients',
-        operation: 'create',
-        data
-      });
-      return result;
-    },
+    mutationFn: businessQueries.createClient,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clients'] });
       toast({ title: "Success", description: "Client added successfully" });
@@ -54,37 +46,68 @@ const ClientList = () => {
       phone: formData.get("phone") as string,
       company: formData.get("company") as string,
       vatNumber: formData.get("vatNumber") as string,
-      type: 'client' as const
     };
 
     createMutation.mutate(clientData);
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-      </div>
-    );
-  }
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <div className="space-y-4">
-      <ClientListHeader onAddClick={() => {
-        setEditingClient(null);
-        setIsDialogOpen(true);
-      }} />
-
-      <ClientTable
-        clients={clients}
-        onEdit={(client) => {
-          setEditingClient(client);
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold">Clients</h2>
+        <Button onClick={() => {
+          setEditingClient(null);
           setIsDialogOpen(true);
-        }}
-        onDelete={() => {
-          // TODO: Implement delete functionality
-        }}
-      />
+        }}>
+          <Plus className="w-4 h-4 mr-2" />
+          Add Client
+        </Button>
+      </div>
+
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Name</TableHead>
+            <TableHead>Email</TableHead>
+            <TableHead>Phone</TableHead>
+            <TableHead>Company</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {clients?.map((client: Client) => (
+            <TableRow key={client.id}>
+              <TableCell>{client.name}</TableCell>
+              <TableCell>{client.email}</TableCell>
+              <TableCell>{client.phone}</TableCell>
+              <TableCell>{client.company}</TableCell>
+              <TableCell className="text-right">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setEditingClient(client);
+                    setIsDialogOpen(true);
+                  }}
+                >
+                  <Pencil className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    // TODO: Implement delete functionality
+                  }}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
 
       <ClientDialog
         isOpen={isDialogOpen}

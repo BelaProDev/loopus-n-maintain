@@ -1,139 +1,111 @@
 import { Dropbox } from 'dropbox';
-import { DropboxEntry, DropboxFile, DropboxFolder, DropboxDeleted } from '@/types/dropbox';
-import { withAsyncHandler, retryWithBackoff, createCancelablePromise } from './asyncUtils';
 
-const createDropboxClient = () => {
-  const accessToken = localStorage.getItem('dropbox_access_token');
+export const getDropboxClient = () => {
+  if (typeof window === 'undefined') return null;
+  
+  const tokens = JSON.parse(sessionStorage.getItem('dropbox_tokens') || '{}');
+  const accessToken = tokens.access_token;
+  
   if (!accessToken) {
-    throw new Error('Dropbox access token not found');
+    throw new Error('No Dropbox access token found in session storage');
   }
+  
   return new Dropbox({ accessToken });
 };
 
-export const uploadFile = async (file: File, path: string): Promise<DropboxFile> => {
-  const { data, error } = await withAsyncHandler(async () => {
-    const client = createDropboxClient();
-    const arrayBuffer = await file.arrayBuffer();
-    
-    const response = await retryWithBackoff(() => 
-      client.filesUpload({
-        path: `${path}/${file.name}`,
-        contents: arrayBuffer,
-      })
-    );
-    
-    if (!response?.result) throw new Error('Upload failed: No response data');
-    
-    return {
-      '.tag': 'file',
-      ...response.result,
-      name: file.name,
-    } as DropboxFile;
-  });
-
-  if (error) throw error;
-  if (!data) throw new Error('Upload failed: No data returned');
-  return data;
+const sanitizePath = (path: string) => {
+  const cleanPath = path.replace(/\/+/g, '/').replace(/^\//, '');
+  return `/loopusandmaintain/${cleanPath}`;
 };
 
-export const listFiles = async (path: string): Promise<DropboxEntry[]> => {
-  const { data, error } = await withAsyncHandler(async () => {
-    const client = createDropboxClient();
-    const response = await retryWithBackoff(() => 
-      client.filesListFolder({ path })
-    );
-    
-    if (!response?.result?.entries) throw new Error('List files failed: No entries found');
-    
-    return response.result.entries.map(entry => {
-      const baseEntry = {
-        ...entry,
-        '.tag': entry['.tag'] as 'file' | 'folder' | 'deleted',
-        name: entry.name || '',
-      };
+export const uploadFile = async (file: File | Blob, path: string, fileName?: string) => {
+  const dbx = getDropboxClient();
+  if (!dbx) throw new Error('Dropbox client not initialized');
 
-      switch (entry['.tag']) {
-        case 'file':
-          return baseEntry as DropboxFile;
-        case 'folder':
-          return baseEntry as DropboxFolder;
-        default:
-          return baseEntry as DropboxDeleted;
-      }
+  try {
+    if (file instanceof File && file.size > 150 * 1024 * 1024) {
+      throw new Error('File size exceeds 150MB limit');
+    }
+
+    const arrayBuffer = await file.arrayBuffer();
+    const fileContent = new Uint8Array(arrayBuffer);
+
+    const cleanFileName = fileName || (file instanceof File ? file.name : 'file');
+    const sanitizedFileName = cleanFileName.replace(/[^a-zA-Z0-9.-]/g, '_');
+    const sanitizedPath = `${sanitizePath(path)}/${sanitizedFileName}`.replace(/\/+/g, '/');
+
+    const response = await dbx.filesUpload({
+      path: sanitizedPath,
+      contents: fileContent,
+      mode: { '.tag': 'overwrite' },
+      autorename: true
     });
-  });
+    return response.result;
+  } catch (error) {
+    console.error('Dropbox upload error:', error);
+    throw new Error('Failed to upload file. Please try again.');
+  }
+};
 
-  if (error) throw error;
-  if (!data) throw new Error('List files failed: No data returned');
-  return data;
+export const createFolder = async (path: string) => {
+  const dbx = getDropboxClient();
+  if (!dbx) throw new Error('Dropbox client not initialized');
+
+  try {
+    const sanitizedPath = sanitizePath(path);
+    const response = await dbx.filesCreateFolderV2({
+      path: sanitizedPath,
+      autorename: true
+    });
+    return response.result;
+  } catch (error) {
+    console.error('Dropbox create folder error:', error);
+    throw new Error('Failed to create folder. Please try again.');
+  }
+};
+
+export const deleteFile = async (path: string) => {
+  const dbx = getDropboxClient();
+  if (!dbx) throw new Error('Dropbox client not initialized');
+
+  try {
+    const response = await dbx.filesDeleteV2({
+      path: path,
+    });
+    return response.result;
+  } catch (error) {
+    console.error('Dropbox delete error:', error);
+    throw new Error('Failed to delete file. Please try again.');
+  }
+};
+
+export const listFiles = async (path: string = '') => {
+  const dbx = getDropboxClient();
+  if (!dbx) throw new Error('Dropbox client not initialized');
+
+  try {
+    const sanitizedPath = path === '/' ? '/loopusandmaintain' : sanitizePath(path);
+    const response = await dbx.filesListFolder({
+      path: sanitizedPath,
+    });
+    return response.result.entries;
+  } catch (error) {
+    console.error('Dropbox list error:', error);
+    throw error;
+  }
 };
 
 export const downloadFile = async (path: string): Promise<Blob> => {
-  const { data, error } = await withAsyncHandler(async () => {
-    const client = createDropboxClient();
-    const response = await retryWithBackoff(() => 
-      client.filesDownload({ path })
-    );
-    
-    if (!response?.result) throw new Error('Download failed: No response data');
-    if (!('fileBlob' in response.result) || !(response.result.fileBlob instanceof Blob)) {
-      throw new Error('Download failed: Invalid file data');
-    }
-    
+  const dbx = getDropboxClient();
+  if (!dbx) throw new Error('Dropbox client not initialized');
+
+  try {
+    const response = await dbx.filesDownload({
+      path: path,
+    }) as any;
     return response.result.fileBlob;
-  });
-
-  if (error) throw error;
-  if (!data) throw new Error('Download failed: No data returned');
-  return data;
-};
-
-export const deleteFile = async (path: string): Promise<DropboxDeleted> => {
-  const { data, error } = await withAsyncHandler(async () => {
-    const client = createDropboxClient();
-    const response = await retryWithBackoff(() => 
-      client.filesDeleteV2({ path })
-    );
-    
-    if (!response?.result?.metadata) throw new Error('Delete failed: No metadata returned');
-    
-    return {
-      '.tag': 'deleted',
-      ...response.result.metadata,
-      name: path.split('/').pop() || '',
-    } as DropboxDeleted;
-  });
-
-  if (error) throw error;
-  if (!data) throw new Error('Delete failed: No data returned');
-  return data;
-};
-
-export const createFolder = async (path: string): Promise<DropboxFolder> => {
-  const { data, error } = await withAsyncHandler(async () => {
-    const client = createDropboxClient();
-    const response = await retryWithBackoff(() => 
-      client.filesCreateFolderV2({ path })
-    );
-    
-    if (!response?.result?.metadata) throw new Error('Create folder failed: No metadata returned');
-    
-    return {
-      '.tag': 'folder',
-      ...response.result.metadata,
-      name: path.split('/').pop() || '',
-    } as DropboxFolder;
-  });
-
-  if (error) throw error;
-  if (!data) throw new Error('Create folder failed: No data returned');
-  return data;
-};
-
-export const cancelableOperations = {
-  uploadFile: (file: File, path: string) => createCancelablePromise(uploadFile(file, path)),
-  listFiles: (path: string) => createCancelablePromise(listFiles(path)),
-  downloadFile: (path: string) => createCancelablePromise(downloadFile(path)),
-  deleteFile: (path: string) => createCancelablePromise(deleteFile(path)),
-  createFolder: (path: string) => createCancelablePromise(createFolder(path)),
+  } catch (error) {
+    console.error('Dropbox download error:', error);
+    throw error;
+  }
 };

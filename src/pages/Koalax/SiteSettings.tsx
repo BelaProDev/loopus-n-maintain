@@ -1,10 +1,9 @@
-import { Phone, Image, Link2, GitBranch } from "lucide-react";
+import { Phone, Image, Link2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import WhatsAppSettings from "./components/WhatsAppSettings";
 import LogoSettings from "./components/LogoSettings";
 import NavigationSettings from "./components/NavigationSettings";
-import GitControls from "./components/GitControls";
 
 const SiteSettings = () => {
   return (
@@ -25,10 +24,6 @@ const SiteSettings = () => {
             <Link2 className="w-4 h-4 mr-2" />
             Navigation Links
           </TabsTrigger>
-          <TabsTrigger value="git">
-            <GitBranch className="w-4 h-4 mr-2" />
-            Git Sync
-          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="whatsapp">
@@ -43,10 +38,6 @@ const SiteSettings = () => {
           <Card className="p-6">
             <NavigationSettings />
           </Card>
-        </TabsContent>
-
-        <TabsContent value="git">
-          <GitControls />
         </TabsContent>
       </Tabs>
     </div>

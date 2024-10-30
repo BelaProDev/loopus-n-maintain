@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
-import { fallbackDB } from "@/lib/fallback-db";
+import { faunaQueries } from "@/lib/fauna";
 import ContentGrid from "./components/ContentGrid";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -19,7 +19,7 @@ const ContentEditor = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      fallbackDB.insert('content', {
+      await faunaQueries.updateContent({
         key,
         type,
         content,

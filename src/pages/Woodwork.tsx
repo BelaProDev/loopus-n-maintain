@@ -1,5 +1,4 @@
-import ServiceHeader from "@/components/service/ServiceHeader";
-import ServiceForm from "@/components/service/ServiceForm";
+import ServiceLayout from "./ServiceLayout";
 
 const Woodwork = () => {
   const commonIssues = [
@@ -21,13 +20,12 @@ const Woodwork = () => {
   ];
 
   return (
-    <div className="space-y-8">
-      <ServiceHeader 
-        title="Woodworking Services"
-        description="Expert woodworking and carpentry services for your home or business. From custom furniture to repairs, we bring craftsmanship to every project."
-      />
-      <ServiceForm title="Woodworking Services" />
-    </div>
+    <ServiceLayout
+      title="Woodworking Services"
+      description="Expert woodworking and carpentry services for your home or business. From custom furniture to repairs, we bring craftsmanship to every project."
+      commonIssues={commonIssues}
+      faqs={faqs}
+    />
   );
 };
 

@@ -24,12 +24,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const session = localStorage.getItem('craft_coordination_session');
     const isValid = !!session;
     setIsAuthenticated(isValid);
-    
-    // Redirect to login if trying to access admin without auth
-    if (!isValid && window.location.pathname.startsWith('/koalax-admin')) {
-      navigate('/login');
-    }
-    
     return isValid;
   };
 

@@ -1,72 +1,206 @@
-import { Client, query as q } from 'faunadb';
+import { Client, fql, QueryArgument } from 'fauna';
+import { SHA256 } from 'crypto-js';
+import fallbackDb from './fallback-db.json';
+import { handleFaunaError, sanitizeForFauna } from './fauna/utils';
 
-const client = new Client({
-  secret: import.meta.env.VITE_FAUNA_SECRET_KEY || '',
-  domain: 'db.fauna.com',
-});
+const getFaunaClient = () => {
+  if (typeof window === 'undefined') return null;
+  return new Client({
+    secret: import.meta.env.VITE_FAUNA_SECRET_KEY,
+  });
+};
 
-export const fauna = {
-  client,
-  query: q,
-  find: async (collection: string, query = {}) => {
+interface EmailData {
+  email: string;
+  name: string;
+  type: string;
+  password?: string;
+  createdAt?: number;
+  updatedAt?: number;
+}
+
+interface ContentData {
+  key: string;
+  type: 'text' | 'textarea' | 'wysiwyg';
+  content: string;
+  language: string;
+  lastModified: number;
+  modifiedBy: string;
+}
+
+export const faunaQueries = {
+  getAllEmails: async () => {
+    const client = getFaunaClient();
+    if (!client) throw new Error('Fauna client not initialized');
+
     try {
-      const result = await client.query(
-        q.Map(
-          q.Paginate(q.Documents(q.Collection(collection))),
-          q.Lambda('ref', q.Get(q.Var('ref')))
-        )
-      );
+      const result = await client.query(fql`
+        let docs = Collection.byName("emails").all()
+        {
+          data: docs.map(doc => {
+            {
+              ref: { id: doc.id },
+              data: {
+                email: doc.data.email,
+                name: doc.data.name,
+                type: doc.data.type,
+                createdAt: doc.data.createdAt,
+                updatedAt: doc.data.updatedAt
+              }
+            }
+          })
+        }
+      `);
+      return result.data;
+    } catch (error) {
+      return handleFaunaError(error, fallbackDb.emails);
+    }
+  },
+
+  createEmail: async (data: EmailData) => {
+    const client = getFaunaClient();
+    if (!client) throw new Error('Fauna client not initialized');
+
+    try {
+      const timestamp = Date.now();
+      const hashedPassword = data.password ? SHA256(data.password).toString() : undefined;
+      const sanitizedData = sanitizeForFauna({
+        email: data.email,
+        name: data.name,
+        type: data.type,
+        password: hashedPassword,
+        createdAt: timestamp,
+        updatedAt: timestamp
+      });
       
-      if ('data' in result) {
-        return result.data.map((item: any) => ({
-          ...item.data,
-          ref: item.ref
-        }));
-      }
-      return [];
+      const result = await client.query(fql`
+        let doc = Collection.byName("emails").create({
+          data: ${sanitizedData}
+        })
+        {
+          ref: { id: doc.id },
+          data: doc.data
+        }
+      `);
+      return result;
     } catch (error) {
-      console.error('Fauna find error:', error);
-      // Fallback to local data if Fauna fails
-      const fallbackData = (await import('./fallback-db.json')).default;
-      return fallbackData[collection] || [];
+      return handleFaunaError(error, {
+        ref: { id: `fallback-${Date.now()}` },
+        data: { ...data, createdAt: Date.now(), updatedAt: Date.now() }
+      });
     }
   },
 
-  insert: async (collection: string, data: any) => {
+  updateEmail: async (id: string, data: Partial<EmailData>) => {
+    const client = getFaunaClient();
+    if (!client) throw new Error('Fauna client not initialized');
+
     try {
-      const result = await client.query(
-        q.Create(q.Collection(collection), { data })
-      );
+      const sanitizedData = sanitizeForFauna({
+        ...data,
+        updatedAt: Date.now()
+      });
+      
+      const result = await client.query(fql`
+        let doc = Collection.byName("emails")
+          .where(.id == ${id})
+          .first()
+          .update({ data: ${sanitizedData} })
+        {
+          ref: { id: doc.id },
+          data: doc.data
+        }
+      `);
       return result;
     } catch (error) {
-      console.error('Fauna insert error:', error);
-      throw error;
+      return handleFaunaError(error, {
+        ref: { id },
+        data: { ...data, updatedAt: Date.now() }
+      });
     }
   },
 
-  update: async (collection: string, ref: any, data: any) => {
+  deleteEmail: async (id: string) => {
+    const client = getFaunaClient();
+    if (!client) throw new Error('Fauna client not initialized');
+
     try {
-      const result = await client.query(
-        q.Update(q.Ref(q.Collection(collection), ref), { data })
-      );
-      return result;
+      return await client.query(fql`
+        Collection.byName("emails")
+          .where(.id == ${id})
+          .first()
+          .delete()
+      `);
     } catch (error) {
-      console.error('Fauna update error:', error);
-      throw error;
+      return handleFaunaError(error, { success: true });
     }
   },
 
-  delete: async (collection: string, ref: any) => {
+  getAllContent: async () => {
+    const client = getFaunaClient();
+    if (!client) throw new Error('Fauna client not initialized');
+
     try {
-      const result = await client.query(
-        q.Delete(q.Ref(q.Collection(collection), ref))
-      );
+      const result = await client.query(fql`
+        let docs = Collection.byName("contents").all()
+        {
+          data: docs.map(doc => doc.data)
+        }
+      `);
+      return result.data;
+    } catch (error) {
+      return handleFaunaError(error, fallbackDb.content);
+    }
+  },
+
+  getContent: async (key: string, language: string = 'en') => {
+    const client = getFaunaClient();
+    if (!client) throw new Error('Fauna client not initialized');
+
+    try {
+      const result = await client.query(fql`
+        Collection.byName("contents")
+          .where(.data.key == ${key} && .data.language == ${language})
+          .first()
+      `);
       return result;
     } catch (error) {
-      console.error('Fauna delete error:', error);
-      throw error;
+      return handleFaunaError(
+        error,
+        fallbackDb.content.find(c => c.key === key && c.language === language)
+      );
+    }
+  },
+
+  updateContent: async (data: ContentData) => {
+    const client = getFaunaClient();
+    if (!client) throw new Error('Fauna client not initialized');
+
+    try {
+      const sanitizedData = sanitizeForFauna(data);
+      return await client.query(fql`
+        let collection = Collection.byName("contents")
+        let existing = collection
+          .where(.data.key == ${data.key} && .data.language == ${data.language})
+          .first()
+        
+        if (existing != null) {
+          existing.update({
+            data: ${sanitizedData}
+          })
+        } else {
+          collection.create({
+            data: ${sanitizedData}
+          })
+        }
+      `);
+    } catch (error) {
+      return handleFaunaError(error, {
+        ref: { id: `fallback-${Date.now()}` },
+        data
+      });
     }
   }
 };
 
-export default fauna;
+export { getFaunaClient as client };

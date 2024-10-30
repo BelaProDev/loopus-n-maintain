@@ -1,18 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 
-export function useSession() {
+export const useSession = () => {
+  const { isAuthenticated } = useAuth();
   const [sessionChecked, setSessionChecked] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    const checkSession = async () => {
-      // For now, just simulate a session check
-      setIsAuthenticated(true);
+    const checkSession = () => {
+      const session = localStorage.getItem('craft_coordination_session');
       setSessionChecked(true);
+      return !!session;
     };
 
     checkSession();
-  }, []);
+  }, [isAuthenticated]);
 
-  return { sessionChecked, isAuthenticated };
-}
+  return { sessionChecked };
+};

@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
-import { fallbackDB } from "@/lib/fallback-db";
+import { businessQueries } from "@/lib/fauna/business";
 
 interface InvoiceDialogProps {
   isOpen: boolean;
@@ -38,12 +38,12 @@ const InvoiceDialog = ({
   
   const { data: clients } = useQuery({
     queryKey: ['clients'],
-    queryFn: () => fallbackDB.find('clients')
+    queryFn: businessQueries.getClients
   });
 
   const { data: providers } = useQuery({
     queryKey: ['providers'],
-    queryFn: () => fallbackDB.find('providers')
+    queryFn: businessQueries.getProviders
   });
 
   const addItem = () => {

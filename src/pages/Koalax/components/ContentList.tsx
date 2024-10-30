@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { fallbackDB } from "@/lib/fallback-db";
+import { faunaQueries } from "@/lib/fauna";
 import fallbackDb from "@/lib/fallback-db.json";
 
 interface ContentListProps {
@@ -9,11 +9,13 @@ interface ContentListProps {
 }
 
 const ContentList = ({ storageType }: ContentListProps) => {
-  const { data: content, isLoading } = useQuery({
+  const { data: faunaContent, isLoading } = useQuery({
     queryKey: ['content', storageType],
-    queryFn: () => storageType === "fauna" ? fallbackDB.find('content') : fallbackDb.content,
+    queryFn: () => storageType === "fauna" ? faunaQueries.getAllContent() : fallbackDb.content,
     enabled: storageType === "fauna"
   });
+
+  const content = storageType === "fauna" ? faunaContent : fallbackDb.content;
 
   if (isLoading) return <div>Loading...</div>;
 
