@@ -25,8 +25,11 @@ const FileList = ({ files, onDownload }: FileListProps) => {
         {files?.map((file) => {
           if (file['.tag'] === 'deleted') return null;
           
+          // Use path_lower as a unique key since it's available on all non-deleted file types
+          const key = 'path_lower' in file ? file.path_lower : '';
+          
           return (
-            <TableRow key={file.id}>
+            <TableRow key={key}>
               <TableCell>{file.name}</TableCell>
               <TableCell>
                 {'client_modified' in file && file.client_modified
