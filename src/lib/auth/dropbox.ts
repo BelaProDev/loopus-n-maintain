@@ -23,6 +23,18 @@ const setStorageValue = (key: string, value: string, persistent = false) => {
   }
 };
 
+const isPWA = () => {
+  if (!isBrowser) return false;
+  return window.matchMedia('(display-mode: standalone)').matches || 
+         (window.navigator as any).standalone || 
+         document.referrer.includes('android-app://');
+};
+
+const isMobile = () => {
+  if (!isBrowser) return false;
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+};
+
 export const dropboxAuth = {
   async initiateAuth() {
     if (!isBrowser) return null;
@@ -50,6 +62,15 @@ export const dropboxAuth = {
 
       const authUrl = `${DROPBOX_AUTH_URL}?${params.toString()}`;
       
+      // Use redirect flow for PWA and mobile
+      if (isPWA() || isMobile()) {
+        // Store the current path to return after auth
+        setStorageValue('dropbox_return_path', window.location.pathname);
+        window.location.href = authUrl;
+        return new Promise(() => {}); // Never resolves as we're redirecting
+      }
+
+      // Use popup flow for desktop
       const width = 600;
       const height = 600;
       const left = window.screenX + (window.outerWidth - width) / 2;
@@ -113,6 +134,14 @@ export const dropboxAuth = {
     const tokens = await response.json();
     setStorageValue('dropbox_tokens', JSON.stringify(tokens), true);
     localStorage.removeItem('dropbox_code_verifier');
+    
+    // Handle return path for PWA/mobile flow
+    const returnPath = getStorageValue('dropbox_return_path');
+    if (returnPath) {
+      localStorage.removeItem('dropbox_return_path');
+      window.location.href = returnPath;
+    }
+    
     return tokens;
   },
 
