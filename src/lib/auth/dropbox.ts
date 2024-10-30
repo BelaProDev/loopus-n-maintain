@@ -29,6 +29,7 @@ export const dropboxAuth = {
       redirect_uri: REDIRECT_URI
     });
 
+    // Open popup with specific dimensions and centered position
     const width = 600;
     const height = 600;
     const left = window.screenX + (window.outerWidth - width) / 2;
@@ -52,10 +53,10 @@ export const dropboxAuth = {
         }
       }, 1000);
 
-      window.addEventListener('message', async (event) => {
+      const handleMessage = async (event: MessageEvent) => {
         if (event.data?.type === 'DROPBOX_AUTH_CODE') {
+          window.removeEventListener('message', handleMessage);
           clearInterval(checkClosed);
-          popup.close();
           try {
             const response = await this.handleAuthCallback(event.data.code);
             resolve(response);
@@ -63,7 +64,9 @@ export const dropboxAuth = {
             reject(error);
           }
         }
-      });
+      };
+
+      window.addEventListener('message', handleMessage);
     });
   },
 

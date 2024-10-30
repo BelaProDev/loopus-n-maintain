@@ -7,7 +7,12 @@ const DropboxCallback = () => {
   useEffect(() => {
     const code = searchParams.get('code');
     if (code) {
-      window.opener?.postMessage({ type: 'DROPBOX_AUTH_CODE', code }, '*');
+      // Send the auth code back to the opener window
+      if (window.opener) {
+        window.opener.postMessage({ type: 'DROPBOX_AUTH_CODE', code }, '*');
+        // Close the popup after sending the message
+        window.close();
+      }
     }
   }, [searchParams]);
 
