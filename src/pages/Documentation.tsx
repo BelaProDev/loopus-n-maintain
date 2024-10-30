@@ -35,7 +35,7 @@ const Documentation = () => {
               <li>🔐 Password protected admin portal</li>
               <li>📊 Comprehensive maintenance tracking (Koalax)</li>
               <li>🔄 Fallback database system for offline functionality</li>
-              <li>📄 Advanced document management with Dropbox integration</li>
+              <li>📄 Document management with async Dropbox integration</li>
               <li>📊 Business management per activity</li>
               <li>🔄 Export capabilities (PDF, DOCX)</li>
               <li>📝 Content management system with fallback database</li>
@@ -64,38 +64,22 @@ VITE_WHATSAPP_ARCHITECTURE=+1234567890
 # Admin Access
 VITE_ADMIN_KOALAX_MDP=your-admin-password
 
-# Database & Storage
-VITE_FAUNA_SECRET_KEY=your-fauna-secret-key
+# Storage & APIs
 VITE_DROPBOX_ACCESS_TOKEN=your-dropbox-token`}
               </pre>
             </Card>
           </section>
 
           <section className="mt-8 space-y-6">
-            <h2 className="text-2xl font-semibold">Business Management Features</h2>
+            <h2 className="text-2xl font-semibold">Document Management</h2>
             <div className="space-y-4">
-              <h3 className="text-xl font-semibold">Client Management</h3>
+              <h3 className="text-xl font-semibold">Dropbox Integration</h3>
               <ul className="list-disc pl-6 space-y-2 text-gray-700">
-                <li>Add and edit client profiles</li>
-                <li>Track client contact information</li>
-                <li>Manage company details and VAT numbers</li>
-                <li>View client history and interactions</li>
-              </ul>
-
-              <h3 className="text-xl font-semibold">Service Provider Management</h3>
-              <ul className="list-disc pl-6 space-y-2 text-gray-700">
-                <li>Manage provider profiles and specialties</li>
-                <li>Track provider availability status</li>
-                <li>Service categorization (Electrics, Plumbing, etc.)</li>
-                <li>Provider rating system</li>
-              </ul>
-
-              <h3 className="text-xl font-semibold">Invoice Management</h3>
-              <ul className="list-disc pl-6 space-y-2 text-gray-700">
-                <li>Create and edit invoices</li>
-                <li>Track payment status</li>
-                <li>Automated invoice numbering</li>
-                <li>Export invoices to PDF</li>
+                <li>Asynchronous file operations using native async/await</li>
+                <li>Secure file upload and download</li>
+                <li>Folder creation and management</li>
+                <li>File deletion with confirmation</li>
+                <li>Automatic error handling and retry mechanisms</li>
               </ul>
             </div>
           </section>

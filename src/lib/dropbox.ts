@@ -1,5 +1,4 @@
 import { dropboxAuth } from './auth/dropbox';
-import { files } from 'dropbox';
 import { DropboxEntry, DropboxFile, DropboxFolder, DropboxDeleted } from '@/types/dropbox';
 
 export const uploadFile = async (file: File, path: string): Promise<DropboxFile> => {
