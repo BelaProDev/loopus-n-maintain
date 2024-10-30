@@ -41,7 +41,7 @@ status = 200
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
-  external_node_modules = ["nodemailer", "mongodb"]
+  external_node_modules = ["mongodb", "nodemailer"]
 
 [build.environment]
   NODE_VERSION = "18"
