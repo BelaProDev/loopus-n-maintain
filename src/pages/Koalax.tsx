@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -32,6 +31,11 @@ const Koalax = () => {
     isUpdating,
     isDeleting,
   } = useEmails();
+
+  useEffect(() => {
+    const isAuth = localStorage.getItem('koalax_authenticated') === 'true';
+    setIsAuthenticated(isAuth);
+  }, []);
 
   const handleEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault();
