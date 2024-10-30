@@ -14,7 +14,7 @@ const urlsToCache = [
   '/login'
 ];
 
-// Store for tokens
+// Store for auth tokens
 let dropboxTokens = null;
 
 // Helper function to check if a request requires authentication
@@ -32,14 +32,24 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// Message event - handle token storage
+// Message event handler
 self.addEventListener('message', (event) => {
   if (event.data.type === 'STORE_DROPBOX_TOKENS') {
     dropboxTokens = event.data.tokens;
-    // Respond to confirm storage
-    event.ports[0].postMessage({ stored: true });
+    // Store in cache
+    caches.open(CACHE_NAME).then(cache => {
+      cache.put(
+        new Request('/_dropbox_tokens'),
+        new Response(JSON.stringify(dropboxTokens))
+      );
+    });
   } else if (event.data.type === 'GET_DROPBOX_TOKENS') {
     event.ports[0].postMessage({ tokens: dropboxTokens });
+  } else if (event.data.type === 'REMOVE_DROPBOX_TOKENS') {
+    dropboxTokens = null;
+    caches.open(CACHE_NAME).then(cache => {
+      cache.delete('/_dropbox_tokens');
+    });
   }
 });
 
