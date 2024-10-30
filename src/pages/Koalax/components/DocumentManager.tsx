@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
@@ -20,19 +20,15 @@ const DocumentManager = () => {
   const { data: files, isLoading, refetch } = useQuery({
     queryKey: ['dropbox-files', currentPath],
     queryFn: () => listFiles(currentPath),
-    enabled: isAuthenticated
+    enabled: isAuthenticated,
+    staleTime: 30000, // Cache data for 30 seconds
   });
 
   const uploadMutation = useMutation({
-    mutationFn: async (file: File) => {
-      await uploadFile(file, currentPath);
-    },
+    mutationFn: async (file: File) => uploadFile(file, currentPath),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['dropbox-files'] });
-      toast({
-        title: "Success",
-        description: "File uploaded successfully",
-      });
+      toast({ title: "Success", description: "File uploaded successfully" });
     },
     onError: (error) => {
       toast({
@@ -44,16 +40,11 @@ const DocumentManager = () => {
   });
 
   const createFolderMutation = useMutation({
-    mutationFn: async (folderPath: string) => {
-      await createFolder(folderPath);
-    },
+    mutationFn: (folderPath: string) => createFolder(folderPath),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['dropbox-files'] });
       setNewFolderName("");
-      toast({
-        title: "Success",
-        description: "Folder created successfully",
-      });
+      toast({ title: "Success", description: "Folder created successfully" });
     },
     onError: (error) => {
       toast({
@@ -64,7 +55,7 @@ const DocumentManager = () => {
     }
   });
 
-  const handleLogin = async () => {
+  const handleLogin = useCallback(async () => {
     try {
       const response = await dropboxAuth.initiateAuth();
       if (response?.access_token) {
@@ -82,29 +73,23 @@ const DocumentManager = () => {
         variant: "destructive",
       });
     }
-  };
+  }, [toast, refetch]);
 
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      uploadMutation.mutate(file);
-    }
-  };
+    if (file) uploadMutation.mutate(file);
+  }, [uploadMutation]);
 
-  const handleCreateFolder = () => {
+  const handleCreateFolder = useCallback(() => {
     if (newFolderName.trim()) {
       const fullPath = `${currentPath}${currentPath.endsWith('/') ? '' : '/'}${newFolderName.trim()}`;
       createFolderMutation.mutate(fullPath);
     }
-  };
+  }, [newFolderName, currentPath, createFolderMutation]);
 
-  const handleCreateInvoiceFolder = () => {
-    createFolderMutation.mutate('/invoices');
-  };
-
-  const handleNavigate = (path: string) => {
+  const handleNavigate = useCallback((path: string) => {
     setCurrentPath(path);
-  };
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -121,7 +106,7 @@ const DocumentManager = () => {
       {isAuthenticated && (
         <div className="space-y-4">
           <DocumentToolbar
-            onCreateInvoiceFolder={handleCreateInvoiceFolder}
+            onCreateInvoiceFolder={() => createFolderMutation.mutate('/invoices')}
             onFileSelect={handleFileSelect}
             isUploading={uploadMutation.isPending}
             onRefresh={refetch}
@@ -159,4 +144,4 @@ const DocumentManager = () => {
   );
 };
 
-export default DocumentManager;
+export default memo(DocumentManager);
