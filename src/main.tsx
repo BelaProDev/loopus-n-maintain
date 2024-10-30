@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { Buffer } from 'buffer'
 import App from './App'
 import './index.css'
 import Login from './pages/Login'
@@ -17,6 +18,9 @@ import { Toaster } from '@/components/ui/toaster'
 import { AuthProvider } from '@/contexts/AuthContext'
 import Index from './pages/Index'
 
+// Polyfill Buffer for the browser environment
+globalThis.Buffer = Buffer;
+
 // Create QueryClient instance with explicit configuration
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,7 +28,6 @@ const queryClient = new QueryClient({
       staleTime: 5 * 60 * 1000,
       retry: false,
       refetchOnWindowFocus: false,
-      // Ensure query results are properly initialized
       initialData: undefined
     }
   }
