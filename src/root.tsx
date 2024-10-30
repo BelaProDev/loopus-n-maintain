@@ -6,8 +6,15 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AuthProvider } from "./contexts/AuthContext";
+import { TooltipProvider } from "./components/ui/tooltip";
+import { Toaster } from "./components/ui/sonner";
+import "./index.css";
 
-export default function Root() {
+const queryClient = new QueryClient();
+
+export default function App() {
   return (
     <html lang="en">
       <head>
@@ -17,7 +24,16 @@ export default function Root() {
         <Links />
       </head>
       <body>
-        <Outlet />
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <TooltipProvider>
+              <Toaster />
+              <div className="flex flex-col min-h-screen">
+                <Outlet />
+              </div>
+            </TooltipProvider>
+          </AuthProvider>
+        </QueryClientProvider>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
