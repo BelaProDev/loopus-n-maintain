@@ -21,6 +21,7 @@ A comprehensive building maintenance and professional craft services platform de
   - Document Management with Dropbox integration
   - Content Management System
   - Email Management
+  - Password protected admin space
 
 ## Getting Started
 
@@ -43,6 +44,9 @@ VITE_WHATSAPP_PLUMBING=
 VITE_WHATSAPP_IRONWORK=
 VITE_WHATSAPP_WOODWORK=
 VITE_WHATSAPP_ARCHITECTURE=
+
+# Admin Access
+VITE_ADMIN_KOALAX_MDP=
 
 # Database & Storage
 VITE_FAUNA_SECRET_KEY=

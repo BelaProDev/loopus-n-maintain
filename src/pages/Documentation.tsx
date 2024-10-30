@@ -32,7 +32,7 @@ const Documentation = () => {
               <li>📱 Mobile-friendly PWA with offline capabilities</li>
               <li>🌐 Multi-language support for diverse clients</li>
               <li>📧 Instant notification system</li>
-              <li>🔐 Secure client portal</li>
+              <li>🔐 Password protected admin portal</li>
               <li>📊 Comprehensive maintenance tracking (Koalax)</li>
               <li>🔄 Fallback database system for offline functionality</li>
               <li>📄 Advanced document management with Dropbox integration</li>
@@ -40,6 +40,35 @@ const Documentation = () => {
               <li>🔄 Export capabilities (PDF, DOCX)</li>
               <li>📝 Content management system with fallback database</li>
             </ul>
+          </section>
+
+          <section className="mt-8 space-y-6">
+            <h2 className="text-2xl font-semibold">Environment Variables</h2>
+            <Card className="bg-gray-100 p-4">
+              <pre className="overflow-x-auto">
+{`# Email Configuration
+SMTP_HOSTNAME=smtp.example.com
+SMTP_PORT=587
+SMTP_USERNAME=your-username
+SMTP_PASSWORD=your-password
+SMTP_FROM_EMAIL=noreply@yourdomain.com
+CONTACT_FORM_RECIPIENTS=email1@domain.com,email2@domain.com
+
+# WhatsApp Integration
+VITE_WHATSAPP_ELECTRICS=+1234567890
+VITE_WHATSAPP_PLUMBING=+1234567890
+VITE_WHATSAPP_IRONWORK=+1234567890
+VITE_WHATSAPP_WOODWORK=+1234567890
+VITE_WHATSAPP_ARCHITECTURE=+1234567890
+
+# Admin Access
+VITE_ADMIN_KOALAX_MDP=your-admin-password
+
+# Database & Storage
+VITE_FAUNA_SECRET_KEY=your-fauna-secret-key
+VITE_DROPBOX_ACCESS_TOKEN=your-dropbox-token`}
+              </pre>
+            </Card>
           </section>
 
           <section className="mt-8 space-y-6">
@@ -69,53 +98,6 @@ const Documentation = () => {
                 <li>Export invoices to PDF</li>
               </ul>
             </div>
-          </section>
-
-          <section className="mt-8 space-y-6">
-            <h2 className="text-2xl font-semibold">Admin Features</h2>
-            <ul className="list-disc pl-6 space-y-2 text-gray-700">
-              <li>Content Management
-                <ul className="list-disc pl-6 mt-2">
-                  <li>Text content editing with live preview</li>
-                  <li>Database fallback system</li>
-                  <li>Multi-language support</li>
-                </ul>
-              </li>
-              <li>Business Management
-                <ul className="list-disc pl-6 mt-2">
-                  <li>Activity-specific dashboards</li>
-                  <li>Client and provider management</li>
-                  <li>Invoice generation and tracking</li>
-                  <li>Document storage with Dropbox</li>
-                  <li>Export functionality (PDF/DOCX)</li>
-                </ul>
-              </li>
-            </ul>
-          </section>
-
-          <section className="mt-8">
-            <h2 className="text-2xl font-semibold mb-4">Environment Variables</h2>
-            <Card className="bg-gray-100 p-4">
-              <pre className="overflow-x-auto">
-{`# Email Configuration
-SMTP_HOSTNAME=smtp.example.com
-SMTP_PORT=587
-SMTP_USERNAME=your-username
-SMTP_PASSWORD=your-password
-SMTP_FROM_EMAIL=noreply@yourdomain.com
-CONTACT_FORM_RECIPIENTS=email1@domain.com,email2@domain.com
-
-# WhatsApp Integration
-VITE_WHATSAPP_ELECTRICS=+1234567890
-VITE_WHATSAPP_PLUMBING=+1234567890
-VITE_WHATSAPP_IRONWORK=+1234567890
-VITE_WHATSAPP_WOODWORK=+1234567890
-VITE_WHATSAPP_ARCHITECTURE=+1234567890
-
-# Database Configuration
-VITE_FAUNA_SECRET_KEY=your-fauna-secret-key`}
-              </pre>
-            </Card>
           </section>
         </Card>
       </main>
