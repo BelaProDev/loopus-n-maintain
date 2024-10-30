@@ -1,33 +1,38 @@
 import { MongoDatabase, DbCollection, BaseDocument, DbQueryResult } from './types';
+import { withAsyncHandler, retryWithBackoff } from '../asyncUtils';
 
 async function performDbOperation(operation: string, collection: string, data: any) {
-  try {
-    const response = await fetch('/.netlify/functions/db-operations', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        operation,
-        collection,
-        data,
-      }),
-    });
+  return await retryWithBackoff(async () => {
+    const { data: result, error } = await withAsyncHandler(
+      async () => {
+        const response = await fetch('/.netlify/functions/db-operations', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            operation,
+            collection,
+            data,
+          }),
+        });
 
-    if (!response.ok) {
-      throw new Error(`Database operation failed: ${response.statusText}`);
-    }
+        if (!response.ok) {
+          throw new Error(`Database operation failed: ${response.statusText}`);
+        }
 
-    const result = await response.json();
-    if (result.error) {
-      throw new Error(result.error);
-    }
+        const result = await response.json();
+        if (result.error) {
+          throw new Error(result.error);
+        }
 
+        return result;
+      }
+    );
+
+    if (error) throw error;
     return result;
-  } catch (error) {
-    console.error('Database operation error:', error);
-    throw error;
-  }
+  });
 }
 
 export async function getMongoClient(): Promise<MongoDatabase> {
