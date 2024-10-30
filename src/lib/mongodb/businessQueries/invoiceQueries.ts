@@ -29,11 +29,13 @@ export const invoiceQueries = {
       if (!db) throw new Error('Database connection failed');
 
       const queryResult = await db.collection('invoices').find();
-      const invoices = await queryResult.sort({ createdAt: -1 }).toArray();
-      return invoices.map(invoice => ({
-        id: invoice._id?.toString(),
-        ...invoice
-      }));
+      const invoices = await queryResult.toArray();
+      return invoices
+        .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
+        .map(invoice => ({
+          id: invoice._id?.toString(),
+          ...invoice
+        }));
     } catch (error) {
       return handleMongoError(error, []);
     }

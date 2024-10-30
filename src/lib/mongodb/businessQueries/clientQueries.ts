@@ -29,11 +29,13 @@ export const clientQueries = {
       if (!db) throw new Error('Database connection failed');
       
       const queryResult = await db.collection('clients').find({ type: 'client' });
-      const clients = await queryResult.sort({ name: 1 }).toArray();
-      return clients.map(client => ({
-        id: client._id?.toString(),
-        ...client
-      }));
+      const clients = await queryResult.toArray();
+      return clients
+        .sort((a, b) => (a.name || '').localeCompare(b.name || ''))
+        .map(client => ({
+          id: client._id?.toString(),
+          ...client
+        }));
     } catch (error) {
       return handleMongoError(error, []);
     }

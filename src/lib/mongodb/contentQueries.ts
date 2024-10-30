@@ -21,8 +21,9 @@ export const contentQueries = {
       } : {};
 
       const queryResult = await db.collection('contents').find(query);
-      const content = await queryResult.sort({ key: 1 }).toArray();
-      return content;
+      const content = await queryResult.toArray();
+      return content
+        .sort((a, b) => (a.key || '').localeCompare(b.key || ''));
     } catch (error) {
       return handleMongoError(error, fallbackDb.content);
     }
