@@ -35,7 +35,7 @@ const Documentation = () => {
               <li>🔐 Password protected admin portal</li>
               <li>📊 Comprehensive maintenance tracking (Koalax)</li>
               <li>🔄 Fallback database system for offline functionality</li>
-              <li>📄 Document management with async Dropbox integration</li>
+              <li>📄 Asynchronous document management with Dropbox</li>
               <li>📊 Business management per activity</li>
               <li>🔄 Export capabilities (PDF, DOCX)</li>
               <li>📝 Content management system with fallback database</li>
