@@ -1,9 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import fallbackDb from "@/lib/fallback-db.json";
 
 interface AuthContextType {
   isAuthenticated: boolean;
+  userEmail: string | null;
+  userRole: string | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   checkAuth: () => boolean;
@@ -13,6 +16,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -22,32 +27,49 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const checkAuth = () => {
     const session = localStorage.getItem('craft_coordination_session');
-    const isValid = !!session;
-    setIsAuthenticated(isValid);
-    return isValid;
+    if (session) {
+      const sessionData = JSON.parse(session);
+      setIsAuthenticated(true);
+      setUserEmail(sessionData.email);
+      setUserRole(sessionData.role);
+      return true;
+    }
+    return false;
   };
 
   const login = async (email: string, password: string) => {
-    try {
-      // TODO: Implement real authentication
+    const user = fallbackDb.users.find(
+      (u) => u.email === email && u.password === password
+    );
+
+    if (user) {
       setIsAuthenticated(true);
-      localStorage.setItem('craft_coordination_session', 'true');
+      setUserEmail(user.email);
+      setUserRole(user.role);
+      
+      localStorage.setItem('craft_coordination_session', JSON.stringify({
+        email: user.email,
+        role: user.role
+      }));
+      
       toast({
         title: "Login successful",
         description: "Welcome back!",
       });
-    } catch (error) {
+    } else {
       toast({
         title: "Login failed",
-        description: "Please check your credentials and try again.",
+        description: "Invalid email or password",
         variant: "destructive",
       });
-      throw error;
+      throw new Error("Invalid credentials");
     }
   };
 
   const logout = () => {
     setIsAuthenticated(false);
+    setUserEmail(null);
+    setUserRole(null);
     localStorage.removeItem('craft_coordination_session');
     navigate('/');
     toast({
@@ -57,7 +79,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout, checkAuth }}>
+    <AuthContext.Provider value={{ 
+      isAuthenticated, 
+      userEmail, 
+      userRole, 
+      login, 
+      logout, 
+      checkAuth 
+    }}>
       {children}
     </AuthContext.Provider>
   );

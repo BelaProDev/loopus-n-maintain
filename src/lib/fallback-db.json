@@ -34,5 +34,22 @@
       "key": "koalax_password",
       "value": "miaouw00"
     }
+  ],
+  "users": [
+    {
+      "email": "pro.belalawson@gmail.com",
+      "password": "miaouw004",
+      "role": "admin"
+    },
+    {
+      "email": "belalawson@gmail.com",
+      "password": "miaouw0049",
+      "role": "user"
+    },
+    {
+      "email": "diplodocus@hello.io",
+      "password": "miaouw6749",
+      "role": "user"
+    }
   ]
 }
