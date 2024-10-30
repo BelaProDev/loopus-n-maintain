@@ -29,10 +29,11 @@ const KoalaxAuth = () => {
         });
       } else {
         toast({
-          title: "Error",
-          description: "Invalid password",
+          title: "Access Denied",
+          description: "Invalid password. Please try again.",
           variant: "destructive",
         });
+        setPassword("");
       }
     } catch (error) {
       toast({
