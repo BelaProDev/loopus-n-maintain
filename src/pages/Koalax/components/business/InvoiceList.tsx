@@ -7,6 +7,7 @@ import { Plus, Pencil, Trash2 } from "lucide-react";
 import { Invoice } from "@/types/business";
 import InvoiceDialog from "./InvoiceDialog";
 import { useToast } from "@/components/ui/use-toast";
+import { exportToPDF } from "@/lib/documentExport";
 
 const InvoiceList = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -71,6 +72,26 @@ const InvoiceList = () => {
     createMutation.mutate(invoiceData);
   };
 
+  const handleExport = async (invoice: Invoice) => {
+    try {
+      const blob = await exportToPDF(invoice);
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `invoice-${invoice.number}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to export invoice",
+        variant: "destructive"
+      });
+    }
+  };
+
   if (isLoading) return <div>Loading...</div>;
 
   return (
@@ -132,6 +153,13 @@ const InvoiceList = () => {
                   onClick={() => deleteMutation.mutate(invoice.id)}
                 >
                   <Trash2 className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleExport(invoice)}
+                >
+                  Export
                 </Button>
               </TableCell>
             </TableRow>
