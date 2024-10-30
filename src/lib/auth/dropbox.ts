@@ -30,8 +30,42 @@ export const dropboxAuth = {
       token_access_type: 'offline'
     });
 
-    // Redirect to Dropbox auth page
-    window.location.href = `${DROPBOX_AUTH_URL}?${params.toString()}`;
+    // Open popup window
+    const width = 600;
+    const height = 600;
+    const left = window.screenX + (window.outerWidth - width) / 2;
+    const top = window.screenY + (window.outerHeight - height) / 2;
+    const popup = window.open(
+      `${DROPBOX_AUTH_URL}?${params.toString()}`,
+      'Dropbox Auth',
+      `width=${width},height=${height},left=${left},top=${top}`
+    );
+
+    if (!popup) {
+      throw new Error('Popup blocked. Please allow popups for this site.');
+    }
+
+    return new Promise((resolve, reject) => {
+      const checkClosed = setInterval(() => {
+        if (popup.closed) {
+          clearInterval(checkClosed);
+          reject(new Error('Authentication cancelled'));
+        }
+      }, 1000);
+
+      window.addEventListener('message', async (event) => {
+        if (event.data?.type === 'DROPBOX_AUTH_CODE') {
+          clearInterval(checkClosed);
+          popup.close();
+          try {
+            const response = await this.handleAuthCallback(event.data.code);
+            resolve(response);
+          } catch (error) {
+            reject(error);
+          }
+        }
+      });
+    });
   },
 
   async handleAuthCallback(code: string): Promise<DropboxTokenResponse> {

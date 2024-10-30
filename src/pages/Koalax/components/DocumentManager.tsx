@@ -1,9 +1,27 @@
 import { Button } from "@/components/ui/button";
 import { useDropboxAuth } from "@/hooks/useDropboxAuth";
 import { LogIn } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 const DocumentManager = () => {
   const { isAuthenticated, login, logout } = useDropboxAuth();
+  const { toast } = useToast();
+
+  const handleLogin = async () => {
+    try {
+      await login();
+      toast({
+        title: "Success",
+        description: "Successfully connected to Dropbox",
+      });
+    } catch (error) {
+      toast({
+        title: "Authentication Failed",
+        description: error instanceof Error ? error.message : "Failed to connect to Dropbox",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -14,7 +32,7 @@ const DocumentManager = () => {
             Disconnect Dropbox
           </Button>
         ) : (
-          <Button onClick={login}>
+          <Button onClick={handleLogin}>
             <LogIn className="w-4 h-4 mr-2" />
             Connect Dropbox
           </Button>
