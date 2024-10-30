@@ -63,11 +63,6 @@ const ProviderList = () => {
       type: 'provider' as const
     };
 
-    if (editingProvider) {
-      // TODO: Implement update functionality
-      return;
-    }
-
     createMutation.mutate(providerData);
   };
 
@@ -102,10 +97,7 @@ const ProviderList = () => {
               <TableCell>{provider.name}</TableCell>
               <TableCell className="capitalize">{provider.service}</TableCell>
               <TableCell>
-                <div className="flex items-center">
-                  <Star className="w-4 h-4 text-yellow-400 mr-1" />
-                  {provider.rating || "N/A"}
-                </div>
+                {provider.rating || "N/A"}
               </TableCell>
               <TableCell>
                 <span className={`px-2 py-1 rounded-full text-xs ${

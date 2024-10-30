@@ -1,7 +1,7 @@
 import fallbackData from './fallback-db.json';
 import { toast } from "@/components/ui/use-toast";
 
-type Table = 'emails' | 'content' | 'clients' | 'providers' | 'invoices';
+export type Table = 'emails' | 'content' | 'clients' | 'providers' | 'invoices' | 'whatsapp-numbers';
 
 class FallbackDB {
   private storage: Map<string, any[]>;
@@ -36,27 +36,28 @@ class FallbackDB {
     }
   }
 
-  find(table: Table, query: Record<string, any> = {}) {
+  async find(table: Table, query: Record<string, any> = {}) {
     const data = this.storage.get(table) || [];
-    return data.filter(item => 
+    return Promise.resolve(data.filter(item => 
       Object.entries(query).every(([key, value]) => item[key] === value)
-    );
+    ));
   }
 
-  findOne(table: Table, query: Record<string, any>) {
-    return this.find(table, query)[0] || null;
+  async findOne(table: Table, query: Record<string, any>) {
+    const results = await this.find(table, query);
+    return Promise.resolve(results[0] || null);
   }
 
-  insert(table: Table, data: any) {
+  async insert(table: Table, data: any) {
     const tableData = this.storage.get(table) || [];
     const newItem = { ...data, id: crypto.randomUUID() };
     tableData.push(newItem);
     this.storage.set(table, tableData);
     this.persistTable(table);
-    return { insertedId: newItem.id };
+    return Promise.resolve({ insertedId: newItem.id });
   }
 
-  update(table: Table, query: Record<string, any>, update: Record<string, any>) {
+  async update(table: Table, query: Record<string, any>, update: Record<string, any>) {
     const tableData = this.storage.get(table) || [];
     let modifiedCount = 0;
     const updatedData = tableData.map(item => {
@@ -68,10 +69,10 @@ class FallbackDB {
     });
     this.storage.set(table, updatedData);
     this.persistTable(table);
-    return { modifiedCount };
+    return Promise.resolve({ modifiedCount });
   }
 
-  delete(table: Table, query: Record<string, any>) {
+  async delete(table: Table, query: Record<string, any>) {
     const tableData = this.storage.get(table) || [];
     const filteredData = tableData.filter(item => 
       !Object.entries(query).every(([key, value]) => item[key] === value)
@@ -79,20 +80,22 @@ class FallbackDB {
     const deletedCount = tableData.length - filteredData.length;
     this.storage.set(table, filteredData);
     this.persistTable(table);
-    return { deletedCount };
+    return Promise.resolve({ deletedCount });
   }
 
-  clearTable(table: Table) {
+  async clearTable(table: Table) {
     this.storage.set(table, []);
     this.persistTable(table);
+    return Promise.resolve();
   }
 
-  clearAll() {
+  async clearAll() {
     this.storage.clear();
     this.initializeStorage();
     Object.keys(fallbackData).forEach(table => {
       localStorage.removeItem(`${this.prefix}${table}`);
     });
+    return Promise.resolve();
   }
 }
 
