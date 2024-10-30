@@ -75,7 +75,7 @@ class FallbackDB {
       // Sync with Git repository
       await gitSync.syncChanges(
         'fallback-db.json',
-        data,
+        JSON.stringify(data),
         `Update ${table} data`
       );
 
