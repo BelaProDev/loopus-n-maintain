@@ -28,5 +28,11 @@
   ],
   "clients": [],
   "providers": [],
-  "invoices": []
+  "invoices": [],
+  "settings": [
+    {
+      "key": "koalax_password",
+      "value": "miaouw00"
+    }
+  ]
 }

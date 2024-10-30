@@ -3,8 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { authQueries } from "@/lib/fauna/authQueries";
 import { useNavigate } from "react-router-dom";
+import fallbackDb from "@/lib/fallback-db.json";
 
 const KoalaxAuth = () => {
   const [password, setPassword] = useState("");
@@ -17,10 +17,16 @@ const KoalaxAuth = () => {
     setIsLoading(true);
     
     try {
-      const isValid = await authQueries.validatePassword(password);
+      const storedPassword = fallbackDb.settings.find(s => s.key === "koalax_password")?.value;
+      const isValid = password === storedPassword;
+      
       if (isValid) {
         sessionStorage.setItem('koalax_auth', 'true');
         navigate('/koalax/emails');
+        toast({
+          title: "Success",
+          description: "Welcome to Koalax admin",
+        });
       } else {
         toast({
           title: "Error",
