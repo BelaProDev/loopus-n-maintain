@@ -6,7 +6,7 @@ import { Mail, FileText, Settings, Building2, Folder } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import KoalaxAuth from "./KoalaxAuth";
+import KoalaxAuth from "./Koalax/KoalaxAuth";
 
 const TABS = [
   { id: "emails", label: "Email Management", icon: Mail, path: "/koalax/emails" },
