@@ -22,6 +22,26 @@ const DocumentManager = () => {
     enabled: isAuthenticated
   });
 
+  const uploadMutation = useMutation({
+    mutationFn: async (file: File) => {
+      await uploadFile(file, currentPath);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['dropbox-files'] });
+      toast({
+        title: "Success",
+        description: "File uploaded successfully",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to upload file",
+        variant: "destructive",
+      });
+    }
+  });
+
   const deleteMutation = useMutation({
     mutationFn: async (path: string) => {
       await deleteFile(path);
@@ -140,7 +160,7 @@ const DocumentManager = () => {
           <DocumentToolbar
             onCreateInvoiceFolder={handleCreateFolder}
             onFileSelect={handleFileSelect}
-            isUploading={false}
+            isUploading={uploadMutation.isPending}
             onRefresh={refetch}
             onLogout={() => {
               dropboxAuth.logout();

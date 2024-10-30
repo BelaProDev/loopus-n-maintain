@@ -38,6 +38,40 @@ const InvoiceList = () => {
     }
   });
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    
+    const invoiceData = {
+      clientId: formData.get("clientId") as string,
+      providerId: formData.get("providerId") as string,
+      notes: formData.get("notes") as string,
+      number: `INV-${Date.now()}`,
+      date: new Date().toISOString(),
+      dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days from now
+      status: "draft" as const,
+      items: [], // This will be populated from the InvoiceDialog state
+      totalAmount: 0, // This will be calculated
+      tax: 0 // This will be calculated
+    };
+
+    createMutation.mutate(invoiceData);
+  };
+
+  const getStatusColor = (status: Invoice['status']) => {
+    switch (status) {
+      case 'paid':
+        return 'bg-green-100 text-green-800';
+      case 'overdue':
+        return 'bg-red-100 text-red-800';
+      case 'sent':
+        return 'bg-blue-100 text-blue-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
   const handleExport = async (invoice: Invoice, type: 'pdf' | 'docx') => {
     try {
       let blob: Blob;
