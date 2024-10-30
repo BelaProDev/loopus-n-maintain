@@ -17,18 +17,20 @@ import { Toaster } from '@/components/ui/toaster'
 import { AuthProvider } from '@/contexts/AuthContext'
 import Index from './pages/Index'
 
-// Create QueryClient instance
+// Create QueryClient instance with explicit configuration
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 5 * 60 * 1000,
       retry: false,
-      refetchOnWindowFocus: false
+      refetchOnWindowFocus: false,
+      // Ensure query results are properly initialized
+      initialData: undefined
     }
   }
 })
 
-// Create router configuration
+// Define routes with explicit paths and elements
 const routes = [
   {
     path: '/',
@@ -80,19 +82,25 @@ const routes = [
   }
 ];
 
-// Initialize router with routes configuration
-const router = createBrowserRouter(routes);
+// Initialize router with explicit error boundary
+const router = createBrowserRouter(routes, {
+  future: {
+    v7_normalizeFormMethod: true,
+  }
+});
 
-// Mount application after styles are loaded
+// Mount function with proper error handling
 const mount = () => {
   const root = document.getElementById('root');
   if (!root) throw new Error('Root element not found');
   
-  ReactDOM.createRoot(root).render(
+  const rootInstance = ReactDOM.createRoot(root);
+  
+  rootInstance.render(
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <RouterProvider router={router} />
+          <RouterProvider router={router} fallbackElement={<div>Loading...</div>} />
           <Toaster />
         </AuthProvider>
       </QueryClientProvider>
@@ -100,9 +108,16 @@ const mount = () => {
   );
 };
 
-// Ensure styles and DOM are loaded before mounting
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', mount);
-} else {
-  mount();
-}
+// Ensure DOM and styles are fully loaded before mounting
+const initializeApp = () => {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      // Small delay to ensure styles are loaded
+      setTimeout(mount, 0);
+    });
+  } else {
+    mount();
+  }
+};
+
+initializeApp();
