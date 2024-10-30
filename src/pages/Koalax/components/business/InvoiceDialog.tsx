@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
-import { businessQueries } from "@/lib/fauna/business";
+import { businessQueries } from "@/lib/mongodb/businessQueries";
 
 interface InvoiceDialogProps {
   isOpen: boolean;

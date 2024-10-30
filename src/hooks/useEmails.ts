@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { faunaQueries } from "@/lib/fauna";
+import { emailQueries } from "@/lib/mongodb/emailQueries";
 import { useToast } from "@/components/ui/use-toast";
 
 export interface Email {
@@ -17,11 +17,11 @@ export function useEmails() {
 
   const emailsQuery = useQuery({
     queryKey: ['emails'],
-    queryFn: faunaQueries.getAllEmails,
+    queryFn: emailQueries.getAllEmails,
   });
 
   const createEmailMutation = useMutation({
-    mutationFn: faunaQueries.createEmail,
+    mutationFn: emailQueries.createEmail,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['emails'] });
       toast({ title: "Success", description: "Email added successfully" });
@@ -33,7 +33,7 @@ export function useEmails() {
 
   const updateEmailMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: Email['data'] }) => 
-      faunaQueries.updateEmail(id, data),
+      emailQueries.updateEmail(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['emails'] });
       toast({ title: "Success", description: "Email updated successfully" });
@@ -44,7 +44,7 @@ export function useEmails() {
   });
 
   const deleteEmailMutation = useMutation({
-    mutationFn: faunaQueries.deleteEmail,
+    mutationFn: emailQueries.deleteEmail,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['emails'] });
       toast({ title: "Success", description: "Email deleted successfully" });

@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { settingsQueries } from "@/lib/fauna/settingsQueries";
+import { settingsQueries } from "@/lib/mongodb/settingsQueries";
 
 const WhatsAppSettings = () => {
   const { toast } = useToast();
