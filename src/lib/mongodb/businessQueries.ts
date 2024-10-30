@@ -7,6 +7,8 @@ export const businessQueries = {
   createClient: async (data: Omit<BusinessDocument, '_id'>) => {
     try {
       const db = await getMongoClient();
+      if (!db) throw new Error('Database connection failed');
+      
       const result = await db.collection<BusinessDocument>('clients').insertOne({
         ...data,
         type: 'client'
@@ -20,6 +22,8 @@ export const businessQueries = {
   getClients: async () => {
     try {
       const db = await getMongoClient();
+      if (!db) throw new Error('Database connection failed');
+      
       const clients = await db.collection<BusinessDocument>('clients')
         .find({ type: 'client' })
         .toArray();
@@ -36,6 +40,8 @@ export const businessQueries = {
   createProvider: async (data: Omit<BusinessDocument, '_id'>) => {
     try {
       const db = await getMongoClient();
+      if (!db) throw new Error('Database connection failed');
+      
       const result = await db.collection<BusinessDocument>('providers').insertOne({
         ...data,
         type: 'provider'

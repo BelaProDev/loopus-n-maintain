@@ -1,12 +1,13 @@
 import { getMongoClient, handleMongoError } from './client';
 import { ContentDocument } from './types';
 import fallbackDb from '../fallback-db.json';
-import { ObjectId } from 'mongodb';
 
 export const contentQueries = {
   getAllContent: async () => {
     try {
       const db = await getMongoClient();
+      if (!db) throw new Error('Database connection failed');
+      
       const content = await db.collection<ContentDocument>('contents').find().toArray();
       return content;
     } catch (error) {
