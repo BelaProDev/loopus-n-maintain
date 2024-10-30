@@ -11,13 +11,11 @@ export const emailQueries = {
 
     try {
       const result = await client.query(fql`
-        let emails = Collection.byName("emails")!
-        emails.all().documents().map(doc => {
-          {
+        Collection.byName("emails")?.documents()
+          .map(doc => ({
             ref: { id: doc.id },
             data: doc.data
-          }
-        })
+          })) ?? []
       `);
       return result.data;
     } catch (error) {
@@ -34,8 +32,11 @@ export const emailQueries = {
       const hashedPassword = data.password ? SHA256(data.password).toString() : undefined;
       
       const result = await client.query(fql`
-        let emails = Collection.byName("emails")!
-        let doc = emails.create({
+        let collection = Collection.byName("emails")
+        if (collection == null) {
+          abort("Collection not found")
+        }
+        let doc = collection.create({
           data: {
             email: ${data.email},
             name: ${data.name},
@@ -62,15 +63,22 @@ export const emailQueries = {
 
     try {
       const result = await client.query(fql`
-        let emails = Collection.byName("emails")!
-        let doc = emails.firstWhere(.id == ${id})
+        let collection = Collection.byName("emails")
+        if (collection == null) {
+          abort("Collection not found")
+        }
+        let doc = collection.document(${id})
         if (doc == null) {
           abort("Document not found")
         }
-        doc.update({ 
+        let updated = doc.update({
           data: ${data},
           updatedAt: Time.now()
         })
+        {
+          ref: { id: updated.id },
+          data: updated.data
+        }
       `);
       return result;
     } catch (error) {
@@ -84,8 +92,11 @@ export const emailQueries = {
 
     try {
       await client.query(fql`
-        let emails = Collection.byName("emails")!
-        let doc = emails.firstWhere(.id == ${id})
+        let collection = Collection.byName("emails")
+        if (collection == null) {
+          abort("Collection not found")
+        }
+        let doc = collection.document(${id})
         if (doc == null) {
           abort("Document not found")
         }
