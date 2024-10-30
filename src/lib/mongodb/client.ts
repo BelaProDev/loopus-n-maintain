@@ -47,8 +47,15 @@ export async function getMongoClient(): Promise<MongoDatabase> {
           return { insertedId: result.insertedId };
         },
         updateOne: async (query, update, options) => {
-          const result = await performDbOperation('updateOne', name, { query, update: update.$set, upsert: options?.upsert });
-          return { matchedCount: result.matchedCount || 0 };
+          const result = await performDbOperation('updateOne', name, { 
+            query, 
+            update: update.$set, 
+            upsert: options?.upsert 
+          });
+          return { 
+            matchedCount: result.matchedCount || 0,
+            upsertedId: result.upsertedId
+          };
         },
         deleteOne: async (query) => {
           const result = await performDbOperation('deleteOne', name, { query });

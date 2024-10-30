@@ -56,7 +56,10 @@ export interface DbCollection<T> {
   find: (query?: any) => Promise<T[]>;
   findOne: (query: any) => Promise<T | null>;
   insertOne: (doc: Omit<T, '_id'>) => Promise<{ insertedId: string }>;
-  updateOne: (query: any, update: any, options?: any) => Promise<{ matchedCount: number }>;
+  updateOne: (query: any, update: any, options?: any) => Promise<{ 
+    matchedCount: number;
+    upsertedId?: string;
+  }>;
   deleteOne: (query: any) => Promise<{ deletedCount: number }>;
 }
 
