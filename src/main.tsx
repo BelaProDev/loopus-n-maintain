@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
-import { createRoot, hydrateRoot } from "react-dom/client";
+import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import { QueryClient, QueryClientProvider, HydrationBoundary } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "./contexts/AuthContext";
 import App from "./App";
 import "./index.css";
@@ -21,28 +21,20 @@ const queryClient = new QueryClient({
   },
 });
 
-const dehydratedState = window.__REACT_QUERY_STATE__;
-
 const app = (
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <HydrationBoundary state={dehydratedState}>
-        <AuthProvider>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
-        </AuthProvider>
-      </HydrationBoundary>
+      <AuthProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </AuthProvider>
     </QueryClientProvider>
   </StrictMode>
 );
 
-// Use hydrateRoot for SSR, createRoot for CSR
-if (container.hasChildNodes()) {
-  hydrateRoot(container, app);
-} else {
-  createRoot(container).render(app);
-}
+// Use createRoot for client-side rendering
+createRoot(container).render(app);
 
 // Register service worker
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
@@ -56,10 +48,4 @@ if ('serviceWorker' in navigator && import.meta.env.PROD) {
         console.error('SW registration failed:', error);
       });
   });
-}
-
-declare global {
-  interface Window {
-    __REACT_QUERY_STATE__?: unknown;
-  }
 }
