@@ -3,7 +3,7 @@ import { MongoClient, ServerApiVersion } from 'mongodb';
 let client: MongoClient | null = null;
 
 export async function getMongoClient() {
-  if (client) return client.db('koalax');
+  if (client?.topology?.isConnected()) return client.db('koalax');
 
   if (!import.meta.env.VITE_MONGODB_URI) {
     throw new Error('MongoDB URI is not defined in environment variables');
@@ -14,7 +14,9 @@ export async function getMongoClient() {
       version: ServerApiVersion.v1,
       strict: true,
       deprecationErrors: true,
-    }
+    },
+    maxPoolSize: 10,
+    minPoolSize: 5,
   });
 
   await client.connect();
@@ -26,7 +28,6 @@ export const handleMongoError = (error: any, fallbackData: any) => {
   return fallbackData;
 };
 
-// Cleanup function for SSR
 export const closeMongoConnection = async () => {
   if (client) {
     await client.close();
