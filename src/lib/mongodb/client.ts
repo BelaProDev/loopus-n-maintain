@@ -1,4 +1,4 @@
-import { MongoDatabase, DbCollection, BaseDocument } from './types';
+import { MongoDatabase, DbCollection, BaseDocument, DbQueryResult } from './types';
 
 async function performDbOperation(operation: string, collection: string, data: any) {
   try {
@@ -36,7 +36,17 @@ export async function getMongoClient(): Promise<MongoDatabase> {
       return {
         find: async (query = {}) => {
           const result = await performDbOperation('find', name, { query });
-          return result || [];
+          const data = result || [];
+          
+          return {
+            data,
+            sort: (field: keyof T) => ({
+              data: [...data].sort((a, b) => (a[field] > b[field] ? 1 : -1)),
+              sort: (f) => this.sort(f),
+              toArray: () => Promise.resolve(data),
+            }),
+            toArray: () => Promise.resolve(data),
+          };
         },
         findOne: async (query) => {
           const result = await performDbOperation('findOne', name, { query });

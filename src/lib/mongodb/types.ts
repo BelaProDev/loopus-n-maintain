@@ -52,17 +52,33 @@ export interface InvoiceItem {
   total: number;
 }
 
-export interface DbCollection<T> {
-  find: (query?: any) => Promise<T[]>;
-  findOne: (query: any) => Promise<T | null>;
+export interface DbQueryResult<T> {
+  data: T[];
+  sort: (field: keyof T) => DbQueryResult<T>;
+  toArray: () => Promise<T[]>;
+}
+
+export interface DbCollection<T extends BaseDocument> {
+  find: (query?: Partial<T>) => Promise<DbQueryResult<T>>;
+  findOne: (query: Partial<T>) => Promise<T | null>;
   insertOne: (doc: Omit<T, '_id'>) => Promise<{ insertedId: string }>;
-  updateOne: (query: any, update: any, options?: any) => Promise<{ 
+  updateOne: (
+    query: Partial<T>,
+    update: { $set: Partial<T> },
+    options?: { upsert?: boolean }
+  ) => Promise<{
     matchedCount: number;
     upsertedId?: string;
   }>;
-  deleteOne: (query: any) => Promise<{ deletedCount: number }>;
+  deleteOne: (query: Partial<T>) => Promise<{ deletedCount: number }>;
 }
 
 export interface MongoDatabase {
   collection<T extends BaseDocument>(name: string): DbCollection<T>;
+}
+
+export interface SettingsDocument extends BaseDocument {
+  type: string;
+  numbers?: Record<string, string>;
+  [key: string]: any;
 }
