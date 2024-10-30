@@ -1,87 +1,54 @@
-import { MongoClient, ServerApiVersion, Db } from 'mongodb';
+import { Db } from 'mongodb';
 
-let client: MongoClient | null = null;
-let db: Db | null = null;
-let isConnecting = false;
-let reconnectAttempts = 0;
-const MAX_RECONNECT_ATTEMPTS = 3;
+async function performDbOperation(operation: string, collection: string, data: any) {
+  const response = await fetch('/.netlify/functions/db-operations', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      operation,
+      collection,
+      data,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Database operation failed');
+  }
+
+  return response.json();
+}
 
 export async function getMongoClient(): Promise<Db | null> {
+  // This is now just a wrapper for the Netlify function calls
   if (!window.location.pathname.startsWith('/koalax-admin')) {
-    return handleMongoError(new Error('Not in admin interface'), null);
+    return null;
   }
 
-  try {
-    // If we're already connecting, wait for the connection
-    if (isConnecting) {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      return db;
-    }
-
-    // Check existing connection
-    if (client && db) {
-      try {
-        await client.db().command({ ping: 1 });
-        return db;
-      } catch (error) {
-        console.warn('Connection lost, attempting reconnection...');
-        await closeMongoConnection();
-      }
-    }
-
-    if (!import.meta.env.VITE_MONGODB_URI) {
-      throw new Error('MongoDB URI is not defined in environment variables');
-    }
-
-    isConnecting = true;
-    reconnectAttempts++;
-
-    client = new MongoClient(import.meta.env.VITE_MONGODB_URI, {
-      serverApi: {
-        version: ServerApiVersion.v1,
-        strict: true,
-        deprecationErrors: true,
-      },
-      connectTimeoutMS: 5000,
-      socketTimeoutMS: 30000,
-      maxPoolSize: 10,
-      minPoolSize: 1,
-      maxIdleTimeMS: 30000,
-      waitQueueTimeoutMS: 10000,
-    });
-
-    await client.connect();
-    db = client.db('koalax');
-    isConnecting = false;
-    reconnectAttempts = 0;
-    return db;
-  } catch (error) {
-    isConnecting = false;
-    if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
-      await new Promise(resolve => setTimeout(resolve, 1000 * reconnectAttempts));
-      return getMongoClient();
-    }
-    return handleMongoError(error, null);
-  }
+  // Return a proxy object that mimics the Db interface
+  return {
+    collection: (name: string) => ({
+      find: (query = {}) => ({
+        toArray: async () => performDbOperation('find', name, { query }),
+        sort: () => ({ toArray: async () => performDbOperation('find', name, { query }) }),
+      }),
+      findOne: async (query = {}) => performDbOperation('findOne', name, { query }),
+      insertOne: async (doc: any) => performDbOperation('insertOne', name, doc),
+      updateOne: async (query: any, update: any, options: any) => 
+        performDbOperation('updateOne', name, { query, update: update.$set, upsert: options?.upsert }),
+      deleteOne: async (query: any) => performDbOperation('deleteOne', name, { query }),
+    }),
+  } as unknown as Db;
 }
 
 export const handleMongoError = (error: any, fallbackData: any) => {
   if (window.location.pathname.startsWith('/koalax-admin')) {
     console.error('MongoDB Error:', error);
   }
-  
-  closeMongoConnection().catch(console.error);
   return fallbackData;
 };
 
 export const closeMongoConnection = async () => {
-  if (client) {
-    try {
-      await client.close(true);
-    } catch (error) {
-      console.error('Error closing MongoDB connection:', error);
-    }
-    client = null;
-    db = null;
-  }
+  // No need to close connection as it's handled by Netlify functions
 };
