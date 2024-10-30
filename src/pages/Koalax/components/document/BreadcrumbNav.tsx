@@ -7,8 +7,8 @@ interface BreadcrumbNavProps {
 }
 
 const BreadcrumbNav = ({ currentPath, onNavigate }: BreadcrumbNavProps) => {
-  // Remove "loopusandmaintain" from the path and split remaining segments
-  const cleanPath = currentPath.replace('/loopusandmaintain', '');
+  // Remove 'loopusandmaintain' from the path and split remaining segments
+  const cleanPath = currentPath === '/' ? '' : currentPath.replace('/loopusandmaintain', '');
   const paths = cleanPath.split('/').filter(Boolean);
   
   return (
@@ -17,9 +17,10 @@ const BreadcrumbNav = ({ currentPath, onNavigate }: BreadcrumbNavProps) => {
         variant="ghost" 
         size="sm" 
         className="h-8"
-        onClick={() => onNavigate('/loopusandmaintain')}
+        onClick={() => onNavigate('/')}
       >
-        <Home className="h-4 w-4" />
+        <Home className="h-4 w-4 mr-2" />
+        Loopus & Maintain
       </Button>
       {paths.map((segment, index) => (
         <div key={index} className="flex items-center">
@@ -28,7 +29,10 @@ const BreadcrumbNav = ({ currentPath, onNavigate }: BreadcrumbNavProps) => {
             variant="ghost"
             size="sm"
             className="h-8"
-            onClick={() => onNavigate(`/loopusandmaintain/${paths.slice(0, index + 1).join('/')}`)}
+            onClick={() => {
+              const pathToNavigate = `/loopusandmaintain/${paths.slice(0, index + 1).join('/')}`;
+              onNavigate(pathToNavigate);
+            }}
           >
             {segment}
           </Button>
