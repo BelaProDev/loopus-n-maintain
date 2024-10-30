@@ -13,13 +13,12 @@ import SiteSettings from "./Koalax/SiteSettings";
 import BusinessManagement from "./Koalax/components/BusinessManagement";
 import DocumentManager from "./Koalax/components/DocumentManager";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
-const KOALAX_PASSWORD = "miaou00";
+import DatabaseInit from "./Koalax/DatabaseInit";
+import KoalaxAuth from "./Koalax/KoalaxAuth";
 
 const Koalax = () => {
-  const [password, setPassword] = useState("");
+  const [isDbInitialized, setIsDbInitialized] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const bypAuthenticated = true;
   const [editingEmail, setEditingEmail] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
@@ -34,69 +33,12 @@ const Koalax = () => {
     isDeleting,
   } = useEmails();
 
-  const handlePasswordSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (password === KOALAX_PASSWORD) {
-      setIsAuthenticated(true);
-    } else {
-      toast({
-        title: "Error",
-        description: "Invalid password",
-        variant: "destructive",
-      });
-    }
-  };
+  if (!isDbInitialized) {
+    return <DatabaseInit onInitialized={() => setIsDbInitialized(true)} />;
+  }
 
-  const handleEmailSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
-    const emailData = {
-      email: formData.get("email") as string,
-      name: formData.get("name") as string,
-      type: formData.get("type") as string,
-      password: formData.get("password") as string || undefined, // Only include if provided
-    };
-
-    if (editingEmail) {
-      // Only update password if a new one is provided
-      if (!emailData.password) {
-        delete emailData.password;
-      }
-      updateEmail({ id: editingEmail.ref.id, data: emailData });
-    } else {
-      if (!emailData.password) {
-        toast({
-          title: "Error",
-          description: "Password is required for new email accounts",
-          variant: "destructive",
-        });
-        return;
-      }
-      createEmail(emailData);
-    }
-    setIsDialogOpen(false);
-    form.reset();
-    setEditingEmail(null);
-  };
-
-  if (!bypAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <form onSubmit={handlePasswordSubmit} className="space-y-4">
-          <Input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter password"
-            className="w-64"
-          />
-          <Button type="submit" className="w-full">
-            Access Koalax
-          </Button>
-        </form>
-      </div>
-    );
+  if (!isAuthenticated) {
+    return <KoalaxAuth onAuthenticate={() => setIsAuthenticated(true)} />;
   }
 
   return (

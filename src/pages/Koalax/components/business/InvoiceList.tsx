@@ -1,4 +1,3 @@
-```tsx
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { businessQueries } from "@/lib/mongodb/businessQueries";
@@ -65,7 +64,7 @@ const InvoiceList = () => {
       items: JSON.parse(formData.get("items") as string || "[]"),
       totalAmount: Number(formData.get("totalAmount")) || 0,
       tax: Number(formData.get("tax")) || 0,
-      status: "draft",
+      status: "draft" as const,
       notes: formData.get("notes") as string,
     };
 
@@ -152,4 +151,3 @@ const InvoiceList = () => {
 };
 
 export default InvoiceList;
-```
