@@ -182,6 +182,7 @@ const DocumentManager = () => {
                 dropboxAuth.logout();
                 setIsAuthenticated(false);
               }}
+              currentPath={currentPath}
             />
             <FileListToggle isMacOS={isMacOS} onToggle={setIsMacOS} />
           </div>

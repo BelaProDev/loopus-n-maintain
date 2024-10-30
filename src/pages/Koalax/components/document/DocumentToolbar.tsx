@@ -7,6 +7,7 @@ interface DocumentToolbarProps {
   isUploading: boolean;
   onRefresh: () => void;
   onLogout: () => void;
+  currentPath: string;
 }
 
 const DocumentToolbar = ({
@@ -15,14 +16,21 @@ const DocumentToolbar = ({
   isUploading,
   onRefresh,
   onLogout,
+  currentPath,
 }: DocumentToolbarProps) => {
+  const isRootDirectory = currentPath === "/";
+
   return (
     <div className="flex gap-4">
       <Button onClick={onRefresh}>
         <RefreshCw className="w-4 h-4 mr-2" />
         Refresh
       </Button>
-      <Button onClick={onCreateInvoiceFolder}>
+      <Button 
+        onClick={onCreateInvoiceFolder} 
+        disabled={!isRootDirectory}
+        title={!isRootDirectory ? "Only available in root directory" : ""}
+      >
         <FolderOpen className="w-4 h-4 mr-2" />
         Create Invoices Folder
       </Button>
