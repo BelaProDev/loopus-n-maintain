@@ -12,7 +12,7 @@ export async function getMongoClient(): Promise<MongoDatabase> {
             data,
             sort: (field: keyof T) => {
               const sortedData = [...data].sort((a, b) => 
-                (a[field] > b[field] ? 1 : -1)
+                String(a[field]).localeCompare(String(b[field]))
               );
               return {
                 data: sortedData,

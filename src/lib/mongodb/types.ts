@@ -1,22 +1,25 @@
-import { ObjectId } from 'mongodb';
-
 export interface BaseDocument {
-  _id?: ObjectId;
-  createdAt?: number;
-  updatedAt?: number;
-  type?: string;
-  key?: string;
-  language?: string;
-  status?: string;
-  numbers?: Record<string, string>;
-  serviceId?: string;
+  _id?: string;
+  [key: string]: any;
 }
 
-export interface EmailDocument extends BaseDocument {
-  email: string;
-  name: string;
-  type: string;
-  password?: string;
+export interface DbQueryResult<T> {
+  data: T[];
+  sort: (field: keyof T) => DbQueryResult<T>;
+  toArray: () => Promise<T[]>;
+  map: <U>(callback: (value: T, index: number, array: T[]) => U) => U[];
+}
+
+export interface DbCollection<T> {
+  find: (query?: Record<string, any>) => Promise<DbQueryResult<T>>;
+  findOne: (query: Record<string, any>) => Promise<T | null>;
+  insertOne: (doc: T) => Promise<{ insertedId: string }>;
+  updateOne: (query: Record<string, any>, update: { $set: Partial<T> }) => Promise<{ matchedCount: number; upsertedId: string | null }>;
+  deleteOne: (query: Record<string, any>) => Promise<{ deletedCount: number }>;
+}
+
+export interface MongoDatabase {
+  collection: <T extends BaseDocument>(name: string) => DbCollection<T>;
 }
 
 export interface ContentDocument extends BaseDocument {
@@ -28,13 +31,21 @@ export interface ContentDocument extends BaseDocument {
   modifiedBy: string;
 }
 
+export interface EmailDocument extends BaseDocument {
+  email: string;
+  name: string;
+  type: string;
+}
+
 export interface BusinessDocument extends BaseDocument {
+  type: 'client' | 'provider';
   name: string;
   email: string;
   phone?: string;
-  address?: string;
+  company?: string;
   vatNumber?: string;
-  type: 'client' | 'provider';
+  createdAt?: number;
+  updatedAt?: number;
 }
 
 export interface InvoiceDocument extends BaseDocument {
@@ -43,43 +54,16 @@ export interface InvoiceDocument extends BaseDocument {
   providerId: string;
   date: string;
   dueDate: string;
-  items: InvoiceItem[];
+  items: Array<{
+    description: string;
+    quantity: number;
+    unitPrice: number;
+    total: number;
+  }>;
   totalAmount: number;
   tax: number;
   status: 'draft' | 'sent' | 'paid' | 'overdue';
   notes?: string;
-}
-
-export interface InvoiceItem {
-  id: string;
-  description: string;
-  quantity: number;
-  unitPrice: number;
-  total: number;
-}
-
-export interface DbQueryResult<T> {
-  data: T[];
-  sort: (field: keyof T) => DbQueryResult<T>;
-  toArray: () => Promise<T[]>;
-  map?: <U>(callback: (value: T, index: number, array: T[]) => U) => U[];
-}
-
-export interface DbCollection<T extends BaseDocument> {
-  find: (query?: Partial<T>) => Promise<DbQueryResult<T>>;
-  findOne: (query: Partial<T>) => Promise<T | null>;
-  insertOne: (doc: Omit<T, '_id'>) => Promise<{ insertedId: string }>;
-  updateOne: (
-    query: Partial<T>,
-    update: { $set: Partial<T> },
-    options?: { upsert?: boolean }
-  ) => Promise<{
-    matchedCount: number;
-    upsertedId?: string;
-  }>;
-  deleteOne: (query: Partial<T>) => Promise<{ deletedCount: number }>;
-}
-
-export interface MongoDatabase {
-  collection<T extends BaseDocument>(name: string): DbCollection<T>;
+  createdAt?: number;
+  updatedAt?: number;
 }
