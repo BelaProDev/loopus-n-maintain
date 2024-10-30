@@ -1,3 +1,16 @@
+import { Collection, Document } from 'mongodb';
+
+type MongoOperation = {
+  find: (query?: any) => { 
+    toArray: () => Promise<any[]>;
+    sort: () => { toArray: () => Promise<any[]> };
+  };
+  findOne: (query?: any) => Promise<any>;
+  insertOne: (doc: any) => Promise<any>;
+  updateOne: (query: any, update: any, options?: any) => Promise<any>;
+  deleteOne: (query: any) => Promise<any>;
+};
+
 async function performDbOperation(operation: string, collection: string, data: any) {
   try {
     const response = await fetch('/.netlify/functions/db-operations', {
@@ -30,7 +43,7 @@ async function performDbOperation(operation: string, collection: string, data: a
 
 export async function getMongoClient() {
   return {
-    collection: (name: string) => ({
+    collection: (name: string): MongoOperation => ({
       find: (query = {}) => ({
         toArray: async () => performDbOperation('find', name, { query }),
         sort: () => ({ toArray: async () => performDbOperation('find', name, { query }) }),
@@ -41,7 +54,7 @@ export async function getMongoClient() {
         performDbOperation('updateOne', name, { query, update: update.$set, upsert: options?.upsert }),
       deleteOne: async (query: any) => performDbOperation('deleteOne', name, { query }),
     }),
-  } as any;
+  };
 }
 
 export const handleMongoError = (error: any, fallbackData: any) => {
