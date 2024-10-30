@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { downloadFile, deleteFile } from "@/lib/dropbox";
+import { downloadFile } from "@/lib/dropbox";
 import { useToast } from "@/components/ui/use-toast";
-import { files } from 'dropbox/types/dropbox_types';
+import { files } from 'dropbox';
+
+type FileMetadata = files.FileMetadataReference | files.FolderMetadataReference;
 
 interface FileActionsProps {
-  file: files.FileMetadataReference | files.FolderMetadataReference;
+  file: FileMetadata;
   onNavigate: (path: string) => void;
   onDelete: (path: string | undefined) => void;
 }

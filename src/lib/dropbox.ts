@@ -1,5 +1,5 @@
 import { dropboxAuth } from './auth/dropbox';
-import { files } from 'dropbox/types/dropbox_types';
+import { files } from 'dropbox';
 
 export const uploadFile = async (file: File, path: string) => {
   const client = dropboxAuth.getClient();
@@ -11,7 +11,7 @@ export const uploadFile = async (file: File, path: string) => {
   return response;
 };
 
-export const listFiles = async (path: string) => {
+export const listFiles = async (path: string): Promise<files.FileMetadataReference[] | files.FolderMetadataReference[]> => {
   const client = dropboxAuth.getClient();
   const response = await client.filesListFolder({ path });
   return response.result.entries;

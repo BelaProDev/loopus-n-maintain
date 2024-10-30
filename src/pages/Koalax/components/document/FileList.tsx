@@ -1,13 +1,13 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
-import { files } from "dropbox";
+import { files } from 'dropbox';
 import { Trash2, Download, Folder } from "lucide-react";
 
-type DropboxFile = files.FileMetadata | files.FolderMetadata | files.DeletedMetadata;
+type FileMetadata = files.FileMetadataReference | files.FolderMetadataReference;
 
 interface FileListProps {
-  files: DropboxFile[] | undefined;
+  files: FileMetadata[] | undefined;
   onDownload: (path: string | undefined, name: string) => void;
   onDelete: (path: string | undefined) => void;
   onNavigate: (path: string) => void;
@@ -26,9 +26,7 @@ const FileList = ({ files, onDownload, onDelete, onNavigate }: FileListProps) =>
       </TableHeader>
       <TableBody>
         {files?.map((file) => {
-          if (file['.tag'] === 'deleted') return null;
-          
-          const key = 'path_lower' in file ? file.path_lower : '';
+          const key = file.path_lower || file.id;
           const isFolder = file['.tag'] === 'folder';
           
           return (
