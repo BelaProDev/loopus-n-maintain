@@ -11,14 +11,17 @@ export const emailQueries = {
 
     try {
       const result = await client.query(fql`
-        Collection.byName("emails")!
-          .documents()
-          .map(doc => {
+        let emails = Collection.byName("emails")
+        if (emails == null) {
+          []
+        } else {
+          emails.all().documents().map(doc => {
             {
               ref: { id: doc.id },
               data: doc.data
             }
           })
+        }
       `);
       return result.data;
     } catch (error) {
@@ -35,17 +38,20 @@ export const emailQueries = {
       const hashedPassword = data.password ? SHA256(data.password).toString() : undefined;
       
       const result = await client.query(fql`
-        Collection.byName("emails")!
-          .create({
-            data: {
-              email: ${data.email},
-              name: ${data.name},
-              type: ${data.type},
-              password: ${hashedPassword},
-              createdAt: ${timestamp},
-              updatedAt: ${timestamp}
-            }
-          })
+        let emails = Collection.byName("emails")
+        if (emails == null) {
+          abort("Collection not found")
+        }
+        emails.create({
+          data: {
+            email: ${data.email},
+            name: ${data.name},
+            type: ${data.type},
+            password: ${hashedPassword},
+            createdAt: ${timestamp},
+            updatedAt: ${timestamp}
+          }
+        })
       `);
       return result;
     } catch (error) {
@@ -65,8 +71,14 @@ export const emailQueries = {
       };
       
       const result = await client.query(fql`
-        let doc = Collection.byName("emails")!
-          .firstWhere(.id == ${id})!
+        let emails = Collection.byName("emails")
+        if (emails == null) {
+          abort("Collection not found")
+        }
+        let doc = emails.where(.id == ${id}).first()
+        if (doc == null) {
+          abort("Document not found")
+        }
         doc.update({ data: ${updateData} })
       `);
       return result;
@@ -81,9 +93,15 @@ export const emailQueries = {
 
     try {
       await client.query(fql`
-        Collection.byName("emails")!
-          .firstWhere(.id == ${id})!
-          .delete()
+        let emails = Collection.byName("emails")
+        if (emails == null) {
+          abort("Collection not found")
+        }
+        let doc = emails.where(.id == ${id}).first()
+        if (doc == null) {
+          abort("Document not found")
+        }
+        doc.delete()
       `);
       return { success: true };
     } catch (error) {
