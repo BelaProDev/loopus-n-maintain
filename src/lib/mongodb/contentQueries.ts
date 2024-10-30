@@ -20,10 +20,8 @@ export const contentQueries = {
         language: SUPPORTED_LANGUAGES.includes(language) ? language : 'en' 
       } : {};
 
-      const content = await db.collection('contents')
-        .find(query)
-        .sort({ key: 1 })
-        .toArray();
+      const queryResult = await db.collection('contents').find(query);
+      const content = await queryResult.sort({ key: 1 }).toArray();
       return content;
     } catch (error) {
       return handleMongoError(error, fallbackDb.content);

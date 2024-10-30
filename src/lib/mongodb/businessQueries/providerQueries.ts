@@ -25,9 +25,8 @@ export const providerQueries = {
       const db = await getMongoClient();
       if (!db) throw new Error('Database connection failed');
       
-      const providers = await db.collection('providers')
-        .find({ type: 'provider' })
-        .toArray();
+      const queryResult = await db.collection('providers').find({ type: 'provider' });
+      const providers = await queryResult.toArray();
       return providers.map(provider => ({
         id: provider._id?.toString(),
         ...provider

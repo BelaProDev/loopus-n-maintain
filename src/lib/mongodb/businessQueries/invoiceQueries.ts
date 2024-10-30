@@ -28,10 +28,8 @@ export const invoiceQueries = {
       const db = await getMongoClient();
       if (!db) throw new Error('Database connection failed');
 
-      const invoices = await db.collection('invoices')
-        .find()
-        .sort({ createdAt: -1 })
-        .toArray();
+      const queryResult = await db.collection('invoices').find();
+      const invoices = await queryResult.sort({ createdAt: -1 }).toArray();
       return invoices.map(invoice => ({
         id: invoice._id?.toString(),
         ...invoice

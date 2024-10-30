@@ -28,10 +28,8 @@ export const clientQueries = {
       const db = await getMongoClient();
       if (!db) throw new Error('Database connection failed');
       
-      const clients = await db.collection('clients')
-        .find({ type: 'client' })
-        .sort({ name: 1 })
-        .toArray();
+      const queryResult = await db.collection('clients').find({ type: 'client' });
+      const clients = await queryResult.sort({ name: 1 }).toArray();
       return clients.map(client => ({
         id: client._id?.toString(),
         ...client
