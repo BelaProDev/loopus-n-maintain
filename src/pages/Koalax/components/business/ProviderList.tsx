@@ -46,6 +46,7 @@ const ProviderList = () => {
       phone: formData.get("phone") as string,
       service: formData.get("service") as Provider["service"],
       availability: true,
+      type: 'provider' as const
     };
 
     createMutation.mutate(providerData);

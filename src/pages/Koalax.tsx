@@ -33,6 +33,38 @@ const Koalax = () => {
     isDeleting,
   } = useEmails();
 
+  const handleEmailSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    const emailData = {
+      email: formData.get("email") as string,
+      name: formData.get("name") as string,
+      type: formData.get("type") as string,
+      password: formData.get("password") as string || undefined,
+    };
+
+    if (editingEmail) {
+      if (!emailData.password) {
+        delete emailData.password;
+      }
+      updateEmail({ id: editingEmail.ref.id, data: emailData });
+    } else {
+      if (!emailData.password) {
+        toast({
+          title: "Error",
+          description: "Password is required for new email accounts",
+          variant: "destructive",
+        });
+        return;
+      }
+      createEmail(emailData);
+    }
+    setIsDialogOpen(false);
+    form.reset();
+    setEditingEmail(null);
+  };
+
   if (!isDbInitialized) {
     return <DatabaseInit onInitialized={() => setIsDbInitialized(true)} />;
   }

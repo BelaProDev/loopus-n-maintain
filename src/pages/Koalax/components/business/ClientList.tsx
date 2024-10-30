@@ -46,6 +46,7 @@ const ClientList = () => {
       phone: formData.get("phone") as string,
       company: formData.get("company") as string,
       vatNumber: formData.get("vatNumber") as string,
+      type: 'client' as const
     };
 
     createMutation.mutate(clientData);

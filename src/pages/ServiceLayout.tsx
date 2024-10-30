@@ -4,21 +4,21 @@ import { settingsQueries } from "@/lib/mongodb/settingsQueries";
 import ServiceHeader from "@/components/service/ServiceHeader";
 import ServiceForm from "@/components/service/ServiceForm";
 
-const ServiceLayout = () => {
-  const { serviceId } = useParams<{ serviceId: string }>();
-  
-  const { data: service, isLoading } = useQuery({
-    queryKey: ['service', serviceId],
-    queryFn: () => settingsQueries.getServiceById(serviceId),
-    enabled: !!serviceId,
-  });
+interface ServiceLayoutProps {
+  title: string;
+  description: string;
+  commonIssues: Array<{ id: string; label: string }>;
+  faqs: Array<{ question: string; answer: string }>;
+}
 
-  if (isLoading) return <div>Loading...</div>;
-
+const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayoutProps) => {
   return (
-    <div>
-      <ServiceHeader service={service} />
-      <ServiceForm service={service} />
+    <div className="container mx-auto px-4 py-8">
+      <ServiceHeader title={title} description={description} />
+      <ServiceForm 
+        commonIssues={commonIssues}
+        faqs={faqs}
+      />
     </div>
   );
 };
