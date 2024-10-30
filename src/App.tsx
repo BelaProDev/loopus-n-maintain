@@ -23,7 +23,7 @@ import Architecture from "./pages/Architecture";
 import Login from "./pages/Login";
 import Koalax from "./pages/Koalax";
 import Documentation from "./pages/Documentation";
-import DropboxCallback from "./pages/Koalax/components/document/DropboxCallback";
+import { koalaxRoutes } from "./pages/Koalax/routes";
 
 const queryClient = new QueryClient();
 
@@ -42,9 +42,10 @@ const App = () => {
               <Route path="/ironwork" element={<Ironwork />} />
               <Route path="/woodwork" element={<Woodwork />} />
               <Route path="/architecture" element={<Architecture />} />
-              <Route path="/koalax" element={<Koalax />} />
               <Route path="/docs" element={<Documentation />} />
-              <Route path="/koalax/dropbox-callback" element={<DropboxCallback />} />
+              <Route path="/koalax" element={<Koalax />}>
+                {koalaxRoutes[0].children}
+              </Route>
             </Routes>
           </div>
           <ReactQueryDevtools />
