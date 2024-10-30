@@ -8,7 +8,7 @@ import { validateFormInput } from "@/lib/formValidation";
 
 interface ServiceFormProps {
   title: string;
-  isAuthenticated: boolean;
+  isAuthenticated?: boolean;
 }
 
 const ServiceForm = ({ title, isAuthenticated }: ServiceFormProps) => {
