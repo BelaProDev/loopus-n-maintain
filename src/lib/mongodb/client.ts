@@ -5,7 +5,7 @@ let client: MongoClient | null = null;
 export async function getMongoClient() {
   // Only attempt MongoDB connection if we're in the admin interface
   if (!window.location.pathname.startsWith('/koalax')) {
-    return null;
+    return handleMongoError(new Error('Not in admin interface'), null);
   }
 
   try {
@@ -29,17 +29,21 @@ export async function getMongoClient() {
     await client.connect();
     return client.db('koalax');
   } catch (error) {
-    if (client) {
-      await client.close();
-      client = null;
-    }
-    console.error('MongoDB connection error:', error);
-    return null;
+    return handleMongoError(error, null);
   }
 }
 
 export const handleMongoError = (error: any, fallbackData: any) => {
-  console.error('MongoDB Error:', error);
+  // Only log errors if we're in the admin interface
+  if (window.location.pathname.startsWith('/koalax')) {
+    console.error('MongoDB Error:', error);
+  }
+  
+  if (client) {
+    client.close().catch(console.error);
+    client = null;
+  }
+  
   return fallbackData;
 };
 
