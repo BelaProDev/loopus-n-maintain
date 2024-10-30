@@ -2,7 +2,7 @@ import { dropboxAuth } from './auth/dropbox';
 import { files } from 'dropbox';
 import { DropboxEntry } from '@/types/dropbox';
 
-export const uploadFile = async (file: File, path: string): Promise<files.FileMetadata> => {
+export const uploadFile = async (file: File, path: string): Promise<DropboxEntry> => {
   const client = dropboxAuth.getClient();
   const arrayBuffer = await file.arrayBuffer();
   const response = await client.filesUpload({
@@ -20,36 +20,31 @@ export const listFiles = async (path: string): Promise<DropboxEntry[]> => {
 
 export const downloadFile = async (path: string): Promise<Blob> => {
   const client = dropboxAuth.getClient();
-  try {
-    const response = await client.filesDownload({ path });
-    if ('fileBlob' in response.result && response.result.fileBlob instanceof Blob) {
-      return response.result.fileBlob;
-    }
-    throw new Error('File download failed');
-  } catch (error) {
-    console.error('Download error:', error);
-    throw new Error('File download failed');
+  const response = await client.filesDownload({ path });
+  if ('fileBlob' in response.result && response.result.fileBlob instanceof Blob) {
+    return response.result.fileBlob;
   }
+  throw new Error('File download failed');
 };
 
-export const deleteFile = async (path: string): Promise<files.DeleteResult> => {
+export const deleteFile = async (path: string): Promise<DropboxEntry> => {
   const client = dropboxAuth.getClient();
   const response = await client.filesDeleteV2({ path });
-  // Convert DeleteResult to match expected DropboxEntry format
+  const metadata = response.result.metadata;
   return {
-    ...response.result,
-    '.tag': 'deleted' as const,
+    ...metadata,
+    '.tag': 'deleted',
     name: path.split('/').pop() || '',
-  };
+  } as DropboxEntry;
 };
 
-export const createFolder = async (path: string): Promise<files.CreateFolderResult> => {
+export const createFolder = async (path: string): Promise<DropboxEntry> => {
   const client = dropboxAuth.getClient();
   const response = await client.filesCreateFolderV2({ path });
-  // Convert CreateFolderResult to match expected DropboxEntry format
+  const metadata = response.result.metadata;
   return {
-    ...response.result,
-    '.tag': 'folder' as const,
+    ...metadata,
+    '.tag': 'folder',
     name: path.split('/').pop() || '',
-  };
+  } as DropboxEntry;
 };
