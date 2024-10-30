@@ -13,23 +13,24 @@ export const getDropboxClient = () => {
   return new Dropbox({ accessToken });
 };
 
-export const uploadFile = async (file: File, path: string) => {
+export const uploadFile = async (file: File | Blob, path: string, fileName?: string) => {
   const dbx = getDropboxClient();
   if (!dbx) throw new Error('Dropbox client not initialized');
 
   try {
     // Validate file size (max 150MB for Dropbox API)
-    if (file.size > 150 * 1024 * 1024) {
+    if (file instanceof File && file.size > 150 * 1024 * 1024) {
       throw new Error('File size exceeds 150MB limit');
     }
 
-    // Convert File to ArrayBuffer for Dropbox API
+    // Convert File/Blob to ArrayBuffer for Dropbox API
     const arrayBuffer = await file.arrayBuffer();
     const fileContent = new Uint8Array(arrayBuffer);
 
     // Clean and validate path, ensuring it's in the loopusandmaintain folder
-    const fileName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-    const sanitizedPath = `/loopusandmaintain/${path.replace(/^\/+/, '')}/${fileName}`.replace(/\/+/g, '/');
+    const cleanFileName = fileName || (file instanceof File ? file.name : 'file');
+    const sanitizedFileName = cleanFileName.replace(/[^a-zA-Z0-9.-]/g, '_');
+    const sanitizedPath = `/loopusandmaintain/${path.replace(/^\/+/, '')}/${sanitizedFileName}`.replace(/\/+/g, '/');
 
     const response = await dbx.filesUpload({
       path: sanitizedPath,
@@ -40,14 +41,39 @@ export const uploadFile = async (file: File, path: string) => {
     return response.result;
   } catch (error) {
     console.error('Dropbox upload error:', error);
-    if (error.status === 400) {
-      throw new Error('Invalid file or path. Please check the file name and try again.');
-    } else if (error.status === 401) {
-      throw new Error('Authentication failed. Please check your Dropbox token.');
-    } else if (error.status === 429) {
-      throw new Error('Too many requests. Please try again later.');
-    }
     throw new Error('Failed to upload file. Please try again.');
+  }
+};
+
+export const createFolder = async (path: string) => {
+  const dbx = getDropboxClient();
+  if (!dbx) throw new Error('Dropbox client not initialized');
+
+  try {
+    const sanitizedPath = `/loopusandmaintain/${path.replace(/^\/+/, '')}`.replace(/\/+/g, '/');
+    const response = await dbx.filesCreateFolderV2({
+      path: sanitizedPath,
+      autorename: true
+    });
+    return response.result;
+  } catch (error) {
+    console.error('Dropbox create folder error:', error);
+    throw new Error('Failed to create folder. Please try again.');
+  }
+};
+
+export const deleteFile = async (path: string) => {
+  const dbx = getDropboxClient();
+  if (!dbx) throw new Error('Dropbox client not initialized');
+
+  try {
+    const response = await dbx.filesDeleteV2({
+      path: path,
+    });
+    return response.result;
+  } catch (error) {
+    console.error('Dropbox delete error:', error);
+    throw new Error('Failed to delete file. Please try again.');
   }
 };
 

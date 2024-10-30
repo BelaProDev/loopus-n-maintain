@@ -3,12 +3,13 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { businessQueries } from "@/lib/fauna/business";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Eye, FileText, Download } from "lucide-react";
+import { Plus, Eye, FileText, Download, Trash2 } from "lucide-react";
 import { Invoice } from "@/types/business";
 import InvoiceDialog from "./InvoiceDialog";
 import { useToast } from "@/components/ui/use-toast";
 import { format } from "date-fns";
 import { exportToPDF, exportToDOCX } from "@/lib/documentExport";
+import { uploadFile } from "@/lib/dropbox";
 
 const InvoiceList = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -47,6 +48,30 @@ const InvoiceList = () => {
         blob = await exportToDOCX(invoice);
       }
 
+      // Upload to Dropbox if authenticated
+      const tokens = JSON.parse(sessionStorage.getItem('dropbox_tokens') || '{}');
+      if (tokens.access_token) {
+        try {
+          await uploadFile(
+            blob, 
+            '/invoices', 
+            `${invoice.number}.${type}`
+          );
+          toast({
+            title: "Success",
+            description: `Invoice exported and uploaded to Dropbox as ${type.toUpperCase()}`,
+          });
+        } catch (error) {
+          console.error('Dropbox upload error:', error);
+          toast({
+            title: "Warning",
+            description: `File saved locally but failed to upload to Dropbox`,
+            variant: "destructive",
+          });
+        }
+      }
+
+      // Always provide local download as fallback
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -56,10 +81,6 @@ const InvoiceList = () => {
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
 
-      toast({
-        title: "Success",
-        description: `Invoice exported as ${type.toUpperCase()}`,
-      });
     } catch (error) {
       toast({
         title: "Error",
@@ -69,37 +90,13 @@ const InvoiceList = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
-    
-    const invoiceData = {
-      clientId: formData.get("clientId") as string,
-      providerId: formData.get("providerId") as string,
-      notes: formData.get("notes") as string,
-      number: `INV-${Date.now()}`,
-      date: new Date().toISOString(),
-      dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days from now
-      status: "draft" as const,
-      items: [], // This will be populated from the InvoiceDialog state
-      totalAmount: 0, // This will be calculated
-      tax: 0 // This will be calculated
-    };
-
-    createMutation.mutate(invoiceData);
-  };
-
-  const getStatusColor = (status: Invoice['status']) => {
-    switch (status) {
-      case 'paid':
-        return 'bg-green-100 text-green-800';
-      case 'overdue':
-        return 'bg-red-100 text-red-800';
-      case 'sent':
-        return 'bg-blue-100 text-blue-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
+  const handleDelete = async (id: string) => {
+    try {
+      await businessQueries.deleteInvoice(id);
+      queryClient.invalidateQueries({ queryKey: ['invoices'] });
+      toast({ title: "Success", description: "Invoice deleted successfully" });
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to delete invoice", variant: "destructive" });
     }
   };
 
@@ -156,8 +153,12 @@ const InvoiceList = () => {
                 >
                   DOCX
                 </Button>
-                <Button variant="ghost" size="sm">
-                  <Eye className="w-4 h-4" />
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => handleDelete(invoice.id)}
+                >
+                  <Trash2 className="w-4 h-4" />
                 </Button>
               </TableCell>
             </TableRow>

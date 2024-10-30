@@ -2,15 +2,17 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { files } from "dropbox";
+import { Trash2, Download } from "lucide-react";
 
 type DropboxFile = files.FileMetadata | files.FolderMetadata | files.DeletedMetadata;
 
 interface FileListProps {
   files: DropboxFile[] | undefined;
   onDownload: (path: string | undefined, name: string) => void;
+  onDelete: (path: string | undefined) => void;
 }
 
-const FileList = ({ files, onDownload }: FileListProps) => {
+const FileList = ({ files, onDownload, onDelete }: FileListProps) => {
   return (
     <Table>
       <TableHeader>
@@ -25,7 +27,6 @@ const FileList = ({ files, onDownload }: FileListProps) => {
         {files?.map((file) => {
           if (file['.tag'] === 'deleted') return null;
           
-          // Use path_lower as a unique key since it's available on all non-deleted file types
           const key = 'path_lower' in file ? file.path_lower : '';
           
           return (
@@ -45,7 +46,14 @@ const FileList = ({ files, onDownload }: FileListProps) => {
                   size="sm"
                   onClick={() => onDownload(file.path_display, file.name)}
                 >
-                  Download
+                  <Download className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onDelete(file.path_display)}
+                >
+                  <Trash2 className="w-4 h-4" />
                 </Button>
               </TableCell>
             </TableRow>

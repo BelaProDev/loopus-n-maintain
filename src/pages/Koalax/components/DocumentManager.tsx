@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { LogIn } from "lucide-react";
-import { uploadFile, listFiles, downloadFile } from "@/lib/dropbox";
+import { uploadFile, listFiles, downloadFile, deleteFile, createFolder } from "@/lib/dropbox";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import DocumentToolbar from "./document/DocumentToolbar";
 import FileList from "./document/FileList";
@@ -10,6 +11,7 @@ import { dropboxAuth } from "@/lib/auth/dropbox";
 
 const DocumentManager = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [newFolderName, setNewFolderName] = useState("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [currentPath, setCurrentPath] = useState("/");
@@ -20,21 +22,42 @@ const DocumentManager = () => {
     enabled: isAuthenticated
   });
 
-  const uploadMutation = useMutation({
-    mutationFn: async (file: File) => {
-      await uploadFile(file, currentPath);
+  const deleteMutation = useMutation({
+    mutationFn: async (path: string) => {
+      await deleteFile(path);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['dropbox-files'] });
       toast({
         title: "Success",
-        description: "File uploaded successfully",
+        description: "File deleted successfully",
       });
     },
     onError: (error) => {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to upload file",
+        description: error instanceof Error ? error.message : "Failed to delete file",
+        variant: "destructive",
+      });
+    }
+  });
+
+  const createFolderMutation = useMutation({
+    mutationFn: async (folderName: string) => {
+      await createFolder(folderName);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['dropbox-files'] });
+      setNewFolderName("");
+      toast({
+        title: "Success",
+        description: "Folder created successfully",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to create folder",
         variant: "destructive",
       });
     }
@@ -88,20 +111,15 @@ const DocumentManager = () => {
     }
   };
 
-  const handleCreateInvoiceFolder = async () => {
-    try {
-      await uploadFile(new File([""], ".keep"), "/invoices");
-      toast({
-        title: "Success",
-        description: "Invoices folder created",
-      });
-      refetch();
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to create invoices folder",
-        variant: "destructive",
-      });
+  const handleCreateFolder = () => {
+    if (newFolderName.trim()) {
+      createFolderMutation.mutate(newFolderName.trim());
+    }
+  };
+
+  const handleDelete = (path: string | undefined) => {
+    if (path) {
+      deleteMutation.mutate(path);
     }
   };
 
@@ -120,9 +138,9 @@ const DocumentManager = () => {
       {isAuthenticated && (
         <div className="space-y-4">
           <DocumentToolbar
-            onCreateInvoiceFolder={handleCreateInvoiceFolder}
+            onCreateInvoiceFolder={handleCreateFolder}
             onFileSelect={handleFileSelect}
-            isUploading={uploadMutation.isPending}
+            isUploading={false}
             onRefresh={refetch}
             onLogout={() => {
               dropboxAuth.logout();
@@ -130,12 +148,22 @@ const DocumentManager = () => {
             }}
           />
 
+          <div className="flex gap-2">
+            <Input
+              placeholder="New folder name"
+              value={newFolderName}
+              onChange={(e) => setNewFolderName(e.target.value)}
+            />
+            <Button onClick={handleCreateFolder}>Create Folder</Button>
+          </div>
+
           {isLoading ? (
             <div>Loading...</div>
           ) : (
             <FileList
               files={files}
               onDownload={handleDownload}
+              onDelete={handleDelete}
             />
           )}
         </div>
