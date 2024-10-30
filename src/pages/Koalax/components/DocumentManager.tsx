@@ -1,15 +1,30 @@
 import { Button } from "@/components/ui/button";
-import { useDropboxAuth } from "@/hooks/useDropboxAuth";
+import { useEffect, useState } from "react";
 import { LogIn } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { dropboxAuth } from "@/lib/auth/dropbox";
 
 const DocumentManager = () => {
-  const { isAuthenticated, login, logout } = useDropboxAuth();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    checkAuthStatus();
+  }, []);
+
+  const checkAuthStatus = async () => {
+    try {
+      const token = await dropboxAuth.getAccessToken();
+      setIsAuthenticated(!!token);
+    } catch (error) {
+      setIsAuthenticated(false);
+    }
+  };
 
   const handleLogin = async () => {
     try {
-      await login();
+      await dropboxAuth.initialize();
+      setIsAuthenticated(true);
       toast({
         title: "Success",
         description: "Successfully connected to Dropbox",
@@ -17,10 +32,19 @@ const DocumentManager = () => {
     } catch (error) {
       toast({
         title: "Authentication Failed",
-        description: error instanceof Error ? error.message : "Failed to connect to Dropbox",
+        description: "Failed to connect to Dropbox. Please check your access token.",
         variant: "destructive",
       });
     }
+  };
+
+  const handleLogout = () => {
+    dropboxAuth.logout();
+    setIsAuthenticated(false);
+    toast({
+      title: "Logged out",
+      description: "Successfully disconnected from Dropbox",
+    });
   };
 
   return (
@@ -28,7 +52,7 @@ const DocumentManager = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Document Manager</h2>
         {isAuthenticated ? (
-          <Button variant="outline" onClick={logout}>
+          <Button variant="outline" onClick={handleLogout}>
             Disconnect Dropbox
           </Button>
         ) : (
