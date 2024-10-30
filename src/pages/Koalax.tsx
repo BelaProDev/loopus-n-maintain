@@ -8,9 +8,12 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import KoalaxAuth from "./Koalax/KoalaxAuth";
 
-const TABS = [
+const CONTENT_TABS = [
   { id: "emails", label: "Email Management", icon: Mail, path: "/koalax/emails" },
   { id: "content", label: "Content Management", icon: FileText, path: "/koalax/content" },
+];
+
+const ADMIN_TABS = [
   { id: "settings", label: "Site Settings", icon: Settings, path: "/koalax/settings" },
   { id: "business", label: "Business", icon: Building2, path: "/koalax/business" },
   { id: "documents", label: "Documents", icon: Folder, path: "/koalax/documents" },
@@ -19,7 +22,8 @@ const TABS = [
 const Koalax = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const currentTab = TABS.find(tab => location.pathname.includes(tab.id))?.id || "emails";
+  const allTabs = [...CONTENT_TABS, ...ADMIN_TABS];
+  const currentTab = allTabs.find(tab => location.pathname.includes(tab.id))?.id || "emails";
   const isAuthenticated = sessionStorage.getItem('koalax_auth') === 'true';
 
   useEffect(() => {
@@ -39,22 +43,40 @@ const Koalax = () => {
         <Tabs 
           value={currentTab} 
           onValueChange={(value) => {
-            const tab = TABS.find(t => t.id === value);
+            const tab = allTabs.find(t => t.id === value);
             if (tab) navigate(tab.path);
           }}
           className="space-y-4"
         >
-          <div className="space-y-4">
+          <div className="space-y-6">
             <ScrollArea className="w-full">
-              <TabsList className="w-full flex flex-nowrap overflow-x-auto justify-start md:justify-center p-1">
-                {TABS.map(({ id, label, icon: Icon }) => (
-                  <TabsTrigger key={id} value={id} className="whitespace-nowrap">
-                    <Icon className="w-4 h-4 mr-2" />
-                    <span className="hidden sm:inline">{label}</span>
-                    <span className="sm:hidden">{label.split(' ')[0]}</span>
-                  </TabsTrigger>
-                ))}
-              </TabsList>
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-sm font-medium mb-2 text-gray-500">Content Management</h3>
+                  <TabsList className="w-full flex flex-nowrap overflow-x-auto justify-start md:justify-start p-1">
+                    {CONTENT_TABS.map(({ id, label, icon: Icon }) => (
+                      <TabsTrigger key={id} value={id} className="whitespace-nowrap">
+                        <Icon className="w-4 h-4 mr-2" />
+                        <span className="hidden sm:inline">{label}</span>
+                        <span className="sm:hidden">{label.split(' ')[0]}</span>
+                      </TabsTrigger>
+                    ))}
+                  </TabsList>
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-medium mb-2 text-gray-500">Administration</h3>
+                  <TabsList className="w-full flex flex-nowrap overflow-x-auto justify-start md:justify-start p-1">
+                    {ADMIN_TABS.map(({ id, label, icon: Icon }) => (
+                      <TabsTrigger key={id} value={id} className="whitespace-nowrap">
+                        <Icon className="w-4 h-4 mr-2" />
+                        <span className="hidden sm:inline">{label}</span>
+                        <span className="sm:hidden">{label.split(' ')[0]}</span>
+                      </TabsTrigger>
+                    ))}
+                  </TabsList>
+                </div>
+              </div>
             </ScrollArea>
             <Separator className="my-4" />
           </div>
