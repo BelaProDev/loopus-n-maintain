@@ -15,6 +15,7 @@ import ServiceLayout from './pages/ServiceLayout'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from '@/components/ui/toaster'
 import { AuthProvider } from '@/contexts/AuthContext'
+import Index from './pages/Index'
 
 // Create QueryClient instance
 const queryClient = new QueryClient({
@@ -27,18 +28,22 @@ const queryClient = new QueryClient({
   }
 })
 
-// Create router after styles are loaded
-const router = createBrowserRouter([
+// Create router configuration
+const routes = [
   {
     path: '/',
     element: <App />,
     children: [
       {
+        index: true,
+        element: <Index />
+      },
+      {
         path: 'login',
         element: <Login />
       },
       {
-        path: 'koalax/*',
+        path: 'koalax',
         element: <Koalax />
       },
       {
@@ -73,11 +78,17 @@ const router = createBrowserRouter([
       }
     ]
   }
-])
+];
 
-// Wait for styles to load before mounting
+// Initialize router with routes configuration
+const router = createBrowserRouter(routes);
+
+// Mount application after styles are loaded
 const mount = () => {
-  ReactDOM.createRoot(document.getElementById('root')!).render(
+  const root = document.getElementById('root');
+  if (!root) throw new Error('Root element not found');
+  
+  ReactDOM.createRoot(root).render(
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
@@ -86,12 +97,12 @@ const mount = () => {
         </AuthProvider>
       </QueryClientProvider>
     </React.StrictMode>
-  )
-}
+  );
+};
 
-// Ensure styles are loaded
-if (document.readyState === 'complete') {
-  mount()
+// Ensure styles and DOM are loaded before mounting
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', mount);
 } else {
-  window.addEventListener('load', mount)
+  mount();
 }
