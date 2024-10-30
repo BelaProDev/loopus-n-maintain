@@ -12,6 +12,10 @@ interface FileListProps {
 }
 
 const FileList = ({ files, onDownload, onDelete, onNavigate }: FileListProps) => {
+  if (!files || files.length === 0) {
+    return <div className="text-center py-8 text-gray-500">No files found</div>;
+  }
+
   return (
     <Table>
       <TableHeader>
@@ -23,7 +27,7 @@ const FileList = ({ files, onDownload, onDelete, onNavigate }: FileListProps) =>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {files?.filter(file => file['.tag'] !== 'deleted').map((file) => {
+        {files.filter(file => file['.tag'] !== 'deleted').map((file) => {
           const key = 'path_lower' in file ? file.path_lower : file.id;
           const isFolder = file['.tag'] === 'folder';
           

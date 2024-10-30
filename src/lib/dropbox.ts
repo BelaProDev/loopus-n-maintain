@@ -35,11 +35,21 @@ export const downloadFile = async (path: string): Promise<Blob> => {
 export const deleteFile = async (path: string): Promise<files.DeleteResult> => {
   const client = dropboxAuth.getClient();
   const response = await client.filesDeleteV2({ path });
-  return response.result;
+  // Convert DeleteResult to match expected DropboxEntry format
+  return {
+    ...response.result,
+    '.tag': 'deleted' as const,
+    name: path.split('/').pop() || '',
+  };
 };
 
 export const createFolder = async (path: string): Promise<files.CreateFolderResult> => {
   const client = dropboxAuth.getClient();
   const response = await client.filesCreateFolderV2({ path });
-  return response.result;
+  // Convert CreateFolderResult to match expected DropboxEntry format
+  return {
+    ...response.result,
+    '.tag': 'folder' as const,
+    name: path.split('/').pop() || '',
+  };
 };
