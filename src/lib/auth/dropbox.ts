@@ -2,6 +2,7 @@ import { generateRandomString, sha256 } from './utils';
 
 const DROPBOX_AUTH_URL = 'https://www.dropbox.com/oauth2/authorize';
 const DROPBOX_TOKEN_URL = 'https://api.dropboxapi.com/oauth2/token';
+const REDIRECT_URI = `${window.location.origin}/koalax/dropbox-callback`;
 
 interface DropboxTokenResponse {
   access_token: string;
@@ -12,68 +13,27 @@ interface DropboxTokenResponse {
   refresh_token?: string;
 }
 
-const storeTokensInServiceWorker = async (tokens: DropboxTokenResponse) => {
-  if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-    const messageChannel = new MessageChannel();
-    return new Promise((resolve, reject) => {
-      messageChannel.port1.onmessage = (event) => {
-        if (event.data.stored) {
-          resolve(true);
-        } else {
-          reject(new Error('Failed to store tokens'));
-        }
-      };
-      navigator.serviceWorker.controller.postMessage(
-        {
-          type: 'STORE_DROPBOX_TOKENS',
-          tokens
-        },
-        [messageChannel.port2]
-      );
-    });
-  }
-  return false;
-};
-
-const getTokensFromServiceWorker = async (): Promise<DropboxTokenResponse | null> => {
-  if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-    const messageChannel = new MessageChannel();
-    return new Promise((resolve) => {
-      messageChannel.port1.onmessage = (event) => {
-        resolve(event.data.tokens);
-      };
-      navigator.serviceWorker.controller.postMessage(
-        { type: 'GET_DROPBOX_TOKENS' },
-        [messageChannel.port2]
-      );
-    });
-  }
-  return null;
-};
-
 export const dropboxAuth = {
   async initiateAuth() {
-    // Generate PKCE values
     const codeVerifier = generateRandomString(128);
     const codeChallenge = await sha256(codeVerifier);
     
-    // Store code verifier for later use
-    localStorage.setItem('dropbox_code_verifier', codeVerifier);
+    sessionStorage.setItem('dropbox_code_verifier', codeVerifier);
     
-    // Build authorization URL
     const params = new URLSearchParams({
       client_id: import.meta.env.VITE_DROPBOX_APP_KEY,
       response_type: 'code',
       code_challenge: codeChallenge,
       code_challenge_method: 'S256',
-      token_access_type: 'offline'
+      token_access_type: 'offline',
+      redirect_uri: REDIRECT_URI
     });
 
-    // Open popup window
     const width = 600;
     const height = 600;
     const left = window.screenX + (window.outerWidth - width) / 2;
     const top = window.screenY + (window.outerHeight - height) / 2;
+    
     const popup = window.open(
       `${DROPBOX_AUTH_URL}?${params.toString()}`,
       'Dropbox Auth',
@@ -84,7 +44,7 @@ export const dropboxAuth = {
       throw new Error('Popup blocked. Please allow popups for this site.');
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise<DropboxTokenResponse>((resolve, reject) => {
       const checkClosed = setInterval(() => {
         if (popup.closed) {
           clearInterval(checkClosed);
@@ -108,7 +68,7 @@ export const dropboxAuth = {
   },
 
   async handleAuthCallback(code: string): Promise<DropboxTokenResponse> {
-    const codeVerifier = localStorage.getItem('dropbox_code_verifier');
+    const codeVerifier = sessionStorage.getItem('dropbox_code_verifier');
     if (!codeVerifier) {
       throw new Error('No code verifier found');
     }
@@ -117,7 +77,8 @@ export const dropboxAuth = {
       code,
       grant_type: 'authorization_code',
       code_verifier: codeVerifier,
-      client_id: import.meta.env.VITE_DROPBOX_APP_KEY
+      client_id: import.meta.env.VITE_DROPBOX_APP_KEY,
+      redirect_uri: REDIRECT_URI
     });
 
     const response = await fetch(DROPBOX_TOKEN_URL, {
@@ -133,15 +94,13 @@ export const dropboxAuth = {
     }
 
     const data = await response.json();
-    localStorage.removeItem('dropbox_code_verifier');
-    
-    // Store tokens in service worker instead of localStorage
-    await storeTokensInServiceWorker(data);
+    sessionStorage.removeItem('dropbox_code_verifier');
+    sessionStorage.setItem('dropbox_tokens', JSON.stringify(data));
     return data;
   },
 
   async refreshToken(): Promise<DropboxTokenResponse> {
-    const tokens = await getTokensFromServiceWorker();
+    const tokens = JSON.parse(sessionStorage.getItem('dropbox_tokens') || '{}');
     if (!tokens?.refresh_token) {
       throw new Error('No refresh token found');
     }
@@ -165,22 +124,12 @@ export const dropboxAuth = {
     }
 
     const data = await response.json();
-    await storeTokensInServiceWorker(data);
+    sessionStorage.setItem('dropbox_tokens', JSON.stringify(data));
     return data;
   },
 
-  async getAccessToken(): Promise<string | null> {
-    const tokens = await getTokensFromServiceWorker();
-    return tokens?.access_token || null;
-  },
-
   logout() {
-    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-      navigator.serviceWorker.controller.postMessage({
-        type: 'STORE_DROPBOX_TOKENS',
-        tokens: null
-      });
-    }
-    localStorage.removeItem('dropbox_code_verifier');
+    sessionStorage.removeItem('dropbox_tokens');
+    sessionStorage.removeItem('dropbox_code_verifier');
   }
 };

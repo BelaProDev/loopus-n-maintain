@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useDropboxAuth } from "@/hooks/useDropboxAuth";
-import { LogIn } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { LogIn } from "lucide-react";
 import { uploadFile, listFiles, downloadFile } from "@/lib/dropbox";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import DocumentToolbar from "./document/DocumentToolbar";
 import FileList from "./document/FileList";
+import { dropboxAuth } from "@/lib/auth/dropbox";
 
 const DocumentManager = () => {
-  const { isAuthenticated, login, logout } = useDropboxAuth();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [currentPath, setCurrentPath] = useState("/");
@@ -42,12 +42,15 @@ const DocumentManager = () => {
 
   const handleLogin = async () => {
     try {
-      await login();
-      toast({
-        title: "Success",
-        description: "Successfully connected to Dropbox",
-      });
-      refetch();
+      const response = await dropboxAuth.initiateAuth();
+      if (response?.access_token) {
+        setIsAuthenticated(true);
+        toast({
+          title: "Success",
+          description: "Successfully connected to Dropbox",
+        });
+        refetch();
+      }
     } catch (error) {
       toast({
         title: "Authentication Failed",
@@ -121,7 +124,10 @@ const DocumentManager = () => {
             onFileSelect={handleFileSelect}
             isUploading={uploadMutation.isPending}
             onRefresh={refetch}
-            onLogout={logout}
+            onLogout={() => {
+              dropboxAuth.logout();
+              setIsAuthenticated(false);
+            }}
           />
 
           {isLoading ? (
