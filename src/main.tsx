@@ -12,12 +12,16 @@ if (!container) {
   throw new Error("Failed to find the root element");
 }
 
+// Hydrate with initial state if available
+const dehydratedState = window.__INITIAL_STATE__;
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 5 * 60 * 1000,
       gcTime: 10 * 60 * 1000,
       retry: false,
+      initialData: dehydratedState,
     },
   },
 });
@@ -48,4 +52,11 @@ if ('serviceWorker' in navigator && import.meta.env.PROD) {
         console.error('SW registration failed:', error);
       });
   });
+}
+
+// Add TypeScript declaration
+declare global {
+  interface Window {
+    __INITIAL_STATE__: any;
+  }
 }

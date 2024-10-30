@@ -6,21 +6,29 @@ export type Table = 'emails' | 'content' | 'clients' | 'providers' | 'invoices' 
 class FallbackDB {
   private storage: Map<string, any[]>;
   private prefix: string;
+  private isServer: boolean;
 
   constructor(prefix: string = 'koalax_') {
     this.prefix = prefix;
     this.storage = new Map();
+    this.isServer = typeof window === 'undefined';
     this.initializeStorage();
   }
 
   private initializeStorage() {
     Object.entries(fallbackData).forEach(([table, data]) => {
-      const storedData = localStorage.getItem(`${this.prefix}${table}`);
-      this.storage.set(table, storedData ? JSON.parse(storedData) : data);
+      if (this.isServer) {
+        this.storage.set(table, data);
+      } else {
+        const storedData = localStorage.getItem(`${this.prefix}${table}`);
+        this.storage.set(table, storedData ? JSON.parse(storedData) : data);
+      }
     });
   }
 
   private persistTable(table: string) {
+    if (this.isServer) return;
+    
     try {
       localStorage.setItem(
         `${this.prefix}${table}`, 

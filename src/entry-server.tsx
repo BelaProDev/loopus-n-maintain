@@ -4,8 +4,9 @@ import { StaticRouter } from 'react-router-dom/server';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './contexts/AuthContext';
 import App from './App';
+import { fallbackDB } from './lib/fallback-db';
 
-export function render(url: string) {
+export async function render(url: string) {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -15,6 +16,15 @@ export function render(url: string) {
       },
     },
   });
+
+  // Prefetch initial data
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: ['content'],
+      queryFn: () => fallbackDB.find('content')
+    }),
+    // Add other critical data prefetching here
+  ]);
 
   const html = ReactDOMServer.renderToString(
     <React.StrictMode>
@@ -28,5 +38,11 @@ export function render(url: string) {
     </React.StrictMode>
   );
 
-  return { html, context: {} };
+  const dehydratedState = JSON.stringify(queryClient.getQueryData(['content']));
+
+  return {
+    html,
+    context: {},
+    state: dehydratedState
+  };
 }

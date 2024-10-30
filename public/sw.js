@@ -8,19 +8,22 @@ const STATIC_ASSETS = [
   '/vite.svg'
 ];
 
-const DYNAMIC_ROUTES = [
-  '/electrics',
-  '/plumbing',
-  '/ironwork',
-  '/woodwork',
-  '/architecture',
-  '/login',
-  '/koalax'
-];
+const DB_TABLES = ['emails', 'content', 'clients', 'providers', 'invoices', 'whatsapp-numbers'];
 
+// Pre-cache static assets and fallback DB data
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
+    Promise.all([
+      caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS)),
+      // Cache initial fallback DB data
+      ...DB_TABLES.map(table => 
+        caches.open(CACHE_NAME).then(cache => 
+          cache.put(`/api/${table}`, new Response(JSON.stringify([]), {
+            headers: { 'Content-Type': 'application/json' }
+          }))
+        )
+      )
+    ])
   );
   self.skipWaiting();
 });
@@ -41,22 +44,28 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Skip non-GET requests
   if (event.request.method !== 'GET') return;
 
-  // Handle API requests
+  // Handle API/DB requests
   if (event.request.url.includes('/api/')) {
-    return event.respondWith(
-      fetch(event.request)
-        .catch(() => new Response(JSON.stringify({ error: 'Network error' }), {
-          headers: { 'Content-Type': 'application/json' },
-          status: 503
-        }))
+    event.respondWith(
+      caches.match(event.request)
+        .then(response => response || fetch(event.request))
+        .then(response => {
+          const clone = response.clone();
+          caches.open(CACHE_NAME)
+            .then(cache => cache.put(event.request, clone));
+          return response;
+        })
+        .catch(() => {
+          return caches.match(event.request);
+        })
     );
+    return;
   }
 
   // Network-first strategy for dynamic routes
-  if (DYNAMIC_ROUTES.some(route => event.request.url.includes(route))) {
+  if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request)
         .then(response => {
