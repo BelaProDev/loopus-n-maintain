@@ -62,6 +62,7 @@ export interface DbQueryResult<T> {
   data: T[];
   sort: (field: keyof T) => DbQueryResult<T>;
   toArray: () => Promise<T[]>;
+  map?: <U>(callback: (value: T, index: number, array: T[]) => U) => U[];
 }
 
 export interface DbCollection<T extends BaseDocument> {

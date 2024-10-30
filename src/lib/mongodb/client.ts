@@ -47,13 +47,17 @@ export async function getMongoClient(): Promise<MongoDatabase> {
               return {
                 data: sortedData,
                 sort: queryResult.sort,
-                toArray: () => Promise.resolve(sortedData)
+                toArray: () => Promise.resolve(sortedData),
+                map: <U>(callback: (value: T, index: number, array: T[]) => U) => 
+                  sortedData.map(callback)
               };
             },
-            toArray: () => Promise.resolve(data)
+            toArray: () => Promise.resolve(data),
+            map: <U>(callback: (value: T, index: number, array: T[]) => U) => 
+              data.map(callback)
           };
           
-          return queryResult;
+          return Promise.resolve(queryResult);
         },
         findOne: async (query) => {
           const result = await performDbOperation('findOne', name, { query });
