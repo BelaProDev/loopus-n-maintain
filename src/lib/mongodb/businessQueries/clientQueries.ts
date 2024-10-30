@@ -16,7 +16,7 @@ export const clientQueries = {
         updatedAt: timestamp
       };
       
-      const result = await db.collection<BusinessDocument>('clients').insertOne(clientData);
+      const result = await db.collection('clients').insertOne(clientData);
       return { id: result.insertedId.toString(), ...clientData };
     } catch (error) {
       return handleMongoError(error, { data });
@@ -28,7 +28,7 @@ export const clientQueries = {
       const db = await getMongoClient();
       if (!db) throw new Error('Database connection failed');
       
-      const clients = await db.collection<BusinessDocument>('clients')
+      const clients = await db.collection('clients')
         .find({ type: 'client' })
         .sort({ name: 1 })
         .toArray();
@@ -52,7 +52,7 @@ export const clientQueries = {
         updatedAt: Date.now()
       };
 
-      const result = await db.collection<BusinessDocument>('clients').updateOne(
+      const result = await db.collection('clients').updateOne(
         { _id: new ObjectId(id) },
         { $set: updateData }
       );

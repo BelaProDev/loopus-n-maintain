@@ -13,7 +13,7 @@ export const providerQueries = {
         type: 'provider' as const
       };
       
-      const result = await db.collection<BusinessDocument>('providers').insertOne(providerData);
+      const result = await db.collection('providers').insertOne(providerData);
       return { id: result.insertedId.toString(), ...providerData };
     } catch (error) {
       return handleMongoError(error, { data });
@@ -25,7 +25,7 @@ export const providerQueries = {
       const db = await getMongoClient();
       if (!db) throw new Error('Database connection failed');
       
-      const providers = await db.collection<BusinessDocument>('providers')
+      const providers = await db.collection('providers')
         .find({ type: 'provider' })
         .toArray();
       return providers.map(provider => ({
@@ -48,7 +48,7 @@ export const providerQueries = {
         updatedAt: Date.now()
       };
 
-      await db.collection<BusinessDocument>('providers').updateOne(
+      await db.collection('providers').updateOne(
         { _id: new ObjectId(id) },
         { $set: updateData }
       );

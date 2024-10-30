@@ -16,7 +16,7 @@ export const invoiceQueries = {
         status: data.status || 'draft'
       };
       
-      const result = await db.collection<InvoiceDocument>('invoices').insertOne(invoiceData);
+      const result = await db.collection('invoices').insertOne(invoiceData);
       return { id: result.insertedId.toString(), ...invoiceData };
     } catch (error) {
       return handleMongoError(error, { data });
@@ -28,7 +28,7 @@ export const invoiceQueries = {
       const db = await getMongoClient();
       if (!db) throw new Error('Database connection failed');
 
-      const invoices = await db.collection<InvoiceDocument>('invoices')
+      const invoices = await db.collection('invoices')
         .find()
         .sort({ createdAt: -1 })
         .toArray();
@@ -46,7 +46,7 @@ export const invoiceQueries = {
       const db = await getMongoClient();
       if (!db) throw new Error('Database connection failed');
 
-      const result = await db.collection<InvoiceDocument>('invoices').updateOne(
+      const result = await db.collection('invoices').updateOne(
         { _id: new ObjectId(id) },
         { 
           $set: { 

@@ -20,7 +20,7 @@ export const contentQueries = {
         language: SUPPORTED_LANGUAGES.includes(language) ? language : 'en' 
       } : {};
 
-      const content = await db.collection<ContentDocument>('contents')
+      const content = await db.collection('contents')
         .find(query)
         .sort({ key: 1 })
         .toArray();
@@ -36,14 +36,14 @@ export const contentQueries = {
       if (!db) throw new Error('Database connection failed');
 
       const usedLanguage = SUPPORTED_LANGUAGES.includes(language) ? language : 'en';
-      const content = await db.collection<ContentDocument>('contents').findOne({
+      const content = await db.collection('contents').findOne({
         key,
         language: usedLanguage
       });
 
       if (!content && usedLanguage !== 'en') {
         // Fallback to English if content not found in requested language
-        return await db.collection<ContentDocument>('contents').findOne({
+        return await db.collection('contents').findOne({
           key,
           language: 'en'
         });
@@ -75,7 +75,7 @@ export const contentQueries = {
         updatedAt: timestamp
       };
 
-      const result = await db.collection<ContentDocument>('contents').updateOne(
+      const result = await db.collection('contents').updateOne(
         { key: data.key, language: contentData.language },
         { $set: contentData },
         { upsert: true }

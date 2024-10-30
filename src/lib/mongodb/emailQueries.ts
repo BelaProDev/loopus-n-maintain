@@ -8,7 +8,7 @@ export const emailQueries = {
   getAllEmails: async () => {
     try {
       const db = await getMongoClient();
-      const emails = await db.collection<EmailDocument>('emails').find().toArray();
+      const emails = await db.collection('emails').find().toArray();
       return emails.map(email => ({
         ref: { id: email._id?.toString() || '' },
         data: {
@@ -30,7 +30,7 @@ export const emailQueries = {
       const timestamp = Date.now();
       const hashedPassword = data.password ? SHA256(data.password).toString() : undefined;
       
-      const result = await db.collection<EmailDocument>('emails').insertOne({
+      const result = await db.collection('emails').insertOne({
         ...data,
         password: hashedPassword,
         createdAt: timestamp,
@@ -52,7 +52,7 @@ export const emailQueries = {
         updatedAt: Date.now()
       };
       
-      await db.collection<EmailDocument>('emails').updateOne(
+      await db.collection('emails').updateOne(
         { _id: new ObjectId(id) },
         { $set: updateData }
       );
