@@ -1,10 +1,8 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
-import { files } from 'dropbox';
 import { Trash2, Download, Folder } from "lucide-react";
-
-type DropboxEntry = files.FileMetadataReference | files.FolderMetadataReference | files.DeletedMetadataReference;
+import { DropboxEntry } from "@/types/dropbox";
 
 interface FileListProps {
   files: DropboxEntry[] | undefined;

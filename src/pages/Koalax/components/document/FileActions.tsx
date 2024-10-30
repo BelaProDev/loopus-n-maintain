@@ -1,9 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { downloadFile } from "@/lib/dropbox";
 import { useToast } from "@/components/ui/use-toast";
-import { files } from 'dropbox';
-
-type DropboxEntry = files.FileMetadataReference | files.FolderMetadataReference | files.DeletedMetadataReference;
+import { DropboxEntry } from "@/types/dropbox";
 
 interface FileActionsProps {
   file: DropboxEntry;
@@ -17,7 +14,8 @@ const FileActions = ({ file, onNavigate, onDelete }: FileActionsProps) => {
   const handleDownload = async (path: string | undefined, fileName: string) => {
     if (!path) return;
     try {
-      const blob = await downloadFile(path);
+      const response = await fetch(`/api/dropbox/download?path=${encodeURIComponent(path)}`);
+      const blob = await response.blob();
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -41,7 +39,7 @@ const FileActions = ({ file, onNavigate, onDelete }: FileActionsProps) => {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => onNavigate(file.path_display || '')}
+          onClick={() => file.path_display && onNavigate(file.path_display)}
         >
           Open
         </Button>

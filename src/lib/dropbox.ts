@@ -1,16 +1,15 @@
 import { dropboxAuth } from './auth/dropbox';
 import { files } from 'dropbox';
+import { DropboxEntry } from '@/types/dropbox';
 
-type DropboxEntry = files.FileMetadataReference | files.FolderMetadataReference | files.DeletedMetadataReference;
-
-export const uploadFile = async (file: File, path: string) => {
+export const uploadFile = async (file: File, path: string): Promise<files.FileMetadata> => {
   const client = dropboxAuth.getClient();
   const arrayBuffer = await file.arrayBuffer();
   const response = await client.filesUpload({
     path: `${path}/${file.name}`,
     contents: arrayBuffer,
   });
-  return response;
+  return response.result;
 };
 
 export const listFiles = async (path: string): Promise<DropboxEntry[]> => {
@@ -33,14 +32,14 @@ export const downloadFile = async (path: string): Promise<Blob> => {
   }
 };
 
-export const deleteFile = async (path: string) => {
+export const deleteFile = async (path: string): Promise<files.DeleteMetadataResult> => {
   const client = dropboxAuth.getClient();
   const response = await client.filesDeleteV2({ path });
-  return response;
+  return response.result;
 };
 
-export const createFolder = async (path: string) => {
+export const createFolder = async (path: string): Promise<files.CreateFolderResult> => {
   const client = dropboxAuth.getClient();
   const response = await client.filesCreateFolderV2({ path });
-  return response;
+  return response.result;
 };
