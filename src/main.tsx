@@ -27,27 +27,58 @@ const queryClient = new QueryClient({
       refetchOnWindowFocus: false
     }
   }
-})
+});
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <App />,
+    errorElement: <div>Error loading page</div>,
     children: [
-      { index: true, element: <Index /> },
-      { path: 'login', element: <Login /> },
-      { path: 'koalax', element: <Koalax /> },
-      { path: 'architecture', element: <Architecture /> },
-      { path: 'documentation', element: <Documentation /> },
-      { path: 'electrics', element: <Electrics /> },
-      { path: 'ironwork', element: <Ironwork /> },
-      { path: 'plumbing', element: <Plumbing /> },
-      { path: 'woodwork', element: <Woodwork /> }
+      { 
+        index: true,
+        element: <Index />
+      },
+      {
+        path: "login",
+        element: <Login />
+      },
+      {
+        path: "koalax",
+        element: <Koalax />
+      },
+      {
+        path: "architecture",
+        element: <Architecture />
+      },
+      {
+        path: "documentation",
+        element: <Documentation />
+      },
+      {
+        path: "electrics",
+        element: <Electrics />
+      },
+      {
+        path: "ironwork",
+        element: <Ironwork />
+      },
+      {
+        path: "plumbing",
+        element: <Plumbing />
+      },
+      {
+        path: "woodwork",
+        element: <Woodwork />
+      }
     ]
   }
 ]);
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+const root = document.getElementById('root');
+if (!root) throw new Error('Root element not found');
+
+ReactDOM.createRoot(root).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
