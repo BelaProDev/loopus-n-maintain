@@ -43,10 +43,13 @@ export async function render(url: string): Promise<RenderResult> {
       </React.StrictMode>
     );
 
-    // Dehydrate query cache
-    const state = JSON.stringify(
-      queryClient.getQueriesData(['content'])
-    );
+    // Dehydrate query cache - fixed TypeScript error by using proper type
+    const state = JSON.stringify({
+      queries: queryClient.getQueryCache().getAll().map(query => ({
+        queryKey: query.queryKey,
+        data: query.state.data
+      }))
+    });
 
     return {
       html,
