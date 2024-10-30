@@ -22,6 +22,8 @@ export const uploadFile = async (file: File, path: string): Promise<DropboxFile>
       })
     );
     
+    if (!response?.result) throw new Error('Upload failed: No response data');
+    
     return {
       '.tag': 'file',
       ...response.result,
@@ -30,7 +32,8 @@ export const uploadFile = async (file: File, path: string): Promise<DropboxFile>
   });
 
   if (error) throw error;
-  return data!;
+  if (!data) throw new Error('Upload failed: No data returned');
+  return data;
 };
 
 export const listFiles = async (path: string): Promise<DropboxEntry[]> => {
@@ -39,6 +42,8 @@ export const listFiles = async (path: string): Promise<DropboxEntry[]> => {
     const response = await retryWithBackoff(() => 
       client.filesListFolder({ path })
     );
+    
+    if (!response?.result?.entries) throw new Error('List files failed: No entries found');
     
     return response.result.entries.map(entry => {
       const baseEntry = {
@@ -59,7 +64,8 @@ export const listFiles = async (path: string): Promise<DropboxEntry[]> => {
   });
 
   if (error) throw error;
-  return data!;
+  if (!data) throw new Error('List files failed: No data returned');
+  return data;
 };
 
 export const downloadFile = async (path: string): Promise<Blob> => {
@@ -69,14 +75,17 @@ export const downloadFile = async (path: string): Promise<Blob> => {
       client.filesDownload({ path })
     );
     
-    if ('fileBlob' in response.result && response.result.fileBlob instanceof Blob) {
-      return response.result.fileBlob;
+    if (!response?.result) throw new Error('Download failed: No response data');
+    if (!('fileBlob' in response.result) || !(response.result.fileBlob instanceof Blob)) {
+      throw new Error('Download failed: Invalid file data');
     }
-    throw new Error('File download failed');
+    
+    return response.result.fileBlob;
   });
 
   if (error) throw error;
-  return data!;
+  if (!data) throw new Error('Download failed: No data returned');
+  return data;
 };
 
 export const deleteFile = async (path: string): Promise<DropboxDeleted> => {
@@ -86,6 +95,8 @@ export const deleteFile = async (path: string): Promise<DropboxDeleted> => {
       client.filesDeleteV2({ path })
     );
     
+    if (!response?.result?.metadata) throw new Error('Delete failed: No metadata returned');
+    
     return {
       '.tag': 'deleted',
       ...response.result.metadata,
@@ -94,7 +105,8 @@ export const deleteFile = async (path: string): Promise<DropboxDeleted> => {
   });
 
   if (error) throw error;
-  return data!;
+  if (!data) throw new Error('Delete failed: No data returned');
+  return data;
 };
 
 export const createFolder = async (path: string): Promise<DropboxFolder> => {
@@ -104,6 +116,8 @@ export const createFolder = async (path: string): Promise<DropboxFolder> => {
       client.filesCreateFolderV2({ path })
     );
     
+    if (!response?.result?.metadata) throw new Error('Create folder failed: No metadata returned');
+    
     return {
       '.tag': 'folder',
       ...response.result.metadata,
@@ -112,10 +126,10 @@ export const createFolder = async (path: string): Promise<DropboxFolder> => {
   });
 
   if (error) throw error;
-  return data!;
+  if (!data) throw new Error('Create folder failed: No data returned');
+  return data;
 };
 
-// Export a cancelable version of each operation
 export const cancelableOperations = {
   uploadFile: (file: File, path: string) => createCancelablePromise(uploadFile(file, path)),
   listFiles: (path: string) => createCancelablePromise(listFiles(path)),
