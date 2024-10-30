@@ -1,5 +1,6 @@
 import fallbackData from './fallback-db.json';
 import { toast } from "@/components/ui/use-toast";
+import { gitSync } from './gitSync';
 
 export type Table = 'emails' | 'content' | 'clients' | 'providers' | 'invoices' | 'whatsapp-numbers';
 
@@ -49,11 +50,9 @@ class FallbackDB {
   }
 
   private handleVersionMismatch(table: string, storedData: StoredData<any>) {
-    // Implement version migration logic here
-    // For now, we'll just update the version and keep the data
     storedData.version = this.version;
     this.persistTable(table, storedData);
-    
+
     toast({
       title: "Data Update",
       description: `${table} data has been updated to version ${this.version}`,
@@ -64,12 +63,20 @@ class FallbackDB {
     if (this.isServer) return;
     
     try {
+      // Persist to localStorage
       localStorage.setItem(
         `${this.prefix}${table}`, 
         JSON.stringify({
           ...data,
           lastSync: Date.now()
         })
+      );
+
+      // Sync with Git repository
+      await gitSync.syncChanges(
+        'fallback-db.json',
+        data,
+        `Update ${table} data`
       );
 
       // Register for background sync if supported
