@@ -1,6 +1,6 @@
 import { toast } from '@/components/ui/use-toast';
 
-const DB_VERSION = '1';
+const DB_VERSION = 1; // Changed to number instead of string
 const DB_TABLES = ['emails', 'content', 'clients', 'providers', 'invoices', 'whatsapp-numbers'];
 export const SYNC_TAG = 'db-sync';
 
