@@ -1,11 +1,14 @@
+importScripts('./sw/cache-strategies.ts');
 importScripts('./sw/cache-manager.ts');
 importScripts('./sw/db-sync.ts');
+
+const dbSync = new DBSync();
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
     Promise.all([
       initializeCache(),
-      initializeDB()
+      dbSync.initializeDB()
     ])
   );
   self.skipWaiting();
@@ -23,7 +26,9 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('sync', (event) => {
-  event.waitUntil(handleSync(event));
+  if (event.tag === SYNC_TAG) {
+    event.waitUntil(dbSync.triggerSync());
+  }
 });
 
 self.addEventListener('fetch', (event) => {

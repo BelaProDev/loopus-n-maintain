@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fallbackDB } from "@/lib/fallback-db";
-import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus } from "lucide-react";
 import { Client } from "@/types/business";
-import ClientDialog from "./ClientDialog";
-import { ClientActions } from "./ClientActions";
 import { useToast } from "@/components/ui/use-toast";
+import ClientDialog from "./ClientDialog";
+import ClientListHeader from "./ClientListHeader";
+import ClientTable from "./ClientTable";
+import { dbSync } from "public/sw/db-sync";
 
 const ClientList = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -21,7 +20,15 @@ const ClientList = () => {
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fallbackDB.insert('clients', data),
+    mutationFn: async (data: any) => {
+      const result = await fallbackDB.insert('clients', data);
+      await dbSync.addPendingChange({
+        table: 'clients',
+        operation: 'create',
+        data
+      });
+      return result;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clients'] });
       toast({ title: "Success", description: "Client added successfully" });
@@ -53,54 +60,31 @@ const ClientList = () => {
     createMutation.mutate(clientData);
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Clients</h2>
-        <Button onClick={() => {
-          setEditingClient(null);
-          setIsDialogOpen(true);
-        }}>
-          <Plus className="w-4 h-4 mr-2" />
-          Add Client
-        </Button>
-      </div>
+      <ClientListHeader onAddClick={() => {
+        setEditingClient(null);
+        setIsDialogOpen(true);
+      }} />
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Phone</TableHead>
-            <TableHead>Company</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {clients?.map((client: Client) => (
-            <TableRow key={client.id}>
-              <TableCell>{client.name}</TableCell>
-              <TableCell>{client.email}</TableCell>
-              <TableCell>{client.phone}</TableCell>
-              <TableCell>{client.company}</TableCell>
-              <TableCell className="text-right">
-                <ClientActions
-                  client={client}
-                  onEdit={(client) => {
-                    setEditingClient(client);
-                    setIsDialogOpen(true);
-                  }}
-                  onDelete={() => {
-                    // TODO: Implement delete functionality
-                  }}
-                />
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <ClientTable
+        clients={clients}
+        onEdit={(client) => {
+          setEditingClient(client);
+          setIsDialogOpen(true);
+        }}
+        onDelete={() => {
+          // TODO: Implement delete functionality
+        }}
+      />
 
       <ClientDialog
         isOpen={isDialogOpen}
