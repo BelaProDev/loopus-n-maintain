@@ -28,10 +28,18 @@ from = "/koalax"
 to = "/index.html"
 status = 200
 
+[[redirects]]
+from = "/dropbox/callback"
+to = "/index.html"
+status = 200
+
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
   external_node_modules = ["nodemailer"]
+
+[build.environment]
+  VITE_DROPBOX_APP_KEY = "placeholder"
 
 [[redirects]]
 from = "/*"
