@@ -34,18 +34,23 @@ export async function getMongoClient(): Promise<MongoDatabase> {
   return {
     collection<T extends BaseDocument>(name: string): DbCollection<T> {
       return {
-        find: async (query = {}) => {
+        async find(query = {}) {
           const result = await performDbOperation('find', name, { query });
           const data = result || [];
           
           const queryResult: DbQueryResult<T> = {
             data,
-            sort: (field: keyof T) => ({
-              data: [...data].sort((a, b) => (a[field] > b[field] ? 1 : -1)),
-              sort: (f) => queryResult.sort(f),
-              toArray: () => Promise.resolve(data),
-            }),
-            toArray: () => Promise.resolve(data),
+            sort: (field: keyof T) => {
+              const sortedData = [...data].sort((a, b) => 
+                (a[field] > b[field] ? 1 : -1)
+              );
+              return {
+                data: sortedData,
+                sort: queryResult.sort,
+                toArray: () => Promise.resolve(sortedData)
+              };
+            },
+            toArray: () => Promise.resolve(data)
           };
           
           return queryResult;

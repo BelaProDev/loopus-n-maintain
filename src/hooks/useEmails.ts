@@ -20,20 +20,8 @@ export function useEmails() {
     queryFn: emailQueries.getAllEmails,
   });
 
-  const createEmailMutation = useMutation({
-    mutationFn: emailQueries.createEmail,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['emails'] });
-      toast({ title: "Success", description: "Email added successfully" });
-    },
-    onError: () => {
-      toast({ title: "Error", description: "Failed to add email", variant: "destructive" });
-    },
-  });
-
   const updateEmailMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Email['data'] }) => 
-      emailQueries.updateEmail(id, data),
+    mutationFn: (email: Email) => emailQueries.updateEmail(email.ref.id, email.data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['emails'] });
       toast({ title: "Success", description: "Email updated successfully" });
@@ -58,11 +46,8 @@ export function useEmails() {
     emails: emailsQuery.data as Email[] | undefined,
     isLoading: emailsQuery.isLoading,
     error: emailsQuery.error,
-    createEmail: createEmailMutation.mutate,
     updateEmail: updateEmailMutation.mutate,
     deleteEmail: deleteEmailMutation.mutate,
-    isCreating: createEmailMutation.isPending,
-    isUpdating: updateEmailMutation.isPending,
     isDeleting: deleteEmailMutation.isPending,
   };
 }

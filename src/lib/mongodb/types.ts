@@ -9,6 +9,7 @@ export interface BaseDocument {
   language?: string;
   status?: string;
   numbers?: Record<string, string>;
+  serviceId?: string;
 }
 
 export interface EmailDocument extends BaseDocument {
@@ -80,10 +81,4 @@ export interface DbCollection<T extends BaseDocument> {
 
 export interface MongoDatabase {
   collection<T extends BaseDocument>(name: string): DbCollection<T>;
-}
-
-export interface SettingsDocument extends BaseDocument {
-  type: string;
-  numbers?: Record<string, string>;
-  [key: string]: any;
 }
