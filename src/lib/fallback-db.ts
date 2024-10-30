@@ -58,15 +58,17 @@ class FallbackDB {
 
   update(table: Table, query: Record<string, any>, update: Record<string, any>) {
     const tableData = this.storage.get(table) || [];
+    let modifiedCount = 0;
     const updatedData = tableData.map(item => {
       if (Object.entries(query).every(([key, value]) => item[key] === value)) {
+        modifiedCount++;
         return { ...item, ...update };
       }
       return item;
     });
     this.storage.set(table, updatedData);
     this.persistTable(table);
-    return { modifiedCount: 1 };
+    return { modifiedCount };
   }
 
   delete(table: Table, query: Record<string, any>) {
@@ -74,9 +76,10 @@ class FallbackDB {
     const filteredData = tableData.filter(item => 
       !Object.entries(query).every(([key, value]) => item[key] === value)
     );
+    const deletedCount = tableData.length - filteredData.length;
     this.storage.set(table, filteredData);
     this.persistTable(table);
-    return { deletedCount: tableData.length - filteredData.length };
+    return { deletedCount };
   }
 
   clearTable(table: Table) {
