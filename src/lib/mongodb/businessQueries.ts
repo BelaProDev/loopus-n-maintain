@@ -2,18 +2,39 @@ import { getMongoClient, handleMongoError } from './client';
 import { BusinessDocument, InvoiceDocument } from './types';
 import { ObjectId } from 'mongodb';
 
+const validateBusinessDocument = (data: Partial<BusinessDocument>): boolean => {
+  if (!data.name || !data.email || !data.type) return false;
+  if (data.type !== 'client' && data.type !== 'provider') return false;
+  return true;
+};
+
+const validateInvoiceDocument = (data: Partial<InvoiceDocument>): boolean => {
+  if (!data.clientId || !data.providerId || !data.items) return false;
+  if (!Array.isArray(data.items) || data.items.length === 0) return false;
+  return true;
+};
+
 export const businessQueries = {
   // Client queries
   createClient: async (data: Omit<BusinessDocument, '_id'>) => {
     try {
+      if (!validateBusinessDocument(data)) {
+        throw new Error('Invalid client data');
+      }
+
       const db = await getMongoClient();
       if (!db) throw new Error('Database connection failed');
       
-      const result = await db.collection<BusinessDocument>('clients').insertOne({
+      const timestamp = Date.now();
+      const clientData = {
         ...data,
-        type: 'client'
-      });
-      return { id: result.insertedId.toString(), ...data };
+        type: 'client',
+        createdAt: timestamp,
+        updatedAt: timestamp
+      };
+      
+      const result = await db.collection<BusinessDocument>('clients').insertOne(clientData);
+      return { id: result.insertedId.toString(), ...clientData };
     } catch (error) {
       return handleMongoError(error, { data });
     }
@@ -26,6 +47,7 @@ export const businessQueries = {
       
       const clients = await db.collection<BusinessDocument>('clients')
         .find({ type: 'client' })
+        .sort({ name: 1 })
         .toArray();
       return clients.map(client => ({
         id: client._id?.toString(),
@@ -41,11 +63,21 @@ export const businessQueries = {
       const db = await getMongoClient();
       if (!db) throw new Error('Database connection failed');
 
-      await db.collection<BusinessDocument>('clients').updateOne(
+      const updateData = {
+        ...data,
+        updatedAt: Date.now()
+      };
+
+      const result = await db.collection<BusinessDocument>('clients').updateOne(
         { _id: new ObjectId(id) },
-        { $set: { ...data, updatedAt: Date.now() } }
+        { $set: updateData }
       );
-      return { id, ...data };
+
+      if (result.matchedCount === 0) {
+        throw new Error('Client not found');
+      }
+
+      return { id, ...updateData };
     } catch (error) {
       return handleMongoError(error, null);
     }
@@ -56,7 +88,12 @@ export const businessQueries = {
       const db = await getMongoClient();
       if (!db) throw new Error('Database connection failed');
 
-      await db.collection('clients').deleteOne({ _id: new ObjectId(id) });
+      const result = await db.collection('clients').deleteOne({ _id: new ObjectId(id) });
+      
+      if (result.deletedCount === 0) {
+        throw new Error('Client not found');
+      }
+
       return { success: true };
     } catch (error) {
       return handleMongoError(error, { success: false });
@@ -126,9 +163,23 @@ export const businessQueries = {
   // Invoice queries
   createInvoice: async (data: Omit<InvoiceDocument, '_id'>) => {
     try {
+      if (!validateInvoiceDocument(data)) {
+        throw new Error('Invalid invoice data');
+      }
+
       const db = await getMongoClient();
-      const result = await db.collection<InvoiceDocument>('invoices').insertOne(data);
-      return { id: result.insertedId.toString(), ...data };
+      if (!db) throw new Error('Database connection failed');
+
+      const timestamp = Date.now();
+      const invoiceData = {
+        ...data,
+        createdAt: timestamp,
+        updatedAt: timestamp,
+        status: data.status || 'draft'
+      };
+      
+      const result = await db.collection<InvoiceDocument>('invoices').insertOne(invoiceData);
+      return { id: result.insertedId.toString(), ...invoiceData };
     } catch (error) {
       return handleMongoError(error, { data });
     }
@@ -137,7 +188,12 @@ export const businessQueries = {
   getInvoices: async () => {
     try {
       const db = await getMongoClient();
-      const invoices = await db.collection<InvoiceDocument>('invoices').find().toArray();
+      if (!db) throw new Error('Database connection failed');
+
+      const invoices = await db.collection<InvoiceDocument>('invoices')
+        .find()
+        .sort({ createdAt: -1 })
+        .toArray();
       return invoices.map(invoice => ({
         id: invoice._id?.toString(),
         ...invoice
@@ -150,10 +206,22 @@ export const businessQueries = {
   updateInvoiceStatus: async (id: string, status: InvoiceDocument['status']) => {
     try {
       const db = await getMongoClient();
-      await db.collection<InvoiceDocument>('invoices').updateOne(
+      if (!db) throw new Error('Database connection failed');
+
+      const result = await db.collection<InvoiceDocument>('invoices').updateOne(
         { _id: new ObjectId(id) },
-        { $set: { status } }
+        { 
+          $set: { 
+            status,
+            updatedAt: Date.now()
+          } 
+        }
       );
+
+      if (result.matchedCount === 0) {
+        throw new Error('Invoice not found');
+      }
+
       return { id, status };
     } catch (error) {
       return handleMongoError(error, { id, status });
@@ -163,7 +231,14 @@ export const businessQueries = {
   deleteInvoice: async (id: string) => {
     try {
       const db = await getMongoClient();
-      await db.collection('invoices').deleteOne({ _id: new ObjectId(id) });
+      if (!db) throw new Error('Database connection failed');
+
+      const result = await db.collection('invoices').deleteOne({ _id: new ObjectId(id) });
+      
+      if (result.deletedCount === 0) {
+        throw new Error('Invoice not found');
+      }
+
       return { success: true };
     } catch (error) {
       return handleMongoError(error, { success: false });
