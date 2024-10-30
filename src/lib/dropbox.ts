@@ -1,4 +1,5 @@
 import { dropboxAuth } from './auth/dropbox';
+import { files } from 'dropbox/types/dropbox_types';
 
 export const uploadFile = async (file: File, path: string) => {
   const client = dropboxAuth.getClient();
@@ -16,10 +17,10 @@ export const listFiles = async (path: string) => {
   return response.result.entries;
 };
 
-export const downloadFile = async (path: string) => {
+export const downloadFile = async (path: string): Promise<Blob> => {
   const client = dropboxAuth.getClient();
-  const response = await client.filesDownload({ path });
-  return response.result;
+  const response = await client.filesDownload({ path }) as { result: { fileBlob: Blob } };
+  return response.result.fileBlob;
 };
 
 export const deleteFile = async (path: string) => {
