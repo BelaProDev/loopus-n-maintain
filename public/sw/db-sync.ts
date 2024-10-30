@@ -122,13 +122,29 @@ class DBSync {
     await store.delete(id);
   }
 
-  private async incrementRetryCount(id: string) {
+  private async incrementRetryCount(id: string): Promise<void> {
     const db = await this.openDB();
-    const tx = db.transaction('pendingChanges', 'readwrite');
-    const store = tx.objectStore('pendingChanges');
-    const change = await store.get(id);
-    change.retryCount++;
-    await store.put(change);
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction('pendingChanges', 'readwrite');
+      const store = tx.objectStore('pendingChanges');
+      
+      const getRequest = store.get(id);
+      
+      getRequest.onerror = () => reject(getRequest.error);
+      getRequest.onsuccess = () => {
+        const change: PendingChange = getRequest.result;
+        if (!change) {
+          reject(new Error('Change not found'));
+          return;
+        }
+        
+        change.retryCount++;
+        const putRequest = store.put(change);
+        
+        putRequest.onerror = () => reject(putRequest.error);
+        putRequest.onsuccess = () => resolve();
+      };
+    });
   }
 }
 
