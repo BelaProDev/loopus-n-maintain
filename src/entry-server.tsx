@@ -58,8 +58,8 @@ export async function render(url: string): Promise<RenderResult> {
       </React.StrictMode>
     );
 
-    // Dehydrate query cache
-    const dehydratedState = JSON.stringify(queryClient.getQueriesData());
+    // Dehydrate query cache with proper typing
+    const dehydratedState = JSON.stringify(queryClient.getQueriesData({}));
 
     return {
       html,

@@ -72,10 +72,12 @@ class FallbackDB {
         })
       );
 
-      // Register for background sync if available
-      if ('serviceWorker' in navigator && 'sync' in navigator.serviceWorker) {
+      // Register for background sync if supported
+      if ('serviceWorker' in navigator) {
         const registration = await navigator.serviceWorker.ready;
-        await registration.sync.register('db-sync');
+        if ('sync' in registration) {
+          await (registration as any).sync.register('db-sync');
+        }
       }
     } catch (error) {
       console.error('Storage persistence failed:', error);
