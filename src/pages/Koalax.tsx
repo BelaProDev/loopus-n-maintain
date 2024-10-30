@@ -7,13 +7,15 @@ import SiteSettings from "./Koalax/SiteSettings";
 import EmailList from "./Koalax/EmailList";
 import KoalaxAuth from "./Koalax/KoalaxAuth";
 import { useSession } from "@/hooks/useSession";
+import { useEmails } from "@/hooks/useEmails";
 
 const Koalax = () => {
-  const { session } = useSession();
+  const { sessionChecked, isAuthenticated } = useSession();
   const [activeTab, setActiveTab] = useState("documents");
+  const { emails, updateEmail, deleteEmail, isDeleting } = useEmails();
 
-  if (!session) {
-    return <KoalaxAuth />;
+  if (!isAuthenticated) {
+    return <KoalaxAuth onAuthenticate={() => {}} />;
   }
 
   return (
@@ -46,7 +48,12 @@ const Koalax = () => {
 
         <TabsContent value="emails">
           <Card className="p-6">
-            <EmailList />
+            <EmailList 
+              emails={emails || []}
+              onEdit={updateEmail}
+              onDelete={deleteEmail}
+              isDeleting={isDeleting}
+            />
           </Card>
         </TabsContent>
       </Tabs>

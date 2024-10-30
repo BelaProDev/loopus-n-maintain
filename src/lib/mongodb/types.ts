@@ -4,6 +4,11 @@ export interface BaseDocument {
   _id?: ObjectId;
   createdAt?: number;
   updatedAt?: number;
+  type?: string;
+  key?: string;
+  language?: string;
+  status?: string;
+  numbers?: Record<string, string>;
 }
 
 export interface EmailDocument extends BaseDocument {
