@@ -1,5 +1,7 @@
 import { Dropbox } from 'dropbox';
 
+const ROOT_FOLDER = '/loopusandmaintain';
+
 export const getDropboxClient = () => {
   if (typeof window === 'undefined') return null;
   
@@ -14,8 +16,9 @@ export const getDropboxClient = () => {
 };
 
 const sanitizePath = (path: string) => {
+  if (path === '/') return ROOT_FOLDER;
   const cleanPath = path.replace(/\/+/g, '/').replace(/^\//, '');
-  return `/loopusandmaintain/${cleanPath}`;
+  return `${ROOT_FOLDER}/${cleanPath}`;
 };
 
 export const uploadFile = async (file: File | Blob, path: string, fileName?: string) => {
@@ -84,7 +87,7 @@ export const listFiles = async (path: string = '') => {
   if (!dbx) throw new Error('Dropbox client not initialized');
 
   try {
-    const sanitizedPath = path === '/' ? '/loopusandmaintain' : sanitizePath(path);
+    const sanitizedPath = sanitizePath(path);
     const response = await dbx.filesListFolder({
       path: sanitizedPath,
     });
