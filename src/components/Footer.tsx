@@ -1,4 +1,4 @@
-import { Home, Settings, Mail, Phone, Github } from "lucide-react";
+import { Home, Settings, Mail, Phone, Github, BookOpen } from "lucide-react";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
 
@@ -41,6 +41,12 @@ const Footer = () => {
               <Link to="/koalax">
                 <Settings className="h-4 w-4 mr-2" />
                 Loopus Admin
+              </Link>
+            </Button>
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/docs">
+                <BookOpen className="h-4 w-4 mr-2" />
+                Documentation
               </Link>
             </Button>
           </div>
