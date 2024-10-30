@@ -1,5 +1,3 @@
-import { Db } from 'mongodb';
-
 async function performDbOperation(operation: string, collection: string, data: any) {
   try {
     const response = await fetch('/.netlify/functions/db-operations', {
@@ -30,7 +28,7 @@ async function performDbOperation(operation: string, collection: string, data: a
   }
 }
 
-export async function getMongoClient(): Promise<Db | null> {
+export async function getMongoClient() {
   return {
     collection: (name: string) => ({
       find: (query = {}) => ({
@@ -43,7 +41,7 @@ export async function getMongoClient(): Promise<Db | null> {
         performDbOperation('updateOne', name, { query, update: update.$set, upsert: options?.upsert }),
       deleteOne: async (query: any) => performDbOperation('deleteOne', name, { query }),
     }),
-  } as unknown as Db;
+  } as any;
 }
 
 export const handleMongoError = (error: any, fallbackData: any) => {
