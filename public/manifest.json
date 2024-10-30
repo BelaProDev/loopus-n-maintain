@@ -1,7 +1,7 @@
 {
   "name": "Loopus&Maintain - Professional Building Maintenance Services",
   "short_name": "Loopus",
-  "description": "Your trusted partner for professional building maintenance. 24/7 emergency services, licensed experts, and comprehensive maintenance solutions for property managers and homeowners.",
+  "description": "Your trusted partner for professional building maintenance services",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#F5F1EA",
@@ -21,6 +21,29 @@
     }
   ],
   "orientation": "portrait",
-  "categories": ["business", "maintenance", "property services", "home services"],
-  "prefer_related_applications": false
+  "categories": ["business", "maintenance", "property services"],
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "url": "/koalax",
+      "description": "Access admin dashboard"
+    }
+  ],
+  "screenshots": [],
+  "related_applications": [],
+  "iarc_rating_id": "",
+  "share_target": {
+    "action": "/share-target",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "files": [
+        {
+          "name": "file",
+          "accept": ["image/*", "application/pdf"]
+        }
+      ]
+    }
+  }
 }

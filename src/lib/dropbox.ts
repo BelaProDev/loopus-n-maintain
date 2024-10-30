@@ -1,6 +1,6 @@
 import { dropboxAuth } from './auth/dropbox';
 import { files } from 'dropbox';
-import { DropboxEntry } from '@/types/dropbox';
+import { DropboxEntry, DropboxFile, DropboxFolder } from '@/types/dropbox';
 
 export const uploadFile = async (file: File, path: string): Promise<DropboxEntry> => {
   const client = dropboxAuth.getClient();
@@ -9,13 +9,19 @@ export const uploadFile = async (file: File, path: string): Promise<DropboxEntry
     path: `${path}/${file.name}`,
     contents: arrayBuffer,
   });
-  return response.result;
+  return {
+    ...response.result,
+    '.tag': 'file'
+  } as DropboxFile;
 };
 
 export const listFiles = async (path: string): Promise<DropboxEntry[]> => {
   const client = dropboxAuth.getClient();
   const response = await client.filesListFolder({ path });
-  return response.result.entries;
+  return response.result.entries.map(entry => ({
+    ...entry,
+    '.tag': entry['.tag'] || 'file'
+  }));
 };
 
 export const downloadFile = async (path: string): Promise<Blob> => {
@@ -30,21 +36,19 @@ export const downloadFile = async (path: string): Promise<Blob> => {
 export const deleteFile = async (path: string): Promise<DropboxEntry> => {
   const client = dropboxAuth.getClient();
   const response = await client.filesDeleteV2({ path });
-  const metadata = response.result.metadata;
   return {
-    ...metadata,
+    ...response.result.metadata,
     '.tag': 'deleted',
     name: path.split('/').pop() || '',
-  } as DropboxEntry;
+  };
 };
 
 export const createFolder = async (path: string): Promise<DropboxEntry> => {
   const client = dropboxAuth.getClient();
   const response = await client.filesCreateFolderV2({ path });
-  const metadata = response.result.metadata;
   return {
-    ...metadata,
+    ...response.result.metadata,
     '.tag': 'folder',
     name: path.split('/').pop() || '',
-  } as DropboxEntry;
+  } as DropboxFolder;
 };
