@@ -11,17 +11,13 @@ export const emailQueries = {
 
     try {
       const result = await client.query(fql`
-        let emails = Collection.byName("emails")
-        if (emails == null) {
-          []
-        } else {
-          emails.all().documents().map(doc => {
-            {
-              ref: { id: doc.id },
-              data: doc.data
-            }
-          })
-        }
+        let emails = Collection.byName("emails")!
+        emails.all().documents().map(doc => {
+          {
+            ref: { id: doc.id },
+            data: doc.data
+          }
+        })
       `);
       return result.data;
     } catch (error) {
@@ -38,11 +34,8 @@ export const emailQueries = {
       const hashedPassword = data.password ? SHA256(data.password).toString() : undefined;
       
       const result = await client.query(fql`
-        let emails = Collection.byName("emails")
-        if (emails == null) {
-          abort("Collection not found")
-        }
-        emails.create({
+        let emails = Collection.byName("emails")!
+        let doc = emails.create({
           data: {
             email: ${data.email},
             name: ${data.name},
@@ -52,10 +45,14 @@ export const emailQueries = {
             updatedAt: ${timestamp}
           }
         })
+        {
+          ref: { id: doc.id },
+          data: doc.data
+        }
       `);
       return result;
     } catch (error) {
-      return handleFaunaError(error, null);
+      return handleFaunaError(error, { data });
     }
   },
 
@@ -64,26 +61,20 @@ export const emailQueries = {
     if (!client) throw new Error('Fauna client not initialized');
 
     try {
-      const updateData = {
-        ...data,
-        password: data.password ? SHA256(data.password).toString() : undefined,
-        updatedAt: Date.now()
-      };
-      
       const result = await client.query(fql`
-        let emails = Collection.byName("emails")
-        if (emails == null) {
-          abort("Collection not found")
-        }
-        let doc = emails.where(.id == ${id}).first()
+        let emails = Collection.byName("emails")!
+        let doc = emails.firstWhere(.id == ${id})
         if (doc == null) {
           abort("Document not found")
         }
-        doc.update({ data: ${updateData} })
+        doc.update({ 
+          data: ${data},
+          updatedAt: Time.now()
+        })
       `);
       return result;
     } catch (error) {
-      return handleFaunaError(error, null);
+      return handleFaunaError(error, { id, data });
     }
   },
 
@@ -93,11 +84,8 @@ export const emailQueries = {
 
     try {
       await client.query(fql`
-        let emails = Collection.byName("emails")
-        if (emails == null) {
-          abort("Collection not found")
-        }
-        let doc = emails.where(.id == ${id}).first()
+        let emails = Collection.byName("emails")!
+        let doc = emails.firstWhere(.id == ${id})
         if (doc == null) {
           abort("Document not found")
         }

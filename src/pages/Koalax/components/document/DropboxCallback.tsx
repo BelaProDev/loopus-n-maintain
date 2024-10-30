@@ -10,17 +10,23 @@ const DropboxCallback = () => {
   useEffect(() => {
     const code = searchParams.get('code');
     if (code) {
-      if (window.opener) {
-        window.opener.postMessage({ type: 'DROPBOX_AUTH_CODE', code }, '*');
-        window.close();
-      } else {
-        toast({
-          title: "Authentication Error",
-          description: "Could not complete authentication. Please try again.",
-          variant: "destructive",
-        });
-        navigate('/koalax');
-      }
+      const sendMessageAndClose = () => {
+        if (window.opener) {
+          // Send message first
+          window.opener.postMessage({ type: 'DROPBOX_AUTH_CODE', code }, '*');
+          // Set a small timeout before closing to ensure message is sent
+          setTimeout(() => window.close(), 100);
+        } else {
+          toast({
+            title: "Authentication Error",
+            description: "Could not complete authentication. Please try again.",
+            variant: "destructive",
+          });
+          navigate('/koalax');
+        }
+      };
+
+      sendMessageAndClose();
     }
   }, [searchParams, toast, navigate]);
 
