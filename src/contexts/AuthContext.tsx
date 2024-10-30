@@ -6,7 +6,6 @@ import fallbackDb from "@/lib/fallback-db.json";
 interface AuthContextType {
   isAuthenticated: boolean;
   userEmail: string | null;
-  userRole: string | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   checkAuth: () => boolean;
@@ -17,7 +16,6 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
-  const [userRole, setUserRole] = useState<string | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -31,7 +29,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const sessionData = JSON.parse(session);
       setIsAuthenticated(true);
       setUserEmail(sessionData.email);
-      setUserRole(sessionData.role);
       return true;
     }
     return false;
@@ -45,11 +42,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (user) {
       setIsAuthenticated(true);
       setUserEmail(user.email);
-      setUserRole(user.role);
       
       localStorage.setItem('craft_coordination_session', JSON.stringify({
-        email: user.email,
-        role: user.role
+        email: user.email
       }));
       
       toast({
@@ -69,7 +64,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logout = () => {
     setIsAuthenticated(false);
     setUserEmail(null);
-    setUserRole(null);
     localStorage.removeItem('craft_coordination_session');
     navigate('/');
     toast({
@@ -81,8 +75,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <AuthContext.Provider value={{ 
       isAuthenticated, 
-      userEmail, 
-      userRole, 
+      userEmail,
       login, 
       logout, 
       checkAuth 

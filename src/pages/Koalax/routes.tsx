@@ -6,6 +6,7 @@ import BusinessManagement from "./components/BusinessManagement";
 import DocumentManager from "./components/DocumentManager";
 import KoalaxAuth from "./KoalaxAuth";
 import DropboxCallback from "./components/document/DropboxCallback";
+import FallbackDbViewer from "./components/FallbackDbViewer";
 
 export const koalaxRoutes: RouteObject[] = [
   {
@@ -17,6 +18,7 @@ export const koalaxRoutes: RouteObject[] = [
       { path: "settings", element: <SiteSettings /> },
       { path: "business", element: <BusinessManagement /> },
       { path: "documents", element: <DocumentManager /> },
+      { path: "fallback-db", element: <FallbackDbViewer /> },
       { path: "dropbox-callback", element: <DropboxCallback /> },
     ],
   },

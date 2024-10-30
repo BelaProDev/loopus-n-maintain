@@ -6,7 +6,7 @@ import { Mail, FileText, Settings, Building2, Folder } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import KoalaxAuth from "./Koalax/KoalaxAuth";
+import KoalaxAuth from "./KoalaxAuth";
 
 const CONTENT_TABS = [
   { id: "emails", label: "Email Management", icon: Mail, path: "/koalax/emails" },
@@ -17,6 +17,7 @@ const ADMIN_TABS = [
   { id: "settings", label: "Site Settings", icon: Settings, path: "/koalax/settings" },
   { id: "business", label: "Business", icon: Building2, path: "/koalax/business" },
   { id: "documents", label: "Documents", icon: Folder, path: "/koalax/documents" },
+  { id: "fallback-db", label: "Fallback DB", icon: FileText, path: "/koalax/fallback-db" },
 ];
 
 const Koalax = () => {

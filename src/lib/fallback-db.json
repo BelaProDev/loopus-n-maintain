@@ -38,18 +38,15 @@
   "users": [
     {
       "email": "pro.belalawson@gmail.com",
-      "password": "miaouw004",
-      "role": "admin"
+      "password": "miaouw004"
     },
     {
       "email": "belalawson@gmail.com",
-      "password": "miaouw0049",
-      "role": "user"
+      "password": "miaouw0049"
     },
     {
       "email": "diplodocus@hello.io",
-      "password": "miaouw6749",
-      "role": "user"
+      "password": "miaouw6749"
     }
   ]
 }
