@@ -1,12 +1,16 @@
-import { Dropbox, files } from 'dropbox';
+import { Dropbox } from 'dropbox';
 
-const getDropboxClient = () => {
+export const getDropboxClient = () => {
   if (typeof window === 'undefined') return null;
-  const token = import.meta.env.VITE_DROPBOX_ACCESS_TOKEN;
-  if (!token) {
-    throw new Error('Dropbox access token is not configured');
+  
+  const tokens = JSON.parse(sessionStorage.getItem('dropbox_tokens') || '{}');
+  const accessToken = tokens.access_token;
+  
+  if (!accessToken) {
+    throw new Error('No Dropbox access token found in session storage');
   }
-  return new Dropbox({ accessToken: token });
+  
+  return new Dropbox({ accessToken });
 };
 
 export const uploadFile = async (file: File, path: string) => {
@@ -63,10 +67,6 @@ export const listFiles = async (path: string = '') => {
   }
 };
 
-interface DropboxDownloadResponse extends files.FileMetadata {
-  fileBlob: Blob;
-}
-
 export const downloadFile = async (path: string): Promise<Blob> => {
   const dbx = getDropboxClient();
   if (!dbx) throw new Error('Dropbox client not initialized');
@@ -75,9 +75,8 @@ export const downloadFile = async (path: string): Promise<Blob> => {
     const sanitizedPath = path.startsWith('/loopusandmaintain') ? path : `/loopusandmaintain/${path}`;
     const response = await dbx.filesDownload({
       path: sanitizedPath,
-    });
-    const result = response.result as unknown as DropboxDownloadResponse;
-    return result.fileBlob;
+    }) as any;
+    return response.result.fileBlob;
   } catch (error) {
     console.error('Dropbox download error:', error);
     throw error;
