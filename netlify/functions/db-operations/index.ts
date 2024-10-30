@@ -1,21 +1,21 @@
 import { Handler } from '@netlify/functions';
-import { MongoClient, ObjectId } from 'mongodb';
+import mysql from 'mysql2/promise';
 
-let cachedClient: MongoClient | null = null;
+let pool: mysql.Pool | null = null;
 
-async function connectToDatabase() {
-  if (cachedClient) {
-    return cachedClient;
+async function getConnection() {
+  if (!pool) {
+    pool = mysql.createPool({
+      host: process.env.MYSQL_HOST,
+      user: process.env.MYSQL_USER,
+      password: process.env.MYSQL_PASSWORD,
+      database: process.env.MYSQL_DATABASE,
+      waitForConnections: true,
+      connectionLimit: 10,
+      queueLimit: 0
+    });
   }
-
-  if (!process.env.MONGODB_URI) {
-    throw new Error('MONGODB_URI is not defined');
-  }
-
-  const client = new MongoClient(process.env.MONGODB_URI);
-  await client.connect();
-  cachedClient = client;
-  return client;
+  return pool;
 }
 
 const handler: Handler = async (event) => {
@@ -27,75 +27,26 @@ const handler: Handler = async (event) => {
   }
 
   try {
-    const { operation, collection, data } = JSON.parse(event.body || '{}');
-    const client = await connectToDatabase();
-    const db = client.db(process.env.MONGODB_DB_NAME || 'koalax');
-
+    const { operation, table, data } = JSON.parse(event.body || '{}');
+    const pool = await getConnection();
+    
     let result;
     switch (operation) {
-      case 'listCollections':
-        result = await db.listCollections().toArray();
-        break;
-
-      case 'createCollection':
-        result = await db.createCollection(collection);
-        break;
-
-      case 'createIndex':
-        result = await db.collection(collection).createIndex(data.keys, data.options);
-        break;
-
       case 'find':
-        const query = data.query || {};
-        if (query._id) {
-          query._id = new ObjectId(query._id);
-        }
-        result = await db.collection(collection).find(query).toArray();
-        result = result.map(doc => ({
-          ...doc,
-          _id: doc._id.toString(),
-        }));
+        [result] = await pool.query(`SELECT * FROM ${table} WHERE ?`, data.query || {});
         break;
-
       case 'findOne':
-        const findQuery = data.query || {};
-        if (findQuery._id) {
-          findQuery._id = new ObjectId(findQuery._id);
-        }
-        result = await db.collection(collection).findOne(findQuery);
-        if (result) {
-          result._id = result._id.toString();
-        }
+        [[result]] = await pool.query(`SELECT * FROM ${table} WHERE ? LIMIT 1`, data.query || {});
         break;
-
       case 'insertOne':
-        result = await db.collection(collection).insertOne(data);
-        result = { 
-          ...result, 
-          insertedId: result.insertedId.toString() 
-        };
+        [result] = await pool.query(`INSERT INTO ${table} SET ?`, data);
         break;
-
       case 'updateOne':
-        const updateQuery = data.query;
-        if (updateQuery._id) {
-          updateQuery._id = new ObjectId(updateQuery._id);
-        }
-        result = await db.collection(collection).updateOne(
-          updateQuery,
-          { $set: data.update },
-          { upsert: data.upsert }
-        );
+        [result] = await pool.query(`UPDATE ${table} SET ? WHERE ?`, [data.update, data.query]);
         break;
-
       case 'deleteOne':
-        const deleteQuery = data.query;
-        if (deleteQuery._id) {
-          deleteQuery._id = new ObjectId(deleteQuery._id);
-        }
-        result = await db.collection(collection).deleteOne(deleteQuery);
+        [result] = await pool.query(`DELETE FROM ${table} WHERE ?`, data.query);
         break;
-
       default:
         throw new Error('Invalid operation');
     }
