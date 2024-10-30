@@ -33,13 +33,14 @@ export const dropboxAuth = {
       redirect_uri: REDIRECT_URI
     });
 
+    const authUrl = `${DROPBOX_AUTH_URL}?${params.toString()}`;
     const width = 600;
     const height = 600;
     const left = window.screenX + (window.outerWidth - width) / 2;
     const top = window.screenY + (window.outerHeight - height) / 2;
     
     const popup = window.open(
-      `${DROPBOX_AUTH_URL}?${params.toString()}`,
+      authUrl,
       'Dropbox Auth',
       `width=${width},height=${height},left=${left},top=${top}`
     );
