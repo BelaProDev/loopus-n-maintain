@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -17,13 +17,19 @@ const TABS = [
 ];
 
 const Koalax = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(true); // TODO: Implement proper auth
   const location = useLocation();
   const navigate = useNavigate();
   const currentTab = TABS.find(tab => location.pathname.includes(tab.id))?.id || "emails";
+  const isAuthenticated = sessionStorage.getItem('koalax_auth') === 'true';
+
+  useEffect(() => {
+    if (!isAuthenticated && !location.pathname.includes('dropbox-callback')) {
+      navigate('/koalax', { replace: true });
+    }
+  }, [isAuthenticated, location.pathname, navigate]);
 
   if (!isAuthenticated) {
-    return <KoalaxAuth onAuthenticate={() => setIsAuthenticated(true)} />;
+    return <KoalaxAuth />;
   }
 
   return (
