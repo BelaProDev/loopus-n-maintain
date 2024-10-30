@@ -3,9 +3,13 @@ import { MongoClient, ServerApiVersion } from 'mongodb';
 let client: MongoClient | null = null;
 
 export async function getMongoClient() {
+  // Only attempt MongoDB connection if we're in the admin interface
+  if (!window.location.pathname.startsWith('/koalax')) {
+    return null;
+  }
+
   try {
     if (client) {
-      // Test the existing connection
       await client.db().command({ ping: 1 });
       return client.db('koalax');
     }
@@ -19,20 +23,18 @@ export async function getMongoClient() {
         version: ServerApiVersion.v1,
         strict: true,
         deprecationErrors: true,
-      },
-      maxPoolSize: 10,
-      minPoolSize: 5,
+      }
     });
 
     await client.connect();
     return client.db('koalax');
   } catch (error) {
-    // If there's an error with the existing connection, create a new one
     if (client) {
       await client.close();
       client = null;
     }
-    throw error;
+    console.error('MongoDB connection error:', error);
+    return null;
   }
 }
 
