@@ -15,6 +15,10 @@ interface DropboxTokenResponse {
 
 export const dropboxAuth = {
   async initiateAuth() {
+    if (!import.meta.env.VITE_DROPBOX_APP_KEY) {
+      throw new Error('Dropbox app key not configured');
+    }
+
     const codeVerifier = generateRandomString(128);
     const codeChallenge = await sha256(codeVerifier);
     
@@ -29,7 +33,6 @@ export const dropboxAuth = {
       redirect_uri: REDIRECT_URI
     });
 
-    // Open popup with specific dimensions and centered position
     const width = 600;
     const height = 600;
     const left = window.screenX + (window.outerWidth - width) / 2;
@@ -54,6 +57,8 @@ export const dropboxAuth = {
       }, 1000);
 
       const handleMessage = async (event: MessageEvent) => {
+        if (event.origin !== window.location.origin) return;
+        
         if (event.data?.type === 'DROPBOX_AUTH_CODE') {
           window.removeEventListener('message', handleMessage);
           clearInterval(checkClosed);
@@ -93,7 +98,8 @@ export const dropboxAuth = {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to get access token');
+      const error = await response.text();
+      throw new Error(`Failed to get access token: ${error}`);
     }
 
     const data = await response.json();
@@ -127,7 +133,10 @@ export const dropboxAuth = {
     }
 
     const data = await response.json();
-    sessionStorage.setItem('dropbox_tokens', JSON.stringify(data));
+    sessionStorage.setItem('dropbox_tokens', JSON.stringify({
+      ...tokens,
+      ...data
+    }));
     return data;
   },
 
