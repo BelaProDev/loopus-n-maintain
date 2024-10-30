@@ -20,25 +20,35 @@ const pool = mysql.createPool({
 async function performDbOperation(operation: string, table: string, data: any) {
   try {
     const connection = await pool.getConnection();
-    let result;
+    let result: any;
 
     try {
       switch (operation) {
-        case 'find':
-          [result] = await connection.execute(`SELECT * FROM ${table} WHERE ?`, [data.query || {}]);
+        case 'find': {
+          const [rows] = await connection.execute(`SELECT * FROM ${table} WHERE ?`, [data.query || {}]);
+          result = rows;
           break;
-        case 'findOne':
-          [[result]] = await connection.execute(`SELECT * FROM ${table} WHERE ? LIMIT 1`, [data.query || {}]);
+        }
+        case 'findOne': {
+          const [rows] = await connection.execute(`SELECT * FROM ${table} WHERE ? LIMIT 1`, [data.query || {}]);
+          result = Array.isArray(rows) ? rows[0] : null;
           break;
-        case 'insertOne':
-          [result] = await connection.execute(`INSERT INTO ${table} SET ?`, [data]);
+        }
+        case 'insertOne': {
+          const [insertResult] = await connection.execute(`INSERT INTO ${table} SET ?`, [data]);
+          result = insertResult;
           break;
-        case 'updateOne':
-          [result] = await connection.execute(`UPDATE ${table} SET ? WHERE ?`, [data.update, data.query]);
+        }
+        case 'updateOne': {
+          const [updateResult] = await connection.execute(`UPDATE ${table} SET ? WHERE ?`, [data.update, data.query]);
+          result = updateResult;
           break;
-        case 'deleteOne':
-          [result] = await connection.execute(`DELETE FROM ${table} WHERE ?`, [data.query]);
+        }
+        case 'deleteOne': {
+          const [deleteResult] = await connection.execute(`DELETE FROM ${table} WHERE ?`, [data.query]);
+          result = deleteResult;
           break;
+        }
       }
       return result;
     } finally {
