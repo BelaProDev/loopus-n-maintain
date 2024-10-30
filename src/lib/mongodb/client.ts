@@ -26,12 +26,11 @@ async function performDbOperation(operation: string, collection: string, data: a
     return result;
   } catch (error) {
     console.error('Database operation error:', error);
-    throw error;
+    return null;
   }
 }
 
 export async function getMongoClient(): Promise<Db | null> {
-  // This is now just a wrapper for the Netlify function calls
   return {
     collection: (name: string) => ({
       find: (query = {}) => ({
@@ -49,5 +48,5 @@ export async function getMongoClient(): Promise<Db | null> {
 
 export const handleMongoError = (error: any, fallbackData: any) => {
   console.error('MongoDB Error:', error);
-  throw error;
+  return fallbackData;
 };

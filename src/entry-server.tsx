@@ -4,7 +4,6 @@ import { StaticRouter } from 'react-router-dom/server';
 import { QueryClient, QueryClientProvider, dehydrate } from '@tanstack/react-query';
 import { AuthProvider } from './contexts/AuthContext';
 import App from './App';
-import { closeMongoConnection } from './lib/mongodb/client';
 
 export async function render(url: string, context: any) {
   const queryClient = new QueryClient();
@@ -21,9 +20,6 @@ export async function render(url: string, context: any) {
       </AuthProvider>
     </QueryClientProvider>
   );
-
-  // Clean up MongoDB connection after rendering
-  await closeMongoConnection();
 
   return {
     html,

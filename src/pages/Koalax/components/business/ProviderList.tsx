@@ -14,9 +14,18 @@ const ProviderList = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: providers, isLoading } = useQuery({
+  const { data: providersData, isLoading } = useQuery({
     queryKey: ['providers'],
-    queryFn: businessQueries.getProviders
+    queryFn: businessQueries.getProviders,
+    select: (data) => data?.map(provider => ({
+      id: provider.id,
+      name: provider.name,
+      email: provider.email,
+      phone: provider.phone || '',
+      service: provider.type === 'provider' ? 'electrics' : 'electrics', // Default to electrics if not specified
+      availability: true, // Default to available
+      rating: undefined
+    })) as Provider[]
   });
 
   const createMutation = useMutation({
@@ -78,7 +87,7 @@ const ProviderList = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {providers?.map((provider: Provider) => (
+          {providersData?.map((provider: Provider) => (
             <TableRow key={provider.id}>
               <TableCell>{provider.name}</TableCell>
               <TableCell className="capitalize">{provider.service}</TableCell>
