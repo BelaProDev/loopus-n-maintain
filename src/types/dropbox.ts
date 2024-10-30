@@ -1,15 +1,29 @@
 import { files } from 'dropbox';
 
-export type DropboxEntry = files.FileMetadataReference | files.FolderMetadataReference | files.DeletedMetadataReference;
+export type DropboxTag = 'file' | 'folder' | 'deleted';
 
-export interface DropboxFile extends files.FileMetadataReference {
-  '.tag': 'file';
+export interface BaseDropboxEntry {
+  '.tag': DropboxTag;
+  name: string;
+  path_lower?: string;
+  path_display?: string;
+  id: string;
 }
 
-export interface DropboxFolder extends files.FolderMetadataReference {
+export interface DropboxFile extends BaseDropboxEntry {
+  '.tag': 'file';
+  size: number;
+  client_modified: string;
+  server_modified: string;
+  rev: string;
+}
+
+export interface DropboxFolder extends BaseDropboxEntry {
   '.tag': 'folder';
 }
 
-export interface DropboxDeleted extends files.DeletedMetadataReference {
+export interface DropboxDeleted extends BaseDropboxEntry {
   '.tag': 'deleted';
 }
+
+export type DropboxEntry = DropboxFile | DropboxFolder | DropboxDeleted;
