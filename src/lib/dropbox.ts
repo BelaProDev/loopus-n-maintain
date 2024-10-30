@@ -21,7 +21,7 @@ export const downloadFile = async (path: string): Promise<Blob> => {
   const client = dropboxAuth.getClient();
   try {
     const response = await client.filesDownload({ path });
-    if ('fileBlob' in response.result) {
+    if ('fileBlob' in response.result && response.result.fileBlob instanceof Blob) {
       return response.result.fileBlob;
     }
     throw new Error('File download failed');
