@@ -14,6 +14,9 @@ const urlsToCache = [
   '/login'
 ];
 
+// Store for tokens
+let dropboxTokens = null;
+
 // Helper function to check if a request requires authentication
 const requiresAuth = (url) => {
   const protectedPaths = ['/koalax'];
@@ -27,6 +30,17 @@ self.addEventListener('install', (event) => {
       .then((cache) => cache.addAll(urlsToCache))
   );
   self.skipWaiting();
+});
+
+// Message event - handle token storage
+self.addEventListener('message', (event) => {
+  if (event.data.type === 'STORE_DROPBOX_TOKENS') {
+    dropboxTokens = event.data.tokens;
+    // Respond to confirm storage
+    event.ports[0].postMessage({ stored: true });
+  } else if (event.data.type === 'GET_DROPBOX_TOKENS') {
+    event.ports[0].postMessage({ tokens: dropboxTokens });
+  }
 });
 
 // Fetch event - network-first strategy with auth handling

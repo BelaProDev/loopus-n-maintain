@@ -12,6 +12,45 @@ interface DropboxTokenResponse {
   refresh_token?: string;
 }
 
+const storeTokensInServiceWorker = async (tokens: DropboxTokenResponse) => {
+  if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+    const messageChannel = new MessageChannel();
+    return new Promise((resolve, reject) => {
+      messageChannel.port1.onmessage = (event) => {
+        if (event.data.stored) {
+          resolve(true);
+        } else {
+          reject(new Error('Failed to store tokens'));
+        }
+      };
+      navigator.serviceWorker.controller.postMessage(
+        {
+          type: 'STORE_DROPBOX_TOKENS',
+          tokens
+        },
+        [messageChannel.port2]
+      );
+    });
+  }
+  return false;
+};
+
+const getTokensFromServiceWorker = async (): Promise<DropboxTokenResponse | null> => {
+  if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+    const messageChannel = new MessageChannel();
+    return new Promise((resolve) => {
+      messageChannel.port1.onmessage = (event) => {
+        resolve(event.data.tokens);
+      };
+      navigator.serviceWorker.controller.postMessage(
+        { type: 'GET_DROPBOX_TOKENS' },
+        [messageChannel.port2]
+      );
+    });
+  }
+  return null;
+};
+
 export const dropboxAuth = {
   async initiateAuth() {
     // Generate PKCE values
@@ -96,24 +135,20 @@ export const dropboxAuth = {
     const data = await response.json();
     localStorage.removeItem('dropbox_code_verifier');
     
-    // Store tokens
-    localStorage.setItem('dropbox_access_token', data.access_token);
-    if (data.refresh_token) {
-      localStorage.setItem('dropbox_refresh_token', data.refresh_token);
-    }
-    
+    // Store tokens in service worker instead of localStorage
+    await storeTokensInServiceWorker(data);
     return data;
   },
 
   async refreshToken(): Promise<DropboxTokenResponse> {
-    const refreshToken = localStorage.getItem('dropbox_refresh_token');
-    if (!refreshToken) {
+    const tokens = await getTokensFromServiceWorker();
+    if (!tokens?.refresh_token) {
       throw new Error('No refresh token found');
     }
 
     const params = new URLSearchParams({
       grant_type: 'refresh_token',
-      refresh_token: refreshToken,
+      refresh_token: tokens.refresh_token,
       client_id: import.meta.env.VITE_DROPBOX_APP_KEY
     });
 
@@ -130,17 +165,22 @@ export const dropboxAuth = {
     }
 
     const data = await response.json();
-    localStorage.setItem('dropbox_access_token', data.access_token);
+    await storeTokensInServiceWorker(data);
     return data;
   },
 
-  getAccessToken(): string | null {
-    return localStorage.getItem('dropbox_access_token');
+  async getAccessToken(): Promise<string | null> {
+    const tokens = await getTokensFromServiceWorker();
+    return tokens?.access_token || null;
   },
 
   logout() {
-    localStorage.removeItem('dropbox_access_token');
-    localStorage.removeItem('dropbox_refresh_token');
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage({
+        type: 'STORE_DROPBOX_TOKENS',
+        tokens: null
+      });
+    }
     localStorage.removeItem('dropbox_code_verifier');
   }
 };
