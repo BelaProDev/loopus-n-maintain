@@ -2,6 +2,7 @@ import { getMongoClient, handleMongoError } from './client';
 import { EmailDocument } from './types';
 import { SHA256 } from 'crypto-js';
 import fallbackDb from '../fallback-db.json';
+import { ObjectId } from 'mongodb';
 
 export const emailQueries = {
   getAllEmails: async () => {
