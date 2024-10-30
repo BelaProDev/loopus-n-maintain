@@ -2,7 +2,7 @@ import { toast } from '@/components/ui/use-toast';
 
 const DB_VERSION = '1';
 const DB_TABLES = ['emails', 'content', 'clients', 'providers', 'invoices', 'whatsapp-numbers'];
-const SYNC_TAG = 'db-sync';
+export const SYNC_TAG = 'db-sync';
 
 interface PendingChange {
   id: string;
@@ -13,7 +13,7 @@ interface PendingChange {
   retryCount: number;
 }
 
-class DBSync {
+export class DBSync {
   private maxRetries = 3;
   private syncInProgress = false;
 
@@ -38,7 +38,7 @@ class DBSync {
     };
     
     await store.add(pendingChange);
-    this.triggerSync();
+    await this.triggerSync();
   }
 
   private async triggerSync() {
@@ -92,7 +92,7 @@ class DBSync {
 
   private async openDB(): Promise<IDBDatabase> {
     return new Promise((resolve, reject) => {
-      const request = indexedDB.open('SyncDB', 1);
+      const request = indexedDB.open('SyncDB', DB_VERSION);
       request.onerror = () => reject(request.error);
       request.onsuccess = () => resolve(request.result);
       request.onupgradeneeded = (event) => {

@@ -1,6 +1,7 @@
-importScripts('./sw/cache-strategies.ts');
-importScripts('./sw/cache-manager.ts');
-importScripts('../src/lib/db-sync.ts');
+// Cache strategies and managers are now imported as modules
+import { networkFirst, cacheFirst, staleWhileRevalidate } from './sw/cache-strategies.ts';
+import { initializeCache, clearOldCaches, handleFetchRequest } from './sw/cache-manager.ts';
+import { DBSync } from '../src/lib/db-sync';
 
 const dbSync = new DBSync();
 
@@ -18,7 +19,7 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     clearOldCaches().then(() => {
       if ('sync' in self.registration) {
-        return self.registration.sync.register(SYNC_TAG);
+        return self.registration.sync.register('db-sync');
       }
     })
   );
@@ -26,7 +27,7 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('sync', (event) => {
-  if (event.tag === SYNC_TAG) {
+  if (event.tag === 'db-sync') {
     event.waitUntil(dbSync.triggerSync());
   }
 });
