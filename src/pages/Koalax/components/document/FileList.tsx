@@ -2,7 +2,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { files } from "dropbox";
-import { Trash2, Download } from "lucide-react";
+import { Trash2, Download, Folder } from "lucide-react";
 
 type DropboxFile = files.FileMetadata | files.FolderMetadata | files.DeletedMetadata;
 
@@ -10,9 +10,10 @@ interface FileListProps {
   files: DropboxFile[] | undefined;
   onDownload: (path: string | undefined, name: string) => void;
   onDelete: (path: string | undefined) => void;
+  onNavigate: (path: string) => void;
 }
 
-const FileList = ({ files, onDownload, onDelete }: FileListProps) => {
+const FileList = ({ files, onDownload, onDelete, onNavigate }: FileListProps) => {
   return (
     <Table>
       <TableHeader>
@@ -28,10 +29,17 @@ const FileList = ({ files, onDownload, onDelete }: FileListProps) => {
           if (file['.tag'] === 'deleted') return null;
           
           const key = 'path_lower' in file ? file.path_lower : '';
+          const isFolder = file['.tag'] === 'folder';
           
           return (
-            <TableRow key={key}>
-              <TableCell>{file.name}</TableCell>
+            <TableRow key={key} className={isFolder ? 'cursor-pointer hover:bg-muted/50' : ''}>
+              <TableCell 
+                className="flex items-center gap-2"
+                onClick={() => isFolder && file.path_display && onNavigate(file.path_display)}
+              >
+                {isFolder && <Folder className="h-4 w-4" />}
+                {file.name}
+              </TableCell>
               <TableCell>
                 {'client_modified' in file && file.client_modified
                   ? format(new Date(file.client_modified), 'PPp')
@@ -41,13 +49,15 @@ const FileList = ({ files, onDownload, onDelete }: FileListProps) => {
                 {'size' in file ? `${Math.round(file.size / 1024)} KB` : 'N/A'}
               </TableCell>
               <TableCell className="text-right space-x-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onDownload(file.path_display, file.name)}
-                >
-                  <Download className="w-4 h-4" />
-                </Button>
+                {!isFolder && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onDownload(file.path_display, file.name)}
+                  >
+                    <Download className="w-4 h-4" />
+                  </Button>
+                )}
                 <Button
                   variant="ghost"
                   size="sm"

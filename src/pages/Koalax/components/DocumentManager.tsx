@@ -8,13 +8,14 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import DocumentToolbar from "./document/DocumentToolbar";
 import FileList from "./document/FileList";
 import { dropboxAuth } from "@/lib/auth/dropbox";
+import BreadcrumbNav from "./document/BreadcrumbNav";
 
 const DocumentManager = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [newFolderName, setNewFolderName] = useState("");
+  const [currentPath, setCurrentPath] = useState("/");
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [currentPath, setCurrentPath] = useState("/");
 
   const { data: files, isLoading, refetch } = useQuery({
     queryKey: ['dropbox-files', currentPath],
@@ -63,8 +64,8 @@ const DocumentManager = () => {
   });
 
   const createFolderMutation = useMutation({
-    mutationFn: async (folderName: string) => {
-      await createFolder(folderName);
+    mutationFn: async (folderPath: string) => {
+      await createFolder(folderPath);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['dropbox-files'] });
@@ -133,14 +134,23 @@ const DocumentManager = () => {
 
   const handleCreateFolder = () => {
     if (newFolderName.trim()) {
-      createFolderMutation.mutate(newFolderName.trim());
+      const fullPath = `${currentPath}${currentPath.endsWith('/') ? '' : '/'}${newFolderName.trim()}`;
+      createFolderMutation.mutate(fullPath);
     }
+  };
+
+  const handleCreateInvoiceFolder = () => {
+    createFolderMutation.mutate('/invoices');
   };
 
   const handleDelete = (path: string | undefined) => {
     if (path) {
       deleteMutation.mutate(path);
     }
+  };
+
+  const handleNavigate = (path: string) => {
+    setCurrentPath(path);
   };
 
   return (
@@ -158,7 +168,7 @@ const DocumentManager = () => {
       {isAuthenticated && (
         <div className="space-y-4">
           <DocumentToolbar
-            onCreateInvoiceFolder={handleCreateFolder}
+            onCreateInvoiceFolder={handleCreateInvoiceFolder}
             onFileSelect={handleFileSelect}
             isUploading={uploadMutation.isPending}
             onRefresh={refetch}
@@ -167,6 +177,8 @@ const DocumentManager = () => {
               setIsAuthenticated(false);
             }}
           />
+
+          <BreadcrumbNav currentPath={currentPath} onNavigate={handleNavigate} />
 
           <div className="flex gap-2">
             <Input
@@ -184,6 +196,7 @@ const DocumentManager = () => {
               files={files}
               onDownload={handleDownload}
               onDelete={handleDelete}
+              onNavigate={handleNavigate}
             />
           )}
         </div>
