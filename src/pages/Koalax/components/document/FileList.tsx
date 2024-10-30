@@ -1,10 +1,12 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
-import { FileMetadataReference, FolderMetadataReference, DeletedMetadataReference } from "dropbox";
+import { files } from "dropbox";
+
+type DropboxFile = files.FileMetadata | files.FolderMetadata | files.DeletedMetadata;
 
 interface FileListProps {
-  files: (FileMetadataReference | FolderMetadataReference | DeletedMetadataReference)[] | undefined;
+  files: DropboxFile[] | undefined;
   onDownload: (path: string | undefined, name: string) => void;
 }
 
