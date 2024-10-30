@@ -157,6 +157,8 @@ const DocumentManager = () => {
             <FileListComponent
               files={files}
               onNavigate={handleNavigate}
+              onDownload={() => {}}
+              onDelete={() => {}}
             />
           )}
         </div>

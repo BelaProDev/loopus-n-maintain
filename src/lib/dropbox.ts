@@ -19,8 +19,8 @@ export const listFiles = async (path: string) => {
 
 export const downloadFile = async (path: string): Promise<Blob> => {
   const client = dropboxAuth.getClient();
-  const response = await client.filesDownload({ path }) as { result: { fileBlob: Blob } };
-  return response.result.fileBlob;
+  const response = await client.filesDownload({ path });
+  return new Blob([response.result], { type: 'application/octet-stream' });
 };
 
 export const deleteFile = async (path: string) => {
