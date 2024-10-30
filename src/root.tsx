@@ -30,13 +30,13 @@ export default function App() {
               <Toaster />
               <div className="flex flex-col min-h-screen">
                 <Outlet />
+                <ScrollRestoration />
+                <Scripts />
+                <LiveReload />
               </div>
             </TooltipProvider>
           </AuthProvider>
         </QueryClientProvider>
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
       </body>
     </html>
   );
