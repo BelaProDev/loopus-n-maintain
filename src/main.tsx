@@ -52,7 +52,7 @@ const router = createBrowserRouter([
         element: <Architecture />
       },
       {
-        path: "documentation",
+        path: "docs",
         element: <Documentation />
       },
       {
@@ -76,7 +76,10 @@ const router = createBrowserRouter([
 ]);
 
 const root = document.getElementById('root');
-if (!root) throw new Error('Root element not found');
+
+if (!root) {
+  throw new Error('Root element not found');
+}
 
 ReactDOM.createRoot(root).render(
   <React.StrictMode>
