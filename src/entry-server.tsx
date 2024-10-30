@@ -5,25 +5,37 @@ import { QueryClient, QueryClientProvider, dehydrate } from '@tanstack/react-que
 import { AuthProvider } from './contexts/AuthContext';
 import App from './App';
 
-export async function render(url: string, context: any) {
-  const queryClient = new QueryClient();
+export async function render(url: string, context: Record<string, unknown>) {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 5 * 60 * 1000,
+        gcTime: 10 * 60 * 1000,
+      },
+    },
+  });
 
-  // Pre-fetch any necessary data here
+  // Pre-fetch critical data here
   // await queryClient.prefetchQuery(['key'], fetchFunction);
 
   const html = ReactDOMServer.renderToString(
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <StaticRouter location={url}>
-          <App />
-        </StaticRouter>
-      </AuthProvider>
-    </QueryClientProvider>
+    <React.StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <StaticRouter location={url}>
+            <App />
+          </StaticRouter>
+        </AuthProvider>
+      </QueryClientProvider>
+    </React.StrictMode>
   );
+
+  // Get the dehydrated state
+  const dehydratedState = dehydrate(queryClient);
 
   return {
     html,
     context,
-    state: dehydrate(queryClient)
+    state: dehydratedState
   };
 }

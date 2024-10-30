@@ -7,7 +7,7 @@ import "@fontsource/nunito/500.css";
 import "@fontsource/nunito/600.css";
 import "@fontsource/nunito/700.css";
 
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -21,11 +21,25 @@ import Ironwork from "./pages/Ironwork";
 import Woodwork from "./pages/Woodwork";
 import Architecture from "./pages/Architecture";
 import Login from "./pages/Login";
-import KoalaxAdmin from "./pages/Koalax"; // Updated import for admin
+import Koalax from "./pages/Koalax";
 import Documentation from "./pages/Documentation";
-import DropboxCallback from "./pages/Koalax/components/document/DropboxCallback";
+import DropboxCallback from "./pages/Koalax/DropboxCallback";
+import { useAuth } from "./contexts/AuthContext";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000,
+      gcTime: 10 * 60 * 1000,
+    },
+  },
+});
+
+// Protected route component
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? <>{children}</> : <Navigate to="/login" />;
+};
 
 const App = () => {
   return (
@@ -42,9 +56,18 @@ const App = () => {
               <Route path="/ironwork" element={<Ironwork />} />
               <Route path="/woodwork" element={<Woodwork />} />
               <Route path="/architecture" element={<Architecture />} />
-              <Route path="/koalax-admin/*" element={<KoalaxAdmin />} />
               <Route path="/docs" element={<Documentation />} />
+              
+              {/* Protected Routes */}
+              <Route path="/koalax-admin" element={
+                <ProtectedRoute>
+                  <Koalax />
+                </ProtectedRoute>
+              } />
               <Route path="/koalax-admin/dropbox-callback" element={<DropboxCallback />} />
+              
+              {/* Catch-all route */}
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </div>
           <ReactQueryDevtools />
