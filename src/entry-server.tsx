@@ -26,8 +26,8 @@ export async function render(url: string): Promise<RenderResult> {
   });
 
   try {
-    // Prefetch initial data with error handling
-    await Promise.all([
+    // Prefetch initial data
+    const prefetchPromises = [
       queryClient.prefetchQuery({
         queryKey: ['content'],
         queryFn: () => fallbackDB.find('content')
@@ -44,7 +44,9 @@ export async function render(url: string): Promise<RenderResult> {
         queryKey: ['providers'],
         queryFn: () => fallbackDB.find('providers')
       })
-    ]);
+    ];
+
+    await Promise.all(prefetchPromises);
 
     const html = ReactDOMServer.renderToString(
       <React.StrictMode>
@@ -58,13 +60,15 @@ export async function render(url: string): Promise<RenderResult> {
       </React.StrictMode>
     );
 
-    // Dehydrate query cache with proper typing
-    const dehydratedState = JSON.stringify(queryClient.getQueriesData({}));
+    // Get the query cache state
+    const state = JSON.stringify(
+      queryClient.getQueriesData({})
+    );
 
     return {
       html,
       context: {},
-      state: dehydratedState
+      state
     };
   } catch (error) {
     console.error('Server-side rendering failed:', error);

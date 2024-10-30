@@ -12,47 +12,66 @@ if (!container) {
   throw new Error("Failed to find the root element");
 }
 
-// Hydrate with initial state if available
-const dehydratedState = window.__INITIAL_STATE__;
-
+// Create QueryClient with proper hydration handling
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 5 * 60 * 1000,
       gcTime: 10 * 60 * 1000,
       retry: false,
-      initialData: dehydratedState,
+      // Only use initial data if it's available
+      ...(window.__INITIAL_STATE__ && {
+        initialData: window.__INITIAL_STATE__
+      })
     },
   },
 });
 
-const app = (
-  <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </AuthProvider>
-    </QueryClientProvider>
-  </StrictMode>
-);
+// Render app after ensuring service worker is ready
+const renderApp = () => {
+  const root = createRoot(container);
+  
+  root.render(
+    <StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </AuthProvider>
+      </QueryClientProvider>
+    </StrictMode>
+  );
+};
 
-createRoot(container).render(app);
+// Initialize app and service worker
+const init = async () => {
+  try {
+    // Register service worker in production
+    if ('serviceWorker' in navigator && import.meta.env.PROD) {
+      await navigator.serviceWorker.register('/sw.js')
+        .then(registration => {
+          console.log('SW registered:', registration);
+        })
+        .catch(error => {
+          console.error('SW registration failed:', error);
+        });
+    }
 
-// Register service worker
-if ('serviceWorker' in navigator && import.meta.env.PROD) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker
-      .register('/sw.js')
-      .then(registration => {
-        console.log('SW registered:', registration);
-      })
-      .catch(error => {
-        console.error('SW registration failed:', error);
-      });
-  });
-}
+    // Wait for service worker to be ready before rendering
+    if (navigator.serviceWorker?.controller) {
+      await navigator.serviceWorker.ready;
+    }
+
+    renderApp();
+  } catch (error) {
+    console.error('Initialization failed:', error);
+    // Render app even if service worker fails
+    renderApp();
+  }
+};
+
+init();
 
 // Add TypeScript declaration
 declare global {
