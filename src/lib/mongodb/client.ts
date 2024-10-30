@@ -3,7 +3,9 @@ import { MongoClient, ServerApiVersion } from 'mongodb';
 let client: MongoClient | null = null;
 
 export async function getMongoClient() {
-  if (client?.topology?.isConnected()) return client.db('koalax');
+  if (client?.connect && await client.db().command({ ping: 1 })) {
+    return client.db('koalax');
+  }
 
   if (!import.meta.env.VITE_MONGODB_URI) {
     throw new Error('MongoDB URI is not defined in environment variables');
