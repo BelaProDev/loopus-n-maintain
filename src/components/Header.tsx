@@ -44,9 +44,9 @@ const Header = () => {
         </Badge>
       )}
       <div className="container mx-auto px-4 py-4">
-        <nav className="flex items-center justify-between relative z-10">
-          <Link to="/" className="text-2xl font-bold text-primary flex items-center gap-2">
-            <div>
+        <nav className="flex flex-wrap items-center justify-between gap-4">
+          <Link to="/" className="text-xl md:text-2xl font-bold text-primary flex items-center gap-2">
+            <div className="flex-shrink-0">
               <img 
                 src="/forest-lidar.png" 
                 alt="Loopus & Maintain" 
@@ -56,8 +56,7 @@ const Header = () => {
             <span className="text-[#2E5984]">Loopus & Maintain</span>
           </Link>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden md:flex items-center flex-wrap gap-4">
             {maintenanceFields.map((field) => (
               <Link
                 key={field.name}
@@ -71,7 +70,7 @@ const Header = () => {
               <Button
                 onClick={logout}
                 variant="outline"
-                className="flex items-center gap-2 text-[#2E5984] hover:text-[#4A90E2]"
+                className="flex items-center gap-2 text-[#2E5984] hover:text-[#4A90E2] ml-4"
               >
                 <LogOut className="h-4 w-4" />
                 Logout
@@ -79,7 +78,6 @@ const Header = () => {
             )}
           </div>
 
-          {/* Mobile Menu */}
           <Sheet>
             <SheetTrigger asChild className="md:hidden">
               <Button 
@@ -105,7 +103,7 @@ const Header = () => {
                   <Button
                     onClick={logout}
                     variant="outline"
-                    className="flex items-center gap-2 text-[#2E5984] hover:text-[#4A90E2]"
+                    className="flex items-center gap-2 text-[#2E5984] hover:text-[#4A90E2] mt-4"
                   >
                     <LogOut className="h-4 w-4" />
                     Logout
