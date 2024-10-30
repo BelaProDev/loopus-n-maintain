@@ -6,7 +6,7 @@ import { useToast } from "@/components/ui/use-toast";
 import ClientDialog from "./ClientDialog";
 import ClientListHeader from "./ClientListHeader";
 import ClientTable from "./ClientTable";
-import { dbSync } from "public/sw/db-sync";
+import { dbSync } from "@/lib/db-sync";
 
 const ClientList = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);

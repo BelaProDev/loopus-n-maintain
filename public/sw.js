@@ -1,6 +1,6 @@
 importScripts('./sw/cache-strategies.ts');
 importScripts('./sw/cache-manager.ts');
-importScripts('./sw/db-sync.ts');
+importScripts('../src/lib/db-sync.ts');
 
 const dbSync = new DBSync();
 
