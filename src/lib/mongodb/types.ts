@@ -2,6 +2,8 @@ import { ObjectId } from 'mongodb';
 
 export interface BaseDocument {
   _id?: ObjectId;
+  createdAt?: number;
+  updatedAt?: number;
 }
 
 export interface EmailDocument extends BaseDocument {
@@ -9,8 +11,6 @@ export interface EmailDocument extends BaseDocument {
   name: string;
   type: string;
   password?: string;
-  createdAt: number;
-  updatedAt: number;
 }
 
 export interface ContentDocument extends BaseDocument {
@@ -50,4 +50,16 @@ export interface InvoiceItem {
   quantity: number;
   unitPrice: number;
   total: number;
+}
+
+export interface DbCollection<T> {
+  find: (query?: any) => Promise<T[]>;
+  findOne: (query: any) => Promise<T | null>;
+  insertOne: (doc: Omit<T, '_id'>) => Promise<{ insertedId: string }>;
+  updateOne: (query: any, update: any, options?: any) => Promise<{ matchedCount: number }>;
+  deleteOne: (query: any) => Promise<{ deletedCount: number }>;
+}
+
+export interface MongoDatabase {
+  collection<T extends BaseDocument>(name: string): DbCollection<T>;
 }

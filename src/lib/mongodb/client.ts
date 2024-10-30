@@ -1,20 +1,4 @@
-type MongoOperation = {
-  find: (query?: any) => { 
-    toArray: () => Promise<any[]>;
-    sort: (sort?: any) => { toArray: () => Promise<any[]> };
-  };
-  findOne: (query?: any) => Promise<any>;
-  insertOne: (doc: any) => Promise<any>;
-  updateOne: (query: any, update: any, options?: any) => Promise<any>;
-  deleteOne: (query: any) => Promise<any>;
-  createIndex?: (keys: any, options?: any) => Promise<any>;
-};
-
-type MongoClient = {
-  collection: (name: string) => MongoOperation;
-  listCollections?: () => { toArray: () => Promise<any[]> };
-  createCollection?: (name: string) => Promise<any>;
-};
+import { MongoDatabase, DbCollection, BaseDocument } from './types';
 
 async function performDbOperation(operation: string, collection: string, data: any) {
   try {
@@ -42,30 +26,36 @@ async function performDbOperation(operation: string, collection: string, data: a
     return result;
   } catch (error) {
     console.error('Database operation error:', error);
-    return null;
+    throw error;
   }
 }
 
-export async function getMongoClient(): Promise<MongoClient> {
+export async function getMongoClient(): Promise<MongoDatabase> {
   return {
-    collection: (name: string): MongoOperation => ({
-      find: (query = {}) => ({
-        toArray: async () => performDbOperation('find', name, { query }),
-        sort: () => ({ toArray: async () => performDbOperation('find', name, { query }) }),
-      }),
-      findOne: async (query = {}) => performDbOperation('findOne', name, { query }),
-      insertOne: async (doc: any) => performDbOperation('insertOne', name, doc),
-      updateOne: async (query: any, update: any, options?: any) => 
-        performDbOperation('updateOne', name, { query, update: update.$set, upsert: options?.upsert }),
-      deleteOne: async (query: any) => performDbOperation('deleteOne', name, { query }),
-      createIndex: async (keys: any, options?: any) => 
-        performDbOperation('createIndex', name, { keys, options }),
-    }),
-    listCollections: () => ({
-      toArray: async () => performDbOperation('listCollections', '', {})
-    }),
-    createCollection: async (name: string) => 
-      performDbOperation('createCollection', name, {}),
+    collection<T extends BaseDocument>(name: string): DbCollection<T> {
+      return {
+        find: async (query = {}) => {
+          const result = await performDbOperation('find', name, { query });
+          return result || [];
+        },
+        findOne: async (query) => {
+          const result = await performDbOperation('findOne', name, { query });
+          return result || null;
+        },
+        insertOne: async (doc) => {
+          const result = await performDbOperation('insertOne', name, doc);
+          return { insertedId: result.insertedId };
+        },
+        updateOne: async (query, update, options) => {
+          const result = await performDbOperation('updateOne', name, { query, update: update.$set, upsert: options?.upsert });
+          return { matchedCount: result.matchedCount || 0 };
+        },
+        deleteOne: async (query) => {
+          const result = await performDbOperation('deleteOne', name, { query });
+          return { deletedCount: result.deletedCount || 0 };
+        },
+      };
+    },
   };
 }
 

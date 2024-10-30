@@ -8,7 +8,7 @@ export const emailQueries = {
   getAllEmails: async () => {
     try {
       const db = await getMongoClient();
-      const emails = await db.collection('emails').find().toArray();
+      const emails = await db.collection<EmailDocument>('emails').find();
       return emails.map(email => ({
         ref: { id: email._id?.toString() || '' },
         data: {
@@ -30,14 +30,14 @@ export const emailQueries = {
       const timestamp = Date.now();
       const hashedPassword = data.password ? SHA256(data.password).toString() : undefined;
       
-      const result = await db.collection('emails').insertOne({
+      const result = await db.collection<EmailDocument>('emails').insertOne({
         ...data,
         password: hashedPassword,
         createdAt: timestamp,
         updatedAt: timestamp
       });
 
-      return { ref: { id: result.insertedId.toString() }, data };
+      return { ref: { id: result.insertedId }, data };
     } catch (error) {
       return handleMongoError(error, null);
     }
@@ -52,10 +52,14 @@ export const emailQueries = {
         updatedAt: Date.now()
       };
       
-      await db.collection('emails').updateOne(
+      const result = await db.collection<EmailDocument>('emails').updateOne(
         { _id: new ObjectId(id) },
         { $set: updateData }
       );
+
+      if (result.matchedCount === 0) {
+        throw new Error('Email not found');
+      }
 
       return { ref: { id }, data: updateData };
     } catch (error) {
@@ -66,7 +70,14 @@ export const emailQueries = {
   deleteEmail: async (id: string) => {
     try {
       const db = await getMongoClient();
-      await db.collection('emails').deleteOne({ _id: new ObjectId(id) });
+      const result = await db.collection<EmailDocument>('emails').deleteOne(
+        { _id: new ObjectId(id) }
+      );
+
+      if (result.deletedCount === 0) {
+        throw new Error('Email not found');
+      }
+
       return { success: true };
     } catch (error) {
       return handleMongoError(error, { success: false });
