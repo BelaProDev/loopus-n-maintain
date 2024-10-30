@@ -4,7 +4,6 @@ import ContentEditor from "./ContentEditor";
 import SiteSettings from "./SiteSettings";
 import BusinessManagement from "./components/BusinessManagement";
 import DocumentManager from "./components/DocumentManager";
-import KoalaxAuth from "./KoalaxAuth";
 import DropboxCallback from "./components/document/DropboxCallback";
 import FallbackDbViewer from "./components/FallbackDbViewer";
 
