@@ -1,26 +1,6 @@
 import mysql from 'mysql2/promise';
 import { withAsyncHandler } from '../asyncUtils';
-
-const STORAGE_PREFIX = 'koalax_';
-
-// Fallback implementation using localStorage when database is unavailable
-const localStorageDB = {
-  getItem: (table: string) => {
-    try {
-      const data = localStorage.getItem(`${STORAGE_PREFIX}${table}`);
-      return data ? JSON.parse(data) : [];
-    } catch {
-      return [];
-    }
-  },
-  setItem: (table: string, data: any[]) => {
-    try {
-      localStorage.setItem(`${STORAGE_PREFIX}${table}`, JSON.stringify(data));
-    } catch (error) {
-      console.error('Local storage error:', error);
-    }
-  }
-};
+import { fallbackDB } from '../fallback-db';
 
 // MySQL connection pool
 const pool = mysql.createPool({
@@ -45,19 +25,19 @@ async function performDbOperation(operation: string, table: string, data: any) {
     try {
       switch (operation) {
         case 'find':
-          [result] = await connection.query(`SELECT * FROM ${table} WHERE ?`, data.query || {});
+          [result] = await connection.execute(`SELECT * FROM ${table} WHERE ?`, [data.query || {}]);
           break;
         case 'findOne':
-          [[result]] = await connection.query(`SELECT * FROM ${table} WHERE ? LIMIT 1`, data.query || {});
+          [[result]] = await connection.execute(`SELECT * FROM ${table} WHERE ? LIMIT 1`, [data.query || {}]);
           break;
         case 'insertOne':
-          [result] = await connection.query(`INSERT INTO ${table} SET ?`, data);
+          [result] = await connection.execute(`INSERT INTO ${table} SET ?`, [data]);
           break;
         case 'updateOne':
-          [result] = await connection.query(`UPDATE ${table} SET ? WHERE ?`, [data.update, data.query]);
+          [result] = await connection.execute(`UPDATE ${table} SET ? WHERE ?`, [data.update, data.query]);
           break;
         case 'deleteOne':
-          [result] = await connection.query(`DELETE FROM ${table} WHERE ?`, data.query);
+          [result] = await connection.execute(`DELETE FROM ${table} WHERE ?`, [data.query]);
           break;
       }
       return result;
@@ -66,37 +46,18 @@ async function performDbOperation(operation: string, table: string, data: any) {
     }
   } catch (error) {
     console.warn('Falling back to local storage:', error);
-    const storedData = localStorageDB.getItem(table);
     
     switch (operation) {
       case 'find':
-        return storedData;
+        return fallbackDB.find(table as any, data.query);
       case 'findOne':
-        return storedData.find((item: any) => 
-          Object.entries(data.query || {}).every(([key, value]) => item[key] === value)
-        );
-      case 'insertOne': {
-        const newItem = { ...data, id: crypto.randomUUID() };
-        localStorageDB.setItem(table, [...storedData, newItem]);
-        return { insertId: newItem.id };
-      }
-      case 'updateOne': {
-        const updatedData = storedData.map((item: any) => {
-          if (Object.entries(data.query).every(([key, value]) => item[key] === value)) {
-            return { ...item, ...data.update };
-          }
-          return item;
-        });
-        localStorageDB.setItem(table, updatedData);
-        return { affectedRows: 1 };
-      }
-      case 'deleteOne': {
-        const filteredData = storedData.filter((item: any) => 
-          !Object.entries(data.query).every(([key, value]) => item[key] === value)
-        );
-        localStorageDB.setItem(table, filteredData);
-        return { affectedRows: storedData.length - filteredData.length };
-      }
+        return fallbackDB.findOne(table as any, data.query);
+      case 'insertOne':
+        return fallbackDB.insert(table as any, data);
+      case 'updateOne':
+        return fallbackDB.update(table as any, data.query, data.update);
+      case 'deleteOne':
+        return fallbackDB.delete(table as any, data.query);
       default:
         return null;
     }

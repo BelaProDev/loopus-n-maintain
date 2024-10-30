@@ -1,26 +1,6 @@
 import { MongoDatabase, DbCollection, BaseDocument, DbQueryResult } from './types';
 import { withAsyncHandler, retryWithBackoff } from '../asyncUtils';
-
-const STORAGE_PREFIX = 'koalax_';
-
-// Local storage fallback implementation
-const localStorageDB = {
-  getItem: (collection: string) => {
-    try {
-      const data = localStorage.getItem(`${STORAGE_PREFIX}${collection}`);
-      return data ? JSON.parse(data) : [];
-    } catch {
-      return [];
-    }
-  },
-  setItem: (collection: string, data: any[]) => {
-    try {
-      localStorage.setItem(`${STORAGE_PREFIX}${collection}`, JSON.stringify(data));
-    } catch (error) {
-      console.error('Local storage error:', error);
-    }
-  }
-};
+import { fallbackDB } from '../fallback-db';
 
 async function performDbOperation(operation: string, collection: string, data: any) {
   try {
@@ -44,39 +24,19 @@ async function performDbOperation(operation: string, collection: string, data: a
     });
     return response;
   } catch (error) {
-    // Fallback to local storage
     console.warn('Falling back to local storage:', error);
     
     switch (operation) {
       case 'find':
-        return localStorageDB.getItem(collection);
+        return fallbackDB.find(collection as any, data.query);
       case 'findOne':
-        const items = localStorageDB.getItem(collection);
-        return items.find((item: any) => 
-          Object.entries(data.query || {}).every(([key, value]) => item[key] === value)
-        );
+        return fallbackDB.findOne(collection as any, data.query);
       case 'insertOne':
-        const existingData = localStorageDB.getItem(collection);
-        const newItem = { ...data, _id: crypto.randomUUID() };
-        localStorageDB.setItem(collection, [...existingData, newItem]);
-        return { insertedId: newItem._id };
+        return fallbackDB.insert(collection as any, data);
       case 'updateOne':
-        const currentData = localStorageDB.getItem(collection);
-        const updatedData = currentData.map((item: any) => {
-          if (Object.entries(data.query).every(([key, value]) => item[key] === value)) {
-            return { ...item, ...data.update };
-          }
-          return item;
-        });
-        localStorageDB.setItem(collection, updatedData);
-        return { matchedCount: 1 };
+        return fallbackDB.update(collection as any, data.query, data.update);
       case 'deleteOne':
-        const items = localStorageDB.getItem(collection);
-        const filteredItems = items.filter((item: any) => 
-          !Object.entries(data.query).every(([key, value]) => item[key] === value)
-        );
-        localStorageDB.setItem(collection, filteredItems);
-        return { deletedCount: items.length - filteredItems.length };
+        return fallbackDB.delete(collection as any, data.query);
       default:
         return null;
     }
