@@ -32,13 +32,13 @@ export const downloadFile = async (path: string): Promise<Blob> => {
   }
 };
 
-export const deleteFile = async (path: string): Promise<files.DeletedMetadata> => {
+export const deleteFile = async (path: string): Promise<files.DeleteResult> => {
   const client = dropboxAuth.getClient();
   const response = await client.filesDeleteV2({ path });
   return response.result;
 };
 
-export const createFolder = async (path: string): Promise<files.FolderMetadata> => {
+export const createFolder = async (path: string): Promise<files.CreateFolderResult> => {
   const client = dropboxAuth.getClient();
   const response = await client.filesCreateFolderV2({ path });
   return response.result;
