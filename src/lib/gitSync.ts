@@ -17,12 +17,16 @@ interface GitConfig {
 
 class GitSync {
   private config: GitConfig | null = null;
+  private isInitialized = false;
 
   async initialize(config: GitConfig) {
+    if (!config.repo || !config.token) {
+      throw new Error('Repository URL and token are required');
+    }
+
     this.config = config;
     
     try {
-      // Initialize the repository
       await git.init({ fs, dir: '/' });
       await git.addRemote({
         fs,
@@ -30,29 +34,29 @@ class GitSync {
         remote: 'origin',
         url: config.repo
       });
+      
+      this.isInitialized = true;
+      localStorage.setItem('git_config', JSON.stringify({
+        repo: config.repo,
+        branch: config.branch,
+        author: config.author
+      }));
     } catch (error) {
       console.error('Git initialization failed:', error);
-      toast({
-        title: "Git Error",
-        description: "Failed to initialize Git repository",
-        variant: "destructive"
-      });
+      throw new Error('Failed to initialize Git repository');
     }
   }
 
   async syncChanges(fileName: string, content: string, message: string) {
-    if (!this.config) {
-      throw new Error('Git sync not initialized');
+    if (!this.config || !this.isInitialized) {
+      console.warn('Git sync not initialized, skipping sync');
+      return;
     }
 
     try {
-      // Write file
-      await fs.promises.writeFile(`/${fileName}`, JSON.stringify(content, null, 2));
-
-      // Stage changes
+      await fs.promises.writeFile(`/${fileName}`, content);
       await git.add({ fs, dir: '/', filepath: fileName });
-
-      // Create commit
+      
       await git.commit({
         fs,
         dir: '/',
@@ -63,7 +67,6 @@ class GitSync {
         }
       });
 
-      // Push changes
       await git.push({
         fs,
         http,
@@ -86,6 +89,17 @@ class GitSync {
       });
       throw error;
     }
+  }
+
+  getStatus() {
+    return {
+      isInitialized: this.isInitialized,
+      config: this.config ? {
+        repo: this.config.repo,
+        branch: this.config.branch,
+        author: this.config.author
+      } : null
+    };
   }
 }
 
