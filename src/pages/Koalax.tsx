@@ -14,6 +14,7 @@ import BusinessManagement from "./Koalax/components/BusinessManagement";
 import DocumentManager from "./Koalax/components/DocumentManager";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 
 const KOALAX_PASSWORD = "miaou00";
 
@@ -104,36 +105,48 @@ const Koalax = () => {
       <Header />
       <div className="container mx-auto p-4 md:p-8 flex-1">
         <Tabs defaultValue="emails" className="space-y-4">
-          <ScrollArea className="w-full">
-            <TabsList className="w-full flex flex-nowrap overflow-x-auto justify-start md:justify-center p-1 mb-2">
-              <TabsTrigger value="emails" className="whitespace-nowrap">
-                <Mail className="w-4 h-4 mr-2" />
-                <span className="hidden sm:inline">Email Management</span>
-                <span className="sm:hidden">Emails</span>
-              </TabsTrigger>
-              <TabsTrigger value="content" className="whitespace-nowrap">
-                <FileText className="w-4 h-4 mr-2" />
-                <span className="hidden sm:inline">Content Management</span>
-                <span className="sm:hidden">Content</span>
-              </TabsTrigger>
-              <TabsTrigger value="settings" className="whitespace-nowrap">
-                <Settings className="w-4 h-4 mr-2" />
-                <span className="hidden sm:inline">Site Settings</span>
-                <span className="sm:hidden">Settings</span>
-              </TabsTrigger>
-              <TabsTrigger value="business" className="whitespace-nowrap">
-                <Building2 className="w-4 h-4 mr-2" />
-                <span className="hidden sm:inline">Business</span>
-                <span className="sm:hidden">Business</span>
-              </TabsTrigger>
-              <TabsTrigger value="documents" className="whitespace-nowrap">
-                <Folder className="w-4 h-4 mr-2" />
-                <span className="hidden sm:inline">Documents</span>
-                <span className="sm:hidden">Docs</span>
-              </TabsTrigger>
-            </TabsList>
-          </ScrollArea>
+          <div className="space-y-4">
+            {/* Primary Management Tools */}
+            <ScrollArea className="w-full">
+              <TabsList className="w-full flex flex-nowrap overflow-x-auto justify-start md:justify-center p-1 mb-2">
+                <TabsTrigger value="emails" className="whitespace-nowrap">
+                  <Mail className="w-4 h-4 mr-2" />
+                  <span className="hidden sm:inline">Email Management</span>
+                  <span className="sm:hidden">Emails</span>
+                </TabsTrigger>
+                <TabsTrigger value="content" className="whitespace-nowrap">
+                  <FileText className="w-4 h-4 mr-2" />
+                  <span className="hidden sm:inline">Content Management</span>
+                  <span className="sm:hidden">Content</span>
+                </TabsTrigger>
+              </TabsList>
+            </ScrollArea>
 
+            <Separator className="my-4" />
+
+            {/* Secondary Tools */}
+            <ScrollArea className="w-full">
+              <TabsList className="w-full flex flex-nowrap overflow-x-auto justify-start md:justify-center p-1">
+                <TabsTrigger value="settings" className="whitespace-nowrap">
+                  <Settings className="w-4 h-4 mr-2" />
+                  <span className="hidden sm:inline">Site Settings</span>
+                  <span className="sm:hidden">Settings</span>
+                </TabsTrigger>
+                <TabsTrigger value="business" className="whitespace-nowrap">
+                  <Building2 className="w-4 h-4 mr-2" />
+                  <span className="hidden sm:inline">Business</span>
+                  <span className="sm:hidden">Business</span>
+                </TabsTrigger>
+                <TabsTrigger value="documents" className="whitespace-nowrap">
+                  <Folder className="w-4 h-4 mr-2" />
+                  <span className="hidden sm:inline">Documents</span>
+                  <span className="sm:hidden">Docs</span>
+                </TabsTrigger>
+              </TabsList>
+            </ScrollArea>
+          </div>
+
+          {/* Tab Contents */}
           <TabsContent value="emails">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
               <h1 className="text-2xl md:text-3xl font-bold">Email Management</h1>
