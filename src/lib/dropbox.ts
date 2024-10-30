@@ -1,9 +1,18 @@
-import { dropboxAuth } from './auth/dropbox';
+import { Dropbox } from 'dropbox';
 import { DropboxEntry, DropboxFile, DropboxFolder, DropboxDeleted } from '@/types/dropbox';
 
+const createDropboxClient = () => {
+  const accessToken = localStorage.getItem('dropbox_access_token');
+  if (!accessToken) {
+    throw new Error('Dropbox access token not found');
+  }
+  return new Dropbox({ accessToken });
+};
+
 export const uploadFile = async (file: File, path: string): Promise<DropboxFile> => {
-  const client = dropboxAuth.getClient();
+  const client = createDropboxClient();
   const arrayBuffer = await file.arrayBuffer();
+  
   const response = await client.filesUpload({
     path: `${path}/${file.name}`,
     contents: arrayBuffer,
@@ -17,7 +26,7 @@ export const uploadFile = async (file: File, path: string): Promise<DropboxFile>
 };
 
 export const listFiles = async (path: string): Promise<DropboxEntry[]> => {
-  const client = dropboxAuth.getClient();
+  const client = createDropboxClient();
   const response = await client.filesListFolder({ path });
   
   return response.result.entries.map(entry => {
@@ -39,8 +48,9 @@ export const listFiles = async (path: string): Promise<DropboxEntry[]> => {
 };
 
 export const downloadFile = async (path: string): Promise<Blob> => {
-  const client = dropboxAuth.getClient();
+  const client = createDropboxClient();
   const response = await client.filesDownload({ path });
+  
   if ('fileBlob' in response.result && response.result.fileBlob instanceof Blob) {
     return response.result.fileBlob;
   }
@@ -48,7 +58,7 @@ export const downloadFile = async (path: string): Promise<Blob> => {
 };
 
 export const deleteFile = async (path: string): Promise<DropboxDeleted> => {
-  const client = dropboxAuth.getClient();
+  const client = createDropboxClient();
   const response = await client.filesDeleteV2({ path });
   
   return {
@@ -59,7 +69,7 @@ export const deleteFile = async (path: string): Promise<DropboxDeleted> => {
 };
 
 export const createFolder = async (path: string): Promise<DropboxFolder> => {
-  const client = dropboxAuth.getClient();
+  const client = createDropboxClient();
   const response = await client.filesCreateFolderV2({ path });
   
   return {
