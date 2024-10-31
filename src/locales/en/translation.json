@@ -95,6 +95,10 @@
   },
   "admin": {
     "whatsapp": "WhatsApp Numbers",
+    "whatsappUpdate": "Update WhatsApp Numbers",
+    "whatsappUpdateSuccess": "WhatsApp numbers updated successfully",
+    "whatsappUpdateError": "Failed to update WhatsApp numbers",
+    "whatsappPlaceholder": "Enter {{service}} WhatsApp number",
     "logo": "Logo",
     "navigation": "Navigation Links",
     "email": "Email Management",
@@ -103,34 +107,7 @@
     "settings": "Site Settings",
     "business": "Business",
     "documents": "Documents",
-    "administration": "Administration",
-    "providers": {
-      "title": "Service Providers",
-      "add": "Add Provider",
-      "edit": "Edit Provider",
-      "update": "Update Provider",
-      "name": "Name",
-      "service": "Service",
-      "rating": "Rating",
-      "available": "Available",
-      "unavailable": "Unavailable",
-      "actions": "Actions",
-      "selectService": "Select service",
-      "addSuccess": "Provider added successfully",
-      "addError": "Failed to add provider",
-      "updateSuccess": "Provider updated successfully",
-      "updateError": "Failed to update provider"
-    },
-    "clients": {
-      "title": "Clients",
-      "add": "Add Client",
-      "edit": "Edit Client",
-      "name": "Name",
-      "email": "Email",
-      "phone": "Phone",
-      "company": "Company",
-      "vatNumber": "VAT Number"
-    }
+    "administration": "Administration"
   },
   "docs": {
     "title": "Documentation",

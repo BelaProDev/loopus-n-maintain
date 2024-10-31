@@ -95,6 +95,10 @@
   },
   "admin": {
     "whatsapp": "Números de WhatsApp",
+    "whatsappUpdate": "Actualizar números de WhatsApp",
+    "whatsappUpdateSuccess": "Números de WhatsApp actualizados exitosamente",
+    "whatsappUpdateError": "Error al actualizar los números de WhatsApp",
+    "whatsappPlaceholder": "Ingrese el número de WhatsApp para {{service}}",
     "logo": "Logo",
     "navigation": "Enlaces de Navegación",
     "email": "Gestión de Correos",
@@ -151,7 +155,7 @@
       "title": "Características de Administrador",
       "content": {
         "title": "Gestión de Contenido",
-        "edit": "Editar contenido del sitio web",
+        "edit": "Editar contenido del sitio",
         "offline": "Copia de seguridad de base de datos sin conexión"
       },
       "business": {
