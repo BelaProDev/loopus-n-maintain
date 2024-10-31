@@ -16,26 +16,24 @@ const resources = {
   }
 };
 
-const i18nConfig = {
-  resources,
-  lng: 'en',
-  defaultNS: 'common',
-  fallbackLng: 'en',
-  ns: ['common', 'services', 'admin', 'auth', 'docs'],
-  interpolation: {
-    escapeValue: false
-  },
-  detection: {
-    order: ['localStorage', 'navigator'],
-    caches: ['localStorage']
-  },
-  react: {
-    useSuspense: false
-  }
-};
-
 i18n
   .use(initReactI18next)
-  .init(i18nConfig);
+  .init({
+    resources,
+    lng: 'en',
+    defaultNS: 'common',
+    fallbackLng: 'en',
+    ns: ['common', 'services', 'admin', 'auth', 'docs'],
+    interpolation: {
+      escapeValue: false
+    },
+    detection: {
+      order: ['localStorage', 'navigator'],
+      caches: ['localStorage']
+    },
+    react: {
+      useSuspense: false
+    }
+  });
 
 export default i18n;
