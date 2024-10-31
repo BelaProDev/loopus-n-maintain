@@ -1,34 +1,22 @@
 import { Dropbox } from 'dropbox';
+import { dropboxAuth } from './auth/dropbox';
 
-const ROOT_FOLDER = '/loopusandmaintain';
+const ROOT_FOLDER = '';  // Changed to empty string to access root folder
 
 export const getDropboxClient = () => {
   if (typeof window === 'undefined') return null;
   
-  const tokens = JSON.parse(sessionStorage.getItem('dropbox_tokens') || '{}');
-  const accessToken = tokens.access_token;
-  
+  const accessToken = dropboxAuth.getAccessToken();
   if (!accessToken) {
-    throw new Error('No Dropbox access token found in session storage');
+    throw new Error('No Dropbox access token found');
   }
   
   return new Dropbox({ accessToken });
 };
 
 const sanitizePath = (path: string) => {
-  // If it's root, return ROOT_FOLDER
-  if (path === '/') return ROOT_FOLDER;
-  
   // Remove any double slashes and leading/trailing slashes
-  const cleanPath = path.replace(/\/+/g, '/').replace(/^\/|\/$/g, '');
-  
-  // If the path already includes ROOT_FOLDER, return it as is
-  if (cleanPath.startsWith(ROOT_FOLDER.slice(1))) {
-    return `/${cleanPath}`;
-  }
-  
-  // Otherwise, combine ROOT_FOLDER with the path
-  return `${ROOT_FOLDER}/${cleanPath}`;
+  return path.replace(/\/+/g, '/').replace(/^\/|\/$/g, '');
 };
 
 export const uploadFile = async (file: File | Blob, path: string, fileName?: string) => {
@@ -45,10 +33,10 @@ export const uploadFile = async (file: File | Blob, path: string, fileName?: str
 
     const cleanFileName = fileName || (file instanceof File ? file.name : 'file');
     const sanitizedFileName = cleanFileName.replace(/[^a-zA-Z0-9.-]/g, '_');
-    const sanitizedPath = `${sanitizePath(path)}/${sanitizedFileName}`.replace(/\/+/g, '/');
+    const uploadPath = path === '/' ? `/${sanitizedFileName}` : `/${sanitizePath(path)}/${sanitizedFileName}`;
 
     const response = await dbx.filesUpload({
-      path: sanitizedPath,
+      path: uploadPath,
       contents: fileContent,
       mode: { '.tag': 'overwrite' },
       autorename: true
@@ -56,7 +44,7 @@ export const uploadFile = async (file: File | Blob, path: string, fileName?: str
     return response.result;
   } catch (error) {
     console.error('Dropbox upload error:', error);
-    throw new Error('Failed to upload file. Please try again.');
+    throw error;
   }
 };
 
@@ -65,7 +53,7 @@ export const createFolder = async (path: string) => {
   if (!dbx) throw new Error('Dropbox client not initialized');
 
   try {
-    const sanitizedPath = sanitizePath(path);
+    const sanitizedPath = `/${sanitizePath(path)}`;
     const response = await dbx.filesCreateFolderV2({
       path: sanitizedPath,
       autorename: true
@@ -73,7 +61,7 @@ export const createFolder = async (path: string) => {
     return response.result;
   } catch (error) {
     console.error('Dropbox create folder error:', error);
-    throw new Error('Failed to create folder. Please try again.');
+    throw error;
   }
 };
 
@@ -88,7 +76,7 @@ export const deleteFile = async (path: string) => {
     return response.result;
   } catch (error) {
     console.error('Dropbox delete error:', error);
-    throw new Error('Failed to delete file. Please try again.');
+    throw error;
   }
 };
 
@@ -97,10 +85,9 @@ export const listFiles = async (path: string = '') => {
   if (!dbx) throw new Error('Dropbox client not initialized');
 
   try {
-    const sanitizedPath = sanitizePath(path);
-    console.log('Listing files at path:', sanitizedPath); // Debug log
+    const listPath = path === '/' ? '' : `/${sanitizePath(path)}`;
     const response = await dbx.filesListFolder({
-      path: sanitizedPath,
+      path: listPath,
     });
     return response.result.entries;
   } catch (error) {

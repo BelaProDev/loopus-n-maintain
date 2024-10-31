@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useToast } from "@/components/ui/use-toast";
+import { dropboxAuth } from '@/lib/auth/dropbox';
 
 const DropboxCallback = () => {
   const [searchParams] = useSearchParams();
@@ -8,34 +9,36 @@ const DropboxCallback = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const code = searchParams.get('code');
-    if (code) {
-      const sendMessageAndClose = () => {
-        if (window.opener) {
-          // Send message first
-          window.opener.postMessage({ type: 'DROPBOX_AUTH_CODE', code }, '*');
-          // Set a small timeout before closing to ensure message is sent
-          setTimeout(() => window.close(), 100);
-        } else {
+    const handleCallback = async () => {
+      const code = searchParams.get('code');
+      if (code) {
+        try {
+          await dropboxAuth.exchangeCodeForToken(code);
           toast({
-            title: "Authentication Error",
-            description: "Could not complete authentication. Please try again.",
-            variant: "destructive",
+            title: 'Success',
+            description: 'Successfully connected to Dropbox',
           });
-          navigate('/koalax');
+          navigate('/koalax/documents');
+        } catch (error) {
+          toast({
+            title: 'Authentication Error',
+            description: 'Failed to complete authentication. Please try again.',
+            variant: 'destructive',
+          });
+          navigate('/koalax/documents');
         }
-      };
+      }
+    };
 
-      sendMessageAndClose();
-    }
+    handleCallback();
   }, [searchParams, toast, navigate]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background">
       <div className="text-center space-y-4 p-6 max-w-md mx-auto">
-        <h1 className="text-2xl font-bold">Authentication Successful</h1>
+        <h1 className="text-2xl font-bold">Connecting to Dropbox...</h1>
         <p className="text-muted-foreground">
-          You can close this window and return to the main application.
+          Please wait while we complete the authentication process.
         </p>
       </div>
     </div>

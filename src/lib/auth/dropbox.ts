@@ -3,6 +3,7 @@ const isBrowser = typeof window !== 'undefined';
 const DROPBOX_AUTH_URL = "https://www.dropbox.com/oauth2/authorize";
 const DROPBOX_TOKEN_URL = "https://api.dropbox.com/oauth2/token";
 const REDIRECT_URI = isBrowser ? `${window.location.origin}/koalax/dropbox-callback` : '';
+const CLIENT_ID = import.meta.env.VITE_DROPBOX_APP_KEY;
 
 const getStorageValue = (key: string): string | null => {
   if (!isBrowser) return null;
@@ -13,31 +14,19 @@ const setStorageValue = (key: string, value: string, persistent = false) => {
   if (!isBrowser) return;
   const storage = persistent ? localStorage : sessionStorage;
   storage.setItem(key, value);
-  
-  // Sync with service worker cache
-  if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-    navigator.serviceWorker.controller.postMessage({
-      type: 'STORE_DROPBOX_TOKENS',
-      tokens: { [key]: value }
-    });
-  }
 };
 
-const isPWA = () => {
-  if (!isBrowser) return false;
-  return window.matchMedia('(display-mode: standalone)').matches || 
-         (window.navigator as any).standalone || 
-         document.referrer.includes('android-app://');
-};
-
-const isMobile = () => {
-  if (!isBrowser) return false;
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+const clearStorageValue = (key: string) => {
+  if (!isBrowser) return;
+  localStorage.removeItem(key);
+  sessionStorage.removeItem(key);
 };
 
 export const dropboxAuth = {
   async initiateAuth() {
-    if (!isBrowser) return null;
+    if (!isBrowser || !CLIENT_ID) {
+      throw new Error('Dropbox client ID not configured');
+    }
     
     try {
       const codeVerifier = crypto.randomUUID();
@@ -52,7 +41,7 @@ export const dropboxAuth = {
       setStorageValue('dropbox_code_verifier', codeVerifier);
 
       const params = new URLSearchParams({
-        client_id: import.meta.env.VITE_DROPBOX_APP_KEY,
+        client_id: CLIENT_ID,
         response_type: 'code',
         code_challenge: codeChallenge,
         code_challenge_method: 'S256',
@@ -61,48 +50,9 @@ export const dropboxAuth = {
       });
 
       const authUrl = `${DROPBOX_AUTH_URL}?${params.toString()}`;
+      window.location.href = authUrl;
       
-      // Use redirect flow for PWA and mobile
-      if (isPWA() || isMobile()) {
-        // Store the current path to return after auth
-        setStorageValue('dropbox_return_path', window.location.pathname);
-        window.location.href = authUrl;
-        return new Promise(() => {}); // Never resolves as we're redirecting
-      }
-
-      // Use popup flow for desktop
-      const width = 600;
-      const height = 600;
-      const left = window.screenX + (window.outerWidth - width) / 2;
-      const top = window.screenY + (window.outerHeight - height) / 2;
-
-      const popup = window.open(
-        authUrl,
-        'DropboxAuth',
-        `width=${width},height=${height},left=${left},top=${top}`
-      );
-
-      if (!popup) throw new Error('Failed to open popup');
-
-      return new Promise((resolve, reject) => {
-        const interval = setInterval(() => {
-          try {
-            if (popup.closed) {
-              clearInterval(interval);
-              reject(new Error('Authentication cancelled'));
-            }
-
-            const tokens = getStorageValue('dropbox_tokens');
-            if (tokens) {
-              clearInterval(interval);
-              popup.close();
-              resolve(JSON.parse(tokens));
-            }
-          } catch (error) {
-            // Handle cross-origin errors silently
-          }
-        }, 500);
-      });
+      return new Promise(() => {});
     } catch (error) {
       console.error('Dropbox auth error:', error);
       throw error;
@@ -110,7 +60,7 @@ export const dropboxAuth = {
   },
 
   async exchangeCodeForToken(code: string) {
-    if (!isBrowser) return null;
+    if (!isBrowser || !CLIENT_ID) return null;
     
     const codeVerifier = getStorageValue('dropbox_code_verifier');
     if (!codeVerifier) throw new Error('No code verifier found');
@@ -118,7 +68,7 @@ export const dropboxAuth = {
     const params = new URLSearchParams({
       code,
       grant_type: 'authorization_code',
-      client_id: import.meta.env.VITE_DROPBOX_APP_KEY,
+      client_id: CLIENT_ID,
       redirect_uri: REDIRECT_URI,
       code_verifier: codeVerifier
     });
@@ -129,31 +79,29 @@ export const dropboxAuth = {
       body: params
     });
 
-    if (!response.ok) throw new Error('Failed to exchange code for token');
+    if (!response.ok) {
+      throw new Error('Failed to exchange code for token');
+    }
 
     const tokens = await response.json();
     setStorageValue('dropbox_tokens', JSON.stringify(tokens), true);
-    localStorage.removeItem('dropbox_code_verifier');
-    
-    // Handle return path for PWA/mobile flow
-    const returnPath = getStorageValue('dropbox_return_path');
-    if (returnPath) {
-      localStorage.removeItem('dropbox_return_path');
-      window.location.href = returnPath;
-    }
+    clearStorageValue('dropbox_code_verifier');
     
     return tokens;
   },
 
   logout() {
     if (!isBrowser) return;
-    localStorage.removeItem('dropbox_tokens');
-    sessionStorage.removeItem('dropbox_tokens');
-    
-    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-      navigator.serviceWorker.controller.postMessage({
-        type: 'REMOVE_DROPBOX_TOKENS'
-      });
+    clearStorageValue('dropbox_tokens');
+  },
+
+  getAccessToken() {
+    const tokens = getStorageValue('dropbox_tokens');
+    if (!tokens) return null;
+    try {
+      return JSON.parse(tokens).access_token;
+    } catch {
+      return null;
     }
   }
 };
