@@ -1,6 +1,5 @@
 import { Provider } from "@/types/business";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -15,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import ValidatedInput from "@/components/form/ValidatedInput";
+import { useTranslation } from "react-i18next";
 
 interface ProviderDialogProps {
   isOpen: boolean;
@@ -31,19 +31,21 @@ const ProviderDialog = ({
   onSubmit,
   isLoading,
 }: ProviderDialogProps) => {
+  const { t } = useTranslation();
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
-            {editingProvider ? "Edit Provider" : "Add New Provider"}
+            {editingProvider ? t("admin.providers.edit") : t("admin.providers.add")}
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={onSubmit} className="space-y-4">
           <ValidatedInput
             id="name"
             name="name"
-            label="Name"
+            label={t("forms.name")}
             value={editingProvider?.name || ""}
             onChange={() => {}}
             required
@@ -51,7 +53,7 @@ const ProviderDialog = ({
           <ValidatedInput
             id="email"
             name="email"
-            label="Email"
+            label={t("forms.email")}
             type="email"
             value={editingProvider?.email || ""}
             onChange={() => {}}
@@ -60,27 +62,27 @@ const ProviderDialog = ({
           <ValidatedInput
             id="phone"
             name="phone"
-            label="Phone"
+            label={t("forms.phone")}
             value={editingProvider?.phone || ""}
             onChange={() => {}}
             required
           />
           <div className="space-y-2">
-            <label className="text-sm font-medium">Service</label>
+            <label className="text-sm font-medium">{t("admin.providers.service")}</label>
             <Select
               name="service"
               defaultValue={editingProvider?.service}
               required
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select service" />
+                <SelectValue placeholder={t("admin.providers.selectService")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="electrics">Electrics</SelectItem>
-                <SelectItem value="plumbing">Plumbing</SelectItem>
-                <SelectItem value="ironwork">Ironwork</SelectItem>
-                <SelectItem value="woodwork">Woodwork</SelectItem>
-                <SelectItem value="architecture">Architecture</SelectItem>
+                <SelectItem value="electrics">{t("services.electrical.title")}</SelectItem>
+                <SelectItem value="plumbing">{t("services.plumbing.title")}</SelectItem>
+                <SelectItem value="ironwork">{t("services.ironwork.title")}</SelectItem>
+                <SelectItem value="woodwork">{t("services.woodworking.title")}</SelectItem>
+                <SelectItem value="architecture">{t("services.architecture.title")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -89,7 +91,7 @@ const ProviderDialog = ({
             disabled={isLoading}
             className="w-full"
           >
-            {editingProvider ? "Update" : "Add"} Provider
+            {editingProvider ? t("admin.providers.update") : t("admin.providers.add")}
           </Button>
         </form>
       </DialogContent>

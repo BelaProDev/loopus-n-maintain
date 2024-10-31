@@ -7,12 +7,14 @@ import { Plus, Pencil, Trash2, Star } from "lucide-react";
 import { Provider } from "@/types/business";
 import ProviderDialog from "./ProviderDialog";
 import { useToast } from "@/components/ui/use-toast";
+import { useTranslation } from "react-i18next";
 
 const ProviderList = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingProvider, setEditingProvider] = useState<Provider | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   const { data: providers, isLoading } = useQuery({
     queryKey: ['providers'],
@@ -23,13 +25,13 @@ const ProviderList = () => {
     mutationFn: businessQueries.createProvider,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['providers'] });
-      toast({ title: "Success", description: "Provider added successfully" });
+      toast({ title: t("common.success"), description: t("admin.providers.addSuccess") });
       setIsDialogOpen(false);
     },
     onError: () => {
       toast({ 
-        title: "Error", 
-        description: "Failed to add provider", 
+        title: t("common.error"), 
+        description: t("admin.providers.addError"), 
         variant: "destructive" 
       });
     }
@@ -51,29 +53,29 @@ const ProviderList = () => {
     createMutation.mutate(providerData);
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <div>{t("common.loading")}</div>;
 
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Service Providers</h2>
+        <h2 className="text-2xl font-bold">{t("admin.providers.title")}</h2>
         <Button onClick={() => {
           setEditingProvider(null);
           setIsDialogOpen(true);
         }}>
           <Plus className="w-4 h-4 mr-2" />
-          Add Provider
+          {t("admin.providers.add")}
         </Button>
       </div>
 
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Service</TableHead>
-            <TableHead>Rating</TableHead>
-            <TableHead>Available</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead>{t("admin.providers.name")}</TableHead>
+            <TableHead>{t("admin.providers.service")}</TableHead>
+            <TableHead>{t("admin.providers.rating")}</TableHead>
+            <TableHead>{t("common.status")}</TableHead>
+            <TableHead className="text-right">{t("common.actions")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -84,14 +86,14 @@ const ProviderList = () => {
               <TableCell>
                 <div className="flex items-center">
                   <Star className="w-4 h-4 text-yellow-400 mr-1" />
-                  {provider.rating || "N/A"}
+                  {provider.rating || t("common.na")}
                 </div>
               </TableCell>
               <TableCell>
                 <span className={`px-2 py-1 rounded-full text-xs ${
                   provider.availability ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                 }`}>
-                  {provider.availability ? 'Available' : 'Unavailable'}
+                  {provider.availability ? t("admin.providers.available") : t("admin.providers.unavailable")}
                 </span>
               </TableCell>
               <TableCell className="text-right">

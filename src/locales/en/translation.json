@@ -88,12 +88,18 @@
       "title": "Service Providers",
       "add": "Add Provider",
       "edit": "Edit Provider",
+      "update": "Update Provider",
       "name": "Name",
       "service": "Service",
       "rating": "Rating",
       "available": "Available",
       "unavailable": "Unavailable",
-      "actions": "Actions"
+      "actions": "Actions",
+      "selectService": "Select service",
+      "addSuccess": "Provider added successfully",
+      "addError": "Failed to add provider",
+      "updateSuccess": "Provider updated successfully",
+      "updateError": "Failed to update provider"
     },
     "clients": {
       "title": "Clients",
@@ -122,7 +128,9 @@
     "error": "Error",
     "required": "Required",
     "optional": "Optional",
-    "actions": "Actions"
+    "actions": "Actions",
+    "status": "Status",
+    "na": "N/A"
   },
   "forms": {
     "name": "Name",

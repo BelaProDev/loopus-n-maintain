@@ -74,7 +74,7 @@
     "invalidCreds": "Identifiants invalides. Veuillez réessayer."
   },
   "admin": {
-    "whatsapp": "Numéros WhatsApp",
+    "whatsapp": "Nombres de WhatsApp",
     "logo": "Logo",
     "navigation": "Liens de Navigation",
     "email": "Gestion des E-mails",
@@ -88,22 +88,18 @@
       "title": "Prestataires de Services",
       "add": "Ajouter un Prestataire",
       "edit": "Modifier le Prestataire",
+      "update": "Mettre à jour le Prestataire",
       "name": "Nom",
       "service": "Service",
       "rating": "Évaluation",
       "available": "Disponible",
       "unavailable": "Indisponible",
-      "actions": "Actions"
-    },
-    "clients": {
-      "title": "Clients",
-      "add": "Ajouter un Client",
-      "edit": "Modifier le Client",
-      "name": "Nom",
-      "email": "E-mail",
-      "phone": "Téléphone",
-      "company": "Entreprise",
-      "vatNumber": "Numéro de TVA"
+      "actions": "Actions",
+      "selectService": "Sélectionner un service",
+      "addSuccess": "Prestataire ajouté avec succès",
+      "addError": "Échec de l'ajout du prestataire",
+      "updateSuccess": "Prestataire mis à jour avec succès",
+      "updateError": "Échec de la mise à jour du prestataire"
     }
   },
   "dropbox": {
@@ -122,7 +118,9 @@
     "error": "Erreur",
     "required": "Requis",
     "optional": "Optionnel",
-    "actions": "Actions"
+    "actions": "Actions",
+    "status": "Statut",
+    "na": "N/D"
   },
   "forms": {
     "name": "Nom",

@@ -88,12 +88,18 @@
       "title": "Proveedores de Servicios",
       "add": "Agregar Proveedor",
       "edit": "Editar Proveedor",
+      "update": "Actualizar Proveedor",
       "name": "Nombre",
       "service": "Servicio",
       "rating": "Calificación",
       "available": "Disponible",
       "unavailable": "No Disponible",
-      "actions": "Acciones"
+      "actions": "Acciones",
+      "selectService": "Seleccionar servicio",
+      "addSuccess": "Proveedor agregado exitosamente",
+      "addError": "Error al agregar proveedor",
+      "updateSuccess": "Proveedor actualizado exitosamente",
+      "updateError": "Error al actualizar proveedor"
     },
     "clients": {
       "title": "Clientes",
@@ -122,7 +128,9 @@
     "error": "Error",
     "required": "Requerido",
     "optional": "Opcional",
-    "actions": "Acciones"
+    "actions": "Acciones",
+    "status": "Estado",
+    "na": "N/D"
   },
   "forms": {
     "name": "Nombre",
