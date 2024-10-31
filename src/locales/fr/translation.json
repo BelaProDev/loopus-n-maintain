@@ -95,19 +95,66 @@
   },
   "admin": {
     "whatsapp": "Numéros WhatsApp",
-    "whatsappUpdate": "Mettre à jour les numéros WhatsApp",
-    "whatsappUpdateSuccess": "Numéros WhatsApp mis à jour avec succès",
-    "whatsappUpdateError": "Échec de la mise à jour des numéros WhatsApp",
+    "whatsappUpdate": "Mettre à jour les numéros de WhatsApp",
+    "whatsappUpdateSuccess": "Numéros de WhatsApp mis à jour avec succès",
+    "whatsappUpdateError": "Échec de la mise à jour des numéros de WhatsApp",
     "whatsappPlaceholder": "Entrez le numéro WhatsApp pour {{service}}",
     "logo": "Logo",
     "navigation": "Liens de Navigation",
-    "email": "Gestion des E-mails",
-    "content": "Gestion du Contenu",
-    "contentManagement": "Gestion du Contenu",
-    "settings": "Paramètres du Site",
-    "business": "Entreprise",
-    "documents": "Documents",
-    "administration": "Administration"
+    "email": {
+      "title": "Gestion des E-mails",
+      "add": "Ajouter un E-mail",
+      "edit": "Modifier l'E-mail",
+      "type": "Type",
+      "addSuccess": "E-mail ajouté avec succès",
+      "addError": "Échec de l'ajout de l'e-mail",
+      "updateSuccess": "E-mail mis à jour avec succès",
+      "updateError": "Échec de la mise à jour de l'e-mail",
+      "deleteSuccess": "E-mail supprimé avec succès",
+      "deleteError": "Échec de la suppression de l'e-mail"
+    },
+    "business": {
+      "title": "Gestion d'Entreprise",
+      "providers": {
+        "title": "Prestataires de Services",
+        "add": "Ajouter un Prestataire",
+        "edit": "Modifier le Prestataire",
+        "update": "Mettre à jour le Prestataire",
+        "name": "Nom",
+        "service": "Service",
+        "rating": "Évaluation",
+        "available": "Disponible",
+        "unavailable": "Indisponible",
+        "actions": "Actions",
+        "selectService": "Sélectionner un service",
+        "addSuccess": "Prestataire ajouté avec succès",
+        "addError": "Échec de l'ajout du prestataire",
+        "updateSuccess": "Prestataire mis à jour avec succès",
+        "updateError": "Échec de la mise à jour du prestataire"
+      },
+      "clients": {
+        "title": "Clients",
+        "add": "Ajouter un Client",
+        "edit": "Modifier le Client",
+        "name": "Nom",
+        "email": "E-mail",
+        "phone": "Téléphone",
+        "company": "Entreprise",
+        "vatNumber": "Numéro de TVA"
+      }
+    },
+    "documents": {
+      "title": "Gestion des Documents",
+      "upload": "Téléverser un Fichier",
+      "uploading": "Téléversement en cours...",
+      "createFolder": "Créer un Dossier",
+      "refresh": "Actualiser",
+      "disconnect": "Déconnecter Dropbox",
+      "connecting": "Connexion à Dropbox...",
+      "wait": "Veuillez patienter pendant l'authentification.",
+      "success": "Connexion réussie à Dropbox",
+      "error": "Échec de la connexion à Dropbox"
+    }
   },
   "docs": {
     "title": "Documentation",
