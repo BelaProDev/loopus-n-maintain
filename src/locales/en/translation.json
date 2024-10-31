@@ -80,7 +80,10 @@
     "optional": "Optional",
     "actions": "Actions",
     "status": "Status",
-    "na": "N/A"
+    "na": "N/A",
+    "offline": "Offline",
+    "language": "Change Language",
+    "contact": "Contact"
   },
   "auth": {
     "welcome": "Welcome, would you like to log in?",
@@ -189,5 +192,10 @@
       "title": "Environment Setup",
       "env": "The Secret Sauce (aka Environment Variables)"
     }
+  },
+  "language": {
+    "en": "English",
+    "es": "Spanish",
+    "fr": "French"
   }
 }

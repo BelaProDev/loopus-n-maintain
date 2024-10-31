@@ -1,4 +1,4 @@
-import { Menu, WifiOff, LogOut, Languages } from "lucide-react";
+import { Menu, WifiOff, LogOut } from "lucide-react";
 import { Button } from "./ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Link } from "react-router-dom";
@@ -43,7 +43,7 @@ const Header = () => {
           className="absolute top-2 right-2 md:right-4 flex items-center gap-1 z-50 font-semibold"
         >
           <WifiOff className="h-3 w-3" />
-          Offline
+          {t("common.offline")}
         </Badge>
       )}
       <div className="container mx-auto px-4 py-4">
