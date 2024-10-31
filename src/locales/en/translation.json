@@ -61,14 +61,33 @@
         "structuralAssessment": "Structural Assessment"
       }
     },
-    "quickHelp": "Quick Help",
-    "whatsapp": {
-      "contact": "Contact via WhatsApp",
-      "message": "Hello, I need help with the following issues: {{issues}}"
-    },
     "faq": {
-      "title": "Frequently Asked Questions"
+      "title": "Frequently Asked Questions",
+      "powerOutageQ": "What should I do during a power outage?",
+      "powerOutageA": "First, check if your neighbors have power. If they do, check your circuit breaker. If not, contact your utility company.",
+      "inspectionQ": "How often should electrical systems be inspected?",
+      "inspectionA": "Professional electrical inspections should be conducted every 3-5 years, or when purchasing a new property.",
+      "plumbingInspectionQ": "How often should I have my plumbing inspected?",
+      "plumbingInspectionA": "It's recommended to have a professional plumbing inspection every 2 years to catch potential issues early.",
+      "waterLeakQ": "What should I do if I have a major water leak?",
+      "waterLeakA": "Immediately shut off the main water valve to your home and call a professional plumber for emergency service."
     }
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "submit": "Submit",
+    "loading": "Loading...",
+    "success": "Success",
+    "error": "Error",
+    "required": "Required",
+    "optional": "Optional",
+    "actions": "Actions",
+    "status": "Status",
+    "na": "N/A",
+    "learnMore": "Learn More"
   },
   "auth": {
     "welcome": "Welcome, would you like to log in?",
@@ -124,33 +143,5 @@
     "connecting": "Connecting to Dropbox...",
     "wait": "Please wait while we complete the authentication process.",
     "success": "Successfully connected to Dropbox"
-  },
-  "common": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "edit": "Edit",
-    "submit": "Submit",
-    "loading": "Loading...",
-    "success": "Success",
-    "error": "Error",
-    "required": "Required",
-    "optional": "Optional",
-    "actions": "Actions",
-    "status": "Status",
-    "na": "N/A"
-  },
-  "forms": {
-    "name": "Name",
-    "email": "Email",
-    "phone": "Phone",
-    "message": "Message",
-    "send": "Send Message",
-    "sending": "Sending..."
-  },
-  "language": {
-    "en": "English",
-    "es": "Spanish",
-    "fr": "French"
   }
 }

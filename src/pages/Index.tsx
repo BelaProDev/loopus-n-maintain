@@ -5,36 +5,37 @@ import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTranslation } from "react-i18next";
 
 const services = [
   {
     icon: Zap,
-    title: "Electrics",
-    description: "Professional electrical maintenance and repairs",
+    title: "services.electrical.title",
+    description: "services.electrical.description",
     path: "/electrics",
   },
   {
     icon: Wrench,
-    title: "Plumbing",
-    description: "Expert plumbing solutions and maintenance",
+    title: "services.plumbing.title",
+    description: "services.plumbing.description",
     path: "/plumbing",
   },
   {
     icon: Building2,
-    title: "Ironwork",
-    description: "Structural and decorative ironwork services",
+    title: "services.ironwork.title",
+    description: "services.ironwork.description",
     path: "/ironwork",
   },
   {
     icon: Hammer,
-    title: "Woodwork",
-    description: "Custom woodworking and carpentry services",
+    title: "services.woodworking.title",
+    description: "services.woodworking.description",
     path: "/woodwork",
   },
   {
     icon: PencilRuler,
-    title: "Architecture",
-    description: "Architectural design, planning and other services",
+    title: "services.architecture.title",
+    description: "services.architecture.description",
     path: "/architecture",
   },
 ];
@@ -42,6 +43,7 @@ const services = [
 const Index = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const { t } = useTranslation();
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F5F1EA]">
@@ -51,19 +53,19 @@ const Index = () => {
           <div className="container mx-auto px-4">
             <div className="max-w-3xl flex flex-col gap-6">
               <h1 className="text-3xl md:text-5xl font-bold">
-                Loopus & Maintain
+                {t("app.name")}
               </h1>
               {!isAuthenticated && (
                 <>
                   <p className="text-lg md:text-xl">
-                    Welcome, would you like to log in?
+                    {t("auth.welcome")}
                   </p>
                   <Button 
                     onClick={() => navigate("/login")}
                     size="lg" 
                     className="bg-white text-[#2E5984] hover:bg-gray-100 w-full sm:w-auto"
                   >
-                    Sign In
+                    {t("auth.signIn")}
                   </Button>
                 </>
               )}
@@ -73,7 +75,7 @@ const Index = () => {
 
         <div id="services" className="container mx-auto px-4 py-12 md:py-16">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 md:mb-12 text-[#2E5984]">
-            Our Services
+            {t("nav.services")}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {services.map((service) => (
@@ -81,17 +83,17 @@ const Index = () => {
                 <CardHeader>
                   <div className="flex items-center gap-4">
                     <service.icon className="h-8 w-8 text-[#2E5984] flex-shrink-0" />
-                    <CardTitle className="flex-1">{service.title}</CardTitle>
+                    <CardTitle className="flex-1">{t(service.title)}</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent className="flex flex-col flex-1">
-                  <p className="text-gray-600 mb-4 flex-1">{service.description}</p>
+                  <p className="text-gray-600 mb-4 flex-1">{t(service.description)}</p>
                   <Button 
                     onClick={() => navigate(service.path)}
                     variant="outline" 
                     className="w-full mt-auto"
                   >
-                    Learn More
+                    {t("common.learnMore")}
                   </Button>
                 </CardContent>
               </Card>

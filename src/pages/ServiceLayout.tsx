@@ -15,6 +15,7 @@ import ServiceForm from "@/components/service/ServiceForm";
 import { useQuery } from "@tanstack/react-query";
 import { settingsQueries } from "@/lib/fauna/settingsQueries";
 import { useTranslation } from "react-i18next";
+import FAQSection from "@/components/service/FAQSection";
 
 interface ServiceLayoutProps {
   title: string;
@@ -108,21 +109,7 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
           <ServiceForm title={title} isAuthenticated={isAuthenticated} />
         </div>
 
-        <div className="mt-12">
-          <h2 className="text-2xl md:text-3xl font-serif text-[#2E5984] mb-6">
-            {t("services.faq.title")}
-          </h2>
-          <div className="grid gap-6">
-            {faqs.map((faq, index) => (
-              <div key={index} className="glass-effect p-6 rounded-lg">
-                <h3 className="font-semibold text-lg text-[#2E5984] mb-2">
-                  {faq.question}
-                </h3>
-                <p className="text-gray-700">{faq.answer}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+        <FAQSection faqs={faqs} />
       </main>
       <Footer />
     </div>

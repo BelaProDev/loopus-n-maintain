@@ -2,27 +2,27 @@ import ServiceLayout from "./ServiceLayout";
 
 const Electrics = () => {
   const commonIssues = [
-    { id: "power-outage", label: "Power Outage" },
-    { id: "circuit-breaker", label: "Circuit Breaker Issues" },
-    { id: "flickering-lights", label: "Flickering Lights" },
-    { id: "outlet-not-working", label: "Outlet Not Working" },
+    { id: "power-outage", label: "services.electrical.issues.powerOutage" },
+    { id: "circuit-breaker", label: "services.electrical.issues.circuitBreaker" },
+    { id: "flickering-lights", label: "services.electrical.issues.flickeringLights" },
+    { id: "outlet-not-working", label: "services.electrical.issues.outletNotWorking" },
   ];
 
   const faqs = [
     {
-      question: "What should I do during a power outage?",
-      answer: "First, check if your neighbors have power. If they do, check your circuit breaker. If not, contact your utility company.",
+      question: "services.faq.powerOutageQ",
+      answer: "services.faq.powerOutageA",
     },
     {
-      question: "How often should electrical systems be inspected?",
-      answer: "Professional electrical inspections should be conducted every 3-5 years, or when purchasing a new property.",
+      question: "services.faq.inspectionQ",
+      answer: "services.faq.inspectionA",
     },
   ];
 
   return (
     <ServiceLayout
-      title="Electrical Services"
-      description="Professional electrical maintenance and repair services for your home or business. Our certified electricians ensure safe and reliable electrical systems."
+      title="services.electrical.title"
+      description="services.electrical.description"
       commonIssues={commonIssues}
       faqs={faqs}
     />
