@@ -2,8 +2,13 @@ const isBrowser = typeof window !== 'undefined';
 
 const DROPBOX_AUTH_URL = "https://www.dropbox.com/oauth2/authorize";
 const DROPBOX_TOKEN_URL = "https://api.dropbox.com/oauth2/token";
-const REDIRECT_URI = isBrowser ? `${window.location.origin}/koalax/dropbox-callback` : '';
 const CLIENT_ID = import.meta.env.VITE_DROPBOX_APP_KEY;
+
+const getRedirectUri = () => {
+  if (!isBrowser) return '';
+  const origin = window.location.origin;
+  return `${origin}/koalax/dropbox-callback`;
+};
 
 const getStorageValue = (key: string): string | null => {
   if (!isBrowser) return null;
@@ -46,13 +51,45 @@ export const dropboxAuth = {
         code_challenge: codeChallenge,
         code_challenge_method: 'S256',
         token_access_type: 'offline',
-        redirect_uri: REDIRECT_URI
+        redirect_uri: getRedirectUri()
       });
 
-      const authUrl = `${DROPBOX_AUTH_URL}?${params.toString()}`;
-      window.location.href = authUrl;
-      
-      return new Promise(() => {});
+      // For mobile devices, open in same window
+      if (window.innerWidth <= 768) {
+        window.location.href = `${DROPBOX_AUTH_URL}?${params.toString()}`;
+        return new Promise(() => {});
+      }
+
+      // For desktop, open in popup
+      const width = 600;
+      const height = 600;
+      const left = window.screenX + (window.outerWidth - width) / 2;
+      const top = window.screenY + (window.outerHeight - height) / 2;
+      const popup = window.open(
+        `${DROPBOX_AUTH_URL}?${params.toString()}`,
+        'Dropbox Auth',
+        `width=${width},height=${height},left=${left},top=${top}`
+      );
+
+      return new Promise((resolve, reject) => {
+        if (!popup) {
+          reject(new Error('Popup blocked. Please allow popups and try again.'));
+          return;
+        }
+
+        const messageHandler = (event: MessageEvent) => {
+          if (event.origin !== window.location.origin) return;
+          if (event.data?.type === 'DROPBOX_AUTH_CODE') {
+            window.removeEventListener('message', messageHandler);
+            popup.close();
+            this.exchangeCodeForToken(event.data.code)
+              .then(resolve)
+              .catch(reject);
+          }
+        };
+
+        window.addEventListener('message', messageHandler);
+      });
     } catch (error) {
       console.error('Dropbox auth error:', error);
       throw error;
@@ -69,7 +106,7 @@ export const dropboxAuth = {
       code,
       grant_type: 'authorization_code',
       client_id: CLIENT_ID,
-      redirect_uri: REDIRECT_URI,
+      redirect_uri: getRedirectUri(),
       code_verifier: codeVerifier
     });
 
