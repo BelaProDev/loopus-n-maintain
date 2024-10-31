@@ -7,11 +7,9 @@ import { useToast } from "@/components/ui/use-toast";
 import { faunaQueries } from "@/lib/fauna";
 import ContentGrid from "./components/ContentGrid";
 import { motion, AnimatePresence } from "framer-motion";
-import { Database, Cloud } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 
 const ContentEditor = () => {
-  const [storageType, setStorageType] = useState<"fallback" | "fauna">("fallback");
+  const [storageType, setStorageType] = useState<"fauna" | "fallback">("fauna");
   const [key, setKey] = useState("");
   const [content, setContent] = useState("");
   const [language, setLanguage] = useState("en");
@@ -21,23 +19,14 @@ const ContentEditor = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      if (storageType === "fauna") {
-        await faunaQueries.updateContent({
-          key,
-          type,
-          content,
-          language,
-          lastModified: Date.now(),
-          modifiedBy: "admin"
-        });
-      } else {
-        // In fallback mode, we just show a toast since changes are temporary
-        toast({
-          title: "Fallback Mode",
-          description: "Changes in fallback mode are temporary and won't persist.",
-          variant: "default",
-        });
-      }
+      await faunaQueries.updateContent({
+        key,
+        type,
+        content,
+        language,
+        lastModified: Date.now(),
+        modifiedBy: "admin"
+      });
       
       toast({
         title: "Success",
@@ -63,35 +52,13 @@ const ContentEditor = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h2 className="text-2xl font-bold">Content Editor</h2>
-        <Select value={storageType} onValueChange={(value: "fallback" | "fauna") => setStorageType(value)}>
+        <Select value={storageType} onValueChange={(value: "fauna" | "fallback") => setStorageType(value)}>
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select storage">
-              <div className="flex items-center gap-2">
-                {storageType === "fallback" ? (
-                  <>
-                    <Database className="h-4 w-4" />
-                    <span>Fallback DB</span>
-                  </>
-                ) : (
-                  <>
-                    <Cloud className="h-4 w-4" />
-                    <span>Fauna DB</span>
-                  </>
-                )}
-              </div>
-            </SelectValue>
+            <SelectValue placeholder="Select storage" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="fallback" className="flex items-center gap-2">
-              <Database className="h-4 w-4" />
-              Fallback DB
-              <Badge variant="secondary" className="ml-2">Local</Badge>
-            </SelectItem>
-            <SelectItem value="fauna" className="flex items-center gap-2">
-              <Cloud className="h-4 w-4" />
-              Fauna DB
-              <Badge variant="secondary" className="ml-2">Cloud</Badge>
-            </SelectItem>
+            <SelectItem value="fauna">Fauna DB</SelectItem>
+            <SelectItem value="fallback">Fallback JSON</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -104,7 +71,6 @@ const ContentEditor = () => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 0.2 }}
-            className="bg-white p-6 rounded-lg shadow-sm border"
           >
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
@@ -168,9 +134,7 @@ const ContentEditor = () => {
                 )}
               </div>
 
-              <Button type="submit" className="w-full">
-                Save Content {storageType === "fallback" && "(Preview Mode)"}
-              </Button>
+              <Button type="submit">Save Content</Button>
             </form>
           </motion.div>
         </AnimatePresence>
