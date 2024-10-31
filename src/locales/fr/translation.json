@@ -60,6 +60,14 @@
         "renovationPlanning": "Planification de Rénovation",
         "structuralAssessment": "Évaluation Structurelle"
       }
+    },
+    "quickHelp": "Aide Rapide",
+    "whatsapp": {
+      "contact": "Contacter via WhatsApp",
+      "message": "Bonjour, j'ai besoin d'aide avec les problèmes suivants : {{issues}}"
+    },
+    "faq": {
+      "title": "Questions Fréquentes"
     }
   },
   "auth": {
@@ -100,6 +108,16 @@
       "addError": "Échec de l'ajout du prestataire",
       "updateSuccess": "Prestataire mis à jour avec succès",
       "updateError": "Échec de la mise à jour du prestataire"
+    },
+    "clients": {
+      "title": "Clients",
+      "add": "Ajouter un Client",
+      "edit": "Modifier le Client",
+      "name": "Nom",
+      "email": "E-mail",
+      "phone": "Téléphone",
+      "company": "Entreprise",
+      "vatNumber": "Numéro de TVA"
     }
   },
   "dropbox": {

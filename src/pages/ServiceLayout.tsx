@@ -14,6 +14,7 @@ import { styles } from "@/lib/styles";
 import ServiceForm from "@/components/service/ServiceForm";
 import { useQuery } from "@tanstack/react-query";
 import { settingsQueries } from "@/lib/fauna/settingsQueries";
+import { useTranslation } from "react-i18next";
 
 interface ServiceLayoutProps {
   title: string;
@@ -27,6 +28,7 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
   const { toast } = useToast();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const { data: whatsappNumbers } = useQuery({
     queryKey: ['whatsapp-numbers'],
@@ -36,8 +38,8 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
   const handleWhatsAppContact = () => {
     if (!isAuthenticated) {
       toast({
-        title: "Authentication Required",
-        description: "Please log in to access this feature",
+        title: t("auth.required"),
+        description: t("auth.required"),
         variant: "destructive",
       });
       navigate("/login");
@@ -49,7 +51,7 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
     const issues = selectedIssues
       .map(id => commonIssues.find(issue => issue.id === id)?.label)
       .join(", ");
-    const message = `Hello, I need help with the following issues: ${issues}`;
+    const message = t("services.whatsapp.message", { issues });
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank");
   };
@@ -61,9 +63,9 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
         {!isAuthenticated && (
           <Alert variant="destructive" className="mb-6">
             <AlertDescription className="flex flex-wrap items-center justify-between gap-4">
-              <span>Please log in to access all features and services.</span>
+              <span>{t("auth.required")}</span>
               <Button variant="outline" size="sm" onClick={() => navigate("/login")}>
-                Log In
+                {t("auth.signIn")}
               </Button>
             </AlertDescription>
           </Alert>
@@ -76,7 +78,7 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <Card className="p-6 wood-texture">
-            <h2 className="text-2xl font-serif text-[#2E5984] mb-6">Quick Help</h2>
+            <h2 className="text-2xl font-serif text-[#2E5984] mb-6">{t("services.quickHelp")}</h2>
             <div className="space-y-4">
               {commonIssues.map((issue) => (
                 <div key={issue.id} className="flex items-center space-x-2">
@@ -98,7 +100,7 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
                 className="w-full mt-4 bg-green-600 hover:bg-green-700"
               >
                 <Phone className="mr-2 h-4 w-4" />
-                Contact via WhatsApp
+                {t("services.whatsapp.contact")}
               </Button>
             </div>
           </Card>
@@ -108,7 +110,7 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
 
         <div className="mt-12">
           <h2 className="text-2xl md:text-3xl font-serif text-[#2E5984] mb-6">
-            Frequently Asked Questions
+            {t("services.faq.title")}
           </h2>
           <div className="grid gap-6">
             {faqs.map((faq, index) => (

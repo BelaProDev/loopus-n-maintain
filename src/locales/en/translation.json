@@ -60,6 +60,14 @@
         "renovationPlanning": "Renovation Planning",
         "structuralAssessment": "Structural Assessment"
       }
+    },
+    "quickHelp": "Quick Help",
+    "whatsapp": {
+      "contact": "Contact via WhatsApp",
+      "message": "Hello, I need help with the following issues: {{issues}}"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions"
     }
   },
   "auth": {

@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Home } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -15,6 +16,7 @@ const Login = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { login, isAuthenticated } = useAuth();
+  const { t } = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,8 +27,8 @@ const Login = () => {
       navigate("/");
     } catch (error) {
       toast({
-        title: "Authentication Failed",
-        description: "Invalid credentials. Please try again.",
+        title: t("auth.authError"),
+        description: t("auth.invalidCreds"),
         variant: "destructive",
       });
     } finally {
@@ -48,21 +50,21 @@ const Login = () => {
         onClick={() => navigate("/")}
       >
         <Home className="mr-2 h-4 w-4" />
-        Return to Home
+        {t("nav.home")}
       </Button>
       <Card className="w-[400px] shadow-lg">
         <CardHeader>
-          <CardTitle className="text-2xl text-[#2E5984]">Sign In</CardTitle>
-          <CardDescription>Access your maintenance management account</CardDescription>
+          <CardTitle className="text-2xl text-[#2E5984]">{t("auth.signIn")}</CardTitle>
+          <CardDescription>{t("auth.accessAccount")}</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
+              <Label htmlFor="email">{t("forms.email")}</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="Enter your email address"
+                placeholder={t("auth.email")}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -70,11 +72,11 @@ const Login = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{t("forms.password")}</Label>
               <Input
                 id="password"
                 type="password"
-                placeholder="Enter your password"
+                placeholder={t("auth.password")}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -82,7 +84,7 @@ const Login = () => {
               />
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Sign In"}
+              {isLoading ? t("common.loading") : t("auth.signIn")}
             </Button>
           </form>
         </CardContent>

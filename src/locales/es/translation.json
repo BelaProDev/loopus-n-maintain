@@ -26,7 +26,7 @@
       "description": "Soluciones expertas en plomería para su hogar o negocio.",
       "issues": {
         "leaks": "Fugas",
-        "clogs": "Desagües Tapados",
+        "clogs": "Desagües Bouchés",
         "lowPressure": "Baja Presión de Agua",
         "waterHeater": "Problemas con el Calentador"
       }
@@ -60,6 +60,14 @@
         "renovationPlanning": "Planificación de Renovaciones",
         "structuralAssessment": "Evaluación Estructural"
       }
+    },
+    "quickHelp": "Ayuda Rápida",
+    "whatsapp": {
+      "contact": "Contactar por WhatsApp",
+      "message": "Hola, necesito ayuda con los siguientes problemas: {{issues}}"
+    },
+    "faq": {
+      "title": "Preguntas Frecuentes"
     }
   },
   "auth": {
