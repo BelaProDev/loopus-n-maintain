@@ -7,12 +7,14 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Languages } from "lucide-react";
+import { changeLanguage, getAvailableLanguages } from '@/lib/i18n/translationUtils';
 
 const LanguageSwitcher = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
+  const languages = getAvailableLanguages();
 
-  const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng);
+  const handleLanguageChange = async (lng: string) => {
+    await changeLanguage(lng);
   };
 
   return (
@@ -23,15 +25,14 @@ const LanguageSwitcher = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem onClick={() => changeLanguage('en')}>
-          {t('language.en')}
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => changeLanguage('es')}>
-          {t('language.es')}
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => changeLanguage('fr')}>
-          {t('language.fr')}
-        </DropdownMenuItem>
+        {languages.map((lang) => (
+          <DropdownMenuItem 
+            key={lang}
+            onClick={() => handleLanguageChange(lang)}
+          >
+            {t(`language.${lang}`)}
+          </DropdownMenuItem>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );
