@@ -12,7 +12,7 @@
   },
   "services": {
     "electrical": {
-      "title": "Services Électriques",
+      "title": "Électricité",
       "description": "Services professionnels de maintenance et de réparation électrique.",
       "issues": {
         "powerOutage": "Panne de Courant",
@@ -22,7 +22,7 @@
       }
     },
     "plumbing": {
-      "title": "Services de Plomberie",
+      "title": "Plomberie",
       "description": "Solutions expertes en plomberie pour votre maison ou entreprise.",
       "issues": {
         "leaks": "Fuites",
@@ -32,7 +32,7 @@
       }
     },
     "woodworking": {
-      "title": "Services de Menuiserie",
+      "title": "Menuiserie",
       "description": "Services experts de menuiserie et d'ébénisterie.",
       "issues": {
         "repairs": "Réparations de Meubles",
@@ -42,7 +42,7 @@
       }
     },
     "ironwork": {
-      "title": "Services de Ferronnerie",
+      "title": "Ferronnerie",
       "description": "Services professionnels de ferronnerie fonctionnelle et décorative.",
       "issues": {
         "rust": "Rouille et Corrosion",
@@ -52,7 +52,7 @@
       }
     },
     "architecture": {
-      "title": "Services d'Architecture",
+      "title": "Architecture",
       "description": "Conception architecturale professionnelle et services de planification.",
       "issues": {
         "designConsultation": "Consultation de Design",
