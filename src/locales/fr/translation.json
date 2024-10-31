@@ -1,0 +1,74 @@
+{
+  "app": {
+    "name": "Loopus & Maintain",
+    "description": "Services d'entretien professionnels pour votre propriété"
+  },
+  "nav": {
+    "home": "Accueil",
+    "services": "Services",
+    "contact": "Contact",
+    "admin": "Admin Loopus",
+    "docs": "Documentation"
+  },
+  "services": {
+    "electrical": {
+      "title": "Services Électriques",
+      "description": "Services professionnels de maintenance et de réparation électrique pour votre maison ou entreprise."
+    },
+    "plumbing": {
+      "title": "Services de Plomberie",
+      "description": "Solutions expertes en plomberie pour votre maison ou entreprise."
+    },
+    "woodworking": {
+      "title": "Services de Menuiserie",
+      "description": "Services experts de menuiserie et de charpenterie pour votre maison."
+    },
+    "ironwork": {
+      "title": "Services de Ferronnerie",
+      "description": "Services professionnels de ferronnerie pour les besoins fonctionnels et décoratifs."
+    },
+    "architecture": {
+      "title": "Services d'Architecture",
+      "description": "Conception architecturale professionnelle, planification et autres services."
+    }
+  },
+  "auth": {
+    "welcome": "Bienvenue, voulez-vous vous connecter ?",
+    "signIn": "Se Connecter",
+    "accessAccount": "Accédez à votre compte de gestion de maintenance",
+    "email": "Entrez votre adresse e-mail",
+    "password": "Entrez votre mot de passe",
+    "required": "Connexion requise pour accéder à toutes les fonctionnalités et services."
+  },
+  "admin": {
+    "whatsapp": "Numéros WhatsApp",
+    "logo": "Logo",
+    "navigation": "Liens de Navigation",
+    "email": "Gestion des E-mails",
+    "content": "Gestion du Contenu",
+    "settings": "Paramètres du Site",
+    "business": "Entreprise",
+    "documents": "Documents",
+    "fallback": "Base de Données de Secours"
+  },
+  "dropbox": {
+    "connecting": "Connexion à Dropbox...",
+    "wait": "Veuillez patienter pendant que nous terminons le processus d'authentification.",
+    "success": "Connecté avec succès à Dropbox"
+  },
+  "errors": {
+    "auth": "Erreur d'Authentification",
+    "authFailed": "Échec de l'authentification. Veuillez réessayer.",
+    "invalidCreds": "Identifiants invalides. Veuillez réessayer.",
+    "updateFailed": "Échec de la mise à jour du contenu"
+  },
+  "docs": {
+    "welcome": "Bienvenue chez Loopus & Maintain - où nous entretenons les bâtiments et faisons des blagues de papa !",
+    "description": "Notre PWA aide à coordonner les services de maintenance, car quelqu'un doit maintenir ces bâtiments debout"
+  },
+  "language": {
+    "en": "Anglais",
+    "es": "Espagnol",
+    "fr": "Français"
+  }
+}

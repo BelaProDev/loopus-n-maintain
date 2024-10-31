@@ -1,10 +1,12 @@
-import { Menu, WifiOff, LogOut } from "lucide-react";
+import { Menu, WifiOff, LogOut, Languages } from "lucide-react";
 import { Button } from "./ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Badge } from "./ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 const maintenanceFields = [
   { name: "Electrics", path: "/electrics" },
@@ -17,6 +19,7 @@ const maintenanceFields = [
 const Header = () => {
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
   const { isAuthenticated, logout } = useAuth();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const handleStatusChange = () => {
@@ -49,33 +52,36 @@ const Header = () => {
             <div className="flex-shrink-0">
               <img 
                 src="/forest-lidar.png" 
-                alt="Loopus & Maintain" 
+                alt={t('app.name')}
                 className="h-8 w-auto object-contain border border-[#2e5984] border-solid p-0.5"
               />
             </div>
-            <span className="text-[#2E5984]">Loopus & Maintain</span>
+            <span className="text-[#2E5984]">{t('app.name')}</span>
           </Link>
 
-          <div className="hidden md:flex items-center flex-wrap gap-4">
-            {maintenanceFields.map((field) => (
-              <Link
-                key={field.name}
-                to={field.path}
-                className="text-[#2E5984] hover:text-[#4A90E2] font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#2E5984] focus:ring-offset-2 rounded-md px-2 py-1"
-              >
-                {field.name}
-              </Link>
-            ))}
-            {isAuthenticated && (
-              <Button
-                onClick={logout}
-                variant="outline"
-                className="flex items-center gap-2 text-[#2E5984] hover:text-[#4A90E2] ml-4"
-              >
-                <LogOut className="h-4 w-4" />
-                Logout
-              </Button>
-            )}
+          <div className="flex items-center gap-4">
+            <LanguageSwitcher />
+            <div className="hidden md:flex items-center flex-wrap gap-4">
+              {maintenanceFields.map((field) => (
+                <Link
+                  key={field.name}
+                  to={field.path}
+                  className="text-[#2E5984] hover:text-[#4A90E2] font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#2E5984] focus:ring-offset-2 rounded-md px-2 py-1"
+                >
+                  {t(`services.${field.name.toLowerCase()}.title`)}
+                </Link>
+              ))}
+              {isAuthenticated && (
+                <Button
+                  onClick={logout}
+                  variant="outline"
+                  className="flex items-center gap-2 text-[#2E5984] hover:text-[#4A90E2] ml-4"
+                >
+                  <LogOut className="h-4 w-4" />
+                  {t('auth.signOut')}
+                </Button>
+              )}
+            </div>
           </div>
 
           <Sheet>
@@ -96,7 +102,7 @@ const Header = () => {
                     to={field.path}
                     className="text-lg text-[#2E5984] hover:text-[#4A90E2] font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#2E5984] rounded-md px-2 py-1"
                   >
-                    {field.name}
+                    {t(`services.${field.name.toLowerCase()}.title`)}
                   </Link>
                 ))}
                 {isAuthenticated && (
@@ -106,7 +112,7 @@ const Header = () => {
                     className="flex items-center gap-2 text-[#2E5984] hover:text-[#4A90E2] mt-4"
                   >
                     <LogOut className="h-4 w-4" />
-                    Logout
+                    {t('auth.signOut')}
                   </Button>
                 )}
               </div>

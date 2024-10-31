@@ -1,0 +1,74 @@
+{
+  "app": {
+    "name": "Loopus & Maintain",
+    "description": "Professional maintenance services for your property"
+  },
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "contact": "Contact",
+    "admin": "Loopus Admin",
+    "docs": "Documentation"
+  },
+  "services": {
+    "electrical": {
+      "title": "Electrical Services",
+      "description": "Professional electrical maintenance and repair services for your home or business."
+    },
+    "plumbing": {
+      "title": "Plumbing Services",
+      "description": "Expert plumbing solutions for your home or business."
+    },
+    "woodworking": {
+      "title": "Woodworking Services",
+      "description": "Expert woodworking and carpentry services for your home or business."
+    },
+    "ironwork": {
+      "title": "Ironwork Services",
+      "description": "Professional ironwork services for both functional and decorative needs."
+    },
+    "architecture": {
+      "title": "Architectural Services",
+      "description": "Professional architectural design, planning and other services."
+    }
+  },
+  "auth": {
+    "welcome": "Welcome, would you like to log in?",
+    "signIn": "Sign In",
+    "accessAccount": "Access your maintenance management account",
+    "email": "Enter your email address",
+    "password": "Enter your password",
+    "required": "Sign in required to access all features and services."
+  },
+  "admin": {
+    "whatsapp": "WhatsApp Numbers",
+    "logo": "Logo",
+    "navigation": "Navigation Links",
+    "email": "Email Management",
+    "content": "Content Management",
+    "settings": "Site Settings",
+    "business": "Business",
+    "documents": "Documents",
+    "fallback": "Fallback DB"
+  },
+  "dropbox": {
+    "connecting": "Connecting to Dropbox...",
+    "wait": "Please wait while we complete the authentication process.",
+    "success": "Successfully connected to Dropbox"
+  },
+  "errors": {
+    "auth": "Authentication Error",
+    "authFailed": "Failed to complete authentication. Please try again.",
+    "invalidCreds": "Invalid credentials. Please try again.",
+    "updateFailed": "Failed to update content"
+  },
+  "docs": {
+    "welcome": "Welcome to Loopus & Maintain - where we maintain buildings and crack dad jokes!",
+    "description": "Our PWA helps coordinate maintenance services, because someone has to keep those buildings standing"
+  },
+  "language": {
+    "en": "English",
+    "es": "Spanish",
+    "fr": "French"
+  }
+}
