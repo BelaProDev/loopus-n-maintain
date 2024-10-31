@@ -1,0 +1,60 @@
+{
+  "title": "Admin Panel",
+  "whatsapp": "WhatsApp Numbers",
+  "whatsappUpdate": "Update WhatsApp Numbers",
+  "whatsappUpdateSuccess": "WhatsApp numbers updated successfully",
+  "whatsappUpdateError": "Failed to update WhatsApp numbers",
+  "whatsappPlaceholder": "Enter {{service}} WhatsApp number",
+  "logo": "Logo",
+  "navigation": "Navigation Links",
+  "email": {
+    "title": "Email Management",
+    "add": "Add Email",
+    "edit": "Edit Email",
+    "type": "Type",
+    "addSuccess": "Email added successfully",
+    "addError": "Failed to add email",
+    "updateSuccess": "Email updated successfully",
+    "updateError": "Failed to update email",
+    "deleteSuccess": "Email deleted successfully",
+    "deleteError": "Failed to delete email"
+  },
+  "business": {
+    "title": "Business Management",
+    "providers": {
+      "title": "Service Providers",
+      "add": "Add Provider",
+      "edit": "Edit Provider",
+      "update": "Update Provider",
+      "name": "Name",
+      "service": "Service",
+      "rating": "Rating",
+      "available": "Available",
+      "unavailable": "Unavailable",
+      "actions": "Actions",
+      "selectService": "Select service"
+    },
+    "clients": {
+      "title": "Clients",
+      "add": "Add Client",
+      "edit": "Edit Client",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "company": "Company",
+      "vatNumber": "VAT Number"
+    }
+  },
+  "documents": {
+    "title": "Document Management",
+    "upload": "Upload File",
+    "uploading": "Uploading...",
+    "createFolder": "Create Folder",
+    "refresh": "Refresh",
+    "disconnect": "Disconnect Dropbox",
+    "connecting": "Connecting to Dropbox...",
+    "wait": "Please wait while authenticating.",
+    "success": "Successfully connected to Dropbox",
+    "error": "Failed to connect to Dropbox"
+  }
+}

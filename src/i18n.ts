@@ -1,19 +1,27 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import translationEN from './locales/en/translation.json';
-import translationES from './locales/es/translation.json';
-import translationFR from './locales/fr/translation.json';
+import common from './locales/en/common.json';
+import services from './locales/en/services.json';
+import admin from './locales/en/admin.json';
+import auth from './locales/en/auth.json';
+import docs from './locales/en/docs.json';
 
 const resources = {
-  en: { translation: translationEN },
-  es: { translation: translationES },
-  fr: { translation: translationFR }
+  en: {
+    common,
+    services,
+    admin,
+    auth,
+    docs
+  }
 };
 
 const i18nConfig = {
   resources,
-  lng: 'en', // Default language
+  lng: 'en',
+  defaultNS: 'common',
   fallbackLng: 'en',
+  ns: ['common', 'services', 'admin', 'auth', 'docs'],
   interpolation: {
     escapeValue: false
   },

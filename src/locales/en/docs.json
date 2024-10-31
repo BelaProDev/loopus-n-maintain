@@ -1,0 +1,20 @@
+{
+  "title": "Documentation",
+  "overview": {
+    "title": "Overview",
+    "description": "Welcome to Loopus & Maintain - where we maintain buildings and crack dad jokes! Our PWA helps coordinate maintenance services, because someone has to keep those buildings standing (and we're pretty good at it) 🏗️"
+  },
+  "features": {
+    "title": "Current Features",
+    "auth": "🔐 Secure admin login (we promise it's not \"password123\")",
+    "email": "📧 Email management system (because carrier pigeons are so last century)",
+    "content": "📝 Content management with fallback database (for those \"oops, no internet\" moments)",
+    "business": "💼 Business management features (keeping track of who does what)",
+    "documents": "📂 Document storage with Dropbox integration (because paper is so 2019)",
+    "languages": "🌐 Multi-language support (we speak human... and JavaScript)"
+  },
+  "setup": {
+    "title": "Environment Setup",
+    "env": "The Secret Sauce (aka Environment Variables)"
+  }
+}
