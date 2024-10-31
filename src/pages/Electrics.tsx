@@ -1,28 +1,31 @@
 import ServiceLayout from "./ServiceLayout";
+import { useTranslation } from "react-i18next";
 
 const Electrics = () => {
+  const { t } = useTranslation();
+
   const commonIssues = [
-    { id: "power-outage", label: "services.electrical.issues.powerOutage" },
-    { id: "circuit-breaker", label: "services.electrical.issues.circuitBreaker" },
-    { id: "flickering-lights", label: "services.electrical.issues.flickeringLights" },
-    { id: "outlet-not-working", label: "services.electrical.issues.outletNotWorking" },
+    { id: "power-outage", label: t("services.electrical.issues.powerOutage") },
+    { id: "circuit-breaker", label: t("services.electrical.issues.circuitBreaker") },
+    { id: "flickering-lights", label: t("services.electrical.issues.flickeringLights") },
+    { id: "outlet-not-working", label: t("services.electrical.issues.outletNotWorking") },
   ];
 
   const faqs = [
     {
-      question: "services.faq.powerOutageQ",
-      answer: "services.faq.powerOutageA",
+      question: t("services.faq.powerOutageQ"),
+      answer: t("services.faq.powerOutageA"),
     },
     {
-      question: "services.faq.inspectionQ",
-      answer: "services.faq.inspectionA",
+      question: t("services.faq.inspectionQ"),
+      answer: t("services.faq.inspectionA"),
     },
   ];
 
   return (
     <ServiceLayout
-      title="services.electrical.title"
-      description="services.electrical.description"
+      title={t("services.electrical.title")}
+      description={t("services.electrical.description")}
       commonIssues={commonIssues}
       faqs={faqs}
     />
