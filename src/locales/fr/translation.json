@@ -67,7 +67,7 @@
       "message": "Bonjour, j'ai besoin d'aide avec les problèmes suivants : {{issues}}"
     },
     "faq": {
-      "title": "Questions Fréquentes"
+      "title": "Questions Fréquemment Posées"
     }
   },
   "auth": {
@@ -152,5 +152,39 @@
     "en": "Anglais",
     "es": "Espagnol",
     "fr": "Français"
+  },
+  "docs": {
+    "title": "Documentation",
+    "overview": {
+      "title": "Aperçu",
+      "description": "Bienvenue chez Loopus & Maintain - où nous entretenons les bâtiments avec professionnalisme ! Notre PWA aide à coordonner les services de maintenance, car quelqu'un doit maintenir ces bâtiments debout (et nous sommes plutôt doués pour ça) 🏗️"
+    },
+    "features": {
+      "title": "Fonctionnalités Actuelles",
+      "auth": "🔐 Connexion admin sécurisée",
+      "email": "📧 Système de gestion des emails",
+      "content": "📝 Gestion de contenu avec base de données de secours",
+      "business": "💼 Fonctionnalités de gestion d'entreprise",
+      "documents": "📂 Stockage de documents avec intégration Dropbox",
+      "languages": "🌐 Support multilingue"
+    },
+    "admin": {
+      "title": "Fonctionnalités Admin",
+      "content": {
+        "title": "Gestion de Contenu",
+        "edit": "Édition du contenu du site",
+        "offline": "Sauvegarde de base de données hors ligne"
+      },
+      "business": {
+        "title": "Gestion d'Entreprise",
+        "clients": "Gestion des clients",
+        "providers": "Suivi des prestataires",
+        "documents": "Organisation des documents"
+      }
+    },
+    "setup": {
+      "title": "Configuration de l'Environnement",
+      "env": "Variables d'Environnement"
+    }
   }
 }

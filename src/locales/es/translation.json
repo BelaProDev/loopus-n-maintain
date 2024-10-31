@@ -65,10 +65,22 @@
     "whatsapp": {
       "contact": "Contactar por WhatsApp",
       "message": "Hola, necesito ayuda con los siguientes problemas: {{issues}}"
-    },
-    "faq": {
-      "title": "Preguntas Frecuentes"
     }
+  },
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "submit": "Enviar",
+    "loading": "Cargando...",
+    "success": "Éxito",
+    "error": "Error",
+    "required": "Requerido",
+    "optional": "Opcional",
+    "actions": "Acciones",
+    "status": "Estado",
+    "na": "N/D"
   },
   "auth": {
     "welcome": "Bienvenido, ¿desea iniciar sesión?",
@@ -120,37 +132,38 @@
       "vatNumber": "Número de IVA"
     }
   },
-  "dropbox": {
-    "connecting": "Conectando a Dropbox...",
-    "wait": "Por favor espere mientras completamos la autenticación.",
-    "success": "Conexión exitosa con Dropbox"
-  },
-  "common": {
-    "save": "Guardar",
-    "cancel": "Cancelar",
-    "delete": "Eliminar",
-    "edit": "Editar",
-    "submit": "Enviar",
-    "loading": "Cargando...",
-    "success": "Éxito",
-    "error": "Error",
-    "required": "Requerido",
-    "optional": "Opcional",
-    "actions": "Acciones",
-    "status": "Estado",
-    "na": "N/D"
-  },
-  "forms": {
-    "name": "Nombre",
-    "email": "Correo",
-    "phone": "Teléfono",
-    "message": "Mensaje",
-    "send": "Enviar Mensaje",
-    "sending": "Enviando..."
-  },
-  "language": {
-    "en": "Inglés",
-    "es": "Español",
-    "fr": "Francés"
+  "docs": {
+    "title": "Documentación",
+    "overview": {
+      "title": "Descripción General",
+      "description": "¡Bienvenido a Loopus & Maintain - donde mantenemos edificios con profesionalismo! Nuestra PWA ayuda a coordinar servicios de mantenimiento, porque alguien tiene que mantener esos edificios en pie (y somos bastante buenos en ello) 🏗️"
+    },
+    "features": {
+      "title": "Características Actuales",
+      "auth": "🔐 Inicio de sesión de administrador seguro",
+      "email": "📧 Sistema de gestión de correo electrónico",
+      "content": "📝 Gestión de contenido con base de datos de respaldo",
+      "business": "💼 Funciones de gestión empresarial",
+      "documents": "📂 Almacenamiento de documentos con integración Dropbox",
+      "languages": "🌐 Soporte multilingüe"
+    },
+    "admin": {
+      "title": "Características de Administrador",
+      "content": {
+        "title": "Gestión de Contenido",
+        "edit": "Editar contenido del sitio web",
+        "offline": "Copia de seguridad de base de datos sin conexión"
+      },
+      "business": {
+        "title": "Gestión Empresarial",
+        "clients": "Gestión de clientes",
+        "providers": "Seguimiento de proveedores",
+        "documents": "Organización de documentos"
+      }
+    },
+    "setup": {
+      "title": "Configuración del Entorno",
+      "env": "Variables de Entorno"
+    }
   }
 }

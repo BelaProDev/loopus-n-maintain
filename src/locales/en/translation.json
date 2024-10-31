@@ -38,7 +38,7 @@
         "repairs": "Furniture Repairs",
         "restoration": "Wood Restoration",
         "customWork": "Custom Woodwork",
-        "installation": "Installation Services"
+        "installation": "Services of Installation"
       }
     },
     "ironwork": {
@@ -61,16 +61,10 @@
         "structuralAssessment": "Structural Assessment"
       }
     },
-    "faq": {
-      "title": "Frequently Asked Questions",
-      "powerOutageQ": "What should I do during a power outage?",
-      "powerOutageA": "First, check if your neighbors have power. If they do, check your circuit breaker. If not, contact your utility company.",
-      "inspectionQ": "How often should electrical systems be inspected?",
-      "inspectionA": "Professional electrical inspections should be conducted every 3-5 years, or when purchasing a new property.",
-      "plumbingInspectionQ": "How often should I have my plumbing inspected?",
-      "plumbingInspectionA": "It's recommended to have a professional plumbing inspection every 2 years to catch potential issues early.",
-      "waterLeakQ": "What should I do if I have a major water leak?",
-      "waterLeakA": "Immediately shut off the main water valve to your home and call a professional plumber for emergency service."
+    "quickHelp": "Quick Help",
+    "whatsapp": {
+      "contact": "Contact via WhatsApp",
+      "message": "Hello, I need help with the following issues: {{issues}}"
     }
   },
   "common": {
@@ -86,8 +80,7 @@
     "optional": "Optional",
     "actions": "Actions",
     "status": "Status",
-    "na": "N/A",
-    "learnMore": "Learn More"
+    "na": "N/A"
   },
   "auth": {
     "welcome": "Welcome, would you like to log in?",
@@ -139,9 +132,38 @@
       "vatNumber": "VAT Number"
     }
   },
-  "dropbox": {
-    "connecting": "Connecting to Dropbox...",
-    "wait": "Please wait while we complete the authentication process.",
-    "success": "Successfully connected to Dropbox"
+  "docs": {
+    "title": "Documentation",
+    "overview": {
+      "title": "Overview",
+      "description": "Welcome to Loopus & Maintain - where we maintain buildings and crack dad jokes! Our PWA helps coordinate maintenance services, because someone has to keep those buildings standing (and we're pretty good at it) 🏗️"
+    },
+    "features": {
+      "title": "Current Features",
+      "auth": "🔐 Secure admin login (we promise it's not \"password123\")",
+      "email": "📧 Email management system (because carrier pigeons are so last century)",
+      "content": "📝 Content management with fallback database (for those \"oops, no internet\" moments)",
+      "business": "💼 Business management features (keeping track of who does what)",
+      "documents": "📂 Document storage with Dropbox integration (because paper is so 2019)",
+      "languages": "🌐 Multi-language support (we speak human... and JavaScript)"
+    },
+    "admin": {
+      "title": "Admin Features",
+      "content": {
+        "title": "Content Management",
+        "edit": "Edit website content (typos beware!)",
+        "offline": "Offline-ready database backup (because WiFi can be shy)"
+      },
+      "business": {
+        "title": "Business Management",
+        "clients": "Client management (VIPs and \"still waiting for payment\" folks)",
+        "providers": "Provider tracking (our heroes in work boots)",
+        "documents": "Document organization (Marie Kondo would be proud)"
+      }
+    },
+    "setup": {
+      "title": "Environment Setup",
+      "env": "The Secret Sauce (aka Environment Variables)"
+    }
   }
 }
