@@ -13,32 +13,65 @@
   "services": {
     "electrical": {
       "title": "Servicios Eléctricos",
-      "description": "Servicios profesionales de mantenimiento y reparación eléctrica para su hogar o negocio."
+      "description": "Servicios profesionales de mantenimiento y reparación eléctrica.",
+      "issues": {
+        "powerOutage": "Corte de Energía",
+        "circuitBreaker": "Problemas con el Disyuntor",
+        "flickeringLights": "Luces Parpadeantes",
+        "outletNotWorking": "Tomacorriente sin Funcionar"
+      }
     },
     "plumbing": {
       "title": "Servicios de Plomería",
-      "description": "Soluciones expertas de plomería para su hogar o negocio."
+      "description": "Soluciones expertas en plomería para su hogar o negocio.",
+      "issues": {
+        "leaks": "Fugas",
+        "clogs": "Desagües Tapados",
+        "lowPressure": "Baja Presión de Agua",
+        "waterHeater": "Problemas con el Calentador"
+      }
     },
     "woodworking": {
       "title": "Servicios de Carpintería",
-      "description": "Servicios expertos de carpintería y ebanistería para su hogar."
+      "description": "Servicios expertos de carpintería y ebanistería.",
+      "issues": {
+        "repairs": "Reparaciones de Muebles",
+        "restoration": "Restauración de Madera",
+        "customWork": "Trabajo Personalizado",
+        "installation": "Servicios de Instalación"
+      }
     },
     "ironwork": {
       "title": "Servicios de Herrería",
-      "description": "Servicios profesionales de herrería para necesidades funcionales y decorativas."
+      "description": "Servicios profesionales de herrería funcional y decorativa.",
+      "issues": {
+        "rust": "Óxido y Corrosión",
+        "structuralDamage": "Daño Estructural",
+        "weldingRepairs": "Reparaciones de Soldadura",
+        "gateFenceIssues": "Problemas con Puertas y Cercas"
+      }
     },
     "architecture": {
       "title": "Servicios de Arquitectura",
-      "description": "Diseño arquitectónico profesional, planificación y otros servicios."
+      "description": "Diseño arquitectónico profesional y servicios de planificación.",
+      "issues": {
+        "designConsultation": "Consulta de Diseño",
+        "permitAssistance": "Asistencia con Permisos",
+        "renovationPlanning": "Planificación de Renovaciones",
+        "structuralAssessment": "Evaluación Estructural"
+      }
     }
   },
   "auth": {
     "welcome": "Bienvenido, ¿desea iniciar sesión?",
     "signIn": "Iniciar Sesión",
+    "signOut": "Cerrar Sesión",
     "accessAccount": "Acceda a su cuenta de gestión de mantenimiento",
-    "email": "Ingrese su dirección de correo electrónico",
+    "email": "Ingrese su correo electrónico",
     "password": "Ingrese su contraseña",
-    "required": "Se requiere iniciar sesión para acceder a todas las funciones y servicios."
+    "required": "Se requiere iniciar sesión para acceder a todas las funciones.",
+    "authError": "Error de Autenticación",
+    "invalidCreds": "Credenciales inválidas. Por favor, intente de nuevo."
   },
   "admin": {
     "whatsapp": "Números de WhatsApp",
@@ -46,25 +79,58 @@
     "navigation": "Enlaces de Navegación",
     "email": "Gestión de Correos",
     "content": "Gestión de Contenido",
+    "contentManagement": "Gestión de Contenido",
     "settings": "Configuración del Sitio",
     "business": "Negocios",
     "documents": "Documentos",
-    "fallback": "Base de Datos de Respaldo"
+    "administration": "Administración",
+    "providers": {
+      "title": "Proveedores de Servicios",
+      "add": "Agregar Proveedor",
+      "edit": "Editar Proveedor",
+      "name": "Nombre",
+      "service": "Servicio",
+      "rating": "Calificación",
+      "available": "Disponible",
+      "unavailable": "No Disponible",
+      "actions": "Acciones"
+    },
+    "clients": {
+      "title": "Clientes",
+      "add": "Agregar Cliente",
+      "edit": "Editar Cliente",
+      "name": "Nombre",
+      "email": "Correo",
+      "phone": "Teléfono",
+      "company": "Empresa",
+      "vatNumber": "Número de IVA"
+    }
   },
   "dropbox": {
     "connecting": "Conectando a Dropbox...",
-    "wait": "Por favor espere mientras completamos el proceso de autenticación.",
-    "success": "Conectado exitosamente a Dropbox"
+    "wait": "Por favor espere mientras completamos la autenticación.",
+    "success": "Conexión exitosa con Dropbox"
   },
-  "errors": {
-    "auth": "Error de Autenticación",
-    "authFailed": "Error al completar la autenticación. Por favor, inténtelo de nuevo.",
-    "invalidCreds": "Credenciales inválidas. Por favor, inténtelo de nuevo.",
-    "updateFailed": "Error al actualizar el contenido"
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "submit": "Enviar",
+    "loading": "Cargando...",
+    "success": "Éxito",
+    "error": "Error",
+    "required": "Requerido",
+    "optional": "Opcional",
+    "actions": "Acciones"
   },
-  "docs": {
-    "welcome": "¡Bienvenido a Loopus & Maintain - donde mantenemos edificios y hacemos chistes de papá!",
-    "description": "Nuestra PWA ayuda a coordinar servicios de mantenimiento, porque alguien tiene que mantener esos edificios en pie"
+  "forms": {
+    "name": "Nombre",
+    "email": "Correo",
+    "phone": "Teléfono",
+    "message": "Mensaje",
+    "send": "Enviar Mensaje",
+    "sending": "Enviando..."
   },
   "language": {
     "en": "Inglés",

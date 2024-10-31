@@ -2,27 +2,28 @@ import { useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Mail, FileText, Settings, Building2, Folder, Database } from "lucide-react";
+import { Mail, FileText, Settings, Building2, Folder } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import KoalaxAuth from "./Koalax/KoalaxAuth";
+import { useTranslation } from "react-i18next";
 
 const CONTENT_TABS = [
-  { id: "emails", label: "Email Management", icon: Mail, path: "/koalax/emails" },
-  { id: "content", label: "Content Management", icon: FileText, path: "/koalax/content" },
+  { id: "emails", label: "admin.email", icon: Mail, path: "/koalax/emails" },
+  { id: "content", label: "admin.content", icon: FileText, path: "/koalax/content" },
 ];
 
 const ADMIN_TABS = [
-  { id: "settings", label: "Site Settings", icon: Settings, path: "/koalax/settings" },
-  { id: "business", label: "Business", icon: Building2, path: "/koalax/business" },
-  { id: "documents", label: "Documents", icon: Folder, path: "/koalax/documents" },
-  { id: "fallback-db", label: "Fallback DB", icon: Database, path: "/koalax/fallback-db" },
+  { id: "settings", label: "admin.settings", icon: Settings, path: "/koalax/settings" },
+  { id: "business", label: "admin.business", icon: Building2, path: "/koalax/business" },
+  { id: "documents", label: "admin.documents", icon: Folder, path: "/koalax/documents" },
 ];
 
 const Koalax = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const allTabs = [...CONTENT_TABS, ...ADMIN_TABS];
   const currentTab = allTabs.find(tab => location.pathname.includes(tab.id))?.id || "emails";
   const isAuthenticated = sessionStorage.getItem('koalax_auth') === 'true';
@@ -53,26 +54,26 @@ const Koalax = () => {
             <ScrollArea className="w-full">
               <div className="space-y-4">
                 <div>
-                  <h3 className="text-sm font-medium mb-2 text-gray-500">Content Management</h3>
+                  <h3 className="text-sm font-medium mb-2 text-gray-500">{t('admin.contentManagement')}</h3>
                   <TabsList className="w-full flex flex-nowrap overflow-x-auto justify-start md:justify-start p-1">
                     {CONTENT_TABS.map(({ id, label, icon: Icon }) => (
                       <TabsTrigger key={id} value={id} className="whitespace-nowrap">
                         <Icon className="w-4 h-4 mr-2" />
-                        <span className="hidden sm:inline">{label}</span>
-                        <span className="sm:hidden">{label.split(' ')[0]}</span>
+                        <span className="hidden sm:inline">{t(label)}</span>
+                        <span className="sm:hidden">{t(label).split(' ')[0]}</span>
                       </TabsTrigger>
                     ))}
                   </TabsList>
                 </div>
 
                 <div>
-                  <h3 className="text-sm font-medium mb-2 text-gray-500">Administration</h3>
+                  <h3 className="text-sm font-medium mb-2 text-gray-500">{t('admin.administration')}</h3>
                   <TabsList className="w-full flex flex-nowrap overflow-x-auto justify-start md:justify-start p-1">
                     {ADMIN_TABS.map(({ id, label, icon: Icon }) => (
                       <TabsTrigger key={id} value={id} className="whitespace-nowrap">
                         <Icon className="w-4 h-4 mr-2" />
-                        <span className="hidden sm:inline">{label}</span>
-                        <span className="sm:hidden">{label.split(' ')[0]}</span>
+                        <span className="hidden sm:inline">{t(label)}</span>
+                        <span className="sm:hidden">{t(label).split(' ')[0]}</span>
                       </TabsTrigger>
                     ))}
                   </TabsList>

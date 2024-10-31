@@ -13,32 +13,65 @@
   "services": {
     "electrical": {
       "title": "Electrical Services",
-      "description": "Professional electrical maintenance and repair services for your home or business."
+      "description": "Professional electrical maintenance and repair services for your home or business.",
+      "issues": {
+        "powerOutage": "Power Outage",
+        "circuitBreaker": "Circuit Breaker Issues",
+        "flickeringLights": "Flickering Lights",
+        "outletNotWorking": "Outlet Not Working"
+      }
     },
     "plumbing": {
       "title": "Plumbing Services",
-      "description": "Expert plumbing solutions for your home or business."
+      "description": "Expert plumbing solutions for your home or business.",
+      "issues": {
+        "leaks": "Leaks",
+        "clogs": "Clogged Drains",
+        "lowPressure": "Low Water Pressure",
+        "waterHeater": "Water Heater Issues"
+      }
     },
     "woodworking": {
       "title": "Woodworking Services",
-      "description": "Expert woodworking and carpentry services for your home or business."
+      "description": "Expert woodworking and carpentry services for your home.",
+      "issues": {
+        "repairs": "Furniture Repairs",
+        "restoration": "Wood Restoration",
+        "customWork": "Custom Woodwork",
+        "installation": "Installation Services"
+      }
     },
     "ironwork": {
       "title": "Ironwork Services",
-      "description": "Professional ironwork services for both functional and decorative needs."
+      "description": "Professional ironwork services for both functional and decorative needs.",
+      "issues": {
+        "rust": "Rust and Corrosion",
+        "structuralDamage": "Structural Damage",
+        "weldingRepairs": "Welding Repairs",
+        "gateFenceIssues": "Gate and Fence Issues"
+      }
     },
     "architecture": {
       "title": "Architectural Services",
-      "description": "Professional architectural design, planning and other services."
+      "description": "Professional architectural design, planning and other services.",
+      "issues": {
+        "designConsultation": "Design Consultation",
+        "permitAssistance": "Building Permit Assistance",
+        "renovationPlanning": "Renovation Planning",
+        "structuralAssessment": "Structural Assessment"
+      }
     }
   },
   "auth": {
     "welcome": "Welcome, would you like to log in?",
     "signIn": "Sign In",
+    "signOut": "Sign Out",
     "accessAccount": "Access your maintenance management account",
     "email": "Enter your email address",
     "password": "Enter your password",
-    "required": "Sign in required to access all features and services."
+    "required": "Sign in required to access all features and services.",
+    "authError": "Authentication Error",
+    "invalidCreds": "Invalid credentials. Please try again."
   },
   "admin": {
     "whatsapp": "WhatsApp Numbers",
@@ -46,25 +79,58 @@
     "navigation": "Navigation Links",
     "email": "Email Management",
     "content": "Content Management",
+    "contentManagement": "Content Management",
     "settings": "Site Settings",
     "business": "Business",
     "documents": "Documents",
-    "fallback": "Fallback DB"
+    "administration": "Administration",
+    "providers": {
+      "title": "Service Providers",
+      "add": "Add Provider",
+      "edit": "Edit Provider",
+      "name": "Name",
+      "service": "Service",
+      "rating": "Rating",
+      "available": "Available",
+      "unavailable": "Unavailable",
+      "actions": "Actions"
+    },
+    "clients": {
+      "title": "Clients",
+      "add": "Add Client",
+      "edit": "Edit Client",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "company": "Company",
+      "vatNumber": "VAT Number"
+    }
   },
   "dropbox": {
     "connecting": "Connecting to Dropbox...",
     "wait": "Please wait while we complete the authentication process.",
     "success": "Successfully connected to Dropbox"
   },
-  "errors": {
-    "auth": "Authentication Error",
-    "authFailed": "Failed to complete authentication. Please try again.",
-    "invalidCreds": "Invalid credentials. Please try again.",
-    "updateFailed": "Failed to update content"
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "submit": "Submit",
+    "loading": "Loading...",
+    "success": "Success",
+    "error": "Error",
+    "required": "Required",
+    "optional": "Optional",
+    "actions": "Actions"
   },
-  "docs": {
-    "welcome": "Welcome to Loopus & Maintain - where we maintain buildings and crack dad jokes!",
-    "description": "Our PWA helps coordinate maintenance services, because someone has to keep those buildings standing"
+  "forms": {
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "message": "Message",
+    "send": "Send Message",
+    "sending": "Sending..."
   },
   "language": {
     "en": "English",
