@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import fallbackDb from "@/lib/fallback-db.json";
 import * as z from "zod";
 
 const formSchema = z.object({
@@ -29,7 +30,9 @@ const KoalaxAuth = () => {
   });
 
   const onSubmit = async (data: FormData) => {
-    if (data.password === import.meta.env.VITE_KOALAX_PASSWORD) {
+    const koalaxPassword = fallbackDb.settings.find(s => s.key === "koalax_password")?.value;
+    
+    if (data.password === koalaxPassword) {
       const sessionData = {
         timestamp: Date.now(),
         type: 'koalax',
