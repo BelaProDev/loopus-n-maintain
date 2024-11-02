@@ -26,6 +26,9 @@
     "na": "N/A",
     "offline": "Offline",
     "language": "Change Language",
+    "languageChanged": "Language Changed",
+    "languageChangeSuccess": "Language updated successfully",
+    "languageChangeError": "Failed to change language",
     "contact": "Contact",
     "learnMore": "Learn More"
   },

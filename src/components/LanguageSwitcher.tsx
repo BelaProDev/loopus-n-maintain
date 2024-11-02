@@ -7,14 +7,33 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Languages } from "lucide-react";
-import { changeLanguage, getAvailableLanguages } from '@/lib/i18n/translationUtils';
+import { useToast } from "./ui/use-toast";
 
 const LanguageSwitcher = () => {
-  const { t } = useTranslation();
-  const languages = getAvailableLanguages();
+  const { t, i18n } = useTranslation();
+  const { toast } = useToast();
+
+  const languages = [
+    { code: 'en', label: 'English' },
+    { code: 'es', label: 'Español' },
+    { code: 'fr', label: 'Français' }
+  ];
 
   const handleLanguageChange = async (lng: string) => {
-    await changeLanguage(lng);
+    try {
+      await i18n.changeLanguage(lng);
+      localStorage.setItem('language', lng);
+      toast({
+        title: t('common.languageChanged'),
+        description: t('common.languageChangeSuccess'),
+      });
+    } catch (error) {
+      toast({
+        title: t('common.error'),
+        description: t('common.languageChangeError'),
+        variant: "destructive"
+      });
+    }
   };
 
   return (
@@ -30,13 +49,13 @@ const LanguageSwitcher = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {languages.map((lang) => (
+        {languages.map(({ code, label }) => (
           <DropdownMenuItem 
-            key={lang}
-            onClick={() => handleLanguageChange(lang)}
+            key={code}
+            onClick={() => handleLanguageChange(code)}
             className="cursor-pointer"
           >
-            {t(`language.${lang}`)}
+            {label}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

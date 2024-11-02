@@ -1,8 +1,11 @@
 import i18n from 'i18next';
 
-export const getCurrentLanguage = () => i18n.language;
+export const getCurrentLanguage = () => {
+  return localStorage.getItem('language') || i18n.language;
+};
 
 export const changeLanguage = async (lang: string) => {
+  localStorage.setItem('language', lang);
   await i18n.changeLanguage(lang);
 };
 
