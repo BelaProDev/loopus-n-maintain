@@ -21,7 +21,8 @@
     "uploadSuccess": "Logo téléchargé avec succès",
     "uploadError": "Échec du téléchargement du logo",
     "removeSuccess": "Logo supprimé avec succès",
-    "removeError": "Échec de la suppression du logo"
+    "removeError": "Échec de la suppression du logo",
+    "sizeRecommendation": "Taille recommandée : 512x512px. Le logo sera utilisé pour le site web et la PWA."
   },
   "navigation": {
     "title": "Liens de Navigation",

@@ -21,7 +21,8 @@
     "uploadSuccess": "Logo uploaded successfully",
     "uploadError": "Failed to upload logo",
     "removeSuccess": "Logo removed successfully",
-    "removeError": "Failed to remove logo"
+    "removeError": "Failed to remove logo",
+    "sizeRecommendation": "Recommended size: 512x512px. The logo will be used for both the website and PWA."
   },
   "navigation": {
     "title": "Navigation Links",

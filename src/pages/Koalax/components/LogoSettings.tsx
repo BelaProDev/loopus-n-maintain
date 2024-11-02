@@ -3,9 +3,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
+import { useTranslation } from "react-i18next";
 
 const LogoSettings = () => {
   const { toast } = useToast();
+  const { t } = useTranslation(["common", "admin"]);
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -17,13 +19,13 @@ const LogoSettings = () => {
     try {
       // TODO: Implement API endpoint
       toast({
-        title: "Success",
-        description: "Logo updated successfully",
+        title: t("common:common.success"),
+        description: t("admin:logo.uploadSuccess"),
       });
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to update logo",
+        title: t("common:common.error"),
+        description: t("admin:logo.uploadError"),
         variant: "destructive",
       });
     }
@@ -32,7 +34,7 @@ const LogoSettings = () => {
   return (
     <Card className="p-6">
       <div className="space-y-4">
-        <Label htmlFor="logo">Upload New Logo</Label>
+        <Label htmlFor="logo">{t("admin:logo.upload")}</Label>
         <Input
           id="logo"
           type="file"
@@ -40,7 +42,7 @@ const LogoSettings = () => {
           onChange={handleLogoUpload}
         />
         <p className="text-sm text-muted-foreground">
-          Recommended size: 512x512px. The logo will be used for both the website and PWA.
+          {t("admin:logo.sizeRecommendation")}
         </p>
       </div>
     </Card>
