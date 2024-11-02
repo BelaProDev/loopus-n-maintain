@@ -55,10 +55,6 @@
     "message": "Hello, I need help with the following issues: {{issues}}"
   },
   "faq": {
-    "title": "Frequently Asked Questions",
-    "powerOutageQ": "What should I do during a power outage?",
-    "powerOutageA": "First, check if your neighbors have power. If they do, check your circuit breakers. If not, contact your utility company.",
-    "inspectionQ": "How often should I get an electrical inspection?",
-    "inspectionA": "We recommend getting a professional inspection every 3-5 years, or when purchasing a new property."
+    "title": "Frequently Asked Questions"
   }
 }

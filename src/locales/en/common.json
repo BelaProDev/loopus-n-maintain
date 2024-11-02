@@ -31,10 +31,5 @@
     "languageChangeError": "Failed to change language",
     "contact": "Contact",
     "learnMore": "Learn More"
-  },
-  "language": {
-    "en": "English",
-    "es": "Spanish",
-    "fr": "French"
   }
 }
