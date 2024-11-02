@@ -1,51 +1,57 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import * as z from "zod";
+
+const formSchema = z.object({
+  password: z.string().min(1, "Password is required"),
+});
+
+type FormData = z.infer<typeof formSchema>;
 
 const KoalaxAuth = () => {
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation(["common", "admin", "auth"]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (isLoading || !password) return;
-    
-    setIsLoading(true);
-    
-    try {
-      if (password === import.meta.env.VITE_KOALAX_PASSWORD) {
-        const sessionData = {
-          timestamp: Date.now(),
-          type: 'koalax',
-          isAuthenticated: true
-        };
-        
-        sessionStorage.setItem('koalax_auth', JSON.stringify(sessionData));
-        
-        // Navigate to the intended page or default to emails
-        const from = location.state?.from?.pathname || "/koalax/emails";
-        navigate(from, { replace: true });
-      } else {
-        throw new Error("Invalid password");
-      }
-    } catch (error) {
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      password: "",
+    },
+  });
+
+  const onSubmit = async (data: FormData) => {
+    if (data.password === import.meta.env.VITE_KOALAX_PASSWORD) {
+      const sessionData = {
+        timestamp: Date.now(),
+        type: 'koalax',
+        isAuthenticated: true
+      };
+      
+      sessionStorage.setItem('koalax_auth', JSON.stringify(sessionData));
+      
+      const from = location.state?.from?.pathname || "/koalax/emails";
+      navigate(from, { replace: true });
+      
+      toast({
+        title: t("auth:loginSuccess"),
+        description: t("auth:welcomeBack"),
+      });
+    } else {
+      form.reset();
       toast({
         title: t("auth:loginFailed"),
         description: t("auth:invalidCredentials"),
         variant: "destructive",
       });
-      setPassword("");
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -57,30 +63,35 @@ const KoalaxAuth = () => {
           <CardDescription>{t("admin:auth.description")}</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="password">{t("auth:password")}</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                disabled={isLoading}
-                className="px-4 py-3"
-                autoComplete="current-password"
-                autoFocus
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("auth:password")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        autoComplete="current-password"
+                        autoFocus
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            <Button 
-              type="submit" 
-              className="w-full" 
-              disabled={isLoading || !password}
-              aria-busy={isLoading}
-            >
-              {isLoading ? t("common:common.loading") : t("auth:signIn")}
-            </Button>
-          </form>
+              <Button 
+                type="submit" 
+                className="w-full"
+                disabled={form.formState.isSubmitting}
+              >
+                {form.formState.isSubmitting ? t("common:common.loading") : t("auth:signIn")}
+              </Button>
+            </form>
+          </Form>
         </CardContent>
       </Card>
     </div>
