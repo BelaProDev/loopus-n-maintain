@@ -1,12 +1,38 @@
 {
   "title": "Panel de Administración",
+  "settings": {
+    "title": "Configuración del Sitio",
+    "tabs": {
+      "whatsapp": "Números de WhatsApp",
+      "logo": "Configuración del Logo",
+      "navigation": "Enlaces de Navegación"
+    }
+  },
   "whatsapp": "Números de WhatsApp",
   "whatsappUpdate": "Actualizar números de WhatsApp",
   "whatsappUpdateSuccess": "Números de WhatsApp actualizados correctamente",
   "whatsappUpdateError": "Error al actualizar los números de WhatsApp",
   "whatsappPlaceholder": "Ingrese el número de WhatsApp para {{service}}",
-  "logo": "Logo",
-  "navigation": "Enlaces de navegación",
+  "logo": {
+    "title": "Configuración del Logo",
+    "current": "Logo Actual",
+    "upload": "Subir Nuevo Logo",
+    "remove": "Eliminar Logo",
+    "uploadSuccess": "Logo subido correctamente",
+    "uploadError": "Error al subir el logo",
+    "removeSuccess": "Logo eliminado correctamente",
+    "removeError": "Error al eliminar el logo"
+  },
+  "navigation": {
+    "title": "Enlaces de Navegación",
+    "add": "Agregar Enlace",
+    "edit": "Editar Enlace",
+    "remove": "Eliminar Enlace",
+    "url": "URL",
+    "label": "Etiqueta",
+    "updateSuccess": "Enlaces de navegación actualizados correctamente",
+    "updateError": "Error al actualizar los enlaces de navegación"
+  },
   "email": {
     "title": "Gestión de correos",
     "add": "Agregar correo",

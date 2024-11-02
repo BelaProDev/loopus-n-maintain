@@ -1,4 +1,38 @@
 {
+  "title": "Admin Panel",
+  "settings": {
+    "title": "Site Settings",
+    "tabs": {
+      "whatsapp": "WhatsApp Numbers",
+      "logo": "Logo Settings",
+      "navigation": "Navigation Links"
+    }
+  },
+  "whatsapp": "WhatsApp Numbers",
+  "whatsappUpdate": "Update WhatsApp Numbers",
+  "whatsappUpdateSuccess": "WhatsApp numbers updated successfully",
+  "whatsappUpdateError": "Failed to update WhatsApp numbers",
+  "whatsappPlaceholder": "Enter {{service}} WhatsApp number",
+  "logo": {
+    "title": "Logo Settings",
+    "current": "Current Logo",
+    "upload": "Upload New Logo",
+    "remove": "Remove Logo",
+    "uploadSuccess": "Logo uploaded successfully",
+    "uploadError": "Failed to upload logo",
+    "removeSuccess": "Logo removed successfully",
+    "removeError": "Failed to remove logo"
+  },
+  "navigation": {
+    "title": "Navigation Links",
+    "add": "Add Link",
+    "edit": "Edit Link",
+    "remove": "Remove Link",
+    "url": "URL",
+    "label": "Label",
+    "updateSuccess": "Navigation links updated successfully",
+    "updateError": "Failed to update navigation links"
+  },
   "auth": {
     "title": "Koalax Admin",
     "description": "Enter your admin password to access the management interface"

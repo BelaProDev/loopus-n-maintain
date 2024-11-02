@@ -1,12 +1,38 @@
 {
-  "title": "Panneau d'administration",
+  "title": "Panneau d'Administration",
+  "settings": {
+    "title": "Paramètres du Site",
+    "tabs": {
+      "whatsapp": "Numéros WhatsApp",
+      "logo": "Paramètres du Logo",
+      "navigation": "Liens de Navigation"
+    }
+  },
   "whatsapp": "Numéros WhatsApp",
   "whatsappUpdate": "Mettre à jour les numéros WhatsApp",
   "whatsappUpdateSuccess": "Numéros WhatsApp mis à jour avec succès",
   "whatsappUpdateError": "Échec de la mise à jour des numéros WhatsApp",
   "whatsappPlaceholder": "Entrez le numéro WhatsApp pour {{service}}",
-  "logo": "Logo",
-  "navigation": "Liens de navigation",
+  "logo": {
+    "title": "Paramètres du Logo",
+    "current": "Logo Actuel",
+    "upload": "Télécharger un Nouveau Logo",
+    "remove": "Supprimer le Logo",
+    "uploadSuccess": "Logo téléchargé avec succès",
+    "uploadError": "Échec du téléchargement du logo",
+    "removeSuccess": "Logo supprimé avec succès",
+    "removeError": "Échec de la suppression du logo"
+  },
+  "navigation": {
+    "title": "Liens de Navigation",
+    "add": "Ajouter un Lien",
+    "edit": "Modifier le Lien",
+    "remove": "Supprimer le Lien",
+    "url": "URL",
+    "label": "Libellé",
+    "updateSuccess": "Liens de navigation mis à jour avec succès",
+    "updateError": "Échec de la mise à jour des liens de navigation"
+  },
   "email": {
     "title": "Gestion des e-mails",
     "add": "Ajouter un e-mail",

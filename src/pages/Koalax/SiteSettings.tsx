@@ -7,25 +7,25 @@ import NavigationSettings from "./components/NavigationSettings";
 import { useTranslation } from "react-i18next";
 
 const SiteSettings = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(["admin"]);
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold">{t("admin.settings.title")}</h1>
+      <h1 className="text-3xl font-bold">{t("settings.title")}</h1>
       
       <Tabs defaultValue="whatsapp" className="space-y-4">
         <TabsList>
           <TabsTrigger value="whatsapp">
             <Phone className="w-4 h-4 mr-2" />
-            {t("admin.whatsapp")}
+            {t("settings.tabs.whatsapp")}
           </TabsTrigger>
           <TabsTrigger value="logo">
             <Image className="w-4 h-4 mr-2" />
-            {t("admin.logo")}
+            {t("settings.tabs.logo")}
           </TabsTrigger>
           <TabsTrigger value="links">
             <Link2 className="w-4 h-4 mr-2" />
-            {t("admin.navigation")}
+            {t("settings.tabs.navigation")}
           </TabsTrigger>
         </TabsList>
 
