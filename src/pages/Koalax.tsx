@@ -32,9 +32,7 @@ const Koalax = () => {
     if (session) {
       try {
         const sessionData = JSON.parse(session);
-        if (sessionData.type === 'koalax' && sessionData.timestamp && sessionData.isAuthenticated) {
-          return true;
-        }
+        return sessionData.type === 'koalax' && sessionData.timestamp && sessionData.isAuthenticated;
       } catch (error) {
         sessionStorage.removeItem('koalax_auth');
       }
@@ -46,14 +44,17 @@ const Koalax = () => {
 
   useEffect(() => {
     if (!isAuthenticated && !location.pathname.includes('dropbox-callback')) {
-      navigate('/koalax', { 
-        replace: true,
-        state: { from: location }
-      });
+      const currentPath = location.pathname;
+      if (currentPath !== '/koalax') {
+        navigate('/koalax', { 
+          replace: true,
+          state: { from: location }
+        });
+      }
     }
-  }, [isAuthenticated, location, navigate]);
+  }, [isAuthenticated, location.pathname]);
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated && !location.pathname.includes('dropbox-callback')) {
     return <KoalaxAuth />;
   }
 
