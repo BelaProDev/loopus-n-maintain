@@ -25,16 +25,12 @@ const Login = () => {
     
     try {
       await login(email, password);
-      toast({
-        title: t("auth:signInSuccess"),
-        description: t("auth:welcomeBack"),
-      });
       const from = location.state?.from?.pathname || "/";
       navigate(from);
     } catch (error) {
       toast({
-        title: t("auth:authError"),
-        description: t("auth:invalidCreds"),
+        title: t("auth:loginFailed"),
+        description: t("auth:invalidCredentials"),
         variant: "destructive",
       });
     } finally {

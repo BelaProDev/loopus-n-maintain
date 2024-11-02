@@ -27,22 +27,15 @@ const KoalaxAuth = () => {
         };
         sessionStorage.setItem('koalax_auth', JSON.stringify(sessionData));
         
-        toast({
-          title: t("auth:signInSuccess"),
-          description: t("auth:welcomeBack"),
-        });
-
         const from = location.state?.from?.pathname || "/koalax/emails";
         navigate(from);
       } else {
-        throw new Error(t("auth:invalidCreds"));
+        toast({
+          title: t("auth:loginFailed"),
+          description: t("auth:invalidCredentials"),
+          variant: "destructive",
+        });
       }
-    } catch (error) {
-      toast({
-        title: t("auth:authError"),
-        description: error instanceof Error ? error.message : t("auth:invalidCreds"),
-        variant: "destructive",
-      });
     } finally {
       setIsLoading(false);
     }
