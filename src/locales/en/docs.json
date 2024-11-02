@@ -13,6 +13,20 @@
     "documents": "📂 Document storage with Dropbox integration (because paper is so 2019)",
     "languages": "🌐 Multi-language support (we speak human... and JavaScript)"
   },
+  "admin": {
+    "title": "Admin Features",
+    "content": {
+      "title": "Content Management",
+      "edit": "Edit website content",
+      "offline": "Offline-ready database backup"
+    },
+    "business": {
+      "title": "Business Management",
+      "clients": "Client management",
+      "providers": "Provider tracking",
+      "documents": "Document organization"
+    }
+  },
   "setup": {
     "title": "Environment Setup",
     "env": "The Secret Sauce (aka Environment Variables)"

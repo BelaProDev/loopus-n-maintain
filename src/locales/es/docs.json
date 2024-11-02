@@ -1,11 +1,11 @@
 {
   "title": "Documentación",
   "overview": {
-    "title": "Descripción general",
-    "description": "¡Bienvenido a Loopus & Maintain - donde mantenemos edificios y hacemos chistes de papá! Nuestra PWA ayuda a coordinar servicios de mantenimiento, ¡porque alguien tiene que mantener esos edificios en pie (y somos bastante buenos en ello)! 🏗️"
+    "title": "Descripción General",
+    "description": "¡Bienvenido a Loopus & Maintain - donde mantenemos edificios con profesionalismo! Nuestra PWA ayuda a coordinar servicios de mantenimiento, porque alguien tiene que mantener esos edificios en pie (¡y somos bastante buenos en ello!) 🏗️"
   },
   "features": {
-    "title": "Características actuales",
+    "title": "Características Actuales",
     "auth": "🔐 Inicio de sesión de administrador seguro (prometemos que no es \"contraseña123\")",
     "email": "📧 Sistema de gestión de correos (porque las palomas mensajeras son del siglo pasado)",
     "content": "📝 Gestión de contenido con base de datos de respaldo (para esos momentos \"ups, sin internet\")",
@@ -13,8 +13,22 @@
     "documents": "📂 Almacenamiento de documentos con integración Dropbox (porque el papel es tan 2019)",
     "languages": "🌐 Soporte multilingüe (hablamos humano... y JavaScript)"
   },
+  "admin": {
+    "title": "Características de Administrador",
+    "content": {
+      "title": "Gestión de Contenido",
+      "edit": "Editar contenido del sitio web",
+      "offline": "Base de datos de respaldo sin conexión"
+    },
+    "business": {
+      "title": "Gestión Empresarial",
+      "clients": "Gestión de clientes",
+      "providers": "Seguimiento de proveedores",
+      "documents": "Organización de documentos"
+    }
+  },
   "setup": {
-    "title": "Configuración del entorno",
-    "env": "La salsa secreta (alias Variables de entorno)"
+    "title": "Configuración del Entorno",
+    "env": "Las Variables de Entorno (la salsa secreta)"
   }
 }
