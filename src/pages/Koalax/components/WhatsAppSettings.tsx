@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,7 +10,7 @@ import { useTranslation } from "react-i18next";
 const WhatsAppSettings = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { t } = useTranslation();
+  const { t } = useTranslation(["common", "admin", "services"]);
 
   const { data: numbers, isLoading } = useQuery({
     queryKey: ['whatsapp-numbers'],
@@ -23,14 +22,14 @@ const WhatsAppSettings = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['whatsapp-numbers'] });
       toast({
-        title: t("common.success"),
-        description: t("admin.whatsappUpdateSuccess"),
+        title: t("common:common.success"),
+        description: t("admin:whatsappUpdateSuccess"),
       });
     },
     onError: () => {
       toast({
-        title: t("common.error"),
-        description: t("admin.whatsappUpdateError"),
+        title: t("common:common.error"),
+        description: t("admin:whatsappUpdateError"),
         variant: "destructive",
       });
     }
@@ -49,7 +48,7 @@ const WhatsAppSettings = () => {
     updateMutation.mutate(newNumbers);
   };
 
-  if (isLoading) return <div>{t("common.loading")}</div>;
+  if (isLoading) return <div>{t("common:common.loading")}</div>;
 
   return (
     <Card className="p-6">
@@ -58,20 +57,20 @@ const WhatsAppSettings = () => {
           {["electrics", "plumbing", "ironwork", "woodwork", "architecture"].map((service) => (
             <div key={service} className="space-y-2">
               <Label htmlFor={service} className="capitalize">
-                {t(`services.${service}.title`)} WhatsApp
+                {t(`services:${service}.title`)} WhatsApp
               </Label>
               <Input
                 id={service}
                 name={service}
                 type="tel"
-                placeholder={t("admin.whatsappPlaceholder", { service: t(`services.${service}.title`) })}
+                placeholder={t("admin:whatsappPlaceholder", { service: t(`services:${service}.title`) })}
                 defaultValue={numbers?.[service as keyof typeof numbers]}
               />
             </div>
           ))}
         </div>
         <Button type="submit" disabled={updateMutation.isPending}>
-          {t("admin.whatsappUpdate")}
+          {t("admin:whatsappUpdate")}
         </Button>
       </form>
     </Card>
