@@ -78,7 +78,7 @@ const Header = () => {
                   className="flex items-center gap-2 text-[#2E5984] hover:text-[#4A90E2] ml-4"
                 >
                   <LogOut className="h-4 w-4" />
-                  {t("common:auth.signOut")}
+                  {t("auth:signOut")}
                 </Button>
               )}
             </div>
@@ -112,7 +112,7 @@ const Header = () => {
                     className="flex items-center gap-2 text-[#2E5984] hover:text-[#4A90E2] mt-4"
                   >
                     <LogOut className="h-4 w-4" />
-                    {t("common:auth.signOut")}
+                    {t("auth:signOut")}
                   </Button>
                 )}
               </div>
