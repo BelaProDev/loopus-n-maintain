@@ -1,28 +1,31 @@
 import ServiceLayout from "./ServiceLayout";
+import { useTranslation } from "react-i18next";
 
 const Woodwork = () => {
+  const { t } = useTranslation();
+
   const commonIssues = [
-    { id: "furniture-repair", label: "Furniture Repair" },
-    { id: "cabinet-installation", label: "Cabinet Installation" },
-    { id: "wood-rot", label: "Wood Rot Treatment" },
-    { id: "custom-carpentry", label: "Custom Carpentry" },
+    { id: "repairs", label: t("services.woodworking.issues.repairs") },
+    { id: "restoration", label: t("services.woodworking.issues.restoration") },
+    { id: "customWork", label: t("services.woodworking.issues.customWork") },
+    { id: "installation", label: t("services.woodworking.issues.installation") },
   ];
 
   const faqs = [
     {
-      question: "What types of wood do you work with?",
-      answer: "We work with a wide variety of woods including oak, maple, pine, walnut, and exotic hardwoods. The choice depends on your specific needs and budget.",
+      question: "services.faq.woodTypeQ",
+      answer: "services.faq.woodTypeA"
     },
     {
-      question: "How do I maintain wooden furniture?",
-      answer: "Regular dusting, avoiding direct sunlight, and periodic polishing can help maintain wooden furniture. We recommend using appropriate wood cleaners and avoiding excess moisture.",
-    },
+      question: "services.faq.maintenanceQ",
+      answer: "services.faq.maintenanceA"
+    }
   ];
 
   return (
     <ServiceLayout
-      title="Woodworking Services"
-      description="Expert woodworking and carpentry services for your home or business. From custom furniture to repairs, we bring craftsmanship to every project."
+      title={t("services.woodworking.title")}
+      description={t("services.woodworking.description")}
       commonIssues={commonIssues}
       faqs={faqs}
     />

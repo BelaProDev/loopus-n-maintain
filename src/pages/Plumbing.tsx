@@ -1,28 +1,31 @@
 import ServiceLayout from "./ServiceLayout";
+import { useTranslation } from "react-i18next";
 
 const Plumbing = () => {
+  const { t } = useTranslation();
+
   const commonIssues = [
-    { id: "leaky-pipes", label: "Leaky Pipes" },
-    { id: "clogged-drain", label: "Clogged Drain" },
-    { id: "low-water-pressure", label: "Low Water Pressure" },
-    { id: "water-heater-issues", label: "Water Heater Issues" },
+    { id: "leaks", label: t("services.plumbing.issues.leaks") },
+    { id: "clogs", label: t("services.plumbing.issues.clogs") },
+    { id: "lowPressure", label: t("services.plumbing.issues.lowPressure") },
+    { id: "waterHeater", label: t("services.plumbing.issues.waterHeater") },
   ];
 
   const faqs = [
     {
-      question: "How often should I have my plumbing inspected?",
-      answer: "It's recommended to have a professional plumbing inspection every 2 years to catch potential issues early.",
+      question: "services.faq.plumbingInspectionQ",
+      answer: "services.faq.plumbingInspectionA"
     },
     {
-      question: "What should I do if I have a major water leak?",
-      answer: "Immediately shut off the main water valve to your home and call a professional plumber for emergency service.",
-    },
+      question: "services.faq.leakQ",
+      answer: "services.faq.leakA"
+    }
   ];
 
   return (
     <ServiceLayout
-      title="Plumbing Services"
-      description="Expert plumbing solutions for your home or business. Our skilled plumbers handle everything from minor repairs to major installations."
+      title={t("services.plumbing.title")}
+      description={t("services.plumbing.description")}
       commonIssues={commonIssues}
       faqs={faqs}
     />

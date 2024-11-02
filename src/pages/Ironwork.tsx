@@ -1,28 +1,31 @@
 import ServiceLayout from "./ServiceLayout";
+import { useTranslation } from "react-i18next";
 
 const Ironwork = () => {
+  const { t } = useTranslation();
+
   const commonIssues = [
-    { id: "rust", label: "Rust and Corrosion" },
-    { id: "structural-damage", label: "Structural Damage" },
-    { id: "welding-repairs", label: "Welding Repairs" },
-    { id: "gate-fence-issues", label: "Gate and Fence Issues" },
+    { id: "rust", label: t("services.ironwork.issues.rust") },
+    { id: "structuralDamage", label: t("services.ironwork.issues.structuralDamage") },
+    { id: "weldingRepairs", label: t("services.ironwork.issues.weldingRepairs") },
+    { id: "gateFenceIssues", label: t("services.ironwork.issues.gateFenceIssues") },
   ];
 
   const faqs = [
     {
-      question: "How can I prevent rust on my iron structures?",
-      answer: "Regular cleaning, painting, and applying rust-resistant coatings can help prevent rust on iron structures.",
+      question: "services.faq.rustPreventionQ",
+      answer: "services.faq.rustPreventionA"
     },
     {
-      question: "What types of ironwork services do you offer?",
-      answer: "We offer a wide range of services including custom fabrication, structural repairs, ornamental ironwork, and welding services.",
-    },
+      question: "services.faq.servicesQ",
+      answer: "services.faq.servicesA"
+    }
   ];
 
   return (
     <ServiceLayout
-      title="Ironwork Services"
-      description="Professional ironwork services for both functional and decorative needs. Our skilled craftsmen bring strength and beauty to your metal structures."
+      title={t("services.ironwork.title")}
+      description={t("services.ironwork.description")}
       commonIssues={commonIssues}
       faqs={faqs}
     />
