@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 const KoalaxAuth = () => {
@@ -12,6 +12,7 @@ const KoalaxAuth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation(["common", "admin", "auth"]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -20,8 +21,19 @@ const KoalaxAuth = () => {
     
     try {
       if (password === import.meta.env.VITE_KOALAX_PASSWORD) {
-        sessionStorage.setItem('koalax_auth', 'true');
-        navigate("/koalax/emails");
+        const sessionData = {
+          timestamp: Date.now(),
+          type: 'koalax'
+        };
+        sessionStorage.setItem('koalax_auth', JSON.stringify(sessionData));
+        
+        const from = location.state?.from?.pathname || "/koalax/emails";
+        navigate(from);
+
+        toast({
+          title: t("auth:auth.signInSuccess"),
+          description: t("auth:auth.welcomeBack"),
+        });
       } else {
         throw new Error(t("auth:auth.invalidCreds"));
       }
@@ -54,6 +66,7 @@ const KoalaxAuth = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={isLoading}
+                className="px-4 py-3"
               />
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>

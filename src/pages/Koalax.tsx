@@ -26,13 +26,32 @@ const Koalax = () => {
   const { t } = useTranslation(["common", "admin"]);
   const allTabs = [...CONTENT_TABS, ...ADMIN_TABS];
   const currentTab = allTabs.find(tab => location.pathname.includes(tab.id))?.id || "emails";
-  const isAuthenticated = sessionStorage.getItem('koalax_auth') === 'true';
+
+  const checkKoalaxAuth = () => {
+    const session = sessionStorage.getItem('koalax_auth');
+    if (session) {
+      try {
+        const sessionData = JSON.parse(session);
+        if (sessionData.type === 'koalax' && sessionData.timestamp) {
+          return true;
+        }
+      } catch (error) {
+        sessionStorage.removeItem('koalax_auth');
+      }
+    }
+    return false;
+  };
+
+  const isAuthenticated = checkKoalaxAuth();
 
   useEffect(() => {
     if (!isAuthenticated && !location.pathname.includes('dropbox-callback')) {
-      navigate('/koalax', { replace: true });
+      navigate('/koalax', { 
+        replace: true,
+        state: { from: location }
+      });
     }
-  }, [isAuthenticated, location.pathname, navigate]);
+  }, [isAuthenticated, location, navigate]);
 
   if (!isAuthenticated) {
     return <KoalaxAuth />;
