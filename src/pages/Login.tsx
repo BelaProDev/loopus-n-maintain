@@ -21,12 +21,15 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isLoading) return;
+    
     setIsLoading(true);
     
     try {
       await login(email, password);
       const from = location.state?.from?.pathname || "/";
-      navigate(from);
+      // Use replace instead of push to avoid history stack issues
+      navigate(from, { replace: true });
     } catch (error) {
       toast({
         title: t("auth:loginFailed"),
@@ -38,8 +41,9 @@ const Login = () => {
     }
   };
 
+  // Redirect with replace if already authenticated
   if (isAuthenticated) {
-    navigate("/");
+    navigate("/", { replace: true });
     return null;
   }
 

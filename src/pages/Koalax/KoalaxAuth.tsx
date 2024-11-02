@@ -17,6 +17,8 @@ const KoalaxAuth = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isLoading) return;
+    
     setIsLoading(true);
     
     try {
@@ -29,14 +31,17 @@ const KoalaxAuth = () => {
         sessionStorage.setItem('koalax_auth', JSON.stringify(sessionData));
         
         const from = location.state?.from?.pathname || "/koalax/emails";
-        navigate(from);
+        // Use replace instead of push to avoid history stack issues
+        navigate(from, { replace: true });
       } else {
-        toast({
-          title: t("auth:loginFailed"),
-          description: t("auth:invalidCredentials"),
-          variant: "destructive",
-        });
+        throw new Error("Invalid password");
       }
+    } catch (error) {
+      toast({
+        title: t("auth:loginFailed"),
+        description: t("auth:invalidCredentials"),
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
