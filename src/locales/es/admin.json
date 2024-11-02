@@ -63,30 +63,63 @@
     "deleteSuccess": "Correo eliminado exitosamente",
     "deleteError": "Error al eliminar correo"
   },
-  "content": {
-    "title": "Editor de Contenidos",
-    "key": "Clave de Contenido",
-    "keyPlaceholder": "por ejemplo, home_hero_title",
-    "type": "Tipo",
-    "types": {
-      "text": "Texto",
-      "textarea": "Área de Texto",
-      "wysiwyg": "WYSIWYG"
-    },
-    "language": "Idioma",
-    "selectLanguage": "Seleccionar idioma",
-    "content": "Contenido",
-    "contentPlaceholder": "Ingrese contenido",
-    "selectType": "Seleccionar tipo",
-    "selectStorage": "Seleccionar almacenamiento",
-    "updateSuccess": "Contenido actualizado correctamente",
-    "updateError": "Error al actualizar contenido"
-  },
-  "settings": {
-    "title": "Configuración del Sitio"
-  },
   "business": {
-    "title": "Gestión de Negocios"
+    "title": "Gestión de Negocios",
+    "providers": {
+      "title": "Proveedores de Servicios",
+      "add": "Agregar Proveedor",
+      "edit": "Editar Proveedor",
+      "update": "Actualizar Proveedor",
+      "name": "Nombre",
+      "service": "Servicio",
+      "rating": "Calificación",
+      "available": "Disponible",
+      "unavailable": "No Disponible",
+      "actions": "Acciones",
+      "selectService": "Seleccionar servicio",
+      "addSuccess": "Proveedor agregado exitosamente",
+      "addError": "Error al agregar proveedor",
+      "updateSuccess": "Proveedor actualizado exitosamente",
+      "updateError": "Error al actualizar proveedor",
+      "deleteSuccess": "Proveedor eliminado exitosamente",
+      "deleteError": "Error al eliminar proveedor"
+    },
+    "clients": {
+      "title": "Clientes",
+      "add": "Agregar Cliente",
+      "edit": "Editar Cliente",
+      "update": "Actualizar Cliente",
+      "name": "Nombre",
+      "email": "Correo",
+      "phone": "Teléfono",
+      "company": "Empresa",
+      "vatNumber": "Número de IVA",
+      "addSuccess": "Cliente agregado exitosamente",
+      "addError": "Error al agregar cliente",
+      "updateSuccess": "Cliente actualizado exitosamente",
+      "updateError": "Error al actualizar cliente",
+      "deleteSuccess": "Cliente eliminado exitosamente",
+      "deleteError": "Error al eliminar cliente"
+    },
+    "invoices": {
+      "title": "Facturas",
+      "add": "Agregar Factura",
+      "edit": "Editar Factura",
+      "update": "Actualizar Factura",
+      "status": "Estado",
+      "amount": "Monto",
+      "date": "Fecha",
+      "dueDate": "Fecha de Vencimiento",
+      "paid": "Pagada",
+      "pending": "Pendiente",
+      "overdue": "Vencida",
+      "addSuccess": "Factura agregada exitosamente",
+      "addError": "Error al agregar factura",
+      "updateSuccess": "Factura actualizada exitosamente",
+      "updateError": "Error al actualizar factura",
+      "deleteSuccess": "Factura eliminada exitosamente",
+      "deleteError": "Error al eliminar factura"
+    }
   },
   "documents": {
     "title": "Gestión de Documentos"

@@ -10,7 +10,7 @@
   },
   "whatsapp": "Numéros WhatsApp",
   "whatsappUpdate": "Mettre à jour les numéros WhatsApp",
-  "whatsappUpdateSuccess": "Numéros WhatsApp mis à jour avec succès",
+  "whatsappUpdateSuccess": "Numéros de WhatsApp mis à jour avec succès",
   "whatsappUpdateError": "Échec de la mise à jour des numéros WhatsApp",
   "whatsappPlaceholder": "Entrez le numéro WhatsApp pour {{service}}",
   "logo": {
@@ -64,9 +64,61 @@
     "deleteError": "Échec de la suppression de l'email"
   },
   "business": {
-    "title": "Gestion d'entreprise"
-  },
-  "documents": {
-    "title": "Gestion des documents"
+    "title": "Gestion d'Entreprise",
+    "providers": {
+      "title": "Prestataires de Services",
+      "add": "Ajouter un Prestataire",
+      "edit": "Modifier le Prestataire",
+      "update": "Mettre à jour le Prestataire",
+      "name": "Nom",
+      "service": "Service",
+      "rating": "Évaluation",
+      "available": "Disponible",
+      "unavailable": "Indisponible",
+      "actions": "Actions",
+      "selectService": "Sélectionner un service",
+      "addSuccess": "Prestataire ajouté avec succès",
+      "addError": "Échec de l'ajout du prestataire",
+      "updateSuccess": "Prestataire mis à jour avec succès",
+      "updateError": "Échec de la mise à jour du prestataire",
+      "deleteSuccess": "Prestataire supprimé avec succès",
+      "deleteError": "Échec de la suppression du prestataire"
+    },
+    "clients": {
+      "title": "Clients",
+      "add": "Ajouter un Client",
+      "edit": "Modifier le Client",
+      "update": "Mettre à jour le Client",
+      "name": "Nom",
+      "email": "Email",
+      "phone": "Téléphone",
+      "company": "Entreprise",
+      "vatNumber": "Numéro de TVA",
+      "addSuccess": "Client ajouté avec succès",
+      "addError": "Échec de l'ajout du client",
+      "updateSuccess": "Client mis à jour avec succès",
+      "updateError": "Échec de la mise à jour du client",
+      "deleteSuccess": "Client supprimé avec succès",
+      "deleteError": "Échec de la suppression du client"
+    },
+    "invoices": {
+      "title": "Factures",
+      "add": "Ajouter une Facture",
+      "edit": "Modifier la Facture",
+      "update": "Mettre à jour la Facture",
+      "status": "Statut",
+      "amount": "Montant",
+      "date": "Date",
+      "dueDate": "Date d'échéance",
+      "paid": "Payée",
+      "pending": "En attente",
+      "overdue": "En retard",
+      "addSuccess": "Facture ajoutée avec succès",
+      "addError": "Échec de l'ajout de la facture",
+      "updateSuccess": "Facture mise à jour avec succès",
+      "updateError": "Échec de la mise à jour de la facture",
+      "deleteSuccess": "Facture supprimée avec succès",
+      "deleteError": "Échec de la suppression de la facture"
+    }
   }
 }
