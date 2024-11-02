@@ -10,20 +10,20 @@ import KoalaxAuth from "./Koalax/KoalaxAuth";
 import { useTranslation } from "react-i18next";
 
 const CONTENT_TABS = [
-  { id: "emails", label: "admin.email.title", icon: Mail, path: "/koalax/emails" },
-  { id: "content", label: "admin.content.title", icon: FileText, path: "/koalax/content" },
+  { id: "emails", label: "admin:email.title", icon: Mail, path: "/koalax/emails" },
+  { id: "content", label: "admin:content.title", icon: FileText, path: "/koalax/content" },
 ];
 
 const ADMIN_TABS = [
-  { id: "settings", label: "admin.settings.title", icon: Settings, path: "/koalax/settings" },
-  { id: "business", label: "admin.business.title", icon: Building2, path: "/koalax/business" },
-  { id: "documents", label: "admin.documents.title", icon: Folder, path: "/koalax/documents" },
+  { id: "settings", label: "admin:settings.title", icon: Settings, path: "/koalax/settings" },
+  { id: "business", label: "admin:business.title", icon: Building2, path: "/koalax/business" },
+  { id: "documents", label: "admin:documents.title", icon: Folder, path: "/koalax/documents" },
 ];
 
 const Koalax = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t } = useTranslation(["common", "admin"]);
   const allTabs = [...CONTENT_TABS, ...ADMIN_TABS];
   const currentTab = allTabs.find(tab => location.pathname.includes(tab.id))?.id || "emails";
   const isAuthenticated = sessionStorage.getItem('koalax_auth') === 'true';
@@ -54,7 +54,7 @@ const Koalax = () => {
             <ScrollArea className="w-full">
               <div className="space-y-4">
                 <div>
-                  <h3 className="text-sm font-medium mb-2 text-gray-500">{t('admin.contentManagement')}</h3>
+                  <h3 className="text-sm font-medium mb-2 text-gray-500">{t("admin:contentManagement")}</h3>
                   <TabsList className="w-full flex flex-nowrap overflow-x-auto justify-start md:justify-start p-1">
                     {CONTENT_TABS.map(({ id, label, icon: Icon }) => (
                       <TabsTrigger key={id} value={id} className="whitespace-nowrap">
@@ -67,7 +67,7 @@ const Koalax = () => {
                 </div>
 
                 <div>
-                  <h3 className="text-sm font-medium mb-2 text-gray-500">{t('admin.administration')}</h3>
+                  <h3 className="text-sm font-medium mb-2 text-gray-500">{t("admin:administration")}</h3>
                   <TabsList className="w-full flex flex-nowrap overflow-x-auto justify-start md:justify-start p-1">
                     {ADMIN_TABS.map(({ id, label, icon: Icon }) => (
                       <TabsTrigger key={id} value={id} className="whitespace-nowrap">

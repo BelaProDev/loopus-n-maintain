@@ -1,46 +1,34 @@
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import fallbackDb from "@/lib/fallback-db.json";
 
 const KoalaxAuth = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t } = useTranslation(["common", "admin", "auth"]);
 
-  const handlePasswordSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
     try {
-      const storedPassword = fallbackDb.settings.find(s => s.key === "koalax_password")?.value;
-      const isValid = password === storedPassword;
-      
-      if (isValid) {
+      if (password === import.meta.env.VITE_KOALAX_PASSWORD) {
         sessionStorage.setItem('koalax_auth', 'true');
-        navigate('/koalax/emails');
-        toast({
-          title: t("common.success"),
-          description: t("admin.auth.welcomeMessage"),
-        });
+        navigate("/koalax/emails");
       } else {
-        toast({
-          title: t("common.error"),
-          description: t("admin.auth.invalidPassword"),
-          variant: "destructive",
-        });
-        setPassword("");
+        throw new Error(t("auth:auth.invalidCreds"));
       }
     } catch (error) {
       toast({
-        title: t("common.error"),
-        description: t("admin.auth.error"),
+        title: t("auth:auth.authError"),
+        description: error instanceof Error ? error.message : t("auth:auth.invalidCreds"),
         variant: "destructive",
       });
     } finally {
@@ -49,24 +37,27 @@ const KoalaxAuth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-pink-50">
       <Card className="w-[400px]">
         <CardHeader>
-          <CardTitle className="text-2xl">{t("admin.auth.title")}</CardTitle>
+          <CardTitle>{t("admin:auth.title")}</CardTitle>
+          <CardDescription>{t("admin:auth.description")}</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handlePasswordSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
+              <Label htmlFor="password">{t("common:forms.password")}</Label>
               <Input
+                id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder={t("admin.auth.passwordPlaceholder")}
+                required
                 disabled={isLoading}
               />
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? t("common.loading") : t("admin.auth.submit")}
+              {isLoading ? t("common:common.loading") : t("auth:auth.signIn")}
             </Button>
           </form>
         </CardContent>

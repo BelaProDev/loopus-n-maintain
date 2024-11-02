@@ -7,6 +7,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { faunaQueries } from "@/lib/fauna";
 import ContentGrid from "./components/ContentGrid";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 const ContentEditor = () => {
   const [storageType, setStorageType] = useState<"fauna" | "fallback">("fauna");
@@ -15,6 +16,7 @@ const ContentEditor = () => {
   const [language, setLanguage] = useState("en");
   const [type, setType] = useState<"text" | "textarea" | "wysiwyg">("text");
   const { toast } = useToast();
+  const { t } = useTranslation(["common", "admin"]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,13 +31,13 @@ const ContentEditor = () => {
       });
       
       toast({
-        title: "Success",
-        description: "Content updated successfully",
+        title: t("common:common.success"),
+        description: t("admin:content.updateSuccess"),
       });
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to update content",
+        title: t("common:common.error"),
+        description: t("admin:content.updateError"),
         variant: "destructive",
       });
     }
@@ -51,10 +53,10 @@ const ContentEditor = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 className="text-2xl font-bold">Content Editor</h2>
+        <h2 className="text-2xl font-bold">{t("admin:content.title")}</h2>
         <Select value={storageType} onValueChange={(value: "fauna" | "fallback") => setStorageType(value)}>
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select storage" />
+            <SelectValue placeholder={t("admin:content.selectStorage")} />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="fauna">Fauna DB</SelectItem>
@@ -74,52 +76,52 @@ const ContentEditor = () => {
           >
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1">Content Key</label>
+                <label className="block text-sm font-medium mb-1">{t("admin:content.key")}</label>
                 <Input
                   value={key}
                   onChange={(e) => setKey(e.target.value)}
-                  placeholder="e.g., home_hero_title"
+                  placeholder={t("admin:content.keyPlaceholder")}
                   required
                 />
               </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Type</label>
+                  <label className="block text-sm font-medium mb-1">{t("admin:content.type")}</label>
                   <Select value={type} onValueChange={(value: "text" | "textarea" | "wysiwyg") => setType(value)}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select type" />
+                      <SelectValue placeholder={t("admin:content.selectType")} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="text">Text</SelectItem>
-                      <SelectItem value="textarea">Textarea</SelectItem>
-                      <SelectItem value="wysiwyg">WYSIWYG</SelectItem>
+                      <SelectItem value="text">{t("admin:content.types.text")}</SelectItem>
+                      <SelectItem value="textarea">{t("admin:content.types.textarea")}</SelectItem>
+                      <SelectItem value="wysiwyg">{t("admin:content.types.wysiwyg")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-1">Language</label>
+                  <label className="block text-sm font-medium mb-1">{t("admin:content.language")}</label>
                   <Select value={language} onValueChange={setLanguage}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select language" />
+                      <SelectValue placeholder={t("admin:content.selectLanguage")} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="en">English</SelectItem>
-                      <SelectItem value="fr">French</SelectItem>
-                      <SelectItem value="es">Spanish</SelectItem>
+                      <SelectItem value="en">{t("common:language.en")}</SelectItem>
+                      <SelectItem value="fr">{t("common:language.fr")}</SelectItem>
+                      <SelectItem value="es">{t("common:language.es")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">Content</label>
+                <label className="block text-sm font-medium mb-1">{t("admin:content.content")}</label>
                 {type === "textarea" || type === "wysiwyg" ? (
                   <Textarea
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
-                    placeholder="Enter content"
+                    placeholder={t("admin:content.contentPlaceholder")}
                     required
                     rows={10}
                     className="min-h-[200px]"
@@ -128,13 +130,13 @@ const ContentEditor = () => {
                   <Input
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
-                    placeholder="Enter content"
+                    placeholder={t("admin:content.contentPlaceholder")}
                     required
                   />
                 )}
               </div>
 
-              <Button type="submit">Save Content</Button>
+              <Button type="submit">{t("common:common.save")}</Button>
             </form>
           </motion.div>
         </AnimatePresence>

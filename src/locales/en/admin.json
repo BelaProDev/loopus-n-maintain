@@ -1,12 +1,10 @@
 {
-  "title": "Admin Panel",
-  "whatsapp": "WhatsApp Numbers",
-  "whatsappUpdate": "Update WhatsApp Numbers",
-  "whatsappUpdateSuccess": "WhatsApp numbers updated successfully",
-  "whatsappUpdateError": "Failed to update WhatsApp numbers",
-  "whatsappPlaceholder": "Enter {{service}} WhatsApp number",
-  "logo": "Logo",
-  "navigation": "Navigation Links",
+  "auth": {
+    "title": "Koalax Admin",
+    "description": "Enter your admin password to access the management interface"
+  },
+  "contentManagement": "Content Management",
+  "administration": "Administration",
   "email": {
     "title": "Email Management",
     "add": "Add Email",
@@ -19,42 +17,32 @@
     "deleteSuccess": "Email deleted successfully",
     "deleteError": "Failed to delete email"
   },
-  "business": {
-    "title": "Business Management",
-    "providers": {
-      "title": "Service Providers",
-      "add": "Add Provider",
-      "edit": "Edit Provider",
-      "update": "Update Provider",
-      "name": "Name",
-      "service": "Service",
-      "rating": "Rating",
-      "available": "Available",
-      "unavailable": "Unavailable",
-      "actions": "Actions",
-      "selectService": "Select service"
+  "content": {
+    "title": "Content Editor",
+    "key": "Content Key",
+    "keyPlaceholder": "e.g., home_hero_title",
+    "type": "Type",
+    "types": {
+      "text": "Text",
+      "textarea": "Textarea",
+      "wysiwyg": "WYSIWYG"
     },
-    "clients": {
-      "title": "Clients",
-      "add": "Add Client",
-      "edit": "Edit Client",
-      "name": "Name",
-      "email": "Email",
-      "phone": "Phone",
-      "company": "Company",
-      "vatNumber": "VAT Number"
-    }
+    "language": "Language",
+    "selectLanguage": "Select language",
+    "content": "Content",
+    "contentPlaceholder": "Enter content",
+    "selectType": "Select type",
+    "selectStorage": "Select storage",
+    "updateSuccess": "Content updated successfully",
+    "updateError": "Failed to update content"
+  },
+  "settings": {
+    "title": "Site Settings"
+  },
+  "business": {
+    "title": "Business Management"
   },
   "documents": {
-    "title": "Document Management",
-    "upload": "Upload File",
-    "uploading": "Uploading...",
-    "createFolder": "Create Folder",
-    "refresh": "Refresh",
-    "disconnect": "Disconnect Dropbox",
-    "connecting": "Connecting to Dropbox...",
-    "wait": "Please wait while authenticating.",
-    "success": "Successfully connected to Dropbox",
-    "error": "Failed to connect to Dropbox"
+    "title": "Document Management"
   }
 }
