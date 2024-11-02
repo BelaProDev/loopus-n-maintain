@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import fallbackDb from "@/lib/fallback-db.json";
+import { Home } from "lucide-react";
 import * as z from "zod";
 
 const formSchema = z.object({
@@ -59,44 +60,56 @@ const KoalaxAuth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-pink-50">
-      <Card className="w-[400px]">
-        <CardHeader>
-          <CardTitle>{t("admin:auth.title")}</CardTitle>
-          <CardDescription>{t("admin:auth.description")}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("auth:password")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="password"
-                        autoComplete="current-password"
-                        autoFocus
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button 
-                type="submit" 
-                className="w-full"
-                disabled={form.formState.isSubmitting}
-              >
-                {form.formState.isSubmitting ? t("common:common.loading") : t("auth:signIn")}
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-pink-50 p-4">
+      <div className="w-full max-w-[400px] space-y-4">
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-full sm:w-auto"
+          onClick={() => navigate("/")}
+        >
+          <Home className="mr-2 h-4 w-4" />
+          {t("common:nav.home")}
+        </Button>
+        
+        <Card>
+          <CardHeader>
+            <CardTitle>{t("admin:auth.title")}</CardTitle>
+            <CardDescription>{t("admin:auth.description")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("auth:password")}</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="password"
+                          autoComplete="current-password"
+                          autoFocus
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button 
+                  type="submit" 
+                  className="w-full"
+                  disabled={form.formState.isSubmitting}
+                >
+                  {form.formState.isSubmitting ? t("common:common.loading") : t("auth:signIn")}
+                </Button>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
