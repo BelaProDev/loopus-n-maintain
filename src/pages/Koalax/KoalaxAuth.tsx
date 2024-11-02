@@ -23,7 +23,8 @@ const KoalaxAuth = () => {
       if (password === import.meta.env.VITE_KOALAX_PASSWORD) {
         const sessionData = {
           timestamp: Date.now(),
-          type: 'koalax'
+          type: 'koalax',
+          isAuthenticated: true
         };
         sessionStorage.setItem('koalax_auth', JSON.stringify(sessionData));
         

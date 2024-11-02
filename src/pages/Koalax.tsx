@@ -32,7 +32,7 @@ const Koalax = () => {
     if (session) {
       try {
         const sessionData = JSON.parse(session);
-        if (sessionData.type === 'koalax' && sessionData.timestamp) {
+        if (sessionData.type === 'koalax' && sessionData.timestamp && sessionData.isAuthenticated) {
           return true;
         }
       } catch (error) {
