@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import fallbackDb from "@/lib/fallback-db.json";
 
 const KoalaxAuth = () => {
@@ -11,6 +12,7 @@ const KoalaxAuth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,21 +26,21 @@ const KoalaxAuth = () => {
         sessionStorage.setItem('koalax_auth', 'true');
         navigate('/koalax/emails');
         toast({
-          title: "Success",
-          description: "Welcome to Koalax admin",
+          title: t("common.success"),
+          description: t("admin.auth.welcomeMessage"),
         });
       } else {
         toast({
-          title: "Access Denied",
-          description: "Invalid password. Please try again.",
+          title: t("common.error"),
+          description: t("admin.auth.invalidPassword"),
           variant: "destructive",
         });
         setPassword("");
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: "An error occurred during authentication",
+        title: t("common.error"),
+        description: t("admin.auth.error"),
         variant: "destructive",
       });
     } finally {
@@ -50,7 +52,7 @@ const KoalaxAuth = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <Card className="w-[400px]">
         <CardHeader>
-          <CardTitle className="text-2xl">Koalax Admin</CardTitle>
+          <CardTitle className="text-2xl">{t("admin.auth.title")}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handlePasswordSubmit} className="space-y-4">
@@ -59,12 +61,12 @@ const KoalaxAuth = () => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter password"
+                placeholder={t("admin.auth.passwordPlaceholder")}
                 disabled={isLoading}
               />
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Authenticating..." : "Access Koalax"}
+              {isLoading ? t("common.loading") : t("admin.auth.submit")}
             </Button>
           </form>
         </CardContent>

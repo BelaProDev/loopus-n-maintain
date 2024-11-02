@@ -10,14 +10,14 @@ import KoalaxAuth from "./Koalax/KoalaxAuth";
 import { useTranslation } from "react-i18next";
 
 const CONTENT_TABS = [
-  { id: "emails", label: "admin.email", icon: Mail, path: "/koalax/emails" },
-  { id: "content", label: "admin.content", icon: FileText, path: "/koalax/content" },
+  { id: "emails", label: "admin.email.title", icon: Mail, path: "/koalax/emails" },
+  { id: "content", label: "admin.content.title", icon: FileText, path: "/koalax/content" },
 ];
 
 const ADMIN_TABS = [
-  { id: "settings", label: "admin.settings", icon: Settings, path: "/koalax/settings" },
-  { id: "business", label: "admin.business", icon: Building2, path: "/koalax/business" },
-  { id: "documents", label: "admin.documents", icon: Folder, path: "/koalax/documents" },
+  { id: "settings", label: "admin.settings.title", icon: Settings, path: "/koalax/settings" },
+  { id: "business", label: "admin.business.title", icon: Building2, path: "/koalax/business" },
+  { id: "documents", label: "admin.documents.title", icon: Folder, path: "/koalax/documents" },
 ];
 
 const Koalax = () => {

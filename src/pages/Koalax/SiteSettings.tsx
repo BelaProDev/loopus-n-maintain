@@ -11,7 +11,7 @@ const SiteSettings = () => {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold">{t("admin.settings")}</h1>
+      <h1 className="text-3xl font-bold">{t("admin.settings.title")}</h1>
       
       <Tabs defaultValue="whatsapp" className="space-y-4">
         <TabsList>
