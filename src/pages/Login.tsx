@@ -16,7 +16,7 @@ const Login = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { login, isAuthenticated } = useAuth();
-  const { t } = useTranslation();
+  const { t } = useTranslation(["common", "auth"]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,8 +27,8 @@ const Login = () => {
       navigate("/");
     } catch (error) {
       toast({
-        title: t("auth.authError"),
-        description: t("auth.invalidCreds"),
+        title: t("auth:auth.authError"),
+        description: t("auth:auth.invalidCreds"),
         variant: "destructive",
       });
     } finally {
@@ -50,21 +50,21 @@ const Login = () => {
         onClick={() => navigate("/")}
       >
         <Home className="mr-2 h-4 w-4" />
-        {t("nav.home")}
+        {t("common:nav.home")}
       </Button>
       <Card className="w-[400px] shadow-lg">
         <CardHeader>
-          <CardTitle className="text-2xl text-[#2E5984]">{t("auth.signIn")}</CardTitle>
-          <CardDescription>{t("auth.accessAccount")}</CardDescription>
+          <CardTitle className="text-2xl text-[#2E5984]">{t("auth:auth.signIn")}</CardTitle>
+          <CardDescription>{t("auth:auth.accessAccount")}</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">{t("forms.email")}</Label>
+              <Label htmlFor="email">{t("common:forms.email")}</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder={t("auth.email")}
+                placeholder={t("auth:auth.email")}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -72,11 +72,11 @@ const Login = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">{t("forms.password")}</Label>
+              <Label htmlFor="password">{t("common:forms.password")}</Label>
               <Input
                 id="password"
                 type="password"
-                placeholder={t("auth.password")}
+                placeholder={t("auth:auth.password")}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -84,7 +84,7 @@ const Login = () => {
               />
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? t("common.loading") : t("auth.signIn")}
+              {isLoading ? t("common:common.loading") : t("auth:auth.signIn")}
             </Button>
           </form>
         </CardContent>

@@ -2,6 +2,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTranslation } from "react-i18next";
 
 interface ServiceHeaderProps {
   title: string;
@@ -11,15 +12,16 @@ interface ServiceHeaderProps {
 const ServiceHeader = ({ title, description }: ServiceHeaderProps) => {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation(["common", "auth"]);
 
   return (
     <>
       {!isAuthenticated && (
         <Alert variant="destructive" className="mb-6">
           <AlertDescription className="flex items-center justify-between flex-wrap gap-4">
-            <span>Sign in required to access all features and services.</span>
+            <span>{t("auth:auth.required")}</span>
             <Button variant="outline" size="sm" onClick={() => navigate("/login")}>
-              Sign In
+              {t("auth:auth.signIn")}
             </Button>
           </AlertDescription>
         </Alert>

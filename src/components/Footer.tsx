@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 const Footer = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(["common"]);
 
   return (
     <footer className="bg-[#2E5984] text-white mt-auto">
@@ -12,7 +12,7 @@ const Footer = () => {
         <div className="flex flex-col space-y-8 md:space-y-0 md:flex-row md:justify-between md:items-start">
           {/* Contact Section */}
           <div className="flex flex-col items-center md:items-start">
-            <h3 className="text-xl font-semibold mb-4">{t("common.contact")}</h3>
+            <h3 className="text-xl font-semibold mb-4">{t("common:common.contact")}</h3>
             <div className="flex flex-col space-y-3">
               <a 
                 href="tel:+32489127067" 
@@ -45,19 +45,19 @@ const Footer = () => {
             <Button variant="ghost" size="sm" asChild className="w-full sm:w-auto">
               <Link to="/" className="flex items-center justify-center">
                 <Home className="h-4 w-4 mr-2" />
-                {t("nav.home")}
+                {t("common:nav.home")}
               </Link>
             </Button>
             <Button variant="ghost" size="sm" asChild className="w-full sm:w-auto">
               <Link to="/koalax" className="flex items-center justify-center">
                 <Settings className="h-4 w-4 mr-2" />
-                {t("nav.admin")}
+                {t("common:nav.admin")}
               </Link>
             </Button>
             <Button variant="ghost" size="sm" asChild className="w-full sm:w-auto">
               <Link to="/docs" className="flex items-center justify-center">
                 <BookOpen className="h-4 w-4 mr-2" />
-                {t("nav.docs")}
+                {t("common:nav.docs")}
               </Link>
             </Button>
           </div>
@@ -68,7 +68,7 @@ const Footer = () => {
               to="https://github.com/BelaProDev/loopus-n-maintain#readme"
               className="hover:text-white transition-colors"
             >
-              © 2024 {t("app.name")}. {t("nav.docs")}
+              © 2024 {t("common:app.name")}. {t("common:nav.docs")}
             </Link>
           </div>
         </div>
