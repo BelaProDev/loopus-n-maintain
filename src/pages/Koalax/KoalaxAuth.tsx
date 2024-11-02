@@ -31,16 +31,16 @@ const KoalaxAuth = () => {
         navigate(from);
 
         toast({
-          title: t("auth:auth.signInSuccess"),
-          description: t("auth:auth.welcomeBack"),
+          title: t("auth:signInSuccess"),
+          description: t("auth:welcomeBack"),
         });
       } else {
-        throw new Error(t("auth:auth.invalidCreds"));
+        throw new Error(t("auth:invalidCreds"));
       }
     } catch (error) {
       toast({
-        title: t("auth:auth.authError"),
-        description: error instanceof Error ? error.message : t("auth:auth.invalidCreds"),
+        title: t("auth:authError"),
+        description: error instanceof Error ? error.message : t("auth:invalidCreds"),
         variant: "destructive",
       });
     } finally {
@@ -70,7 +70,7 @@ const KoalaxAuth = () => {
               />
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? t("common:common.loading") : t("auth:auth.signIn")}
+              {isLoading ? t("common:common.loading") : t("auth:signIn")}
             </Button>
           </form>
         </CardContent>

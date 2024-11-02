@@ -29,8 +29,8 @@ const Login = () => {
       navigate(from);
     } catch (error) {
       toast({
-        title: t("auth:auth.authError"),
-        description: t("auth:auth.invalidCreds"),
+        title: t("auth:authError"),
+        description: t("auth:invalidCreds"),
         variant: "destructive",
       });
     } finally {
@@ -56,8 +56,8 @@ const Login = () => {
       </Button>
       <Card className="w-[400px] shadow-lg">
         <CardHeader>
-          <CardTitle className="text-2xl text-[#2E5984]">{t("auth:auth.signIn")}</CardTitle>
-          <CardDescription>{t("auth:auth.accessAccount")}</CardDescription>
+          <CardTitle className="text-2xl text-[#2E5984]">{t("auth:signIn")}</CardTitle>
+          <CardDescription>{t("auth:accessAccount")}</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -66,7 +66,7 @@ const Login = () => {
               <Input
                 id="email"
                 type="email"
-                placeholder={t("auth:auth.email")}
+                placeholder={t("auth:email")}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -79,7 +79,7 @@ const Login = () => {
               <Input
                 id="password"
                 type="password"
-                placeholder={t("auth:auth.password")}
+                placeholder={t("auth:password")}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -88,7 +88,7 @@ const Login = () => {
               />
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? t("common:common.loading") : t("auth:auth.signIn")}
+              {isLoading ? t("common:common.loading") : t("auth:signIn")}
             </Button>
           </form>
         </CardContent>
