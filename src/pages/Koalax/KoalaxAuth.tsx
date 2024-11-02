@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -15,6 +15,22 @@ const KoalaxAuth = () => {
   const location = useLocation();
   const { t } = useTranslation(["common", "admin", "auth"]);
 
+  // Check for existing session on mount
+  useEffect(() => {
+    const session = sessionStorage.getItem('koalax_auth');
+    if (session) {
+      try {
+        const sessionData = JSON.parse(session);
+        if (sessionData.isAuthenticated && sessionData.timestamp) {
+          const from = location.state?.from?.pathname || "/koalax/emails";
+          navigate(from, { replace: true });
+        }
+      } catch (error) {
+        sessionStorage.removeItem('koalax_auth');
+      }
+    }
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isLoading) return;
@@ -22,16 +38,20 @@ const KoalaxAuth = () => {
     setIsLoading(true);
     
     try {
+      // Simple password check - in production, this should be a secure API call
       if (password === import.meta.env.VITE_KOALAX_PASSWORD) {
         const sessionData = {
           timestamp: Date.now(),
           type: 'koalax',
           isAuthenticated: true
         };
+        
         sessionStorage.setItem('koalax_auth', JSON.stringify(sessionData));
         
+        // Small delay to prevent rapid re-renders
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
         const from = location.state?.from?.pathname || "/koalax/emails";
-        // Use replace instead of push to avoid history stack issues
         navigate(from, { replace: true });
       } else {
         throw new Error("Invalid password");
@@ -66,9 +86,15 @@ const KoalaxAuth = () => {
                 required
                 disabled={isLoading}
                 className="px-4 py-3"
+                autoComplete="current-password"
               />
             </div>
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button 
+              type="submit" 
+              className="w-full" 
+              disabled={isLoading}
+              aria-busy={isLoading}
+            >
               {isLoading ? t("common:common.loading") : t("auth:signIn")}
             </Button>
           </form>
