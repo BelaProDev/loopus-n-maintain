@@ -29,7 +29,7 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
   const { toast } = useToast();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t } = useTranslation(["common", "services", "auth"]);
 
   const { data: whatsappNumbers } = useQuery({
     queryKey: ['whatsapp-numbers'],
@@ -39,20 +39,20 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
   const handleWhatsAppContact = () => {
     if (!isAuthenticated) {
       toast({
-        title: t("auth.required"),
-        description: t("auth.required"),
+        title: t("auth:auth.required"),
+        description: t("auth:auth.required"),
         variant: "destructive",
       });
       navigate("/login");
       return;
     }
 
-    const service = title.split(" ")[0].toLowerCase();
+    const service = title.toLowerCase();
     const whatsappNumber = whatsappNumbers?.[service as keyof typeof whatsappNumbers] || "";
     const issues = selectedIssues
       .map(id => commonIssues.find(issue => issue.id === id)?.label)
       .join(", ");
-    const message = t("services.whatsapp.message", { issues });
+    const message = t("services:whatsapp.message", { issues });
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank");
   };
@@ -64,9 +64,9 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
         {!isAuthenticated && (
           <Alert variant="destructive" className="mb-6">
             <AlertDescription className="flex flex-wrap items-center justify-between gap-4">
-              <span>{t("auth.required")}</span>
+              <span>{t("auth:auth.required")}</span>
               <Button variant="outline" size="sm" onClick={() => navigate("/login")}>
-                {t("auth.signIn")}
+                {t("auth:auth.signIn")}
               </Button>
             </AlertDescription>
           </Alert>
@@ -79,7 +79,9 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <Card className="p-6 wood-texture">
-            <h2 className="text-2xl font-serif text-[#2E5984] mb-6">{t("services.quickHelp")}</h2>
+            <h2 className="text-2xl font-serif text-[#2E5984] mb-6">
+              {t("services:quickHelp")}
+            </h2>
             <div className="space-y-4">
               {commonIssues.map((issue) => (
                 <div key={issue.id} className="flex items-center space-x-2">
@@ -101,7 +103,7 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
                 className="w-full mt-4 bg-green-600 hover:bg-green-700"
               >
                 <Phone className="mr-2 h-4 w-4" />
-                {t("services.whatsapp.contact")}
+                {t("services:whatsapp.contact")}
               </Button>
             </div>
           </Card>
