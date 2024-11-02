@@ -53,14 +53,14 @@ const Index = () => {
               {!isAuthenticated && (
                 <>
                   <p className="text-lg md:text-xl">
-                    {t("auth:auth.welcome")}
+                    {t("auth:welcome")}
                   </p>
                   <Button 
                     onClick={() => navigate("/login")}
                     size="lg" 
                     className="bg-white text-[#2E5984] hover:bg-gray-100 w-full sm:w-auto"
                   >
-                    {t("auth:auth.signIn")}
+                    {t("auth:signIn")}
                   </Button>
                 </>
               )}
