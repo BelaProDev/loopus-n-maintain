@@ -14,106 +14,63 @@ const urlsToCache = [
   '/login'
 ];
 
-// Store for auth tokens
 let dropboxTokens = null;
 
-// Helper function to check if a request requires authentication
 const requiresAuth = (url) => {
-  const protectedPaths = ['/koalax'];
-  return protectedPaths.some(path => url.includes(path));
+  return ['/koalax'].some(path => url.includes(path));
 };
 
-// Install event - cache initial resources
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(urlsToCache))
-  );
+  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
   self.skipWaiting();
 });
 
-// Message event handler
 self.addEventListener('message', (event) => {
   if (event.data.type === 'STORE_DROPBOX_TOKENS') {
     dropboxTokens = event.data.tokens;
-    // Store in cache
     caches.open(CACHE_NAME).then(cache => {
-      cache.put(
-        new Request('/_dropbox_tokens'),
-        new Response(JSON.stringify(dropboxTokens))
-      );
+      cache.put('/_dropbox_tokens', new Response(JSON.stringify(dropboxTokens)));
     });
   } else if (event.data.type === 'GET_DROPBOX_TOKENS') {
     event.ports[0].postMessage({ tokens: dropboxTokens });
   } else if (event.data.type === 'REMOVE_DROPBOX_TOKENS') {
     dropboxTokens = null;
-    caches.open(CACHE_NAME).then(cache => {
-      cache.delete('/_dropbox_tokens');
-    });
+    caches.open(CACHE_NAME).then(cache => cache.delete('/_dropbox_tokens'));
   }
 });
 
-// Fetch event - network-first strategy with auth handling
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    (async () => {
-      try {
-        // Check if request requires authentication
-        if (requiresAuth(event.request.url)) {
-          const session = await clients.matchAll().then(clients => 
-            clients.some(client => 
-              client.url.includes('craft_coordination_session=true')
-            )
-          );
-
-          if (!session) {
-            return Response.redirect('/login', 302);
-          }
-        }
-
-        // Try network first
-        const response = await fetch(event.request);
-        
-        // Cache successful responses
-        if (response.ok && response.type === 'basic') {
-          const cache = await caches.open(CACHE_NAME);
-          cache.put(event.request, response.clone());
-        }
-        
-        return response;
-      } catch (error) {
-        // Fallback to cache
-        const cachedResponse = await caches.match(event.request);
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-        
-        // For navigation requests, return index.html
-        if (event.request.mode === 'navigate') {
-          return caches.match('/index.html');
-        }
-        
-        return new Response('Network error happened', {
-          status: 408,
-          headers: { 'Content-Type': 'text/plain' },
-        });
+  event.respondWith((async () => {
+    try {
+      if (requiresAuth(event.request.url)) {
+        const session = await clients.matchAll()
+          .then(clients => clients.some(client => 
+            client.url.includes('craft_coordination_session=true')
+          ));
+        if (!session) return Response.redirect('/login', 302);
       }
-    })()
-  );
+      const response = await fetch(event.request);
+      if (response.ok && response.type === 'basic') {
+        const cache = await caches.open(CACHE_NAME);
+        cache.put(event.request, response.clone());
+      }
+      return response;
+    } catch (error) {
+      const cachedResponse = await caches.match(event.request);
+      if (cachedResponse) return cachedResponse;
+      if (event.request.mode === 'navigate') return caches.match('/index.html');
+      return new Response('Network error', { status: 408, headers: { 'Content-Type': 'text/plain' } });
+    }
+  })());
 });
 
-// Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
+    caches.keys().then(cacheNames => 
+      Promise.all(cacheNames.map(cacheName => {
+        if (cacheName !== CACHE_NAME) return caches.delete(cacheName);
+      }))
+    )
   );
   return self.clients.claim();
 });
