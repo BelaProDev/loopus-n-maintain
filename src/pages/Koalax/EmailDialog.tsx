@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import { useTranslation } from "react-i18next";
 
 interface EmailDialogProps {
   isOpen: boolean;
@@ -28,16 +29,16 @@ const EmailDialog = ({
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const { toast } = useToast();
+  const { t } = useTranslation(["admin", "common"]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Only validate passwords for new emails or when changing password
     if (!editingEmail || password) {
       if (password.length < 6) {
         toast({
-          title: "Invalid Password",
-          description: "Password must be at least 6 characters long",
+          title: t("common:common.error"),
+          description: t("admin:email.passwordTooShort"),
           variant: "destructive",
         });
         return;
@@ -45,8 +46,8 @@ const EmailDialog = ({
       
       if (password !== confirmPassword) {
         toast({
-          title: "Password Mismatch",
-          description: "Passwords do not match",
+          title: t("common:common.error"),
+          description: t("admin:email.passwordMismatch"),
           variant: "destructive",
         });
         return;
@@ -61,12 +62,12 @@ const EmailDialog = ({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {editingEmail ? "Edit Email" : "Add New Email"}
+            {editingEmail ? t("admin:email.edit") : t("admin:email.add")}
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Name</label>
+            <label className="block text-sm font-medium mb-1">{t("admin:email.name")}</label>
             <Input
               name="name"
               defaultValue={editingEmail?.data.name}
@@ -74,7 +75,7 @@ const EmailDialog = ({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
+            <label className="block text-sm font-medium mb-1">{t("admin:email.email")}</label>
             <Input
               name="email"
               type="email"
@@ -83,7 +84,7 @@ const EmailDialog = ({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Type</label>
+            <label className="block text-sm font-medium mb-1">{t("admin:email.type")}</label>
             <Input
               name="type"
               defaultValue={editingEmail?.data.type}
@@ -91,25 +92,25 @@ const EmailDialog = ({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Password</label>
+            <label className="block text-sm font-medium mb-1">{t("admin:email.password")}</label>
             <Input
               name="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder={editingEmail ? "Leave blank to keep current password" : "Enter password"}
+              placeholder={editingEmail ? t("admin:email.passwordPlaceholderEdit") : t("admin:email.passwordPlaceholderNew")}
               minLength={6}
               required={!editingEmail}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Confirm Password</label>
+            <label className="block text-sm font-medium mb-1">{t("admin:email.confirmPassword")}</label>
             <Input
               name="confirmPassword"
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Confirm password"
+              placeholder={t("admin:email.confirmPasswordPlaceholder")}
               minLength={6}
               required={!editingEmail}
             />
@@ -119,7 +120,7 @@ const EmailDialog = ({
             disabled={isLoading}
             className="w-full"
           >
-            {editingEmail ? "Update" : "Add"} Email
+            {editingEmail ? t("admin:email.update") : t("admin:email.add")}
           </Button>
         </form>
       </DialogContent>

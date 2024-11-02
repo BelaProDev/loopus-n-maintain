@@ -4,10 +4,12 @@ import { Plus } from "lucide-react";
 import { useEmails } from "@/hooks/useEmails";
 import EmailTable from "../../EmailTable";
 import EmailDialog from "../../EmailDialog";
+import { useTranslation } from "react-i18next";
 
 const EmailManagement = () => {
   const [editingEmail, setEditingEmail] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { t } = useTranslation(["admin"]);
   
   const {
     emails,
@@ -49,13 +51,13 @@ const EmailManagement = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold">Email Management</h1>
+        <h1 className="text-2xl md:text-3xl font-bold">{t("admin:email.title")}</h1>
         <Button onClick={() => {
           setEditingEmail(null);
           setIsDialogOpen(true);
         }}>
           <Plus className="mr-2 h-4 w-4" />
-          Add Email
+          {t("admin:email.add")}
         </Button>
       </div>
 

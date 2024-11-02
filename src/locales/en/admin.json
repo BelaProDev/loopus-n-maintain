@@ -44,35 +44,24 @@
     "title": "Email Management",
     "add": "Add Email",
     "edit": "Edit Email",
+    "update": "Update Email",
+    "name": "Name",
+    "email": "Email",
     "type": "Type",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "passwordPlaceholderNew": "Enter password",
+    "passwordPlaceholderEdit": "Leave blank to keep current password",
+    "confirmPasswordPlaceholder": "Confirm password",
+    "passwordTooShort": "Password must be at least 6 characters long",
+    "passwordMismatch": "Passwords do not match",
+    "actions": "Actions",
     "addSuccess": "Email added successfully",
     "addError": "Failed to add email",
     "updateSuccess": "Email updated successfully",
     "updateError": "Failed to update email",
     "deleteSuccess": "Email deleted successfully",
     "deleteError": "Failed to delete email"
-  },
-  "content": {
-    "title": "Content Editor",
-    "key": "Content Key",
-    "keyPlaceholder": "e.g., home_hero_title",
-    "type": "Type",
-    "types": {
-      "text": "Text",
-      "textarea": "Textarea",
-      "wysiwyg": "WYSIWYG"
-    },
-    "language": "Language",
-    "selectLanguage": "Select language",
-    "content": "Content",
-    "contentPlaceholder": "Enter content",
-    "selectType": "Select type",
-    "selectStorage": "Select storage",
-    "updateSuccess": "Content updated successfully",
-    "updateError": "Failed to update content"
-  },
-  "settings": {
-    "title": "Site Settings"
   },
   "business": {
     "title": "Business Management"

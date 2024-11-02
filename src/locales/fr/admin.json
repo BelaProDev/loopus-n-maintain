@@ -34,54 +34,39 @@
     "updateSuccess": "Liens de navigation mis à jour avec succès",
     "updateError": "Échec de la mise à jour des liens de navigation"
   },
+  "auth": {
+    "title": "Koalax Admin",
+    "description": "Entrez votre admin password pour accéder à la interface de gestion"
+  },
+  "contentManagement": "Gestion de Contenus",
+  "administration": "Administration",
   "email": {
-    "title": "Gestion des e-mails",
-    "add": "Ajouter un e-mail",
-    "edit": "Modifier l'e-mail",
+    "title": "Gestion des Emails",
+    "add": "Ajouter un Email",
+    "edit": "Modifier l'Email",
+    "update": "Mettre à jour l'Email",
+    "name": "Nom",
+    "email": "Email",
     "type": "Type",
-    "addSuccess": "E-mail ajouté avec succès",
-    "addError": "Échec de l'ajout de l'e-mail",
-    "updateSuccess": "E-mail mis à jour avec succès",
-    "updateError": "Échec de la mise à jour de l'e-mail",
-    "deleteSuccess": "E-mail supprimé avec succès",
-    "deleteError": "Échec de la suppression de l'e-mail"
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "passwordPlaceholderNew": "Entrez le mot de passe",
+    "passwordPlaceholderEdit": "Laisser vide pour garder le mot de passe actuel",
+    "confirmPasswordPlaceholder": "Confirmer le mot de passe",
+    "passwordTooShort": "Le mot de passe doit contenir au moins 6 caractères",
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "actions": "Actions",
+    "addSuccess": "Email ajouté avec succès",
+    "addError": "Échec de l'ajout de l'email",
+    "updateSuccess": "Email mis à jour avec succès",
+    "updateError": "Échec de la mise à jour de l'email",
+    "deleteSuccess": "Email supprimé avec succès",
+    "deleteError": "Échec de la suppression de l'email"
   },
   "business": {
-    "title": "Gestion d'entreprise",
-    "providers": {
-      "title": "Prestataires de services",
-      "add": "Ajouter un prestataire",
-      "edit": "Modifier le prestataire",
-      "update": "Mettre à jour le prestataire",
-      "name": "Nom",
-      "service": "Service",
-      "rating": "Évaluation",
-      "available": "Disponible",
-      "unavailable": "Indisponible",
-      "actions": "Actions",
-      "selectService": "Sélectionner un service"
-    },
-    "clients": {
-      "title": "Clients",
-      "add": "Ajouter un client",
-      "edit": "Modifier le client",
-      "name": "Nom",
-      "email": "E-mail",
-      "phone": "Téléphone",
-      "company": "Entreprise",
-      "vatNumber": "Numéro de TVA"
-    }
+    "title": "Gestion d'entreprise"
   },
   "documents": {
-    "title": "Gestion des documents",
-    "upload": "Téléverser un fichier",
-    "uploading": "Téléversement en cours...",
-    "createFolder": "Créer un dossier",
-    "refresh": "Actualiser",
-    "disconnect": "Déconnecter Dropbox",
-    "connecting": "Connexion à Dropbox...",
-    "wait": "Veuillez patienter pendant l'authentification.",
-    "success": "Connexion réussie à Dropbox",
-    "error": "Échec de la connexion à Dropbox"
+    "title": "Gestion des documents"
   }
 }

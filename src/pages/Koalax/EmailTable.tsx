@@ -2,6 +2,7 @@ import { Email } from "@/hooks/useEmails";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Pencil, Trash2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface EmailTableProps {
   emails: Email[] | undefined;
@@ -11,14 +12,16 @@ interface EmailTableProps {
 }
 
 const EmailTable = ({ emails, onEdit, onDelete, isDeleting }: EmailTableProps) => {
+  const { t } = useTranslation(["admin"]);
+
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Name</TableHead>
-          <TableHead>Email</TableHead>
-          <TableHead>Type</TableHead>
-          <TableHead className="text-right">Actions</TableHead>
+          <TableHead>{t("admin:email.name")}</TableHead>
+          <TableHead>{t("admin:email.email")}</TableHead>
+          <TableHead>{t("admin:email.type")}</TableHead>
+          <TableHead className="text-right">{t("admin:email.actions")}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
