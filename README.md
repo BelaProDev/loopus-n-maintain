@@ -5,45 +5,59 @@ Where building maintenance meets good vibes! Our platform keeps buildings happy 
 ## Current Features 🌺
 
 - 🔐 **Admin Dashboard (Koalax)**
-  - Secure login (Fort Knox, but friendlier)
-  - Email management (inbox zero is our spirit animal)
+  - Secure login with session management
+  - Email management system
   - Content management with offline backup
   - Document storage with Dropbox integration
+  - Business management (clients & providers)
+  - WhatsApp integration for quick service requests
+  - Logo and navigation customization
 
-- 📱 **Technical Goodies**
-  - PWA (because apps are cool)
-  - Works offline (like a champion)
-  - Multi-language support (we're worldly like that)
+- 📱 **Technical Features**
+  - Progressive Web App (PWA)
+  - Offline functionality
+  - Multi-language support (English, Spanish, French)
+  - Responsive design
+  - Real-time status indicators
+  - Toast notifications
+
+- 🛠️ **Maintenance Services**
+  - Electrical maintenance
+  - Plumbing services
+  - Ironwork solutions
+  - Woodworking expertise
+  - Architectural consulting
 
 ## Quick Start 🌷
 
-1. Clone the repo (the fun begins!)
+1. Clone the repo
 2. Install dependencies: `npm install`
-3. Set up your secret sauce (environment variables):
+3. Set up environment variables:
 
 ```env
-VITE_FAUNA_SECRET_KEY=
-VITE_DROPBOX_ACCESS_TOKEN=
+VITE_FAUNA_SECRET_KEY=your-fauna-key
+VITE_DROPBOX_ACCESS_TOKEN=your-dropbox-token
 ```
 
-4. Start the dev server: `npm run dev`
-5. Visit `localhost:5173` and smile! 😊
+4. Start development server: `npm run dev`
+5. Visit `localhost:5173` 😊
 
 ## Tech Stack 🌹
 
-- React + TypeScript (because we're fancy)
-- Vite (zoom zoom!)
-- TanStack Query (data fetching magic)
-- Tailwind CSS + shadcn/ui (looking good!)
-- FaunaDB (where data dreams come true)
-- Dropbox API (file storage extraordinaire)
+- React + TypeScript
+- Vite
+- TanStack Query
+- Tailwind CSS + shadcn/ui
+- FaunaDB
+- Dropbox API
+- i18next
 
 ## PWA Features 🌻
 
-- Works offline (like a boss)
-- Responsive design (looks great everywhere)
-- Push notifications (we'll keep you posted)
+- Works offline
+- Responsive design
+- Push notifications
+- Status indicators
+- Document caching
 
-For more details, check out `/docs` in the app. We promise it's a fun read! 
-
-Made with 💖 and probably too much coffee ☕
+Made with 💖 by BelaProDev
