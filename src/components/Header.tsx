@@ -19,7 +19,7 @@ const maintenanceFields = [
 const Header = () => {
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
   const { isAuthenticated, logout } = useAuth();
-  const { t } = useTranslation();
+  const { t } = useTranslation(["common", "services"]);
 
   useEffect(() => {
     const handleStatusChange = () => {
@@ -43,7 +43,7 @@ const Header = () => {
           className="absolute top-2 right-2 md:right-4 flex items-center gap-1 z-50 font-semibold"
         >
           <WifiOff className="h-3 w-3" />
-          {t("common.offline")}
+          {t("common:common.offline")}
         </Badge>
       )}
       <div className="container mx-auto px-4 py-4">
@@ -52,11 +52,11 @@ const Header = () => {
             <div className="flex-shrink-0">
               <img 
                 src="/forest-lidar.png" 
-                alt={t("app.name")}
+                alt={t("common:app.name")}
                 className="h-8 w-auto object-contain border border-[#2e5984] border-solid p-0.5"
               />
             </div>
-            <span className="text-[#2E5984]">{t("app.name")}</span>
+            <span className="text-[#2E5984]">{t("common:app.name")}</span>
           </Link>
 
           <div className="flex items-center gap-4">
@@ -68,7 +68,7 @@ const Header = () => {
                   to={field.path}
                   className="text-[#2E5984] hover:text-[#4A90E2] font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#2E5984] focus:ring-offset-2 rounded-md px-2 py-1"
                 >
-                  {t(`services.${field.name}.title`)}
+                  {t(`services:${field.name}.title`)}
                 </Link>
               ))}
               {isAuthenticated && (
@@ -78,7 +78,7 @@ const Header = () => {
                   className="flex items-center gap-2 text-[#2E5984] hover:text-[#4A90E2] ml-4"
                 >
                   <LogOut className="h-4 w-4" />
-                  {t("auth.signOut")}
+                  {t("common:auth.signOut")}
                 </Button>
               )}
             </div>
@@ -102,7 +102,7 @@ const Header = () => {
                     to={field.path}
                     className="text-lg text-[#2E5984] hover:text-[#4A90E2] font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#2E5984] rounded-md px-2 py-1"
                   >
-                    {t(`services.${field.name}.title`)}
+                    {t(`services:${field.name}.title`)}
                   </Link>
                 ))}
                 {isAuthenticated && (
@@ -112,7 +112,7 @@ const Header = () => {
                     className="flex items-center gap-2 text-[#2E5984] hover:text-[#4A90E2] mt-4"
                   >
                     <LogOut className="h-4 w-4" />
-                    {t("auth.signOut")}
+                    {t("common:auth.signOut")}
                   </Button>
                 )}
               </div>

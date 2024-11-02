@@ -10,32 +10,32 @@ import { useTranslation } from "react-i18next";
 const services = [
   {
     icon: Zap,
-    title: "services.electrical.title",
-    description: "services.electrical.description",
+    title: "electrical",
+    description: "electrical.description",
     path: "/electrics",
   },
   {
     icon: Wrench,
-    title: "services.plumbing.title",
-    description: "services.plumbing.description",
+    title: "plumbing",
+    description: "plumbing.description",
     path: "/plumbing",
   },
   {
     icon: Building2,
-    title: "services.ironwork.title",
-    description: "services.ironwork.description",
+    title: "ironwork",
+    description: "ironwork.description",
     path: "/ironwork",
   },
   {
     icon: Hammer,
-    title: "services.woodworking.title",
-    description: "services.woodworking.description",
+    title: "woodworking",
+    description: "woodworking.description",
     path: "/woodwork",
   },
   {
     icon: PencilRuler,
-    title: "services.architecture.title",
-    description: "services.architecture.description",
+    title: "architecture",
+    description: "architecture.description",
     path: "/architecture",
   },
 ];
@@ -43,7 +43,7 @@ const services = [
 const Index = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
-  const { t } = useTranslation();
+  const { t } = useTranslation("services");
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F5F1EA]">
@@ -83,11 +83,11 @@ const Index = () => {
                 <CardHeader>
                   <div className="flex items-center gap-4">
                     <service.icon className="h-8 w-8 text-[#2E5984] flex-shrink-0" />
-                    <CardTitle className="flex-1">{t(service.title)}</CardTitle>
+                    <CardTitle className="flex-1">{t(`${service.title}.title`)}</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent className="flex flex-col flex-1">
-                  <p className="text-gray-600 mb-4 flex-1">{t(service.description)}</p>
+                  <p className="text-gray-600 mb-4 flex-1">{t(`${service.title}.description`)}</p>
                   <Button 
                     onClick={() => navigate(service.path)}
                     variant="outline" 
