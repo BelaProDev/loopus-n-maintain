@@ -1,0 +1,40 @@
+{
+  "app": {
+    "name": "Loopus & Maintain",
+    "description": "Servicios de mantenimiento profesional para su propiedad"
+  },
+  "nav": {
+    "home": "Inicio",
+    "services": "Servicios",
+    "contact": "Contacto",
+    "admin": "Admin Loopus",
+    "docs": "Documentación"
+  },
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "submit": "Enviar",
+    "loading": "Cargando...",
+    "success": "Éxito",
+    "error": "Error",
+    "required": "Requerido",
+    "optional": "Opcional",
+    "actions": "Acciones",
+    "status": "Estado",
+    "na": "N/D",
+    "offline": "Sin conexión",
+    "language": "Cambiar idioma",
+    "languageChanged": "Idioma cambiado",
+    "languageChangeSuccess": "Idioma actualizado correctamente",
+    "languageChangeError": "Error al cambiar el idioma",
+    "contact": "Contacto",
+    "learnMore": "Más información"
+  },
+  "language": {
+    "en": "Inglés",
+    "es": "Español",
+    "fr": "Francés"
+  }
+}

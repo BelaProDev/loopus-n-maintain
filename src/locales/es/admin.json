@@ -1,0 +1,60 @@
+{
+  "title": "Panel de Administración",
+  "whatsapp": "Números de WhatsApp",
+  "whatsappUpdate": "Actualizar números de WhatsApp",
+  "whatsappUpdateSuccess": "Números de WhatsApp actualizados correctamente",
+  "whatsappUpdateError": "Error al actualizar los números de WhatsApp",
+  "whatsappPlaceholder": "Ingrese el número de WhatsApp para {{service}}",
+  "logo": "Logo",
+  "navigation": "Enlaces de navegación",
+  "email": {
+    "title": "Gestión de correos",
+    "add": "Agregar correo",
+    "edit": "Editar correo",
+    "type": "Tipo",
+    "addSuccess": "Correo agregado correctamente",
+    "addError": "Error al agregar correo",
+    "updateSuccess": "Correo actualizado correctamente",
+    "updateError": "Error al actualizar correo",
+    "deleteSuccess": "Correo eliminado correctamente",
+    "deleteError": "Error al eliminar correo"
+  },
+  "business": {
+    "title": "Gestión de negocios",
+    "providers": {
+      "title": "Proveedores de servicios",
+      "add": "Agregar proveedor",
+      "edit": "Editar proveedor",
+      "update": "Actualizar proveedor",
+      "name": "Nombre",
+      "service": "Servicio",
+      "rating": "Calificación",
+      "available": "Disponible",
+      "unavailable": "No disponible",
+      "actions": "Acciones",
+      "selectService": "Seleccionar servicio"
+    },
+    "clients": {
+      "title": "Clientes",
+      "add": "Agregar cliente",
+      "edit": "Editar cliente",
+      "name": "Nombre",
+      "email": "Correo",
+      "phone": "Teléfono",
+      "company": "Empresa",
+      "vatNumber": "Número de IVA"
+    }
+  },
+  "documents": {
+    "title": "Gestión de documentos",
+    "upload": "Subir archivo",
+    "uploading": "Subiendo...",
+    "createFolder": "Crear carpeta",
+    "refresh": "Actualizar",
+    "disconnect": "Desconectar Dropbox",
+    "connecting": "Conectando a Dropbox...",
+    "wait": "Por favor espere mientras se autentica.",
+    "success": "Conexión exitosa a Dropbox",
+    "error": "Error al conectar con Dropbox"
+  }
+}

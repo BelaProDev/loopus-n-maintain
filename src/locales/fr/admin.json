@@ -1,0 +1,60 @@
+{
+  "title": "Panneau d'administration",
+  "whatsapp": "Numéros WhatsApp",
+  "whatsappUpdate": "Mettre à jour les numéros WhatsApp",
+  "whatsappUpdateSuccess": "Numéros WhatsApp mis à jour avec succès",
+  "whatsappUpdateError": "Échec de la mise à jour des numéros WhatsApp",
+  "whatsappPlaceholder": "Entrez le numéro WhatsApp pour {{service}}",
+  "logo": "Logo",
+  "navigation": "Liens de navigation",
+  "email": {
+    "title": "Gestion des e-mails",
+    "add": "Ajouter un e-mail",
+    "edit": "Modifier l'e-mail",
+    "type": "Type",
+    "addSuccess": "E-mail ajouté avec succès",
+    "addError": "Échec de l'ajout de l'e-mail",
+    "updateSuccess": "E-mail mis à jour avec succès",
+    "updateError": "Échec de la mise à jour de l'e-mail",
+    "deleteSuccess": "E-mail supprimé avec succès",
+    "deleteError": "Échec de la suppression de l'e-mail"
+  },
+  "business": {
+    "title": "Gestion d'entreprise",
+    "providers": {
+      "title": "Prestataires de services",
+      "add": "Ajouter un prestataire",
+      "edit": "Modifier le prestataire",
+      "update": "Mettre à jour le prestataire",
+      "name": "Nom",
+      "service": "Service",
+      "rating": "Évaluation",
+      "available": "Disponible",
+      "unavailable": "Indisponible",
+      "actions": "Actions",
+      "selectService": "Sélectionner un service"
+    },
+    "clients": {
+      "title": "Clients",
+      "add": "Ajouter un client",
+      "edit": "Modifier le client",
+      "name": "Nom",
+      "email": "E-mail",
+      "phone": "Téléphone",
+      "company": "Entreprise",
+      "vatNumber": "Numéro de TVA"
+    }
+  },
+  "documents": {
+    "title": "Gestion des documents",
+    "upload": "Téléverser un fichier",
+    "uploading": "Téléversement en cours...",
+    "createFolder": "Créer un dossier",
+    "refresh": "Actualiser",
+    "disconnect": "Déconnecter Dropbox",
+    "connecting": "Connexion à Dropbox...",
+    "wait": "Veuillez patienter pendant l'authentification.",
+    "success": "Connexion réussie à Dropbox",
+    "error": "Échec de la connexion à Dropbox"
+  }
+}

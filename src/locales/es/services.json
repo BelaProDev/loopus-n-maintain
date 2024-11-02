@@ -1,0 +1,64 @@
+{
+  "electrical": {
+    "title": "Electricidad",
+    "description": "Servicios profesionales de mantenimiento y reparación eléctrica",
+    "issues": {
+      "powerOutage": "Corte de energía",
+      "circuitBreaker": "Problemas con el disyuntor",
+      "flickeringLights": "Luces parpadeantes",
+      "outletNotWorking": "Tomacorriente sin funcionar"
+    }
+  },
+  "plumbing": {
+    "title": "Fontanería",
+    "description": "Soluciones expertas en fontanería para su hogar o negocio",
+    "issues": {
+      "leaks": "Fugas",
+      "clogs": "Atascos",
+      "lowPressure": "Baja presión de agua",
+      "waterHeater": "Problemas con el calentador"
+    }
+  },
+  "woodworking": {
+    "title": "Carpintería",
+    "description": "Servicios expertos de carpintería para su hogar",
+    "issues": {
+      "repairs": "Reparaciones de muebles",
+      "restoration": "Restauración de madera",
+      "customWork": "Trabajo personalizado",
+      "installation": "Servicios de instalación"
+    }
+  },
+  "ironwork": {
+    "title": "Herrería",
+    "description": "Servicios profesionales de herrería funcional y decorativa",
+    "issues": {
+      "rust": "Óxido y corrosión",
+      "structuralDamage": "Daño estructural",
+      "weldingRepairs": "Reparaciones de soldadura",
+      "gateFenceIssues": "Problemas con puertas y cercas"
+    }
+  },
+  "architecture": {
+    "title": "Arquitectura",
+    "description": "Diseño arquitectónico profesional y servicios de planificación",
+    "issues": {
+      "designConsultation": "Consulta de diseño",
+      "permitAssistance": "Asistencia con permisos",
+      "renovationPlanning": "Planificación de renovaciones",
+      "structuralAssessment": "Evaluación estructural"
+    }
+  },
+  "quickHelp": "Ayuda rápida",
+  "whatsapp": {
+    "contact": "Contactar por WhatsApp",
+    "message": "Hola, necesito ayuda con los siguientes problemas: {{issues}}"
+  },
+  "faq": {
+    "title": "Preguntas frecuentes",
+    "powerOutageQ": "¿Qué debo hacer durante un corte de energía?",
+    "powerOutageA": "Primero, verifique si sus vecinos tienen energía. Si la tienen, revise sus disyuntores. Si no, contacte a su compañía eléctrica.",
+    "inspectionQ": "¿Con qué frecuencia debo realizar una inspección eléctrica?",
+    "inspectionA": "Recomendamos realizar una inspección profesional cada 3-5 años, o al comprar una nueva propiedad."
+  }
+}
