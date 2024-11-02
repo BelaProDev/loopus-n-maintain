@@ -25,6 +25,10 @@ const Login = () => {
     
     try {
       await login(email, password);
+      toast({
+        title: t("auth:signInSuccess"),
+        description: t("auth:welcomeBack"),
+      });
       const from = location.state?.from?.pathname || "/";
       navigate(from);
     } catch (error) {
@@ -56,13 +60,13 @@ const Login = () => {
       </Button>
       <Card className="w-[400px] shadow-lg">
         <CardHeader>
-          <CardTitle className="text-2xl text-[#2E5984]">{t("auth:signIn")}</CardTitle>
+          <CardTitle className="text-2xl text-[#2E5984]">{t("auth:welcome")}</CardTitle>
           <CardDescription>{t("auth:accessAccount")}</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">{t("common:forms.email")}</Label>
+              <Label htmlFor="email">{t("auth:email")}</Label>
               <Input
                 id="email"
                 type="email"
@@ -75,7 +79,7 @@ const Login = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">{t("common:forms.password")}</Label>
+              <Label htmlFor="password">{t("auth:password")}</Label>
               <Input
                 id="password"
                 type="password"

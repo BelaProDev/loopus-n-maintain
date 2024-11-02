@@ -27,13 +27,13 @@ const KoalaxAuth = () => {
         };
         sessionStorage.setItem('koalax_auth', JSON.stringify(sessionData));
         
-        const from = location.state?.from?.pathname || "/koalax/emails";
-        navigate(from);
-
         toast({
           title: t("auth:signInSuccess"),
           description: t("auth:welcomeBack"),
         });
+
+        const from = location.state?.from?.pathname || "/koalax/emails";
+        navigate(from);
       } else {
         throw new Error(t("auth:invalidCreds"));
       }
@@ -58,7 +58,7 @@ const KoalaxAuth = () => {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="password">{t("common:forms.password")}</Label>
+              <Label htmlFor="password">{t("auth:password")}</Label>
               <Input
                 id="password"
                 type="password"
