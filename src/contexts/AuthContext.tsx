@@ -26,10 +26,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const checkAuth = () => {
     const session = localStorage.getItem('craft_coordination_session');
     if (session) {
-      const sessionData = JSON.parse(session);
-      setIsAuthenticated(true);
-      setUserEmail(sessionData.email);
-      return true;
+      try {
+        const sessionData = JSON.parse(session);
+        if (sessionData.email) {
+          setIsAuthenticated(true);
+          setUserEmail(sessionData.email);
+          return true;
+        }
+      } catch (error) {
+        localStorage.removeItem('craft_coordination_session');
+      }
     }
     return false;
   };
@@ -43,9 +49,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setIsAuthenticated(true);
       setUserEmail(user.email);
       
-      localStorage.setItem('craft_coordination_session', JSON.stringify({
-        email: user.email
-      }));
+      const sessionData = {
+        email: user.email,
+        timestamp: Date.now()
+      };
+      
+      localStorage.setItem('craft_coordination_session', JSON.stringify(sessionData));
       
       toast({
         title: "Login successful",

@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Home } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -15,6 +15,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
   const { login, isAuthenticated } = useAuth();
   const { t } = useTranslation(["common", "auth"]);
 
@@ -24,7 +25,8 @@ const Login = () => {
     
     try {
       await login(email, password);
-      navigate("/");
+      const from = location.state?.from?.pathname || "/";
+      navigate(from);
     } catch (error) {
       toast({
         title: t("auth:auth.authError"),
@@ -69,6 +71,7 @@ const Login = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={isLoading}
+                className="px-4 py-3"
               />
             </div>
             <div className="space-y-2">
@@ -81,6 +84,7 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={isLoading}
+                className="px-4 py-3"
               />
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
