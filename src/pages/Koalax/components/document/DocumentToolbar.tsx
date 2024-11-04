@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { FolderOpen, Upload, RefreshCw } from "lucide-react";
+import { RefreshCw, LogOut, FolderPlus, Upload } from "lucide-react";
 
 interface DocumentToolbarProps {
   onCreateInvoiceFolder: () => void;
@@ -18,44 +18,34 @@ const DocumentToolbar = ({
   onLogout,
   currentPath,
 }: DocumentToolbarProps) => {
-  const isRootDirectory = currentPath === "/";
-
   return (
     <div className="flex flex-wrap gap-2">
-      <Button onClick={onRefresh} className="w-full sm:w-auto">
+      <Button variant="outline" onClick={onCreateInvoiceFolder}>
+        <FolderPlus className="w-4 h-4 mr-2" />
+        Create Invoices Folder
+      </Button>
+      
+      <Button variant="outline" asChild>
+        <label className="cursor-pointer">
+          <Upload className="w-4 h-4 mr-2" />
+          {isUploading ? 'Uploading...' : 'Upload File'}
+          <input
+            type="file"
+            className="hidden"
+            onChange={onFileSelect}
+            disabled={isUploading}
+          />
+        </label>
+      </Button>
+
+      <Button variant="outline" onClick={onRefresh}>
         <RefreshCw className="w-4 h-4 mr-2" />
         Refresh
       </Button>
-      <Button 
-        onClick={onCreateInvoiceFolder} 
-        disabled={!isRootDirectory}
-        title={!isRootDirectory ? "Only available in root directory" : ""}
-        className="w-full sm:w-auto"
-      >
-        <FolderOpen className="w-4 h-4 mr-2" />
-        Create Invoices Folder
-      </Button>
-      <div className="flex-1 hidden sm:block" />
-      <input
-        type="file"
-        id="file-upload"
-        className="hidden"
-        onChange={onFileSelect}
-      />
-      <Button
-        onClick={() => document.getElementById("file-upload")?.click()}
-        disabled={isUploading}
-        className="w-full sm:w-auto"
-      >
-        <Upload className="w-4 h-4 mr-2" />
-        {isUploading ? "Uploading..." : "Upload File"}
-      </Button>
-      <Button 
-        variant="outline" 
-        onClick={onLogout}
-        className="w-full sm:w-auto"
-      >
-        Disconnect Dropbox
+
+      <Button variant="outline" onClick={onLogout}>
+        <LogOut className="w-4 h-4 mr-2" />
+        Disconnect
       </Button>
     </div>
   );

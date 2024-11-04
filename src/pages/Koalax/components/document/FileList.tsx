@@ -1,76 +1,71 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { format } from "date-fns";
-import { files } from "dropbox";
-import { Trash2, Download, Folder } from "lucide-react";
-
-type DropboxFile = files.FileMetadata | files.FolderMetadata | files.DeletedMetadata;
+import { Folder, File, Download, Trash2 } from "lucide-react";
 
 interface FileListProps {
-  files: DropboxFile[] | undefined;
-  onDownload: (path: string | undefined, name: string) => void;
+  files?: Array<{
+    '.tag': string;
+    name: string;
+    path_display?: string;
+  }>;
+  onDownload: (path: string | undefined, fileName: string) => void;
   onDelete: (path: string | undefined) => void;
   onNavigate: (path: string) => void;
 }
 
-const FileList = ({ files, onDownload, onDelete, onNavigate }: FileListProps) => {
+const FileList = ({ files = [], onDownload, onDelete, onNavigate }: FileListProps) => {
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Name</TableHead>
-          <TableHead>Modified</TableHead>
-          <TableHead>Size</TableHead>
-          <TableHead className="text-right">Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {files?.map((file) => {
-          if (file['.tag'] === 'deleted') return null;
-          
-          const key = 'path_lower' in file ? file.path_lower : '';
-          const isFolder = file['.tag'] === 'folder';
-          
-          return (
-            <TableRow key={key} className={isFolder ? 'cursor-pointer hover:bg-muted/50' : ''}>
-              <TableCell 
-                className="flex items-center gap-2"
-                onClick={() => isFolder && file.path_display && onNavigate(file.path_display)}
-              >
-                {isFolder && <Folder className="h-4 w-4" />}
-                {file.name}
-              </TableCell>
-              <TableCell>
-                {'client_modified' in file && file.client_modified
-                  ? format(new Date(file.client_modified), 'PPp')
-                  : 'N/A'}
-              </TableCell>
-              <TableCell>
-                {'size' in file ? `${Math.round(file.size / 1024)} KB` : 'N/A'}
-              </TableCell>
-              <TableCell className="text-right space-x-2">
-                {!isFolder && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onDownload(file.path_display, file.name)}
-                  >
-                    <Download className="w-4 h-4" />
-                  </Button>
-                )}
+    <div className="space-y-2">
+      {files.map((file, index) => (
+        <div
+          key={index}
+          className="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
+        >
+          <div className="flex items-center gap-3">
+            {file['.tag'] === 'folder' ? (
+              <Folder className="w-5 h-5 text-blue-500" />
+            ) : (
+              <File className="w-5 h-5 text-gray-500" />
+            )}
+            <span
+              className={file['.tag'] === 'folder' ? 'cursor-pointer hover:text-blue-500' : ''}
+              onClick={() => {
+                if (file['.tag'] === 'folder' && file.path_display) {
+                  onNavigate(file.path_display);
+                }
+              }}
+            >
+              {file.name}
+            </span>
+          </div>
+
+          <div className="flex gap-2">
+            {file['.tag'] === 'file' && (
+              <>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onDownload(file.path_display, file.name)}
+                >
+                  <Download className="w-4 h-4" />
+                </Button>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => onDelete(file.path_display)}
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="w-4 h-4 text-red-500" />
                 </Button>
-              </TableCell>
-            </TableRow>
-          );
-        })}
-      </TableBody>
-    </Table>
+              </>
+            )}
+          </div>
+        </div>
+      ))}
+      {files.length === 0 && (
+        <div className="text-center py-8 text-gray-500">
+          No files or folders found
+        </div>
+      )}
+    </div>
   );
 };
 
