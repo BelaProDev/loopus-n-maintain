@@ -17,11 +17,11 @@ export function useEmails() {
 
   const emailsQuery = useQuery({
     queryKey: ['emails'],
-    queryFn: faunaQueries.getAllEmails,
+    queryFn: () => Promise.resolve(faunaQueries.getAllEmails()),
   });
 
   const createEmailMutation = useMutation({
-    mutationFn: faunaQueries.createEmail,
+    mutationFn: (data: any) => Promise.resolve(faunaQueries.createEmail(data)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['emails'] });
       toast({ title: "Success", description: "Email added successfully" });
@@ -33,7 +33,7 @@ export function useEmails() {
 
   const updateEmailMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: Email['data'] }) => 
-      faunaQueries.updateEmail(id, data),
+      Promise.resolve(faunaQueries.updateEmail(id, data)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['emails'] });
       toast({ title: "Success", description: "Email updated successfully" });
@@ -44,7 +44,7 @@ export function useEmails() {
   });
 
   const deleteEmailMutation = useMutation({
-    mutationFn: faunaQueries.deleteEmail,
+    mutationFn: (id: string) => Promise.resolve(faunaQueries.deleteEmail(id)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['emails'] });
       toast({ title: "Success", description: "Email deleted successfully" });
