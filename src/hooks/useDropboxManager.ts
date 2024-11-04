@@ -5,7 +5,7 @@ import { uploadFile, listFiles, downloadFile, deleteFile, createFolder } from "@
 import { dropboxAuth } from "@/lib/auth/dropbox";
 
 export const useDropboxManager = (currentPath: string) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(!!dropboxAuth.getAccessToken());
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -78,13 +78,6 @@ export const useDropboxManager = (currentPath: string) => {
   const handleLogin = async () => {
     try {
       await dropboxAuth.initiateAuth();
-      // Since initiateAuth redirects, we don't need to check its return value
-      setIsAuthenticated(true);
-      toast({
-        title: "Success",
-        description: "Successfully connected to Dropbox",
-      });
-      await refetch();
     } catch (error) {
       toast({
         title: "Authentication Failed",

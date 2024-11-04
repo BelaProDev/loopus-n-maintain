@@ -8,18 +8,16 @@ const getRedirectUri = () =>
   isBrowser ? `${window.location.origin}/koalax/dropbox-callback` : '';
 
 const getStorageValue = (key: string): string | null => 
-  isBrowser ? localStorage.getItem(key) || sessionStorage.getItem(key) : null;
+  isBrowser ? localStorage.getItem(key) : null;
 
-const setStorageValue = (key: string, value: string, persistent = true) => {
+const setStorageValue = (key: string, value: string) => {
   if (!isBrowser) return;
-  const storage = persistent ? localStorage : sessionStorage;
-  storage.setItem(key, value);
+  localStorage.setItem(key, value);
 };
 
 const clearStorageValue = (key: string) => {
   if (!isBrowser) return;
   localStorage.removeItem(key);
-  sessionStorage.removeItem(key);
 };
 
 export const dropboxAuth = {
@@ -27,7 +25,7 @@ export const dropboxAuth = {
     if (!isBrowser || !CLIENT_ID) throw new Error('Dropbox client ID not configured');
     
     const state = crypto.randomUUID();
-    setStorageValue('dropbox_state', state, false);
+    setStorageValue('dropbox_state', state);
 
     const params = new URLSearchParams({
       client_id: CLIENT_ID,
@@ -41,10 +39,9 @@ export const dropboxAuth = {
   },
 
   async handleCallback(code: string) {
-    if (!code || !CLIENT_ID || !CLIENT_SECRET) return null;
-    
-    const storedState = getStorageValue('dropbox_state');
-    clearStorageValue('dropbox_state');
+    if (!code || !CLIENT_ID || !CLIENT_SECRET) {
+      throw new Error('Missing required auth parameters');
+    }
     
     try {
       const formData = new URLSearchParams();
@@ -68,6 +65,11 @@ export const dropboxAuth = {
       }
 
       const data = await response.json();
+      
+      if (!data.access_token) {
+        throw new Error('No access token received');
+      }
+
       setStorageValue('dropbox_tokens', JSON.stringify({
         access_token: data.access_token,
         refresh_token: data.refresh_token,
@@ -75,24 +77,9 @@ export const dropboxAuth = {
 
       return data.access_token;
     } catch (error) {
-      console.error('Error exchanging code for token:', error);
+      console.error('Token exchange error:', error);
       throw error;
     }
-  },
-
-  handleRedirect(hash: string) {
-    if (!hash) return null;
-    
-    const params = new URLSearchParams(hash.substring(1));
-    const code = params.get('code');
-    const state = params.get('state');
-    const storedState = getStorageValue('dropbox_state');
-    
-    if (!state || state !== storedState) {
-      throw new Error('Invalid state parameter');
-    }
-    
-    return this.handleCallback(code || '');
   },
 
   logout() {
