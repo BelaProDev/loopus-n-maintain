@@ -77,15 +77,14 @@ export const useDropboxManager = (currentPath: string) => {
 
   const handleLogin = async () => {
     try {
-      const response = await dropboxAuth.initiateAuth();
-      if (response && typeof response === 'object' && 'access_token' in response) {
-        setIsAuthenticated(true);
-        toast({
-          title: "Success",
-          description: "Successfully connected to Dropbox",
-        });
-        refetch();
-      }
+      await dropboxAuth.initiateAuth();
+      // Since initiateAuth redirects, we don't need to check its return value
+      setIsAuthenticated(true);
+      toast({
+        title: "Success",
+        description: "Successfully connected to Dropbox",
+      });
+      await refetch();
     } catch (error) {
       toast({
         title: "Authentication Failed",
