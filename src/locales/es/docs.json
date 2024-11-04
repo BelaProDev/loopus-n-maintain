@@ -2,58 +2,54 @@
   "title": "Documentación",
   "overview": {
     "title": "Descripción General",
-    "description": "¡Bienvenido a Loopus & Maintain - donde mantenemos edificios con profesionalismo! Nuestra PWA ayuda a coordinar servicios de mantenimiento, porque alguien tiene que mantener esos edificios en pie (¡y somos bastante buenos en ello!) 🏗️"
+    "description": "¡Bienvenido a Loopus & Maintain - donde mantenemos edificios con la misma dedicación que Sísifo tenía por su piedra! Nuestra PWA ayuda a coordinar servicios de mantenimiento porque, como diría Kafka, 'En la lucha entre tú y el edificio, apuesta por el edificio.' 🏗️"
   },
   "features": {
     "title": "Características Actuales",
     "corePlatform": {
       "title": "Plataforma Principal",
-      "multilanguage": "Soporte Multilingüe (EN, ES, FR)",
-      "auth": "Autenticación y Sesiones Seguras",
-      "email": "Sistema de Gestión de Correos",
-      "content": "Gestión de Contenido con Respaldo Offline",
-      "business": "Funciones de Gestión Empresarial",
-      "documents": "Almacenamiento y Gestión de Documentos"
+      "multilanguage": "Soporte Multilingüe (EN, ES, FR) - Porque Babel no era solo una torre",
+      "auth": "Autenticación Segura - Más capas que el Infierno de Dante",
+      "email": "Sistema de Gestión de Correos - Más rápido que las sandalias aladas de Hermes",
+      "content": "Gestión de Contenido con Respaldo - Como la biblioteca infinita de Borges, pero organizada",
+      "business": "Funciones de Gestión Empresarial - Más fluido que las fiestas de Gatsby",
+      "documents": "Almacenamiento y Gestión - Un sistema que enorgullecería a Dewey"
     },
     "services": {
       "title": "Servicios de Mantenimiento",
-      "electrical": "Mantenimiento Eléctrico",
-      "plumbing": "Servicios de Fontanería",
-      "ironwork": "Soluciones de Herrería",
-      "woodworking": "Carpintería",
-      "architecture": "Consultoría Arquitectónica"
+      "electrical": "Mantenimiento Eléctrico - Dominando el poder de Zeus responsablemente",
+      "plumbing": "Servicios de Fontanería - Navegando tuberías como Teseo en el laberinto",
+      "ironwork": "Soluciones de Herrería - Forjadas con la precisión de Hefesto",
+      "woodworking": "Carpintería - Trabajo que impresionaría a Geppetto",
+      "architecture": "Consultoría Arquitectónica - Porque hasta Poe se preocupaba por los cimientos de la Casa Usher"
     }
   },
   "admin": {
     "title": "Características de Administrador",
     "content": {
       "title": "Gestión de Contenido",
-      "multilanguage": "Edición de Contenido Multilingüe",
-      "offline": "Base de Datos de Respaldo Offline",
-      "editor": "Soporte de Editor de Texto Enriquecido",
-      "version": "Sistema de Control de Versiones"
+      "multilanguage": "Edición Multilingüe - Como la Piedra Rosetta, pero digital",
+      "offline": "Respaldo de Base de Datos - Para cuando Mercurio está retrógrado",
+      "editor": "Editor de Texto Enriquecido - Más poderoso que la espada",
+      "version": "Control de Versiones - Viajes en el tiempo sin la máquina de Wells"
     },
     "business": {
       "title": "Herramientas de Negocio",
-      "management": "Gestión de Clientes y Proveedores",
-      "tracking": "Sistema de Seguimiento de Servicios",
-      "invoice": "Generación de Facturas",
-      "rating": "Sistema de Calificación y Reseñas"
+      "management": "Gestión de Clientes y Proveedores - Una red digna de Dickens",
+      "tracking": "Sistema de Seguimiento - Más preciso que el itinerario de Phileas Fogg",
+      "invoice": "Generación de Facturas - Mejor contabilidad que Bob Cratchit",
+      "rating": "Sistema de Calificación - Análisis crítico digno de Virginia Woolf"
     }
   },
   "technical": {
     "title": "Detalles Técnicos",
     "pwa": {
       "title": "Características PWA",
-      "offline": "Funcionalidad Offline",
-      "notifications": "Notificaciones Push",
-      "workers": "Service Workers",
-      "storage": "Almacenamiento IndexedDB",
-      "updates": "Actualizaciones en Tiempo Real"
-    },
-    "setup": {
-      "title": "Configuración del Entorno",
-      "env": "Variables de Entorno"
+      "offline": "Funcionalidad Offline - Como Robinson Crusoe, pero con mejores herramientas",
+      "notifications": "Notificaciones Push - Más fiables que el cuervo de Poe",
+      "workers": "Service Workers - Más trabajadores que Boxer de Rebelión en la Granja",
+      "storage": "Almacenamiento IndexedDB - Una Alejandría digital",
+      "updates": "Actualizaciones en Tiempo Real - Más veloces que los mensajes de Hermes"
     }
   }
 }
