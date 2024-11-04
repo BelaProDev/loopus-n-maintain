@@ -20,7 +20,8 @@ const ClientList = () => {
   });
 
   const createMutation = useMutation({
-    mutationFn: businessQueries.createClient,
+    mutationFn: (clientData: Omit<Client, 'id' | 'totalInvoices' | 'totalAmount' | 'status'>) => 
+      businessQueries.createClient(clientData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clients'] });
       toast({ title: "Success", description: "Client added successfully" });

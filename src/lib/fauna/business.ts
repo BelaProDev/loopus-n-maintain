@@ -1,7 +1,13 @@
 import { getFaunaClient, handleFaunaError } from './client';
 import { fql } from 'fauna';
+import type { QueryArgument } from 'fauna';
 import fallbackDb from '../fallback-db.json';
 import { Client, Provider, Invoice } from '@/types/business';
+
+type FaunaData<T> = {
+  data: T;
+  ref: { id: string };
+};
 
 export const businessQueries = {
   getClients: async () => {
@@ -19,6 +25,29 @@ export const businessQueries = {
       return result.data;
     } catch (error) {
       return fallbackDb.clients;
+    }
+  },
+
+  createClient: async (data: Omit<Client, 'id' | 'totalInvoices' | 'totalAmount' | 'status'>) => {
+    const client = getFaunaClient();
+    if (!client) return null;
+
+    const clientData = {
+      ...data,
+      totalInvoices: 0,
+      totalAmount: 0,
+      status: 'active'
+    };
+
+    try {
+      const result = await client.query(fql`
+        Collection.byName("clients")?.create({
+          data: ${clientData as QueryArgument}
+        })
+      `);
+      return result.data;
+    } catch (error) {
+      return null;
     }
   },
 
@@ -62,10 +91,22 @@ export const businessQueries = {
     const client = getFaunaClient();
     if (!client) return null;
 
+    // Convert invoice items to plain objects for Fauna
+    const invoiceData = {
+      ...data,
+      items: data.items.map(item => ({
+        id: item.id,
+        description: item.description,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+        total: item.total
+      }))
+    };
+
     try {
       const result = await client.query(fql`
         Collection.byName("invoices")?.create({
-          data: ${data}
+          data: ${invoiceData as QueryArgument}
         })
       `);
       return result.data;
