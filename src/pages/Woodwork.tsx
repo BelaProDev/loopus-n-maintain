@@ -13,12 +13,12 @@ const Woodwork = () => {
 
   const faqs = [
     {
-      question: "services:faq.woodTypeQ",
-      answer: "services:faq.woodTypeA"
+      question: "faq.woodTypeQ",
+      answer: "faq.woodTypeA"
     },
     {
-      question: "services:faq.maintenanceQ",
-      answer: "services:faq.maintenanceA"
+      question: "faq.maintenanceQ",
+      answer: "faq.maintenanceA"
     }
   ];
 
