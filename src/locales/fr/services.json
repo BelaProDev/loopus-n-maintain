@@ -56,25 +56,45 @@
   },
   "faq": {
     "title": "Questions Fréquentes",
-    "designProcessQ": "Quel est votre processus de conception architecturale ?",
-    "designProcessA": "Notre processus comprend la consultation initiale, le développement du concept, la planification détaillée et la documentation finale avec un retour régulier du client.",
-    "timelineQ": "Combien de temps prend un projet architectural typique ?",
-    "timelineA": "Les délais varient selon la portée, mais généralement de 2 à 6 mois pour la conception et la documentation, hors temps de construction.",
-    "woodTypeQ": "Avec quels types de bois travaillez-vous ?",
-    "woodTypeA": "Nous travaillons avec une large gamme de bois incluant chêne, érable, pin, noyer et bois exotiques, choisissant le meilleur matériau pour votre projet.",
-    "maintenanceQ": "Comment dois-je entretenir mes meubles en bois ?",
-    "maintenanceA": "Un dépoussiérage régulier, éviter la lumière directe du soleil et un polissage périodique avec des produits adaptés maintiendront la beauté de vos meubles.",
-    "rustPreventionQ": "Comment prévenir la rouille sur mes ouvrages en fer ?",
-    "rustPreventionA": "Un nettoyage régulier, l'entretien du revêtement et la protection contre l'humidité excessive sont essentiels pour prévenir la rouille.",
-    "servicesQ": "Quels types de services de ferronnerie proposez-vous ?",
-    "servicesA": "Nous proposons la fabrication sur mesure, les réparations, la restauration et l'installation pour les ouvrages en fer décoratifs et structurels.",
-    "plumbingInspectionQ": "À quelle fréquence dois-je faire inspecter ma plomberie ?",
-    "plumbingInspectionA": "Nous recommandons une inspection professionnelle annuelle pour prévenir les problèmes majeurs et assurer un fonctionnement efficace.",
-    "leakQ": "Que dois-je faire si je découvre une fuite d'eau ?",
-    "leakA": "D'abord, coupez l'alimentation en eau de la zone affectée. Ensuite, documentez les dégâts et contactez-nous immédiatement pour un service de réparation d'urgence.",
-    "powerOutageQ": "Que faire en cas de panne de courant ?",
-    "powerOutageA": "D'abord, vérifiez si vos voisins ont du courant. Si oui, vérifiez vos disjoncteurs. Sinon, contactez votre compagnie d'électricité.",
-    "electricalInspectionQ": "À quelle fréquence dois-je faire une inspection électrique ?",
-    "electricalInspectionA": "Nous recommandons une inspection professionnelle tous les 3-5 ans, ou lors de l'achat d'une nouvelle propriété."
+    "electrical": {
+      "safetyQ": "Quelles mesures de sécurité électrique dois-je prendre à la maison ?",
+      "safetyA": "Installez des disjoncteurs différentiels, vérifiez régulièrement le câblage, évitez de surcharger les prises et gardez l'eau éloignée des points électriques. Faites une inspection professionnelle annuelle.",
+      "costQ": "Combien coûtent généralement les réparations électriques ?",
+      "costA": "Les coûts varient selon la complexité. Les réparations mineures comme le remplacement de prises commencent à 50€, tandis que le recâblage majeur peut coûter plus de 1000€. Nous fournissons des devis détaillés avant de commencer les travaux.",
+      "emergencyQ": "Qu'est-ce qui constitue une urgence électrique ?",
+      "emergencyA": "Les odeurs de brûlé, les prises qui étincellent, les déclenchements fréquents de disjoncteurs ou la perte complète d'énergie sont des urgences. Contactez-nous immédiatement dans ces situations."
+    },
+    "plumbing": {
+      "preventionQ": "Comment puis-je prévenir les problèmes courants de plomberie ?",
+      "preventionA": "Entretien régulier, évitez les nettoyants chimiques, ne jetez pas d'objets inappropriés et réparez immédiatement les petites fuites. Les inspections professionnelles annuelles sont recommandées.",
+      "winterQ": "Comment préparer ma plomberie pour l'hiver ?",
+      "winterA": "Isolez les tuyaux, colmatez les fuites, déconnectez les tuyaux extérieurs et gardez votre maison chauffée. Sachez où se trouve votre vanne d'arrêt principale.",
+      "waterBillQ": "Pourquoi ma facture d'eau est-elle soudainement plus élevée ?",
+      "waterBillA": "Les causes courantes incluent les fuites cachées, les toilettes qui fuient ou les appareils inefficaces. Nous pouvons effectuer une inspection approfondie pour identifier la source."
+    },
+    "woodworking": {
+      "maintenanceQ": "Comment dois-je entretenir les meubles en bois ?",
+      "maintenanceA": "Nettoyez régulièrement avec des produits appropriés pour le bois, évitez la lumière directe du soleil, maintenez une humidité constante et polissez périodiquement avec des produits d'entretien de qualité.",
+      "customQ": "Que dois-je considérer pour des meubles sur mesure ?",
+      "customA": "Considérez le type de bois, la fonctionnalité, les contraintes d'espace et les préférences de style. Nous vous guiderons dans la sélection des matériaux et les options de design.",
+      "repairQ": "Tous les meubles en bois peuvent-ils être réparés ?",
+      "repairA": "La plupart des meubles en bois peuvent être réparés ou restaurés. Le succès dépend de l'étendue des dommages, du type de bois et de l'intégrité structurelle. Nous évaluons chaque pièce individuellement."
+    },
+    "ironwork": {
+      "rustQ": "Comment puis-je prévenir la rouille sur mes ouvrages en fer ?",
+      "rustA": "Le nettoyage régulier, l'entretien approprié du revêtement et la protection contre l'humidité sont essentiels. Nous recommandons des inspections et traitements professionnels annuels.",
+      "customQ": "Quels types de travaux en fer personnalisés proposez-vous ?",
+      "customA": "Nous créons des portails, des rampes, des meubles et des pièces décoratives personnalisés. Chaque projet est adapté à vos besoins spécifiques et au style architectural.",
+      "strengthQ": "Combien de temps dure généralement le travail en fer ?",
+      "strengthA": "Le travail en fer bien entretenu peut durer des décennies. L'entretien régulier et une installation initiale appropriée sont essentiels pour la longévité."
+    },
+    "architecture": {
+      "processQ": "Quel est votre processus de conception architecturale ?",
+      "processA": "Nous commençons par la consultation, développons les concepts, créons des plans détaillés, gérons les permis et supervisons la construction. Les retours réguliers du client assurent la satisfaction.",
+      "timelineQ": "Combien de temps prend un projet architectural typique ?",
+      "timelineA": "Le calendrier varie selon la portée du projet. Les petites rénovations peuvent prendre 2-3 mois, tandis que les projets plus importants peuvent prendre 6-12 mois de la conception à l'achèvement.",
+      "sustainableQ": "Proposez-vous des options de conception durable ?",
+      "sustainableA": "Oui, nous intégrons des matériaux écoénergétiques, des options solaires et des pratiques durables dans nos conceptions tout en maintenant l'attrait esthétique."
+    }
   }
 }

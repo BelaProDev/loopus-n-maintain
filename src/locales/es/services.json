@@ -56,25 +56,45 @@
   },
   "faq": {
     "title": "Preguntas Frecuentes",
-    "designProcessQ": "¿Cuál es su proceso de diseño arquitectónico?",
-    "designProcessA": "Nuestro proceso incluye consulta inicial, desarrollo del concepto, planificación detallada y documentación final con retroalimentación regular del cliente.",
-    "timelineQ": "¿Cuánto tiempo toma un proyecto arquitectónico típico?",
-    "timelineA": "Los tiempos varían según el alcance, pero generalmente van de 2 a 6 meses para diseño y documentación, excluyendo el tiempo de construcción.",
-    "woodTypeQ": "¿Con qué tipos de madera trabajan?",
-    "woodTypeA": "Trabajamos con una amplia gama de maderas incluyendo roble, arce, pino, nogal y maderas duras exóticas, eligiendo el mejor material para su proyecto específico.",
-    "maintenanceQ": "¿Cómo debo mantener mis muebles de madera?",
-    "maintenanceA": "Limpieza regular del polvo, evitar la luz solar directa y pulido periódico con productos adecuados ayudarán a mantener la belleza de sus muebles.",
-    "rustPreventionQ": "¿Cómo puedo prevenir el óxido en mis trabajos de hierro?",
-    "rustPreventionA": "La limpieza regular, el mantenimiento adecuado del recubrimiento y la protección contra la humedad excesiva son clave para prevenir el óxido.",
-    "servicesQ": "¿Qué tipos de servicios de herrería ofrecen?",
-    "servicesA": "Ofrecemos fabricación personalizada, reparaciones, restauración e instalación para trabajos de hierro tanto decorativos como estructurales.",
-    "plumbingInspectionQ": "¿Con qué frecuencia debo inspeccionar mi fontanería?",
-    "plumbingInspectionA": "Recomendamos una inspección profesional anual para prevenir problemas mayores y asegurar que todo funcione eficientemente.",
-    "leakQ": "¿Qué debo hacer si descubro una fuga de agua?",
-    "leakA": "Primero, cierre el suministro de agua del área afectada. Luego documente el daño y contáctenos inmediatamente para un servicio de reparación de emergencia.",
-    "powerOutageQ": "¿Qué debo hacer durante un corte de energía?",
-    "powerOutageA": "Primero, verifique si sus vecinos tienen energía. Si la tienen, revise sus disyuntores. Si no, contacte a su compañía eléctrica.",
-    "electricalInspectionQ": "¿Con qué frecuencia debo realizar una inspección eléctrica?",
-    "electricalInspectionA": "Recomendamos realizar una inspección profesional cada 3-5 años, o al comprar una nueva propiedad."
+    "electrical": {
+      "safetyQ": "¿Qué medidas de seguridad eléctrica debo tomar en casa?",
+      "safetyA": "Instale diferenciales, revise el cableado regularmente, evite sobrecargar los enchufes y mantenga el agua alejada de los puntos eléctricos. Realice una inspección profesional anualmente.",
+      "costQ": "¿Cuánto cuestan normalmente las reparaciones eléctricas?",
+      "costA": "Los costos varían según la complejidad. Las reparaciones menores como el reemplazo de enchufes comienzan en 50€, mientras que el recableado mayor puede costar más de 1000€. Proporcionamos presupuestos detallados antes de comenzar el trabajo.",
+      "emergencyQ": "¿Qué constituye una emergencia eléctrica?",
+      "emergencyA": "Olores a quemado, enchufes que chispean, disparos frecuentes de diferenciales o pérdida completa de energía son emergencias. Contáctenos inmediatamente en estas situaciones."
+    },
+    "plumbing": {
+      "preventionQ": "¿Cómo puedo prevenir problemas comunes de fontanería?",
+      "preventionA": "Mantenimiento regular, evitar limpiadores químicos, no tirar elementos inapropiados y reparar pequeñas fugas inmediatamente. Se recomiendan inspecciones profesionales anuales.",
+      "winterQ": "¿Cómo preparo mi fontanería para el invierno?",
+      "winterA": "Aísle las tuberías, selle las fugas, desconecte las mangueras exteriores y mantenga su hogar calefactado. Sepa dónde está la llave de paso principal del agua.",
+      "waterBillQ": "¿Por qué mi factura de agua es repentinamente más alta?",
+      "waterBillA": "Las causas comunes incluyen fugas ocultas, inodoros que gotean o electrodomésticos ineficientes. Podemos realizar una inspección exhaustiva para identificar la fuente."
+    },
+    "woodworking": {
+      "maintenanceQ": "¿Cómo debo mantener los muebles de madera?",
+      "maintenanceA": "Limpie regularmente con productos apropiados para madera, evite la luz solar directa, mantenga una humedad constante y pula periódicamente con productos de calidad para el cuidado de la madera.",
+      "customQ": "¿Qué debo considerar para muebles a medida?",
+      "customA": "Considere el tipo de madera, funcionalidad, restricciones de espacio y preferencias de estilo. Le guiaremos a través de la selección de materiales y opciones de diseño.",
+      "repairQ": "¿Se pueden reparar todos los muebles de madera?",
+      "repairA": "La mayoría de los muebles de madera pueden ser reparados o restaurados. El éxito depende del alcance del daño, tipo de madera e integridad estructural. Evaluamos cada pieza individualmente."
+    },
+    "ironwork": {
+      "rustQ": "¿Cómo puedo prevenir el óxido en mis trabajos de hierro?",
+      "rustA": "Limpieza regular, mantenimiento adecuado del recubrimiento y protección contra la humedad son esenciales. Recomendamos inspecciones y tratamientos profesionales anuales.",
+      "customQ": "¿Qué tipos de trabajos en hierro personalizados ofrecen?",
+      "customA": "Creamos puertas, barandillas, muebles y piezas decorativas personalizadas. Cada proyecto se adapta a sus necesidades específicas y estilo arquitectónico.",
+      "strengthQ": "¿Cuánto dura normalmente el trabajo en hierro?",
+      "strengthA": "El trabajo en hierro bien mantenido puede durar décadas. El mantenimiento regular y la instalación inicial adecuada son clave para la longevidad."
+    },
+    "architecture": {
+      "processQ": "¿Cuál es su proceso de diseño arquitectónico?",
+      "processA": "Comenzamos con la consulta, desarrollamos conceptos, creamos planes detallados, gestionamos permisos y supervisamos la construcción. La retroalimentación regular del cliente asegura la satisfacción.",
+      "timelineQ": "¿Cuánto tiempo toma un proyecto arquitectónico típico?",
+      "timelineA": "El cronograma varía según el alcance del proyecto. Las renovaciones pequeñas pueden tomar 2-3 meses, mientras que los proyectos más grandes pueden tomar 6-12 meses desde el diseño hasta la finalización.",
+      "sustainableQ": "¿Ofrecen opciones de diseño sostenible?",
+      "sustainableA": "Sí, integramos materiales energéticamente eficientes, opciones solares y prácticas sostenibles en nuestros diseños manteniendo el atractivo estético."
+    }
   }
 }
