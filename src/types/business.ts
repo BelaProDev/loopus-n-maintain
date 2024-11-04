@@ -5,17 +5,9 @@ export interface Client {
   phone: string;
   company: string;
   vatNumber: string;
-}
-
-export interface Provider {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  service: 'electrics' | 'plumbing' | 'ironwork' | 'woodwork' | 'architecture';
-  availability: boolean;
-  rating: number;
-  specialties: string[];
+  totalInvoices: number;
+  totalAmount: number;
+  status: string;
 }
 
 export interface Invoice {
