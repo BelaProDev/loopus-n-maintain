@@ -1,6 +1,7 @@
 import { getFaunaClient, handleFaunaError } from './client';
 import { fql } from 'fauna';
 import { ToQueryArg } from './types';
+import fallbackDb from '../fallback-db.json';
 
 interface WhatsAppSettings {
   electrics: string;
@@ -21,7 +22,11 @@ const defaultWhatsAppSettings: WhatsAppSettings = {
 export const settingsQueries = {
   getWhatsAppNumbers: async () => {
     const client = getFaunaClient();
-    if (!client) throw new Error('Fauna client not initialized');
+    if (!client) {
+      // Return from fallback DB if no Fauna client
+      const whatsappSettings = fallbackDb.settings.find(s => s.key === 'whatsapp_numbers');
+      return whatsappSettings?.value || defaultWhatsAppSettings;
+    }
 
     try {
       const result = await client.query(fql`
@@ -43,13 +48,25 @@ export const settingsQueries = {
         architecture: data.architecture || ""
       };
     } catch (error) {
-      return handleFaunaError(error, defaultWhatsAppSettings);
+      // On Fauna error, return from fallback DB
+      const whatsappSettings = fallbackDb.settings.find(s => s.key === 'whatsapp_numbers');
+      return whatsappSettings?.value || defaultWhatsAppSettings;
     }
   },
 
   updateWhatsAppNumbers: async (numbers: WhatsAppSettings) => {
     const client = getFaunaClient();
-    if (!client) throw new Error('Fauna client not initialized');
+    if (!client) {
+      // Update fallback DB if no Fauna client
+      const settings = fallbackDb.settings;
+      const whatsappIndex = settings.findIndex(s => s.key === 'whatsapp_numbers');
+      if (whatsappIndex >= 0) {
+        settings[whatsappIndex].value = numbers;
+      } else {
+        settings.push({ key: 'whatsapp_numbers', value: numbers });
+      }
+      return numbers;
+    }
 
     try {
       const queryData: ToQueryArg<WhatsAppSettings> = { ...numbers };
@@ -68,7 +85,15 @@ export const settingsQueries = {
       `);
       return result;
     } catch (error) {
-      return handleFaunaError(error, null);
+      // On Fauna error, update fallback DB
+      const settings = fallbackDb.settings;
+      const whatsappIndex = settings.findIndex(s => s.key === 'whatsapp_numbers');
+      if (whatsappIndex >= 0) {
+        settings[whatsappIndex].value = numbers;
+      } else {
+        settings.push({ key: 'whatsapp_numbers', value: numbers });
+      }
+      return numbers;
     }
   }
 };

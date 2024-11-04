@@ -33,6 +33,16 @@
     {
       "key": "koalax_password",
       "value": "miaouw00"
+    },
+    {
+      "key": "whatsapp_numbers",
+      "value": {
+        "electrics": "",
+        "plumbing": "",
+        "ironwork": "",
+        "woodwork": "",
+        "architecture": ""
+      }
     }
   ],
   "users": [
