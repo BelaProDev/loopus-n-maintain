@@ -7,10 +7,12 @@ import DocumentToolbar from "./DocumentToolbar";
 import FileList from "./FileList";
 import BreadcrumbNav from "./BreadcrumbNav";
 import { useDropboxManager } from "@/hooks/useDropboxManager";
+import { useTranslation } from "react-i18next";
 
 const DocumentManager = () => {
   const [newFolderName, setNewFolderName] = useState("");
   const [currentPath, setCurrentPath] = useState("/");
+  const { t } = useTranslation(["admin"]);
   
   const {
     files,
@@ -57,11 +59,11 @@ const DocumentManager = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 className="text-2xl font-bold">Document Manager</h2>
+        <h2 className="text-2xl font-bold">{t("admin:documents.title")}</h2>
         {!isAuthenticated && (
           <Button onClick={handleLogin} className="w-full sm:w-auto">
             <LogIn className="w-4 h-4 mr-2" />
-            Connect Dropbox
+            {t("admin:documents.connect")}
           </Button>
         )}
       </div>
@@ -88,7 +90,7 @@ const DocumentManager = () => {
 
           <div className="flex flex-col sm:flex-row gap-2">
             <Input
-              placeholder="New folder name"
+              placeholder={t("admin:documents.newFolderPlaceholder")}
               value={newFolderName}
               onChange={(e) => setNewFolderName(e.target.value)}
               className="w-full sm:w-auto sm:flex-1"
@@ -97,12 +99,12 @@ const DocumentManager = () => {
               onClick={handleCreateFolder}
               className="w-full sm:w-auto"
             >
-              Create Folder
+              {t("admin:documents.createFolder")}
             </Button>
           </div>
 
           {isLoading ? (
-            <div>Loading...</div>
+            <div>{t("common:common.loading")}</div>
           ) : (
             <FileList
               files={files}

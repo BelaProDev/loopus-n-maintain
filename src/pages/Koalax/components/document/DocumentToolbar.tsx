@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { RefreshCw, LogOut, FolderPlus, Upload } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface DocumentToolbarProps {
   onCreateInvoiceFolder: () => void;
@@ -18,17 +19,19 @@ const DocumentToolbar = ({
   onLogout,
   currentPath,
 }: DocumentToolbarProps) => {
+  const { t } = useTranslation(["admin"]);
+
   return (
     <div className="flex flex-wrap gap-2">
       <Button variant="outline" onClick={onCreateInvoiceFolder}>
         <FolderPlus className="w-4 h-4 mr-2" />
-        Create Invoices Folder
+        {t("admin:documents.createInvoiceFolder")}
       </Button>
       
       <Button variant="outline" asChild>
         <label className="cursor-pointer">
           <Upload className="w-4 h-4 mr-2" />
-          {isUploading ? 'Uploading...' : 'Upload File'}
+          {isUploading ? t("admin:documents.uploading") : t("admin:documents.upload")}
           <input
             type="file"
             className="hidden"
@@ -40,12 +43,12 @@ const DocumentToolbar = ({
 
       <Button variant="outline" onClick={onRefresh}>
         <RefreshCw className="w-4 h-4 mr-2" />
-        Refresh
+        {t("admin:documents.refresh")}
       </Button>
 
       <Button variant="outline" onClick={onLogout}>
         <LogOut className="w-4 h-4 mr-2" />
-        Disconnect
+        {t("admin:documents.disconnect")}
       </Button>
     </div>
   );
