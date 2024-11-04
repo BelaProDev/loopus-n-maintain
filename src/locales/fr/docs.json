@@ -11,7 +11,6 @@
       "multilanguage": "Support Multilingue (EN, ES, FR) - Car Babel n'était pas qu'une tour",
       "auth": "Authentification Sécurisée - Plus de couches que l'Enfer de Dante",
       "email": "Système de Gestion des Emails - Plus rapide que les sandales ailées d'Hermès",
-      "content": "Gestion de Contenu avec Sauvegarde - Comme la bibliothèque infinie de Borges, mais organisée",
       "business": "Fonctionnalités de Gestion - Plus fluide que les fêtes de Gatsby",
       "documents": "Stockage et Gestion - Un système qui rendrait Dewey fier"
     },
@@ -26,13 +25,6 @@
   },
   "admin": {
     "title": "Fonctionnalités Administrateur",
-    "content": {
-      "title": "Gestion de Contenu",
-      "multilanguage": "Édition Multilingue - Comme la Pierre de Rosette, mais numérique",
-      "offline": "Sauvegarde de Base de Données - Pour quand Mercure est rétrograde",
-      "editor": "Éditeur de Texte Enrichi - Plus puissant que l'épée",
-      "version": "Contrôle de Version - Voyage dans le temps sans la machine de Wells"
-    },
     "business": {
       "title": "Outils d'Entreprise",
       "management": "Gestion des Clients et Fournisseurs - Un réseau digne de Dickens",

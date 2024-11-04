@@ -11,7 +11,6 @@
       "multilanguage": "Multi-language Support (EN, ES, FR) - Because Babel wasn't just a tower",
       "auth": "Secure Authentication - More layers than Dante's Inferno",
       "email": "Email Management System - Faster than Hermes' winged sandals",
-      "content": "Content Management with Offline Backup - Like Borges' infinite library, but organized",
       "business": "Business Management Features - Running smoother than Gatsby's parties",
       "documents": "Document Storage & Management - Filing system that would make Dewey proud"
     },
@@ -26,13 +25,6 @@
   },
   "admin": {
     "title": "Admin Features",
-    "content": {
-      "title": "Content Management",
-      "multilanguage": "Multi-language Content Editing - Like the Rosetta Stone, but digital",
-      "offline": "Offline Database Backup - For when Mercury goes retrograde",
-      "editor": "Rich Text Editor - Mightier than the sword, as they say",
-      "version": "Version Control - Time travel without Wells' machine"
-    },
     "business": {
       "title": "Business Tools",
       "management": "Client & Provider Management - A network Dickens would write about",

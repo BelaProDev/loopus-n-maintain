@@ -11,7 +11,6 @@
       "multilanguage": "Soporte Multilingüe (EN, ES, FR) - Porque Babel no era solo una torre",
       "auth": "Autenticación Segura - Más capas que el Infierno de Dante",
       "email": "Sistema de Gestión de Correos - Más rápido que las sandalias aladas de Hermes",
-      "content": "Gestión de Contenido con Respaldo - Como la biblioteca infinita de Borges, pero organizada",
       "business": "Funciones de Gestión Empresarial - Más fluido que las fiestas de Gatsby",
       "documents": "Almacenamiento y Gestión - Un sistema que enorgullecería a Dewey"
     },
@@ -26,13 +25,6 @@
   },
   "admin": {
     "title": "Características de Administrador",
-    "content": {
-      "title": "Gestión de Contenido",
-      "multilanguage": "Edición Multilingüe - Como la Piedra Rosetta, pero digital",
-      "offline": "Respaldo de Base de Datos - Para cuando Mercurio está retrógrado",
-      "editor": "Editor de Texto Enriquecido - Más poderoso que la espada",
-      "version": "Control de Versiones - Viajes en el tiempo sin la máquina de Wells"
-    },
     "business": {
       "title": "Herramientas de Negocio",
       "management": "Gestión de Clientes y Proveedores - Una red digna de Dickens",
