@@ -59,11 +59,11 @@ const DocumentManager = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 className="text-2xl font-bold">Document Manager</h2>
+        <h2 className="text-2xl font-bold">{t("admin:documents.title")}</h2>
         {!isAuthenticated && (
           <Button onClick={handleLogin} className="w-full sm:w-auto">
             <LogIn className="w-4 h-4 mr-2" />
-            Connect Dropbox
+            {t("admin:documents.connect")}
           </Button>
         )}
       </div>
@@ -86,7 +86,7 @@ const DocumentManager = () => {
 
           <div className="flex flex-col sm:flex-row gap-2">
             <Input
-              placeholder="New folder name"
+              placeholder={t("admin:documents.newFolderPlaceholder")}
               value={newFolderName}
               onChange={(e) => setNewFolderName(e.target.value)}
               className="w-full sm:w-auto sm:flex-1"
@@ -95,7 +95,7 @@ const DocumentManager = () => {
               onClick={handleCreateFolder}
               className="w-full sm:w-auto"
             >
-              Create Folder
+              {t("admin:documents.createFolder")}
             </Button>
           </div>
 

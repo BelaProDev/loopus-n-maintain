@@ -8,6 +8,50 @@
       "navigation": "Enlaces de Navegación"
     }
   },
+  "content": {
+    "title": "Gestión de Contenido",
+    "key": "Clave",
+    "keyPlaceholder": "Ingrese la clave del contenido",
+    "type": "Tipo",
+    "types": {
+      "text": "Texto",
+      "textarea": "Área de Texto",
+      "wysiwyg": "Texto Enriquecido"
+    },
+    "language": "Idioma",
+    "selectLanguage": "Seleccionar idioma",
+    "selectType": "Seleccionar tipo",
+    "content": "Contenido",
+    "contentPlaceholder": "Ingrese contenido",
+    "edit": "Editar Contenido",
+    "modifiedBy": "Modificado por {{user}}",
+    "updateSuccess": "Contenido actualizado exitosamente",
+    "updateError": "Error al actualizar el contenido",
+    "selectStorage": "Seleccionar almacenamiento",
+    "fallbackStorage": "Almacenamiento de Respaldo"
+  },
+  "documents": {
+    "title": "Gestor de Documentos",
+    "upload": "Subir Archivo",
+    "uploading": "Subiendo...",
+    "createFolder": "Crear Carpeta",
+    "createInvoiceFolder": "Crear Carpeta de Facturas",
+    "refresh": "Actualizar",
+    "connect": "Conectar Dropbox",
+    "disconnect": "Desconectar Dropbox",
+    "connecting": "Conectando a Dropbox...",
+    "wait": "Por favor espere mientras se autentica.",
+    "success": "Conexión exitosa a Dropbox",
+    "error": "Error al conectar con Dropbox",
+    "newFolderPlaceholder": "Ingrese nombre de carpeta",
+    "folder": "Carpeta",
+    "file": "Archivo",
+    "deleteConfirm": "¿Está seguro de que desea eliminar este {{type}}?",
+    "deleteSuccess": "{{type}} eliminado exitosamente",
+    "deleteError": "Error al eliminar {{type}}",
+    "noFiles": "No se encontraron archivos en esta carpeta",
+    "home": "Directorio Principal"
+  },
   "whatsapp": "Números de WhatsApp",
   "whatsappUpdate": "Actualizar números de WhatsApp",
   "whatsappUpdateSuccess": "Números de WhatsApp actualizados correctamente",
@@ -121,7 +165,4 @@
       "deleteError": "Error al eliminar factura"
     }
   },
-  "documents": {
-    "title": "Gestión de Documentos"
-  }
 }
