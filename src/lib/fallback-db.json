@@ -26,6 +26,31 @@
       "modifiedBy": "admin"
     }
   ],
+  "clients": [
+    {
+      "id": "client_1",
+      "name": "John Smith",
+      "email": "john.smith@example.com",
+      "phone": "+32 489 123 456",
+      "company": "Smith & Co",
+      "vatNumber": "BE0123456789",
+      "totalInvoices": 12,
+      "totalAmount": 15750.00,
+      "status": "active"
+    }
+  ],
+  "providers": [
+    {
+      "id": "provider_1",
+      "name": "Alex Thompson",
+      "email": "alex@electricpro.be",
+      "phone": "+32 489 111 222",
+      "service": "electrics",
+      "availability": true,
+      "rating": 4.8,
+      "specialties": ["Industrial", "Residential"]
+    }
+  ],
   "invoices": [
     {
       "id": "inv_1",
