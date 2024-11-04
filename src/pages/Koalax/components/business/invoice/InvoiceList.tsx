@@ -3,8 +3,9 @@ import { useQuery } from "@tanstack/react-query";
 import { businessQueries } from "@/lib/fauna/business";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus } from "lucide-react";
+import { Plus, Upload } from "lucide-react";
 import InvoiceDialog from "../InvoiceDialog";
+import ImportInvoiceDialog from "@/components/business/invoice/ImportInvoiceDialog";
 import InvoiceActions from "./InvoiceActions";
 import InvoiceStatus from "./InvoiceStatus";
 import { format } from "date-fns";
@@ -13,6 +14,7 @@ import { useInvoiceOperations } from "@/hooks/useInvoiceOperations";
 
 const InvoiceList = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
   const [editingInvoice, setEditingInvoice] = useState(null);
   const { t } = useTranslation(["admin", "common"]);
   const { handleCreateInvoice, deleteMutation, isCreating } = useInvoiceOperations();
@@ -38,13 +40,19 @@ const InvoiceList = () => {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">{t("admin:business.invoices.title")}</h2>
-        <Button onClick={() => {
-          setEditingInvoice(null);
-          setIsDialogOpen(true);
-        }}>
-          <Plus className="w-4 h-4 mr-2" />
-          {t("admin:business.invoices.add")}
-        </Button>
+        <div className="space-x-2">
+          <Button onClick={() => setIsImportDialogOpen(true)} variant="outline">
+            <Upload className="w-4 h-4 mr-2" />
+            Import CSV
+          </Button>
+          <Button onClick={() => {
+            setEditingInvoice(null);
+            setIsDialogOpen(true);
+          }}>
+            <Plus className="w-4 h-4 mr-2" />
+            {t("admin:business.invoices.add")}
+          </Button>
+        </div>
       </div>
 
       <Table>
@@ -85,6 +93,11 @@ const InvoiceList = () => {
         editingInvoice={editingInvoice}
         onSubmit={handleSubmit}
         isLoading={isCreating}
+      />
+
+      <ImportInvoiceDialog
+        isOpen={isImportDialogOpen}
+        onOpenChange={setIsImportDialogOpen}
       />
     </div>
   );
