@@ -1,7 +1,8 @@
 const isBrowser = typeof window !== 'undefined';
 const DROPBOX_AUTH_URL = "https://www.dropbox.com/oauth2/authorize";
-const DROPBOX_TOKEN_URL = "https://api.dropbox.com/oauth2/token";
+const DROPBOX_TOKEN_URL = "https://api.dropboxapi.com/oauth2/token";
 const CLIENT_ID = import.meta.env.VITE_DROPBOX_APP_KEY;
+const CLIENT_SECRET = import.meta.env.VITE_DROPBOX_APP_SECRET;
 
 const getRedirectUri = () => 
   isBrowser ? `${window.location.origin}/koalax/dropbox-callback` : '';
@@ -30,7 +31,8 @@ export const dropboxAuth = {
 
     const params = new URLSearchParams({
       client_id: CLIENT_ID,
-      response_type: 'code',  // Changed from 'token' to 'code'
+      response_type: 'code',
+      token_access_type: 'offline',
       state,
       redirect_uri: getRedirectUri()
     });
@@ -39,27 +41,30 @@ export const dropboxAuth = {
   },
 
   async handleCallback(code: string) {
-    if (!code) return null;
+    if (!code || !CLIENT_ID || !CLIENT_SECRET) return null;
     
     const storedState = getStorageValue('dropbox_state');
     clearStorageValue('dropbox_state');
     
     try {
+      const formData = new URLSearchParams();
+      formData.append('code', code);
+      formData.append('grant_type', 'authorization_code');
+      formData.append('client_id', CLIENT_ID);
+      formData.append('client_secret', CLIENT_SECRET);
+      formData.append('redirect_uri', getRedirectUri());
+
       const response = await fetch(DROPBOX_TOKEN_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: new URLSearchParams({
-          code,
-          grant_type: 'authorization_code',
-          client_id: CLIENT_ID,
-          redirect_uri: getRedirectUri(),
-        }),
+        body: formData
       });
 
       if (!response.ok) {
-        throw new Error('Failed to exchange code for token');
+        const errorData = await response.json();
+        throw new Error(errorData.error_description || 'Failed to exchange code for token');
       }
 
       const data = await response.json();
@@ -71,7 +76,7 @@ export const dropboxAuth = {
       return data.access_token;
     } catch (error) {
       console.error('Error exchanging code for token:', error);
-      return null;
+      throw error;
     }
   },
 
