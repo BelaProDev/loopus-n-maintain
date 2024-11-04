@@ -10,8 +10,6 @@ import InvoiceActions from "./InvoiceActions";
 import InvoiceStatus from "./InvoiceStatus";
 import { useToast } from "@/components/ui/use-toast";
 import { format } from "date-fns";
-import { exportToPDF, exportToDOCX } from "@/lib/documentExport";
-import { uploadFile } from "@/lib/dropbox";
 import { useTranslation } from "react-i18next";
 
 const InvoiceList = () => {
@@ -64,51 +62,6 @@ const InvoiceList = () => {
     };
 
     createMutation.mutate(invoiceData);
-  };
-
-  const handleExport = async (invoice: Invoice, type: 'pdf' | 'docx') => {
-    try {
-      let blob: Blob;
-      
-      if (type === 'pdf') {
-        blob = await exportToPDF(invoice) as Blob;
-      } else {
-        blob = await exportToDOCX(invoice);
-      }
-
-      const tokens = JSON.parse(sessionStorage.getItem('dropbox_tokens') || '{}');
-      if (tokens.access_token) {
-        try {
-          await uploadFile(blob, '/invoices', `${invoice.number}.${type}`);
-          toast({
-            title: t("common:common.success"),
-            description: t("admin:business.invoices.exportSuccess", { type: type.toUpperCase() }),
-          });
-        } catch (error) {
-          toast({
-            title: t("common:common.warning"),
-            description: t("admin:business.invoices.exportDropboxError"),
-            variant: "destructive",
-          });
-        }
-      }
-
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `${invoice.number}.${type}`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-
-    } catch (error) {
-      toast({
-        title: t("common:common.error"),
-        description: t("admin:business.invoices.exportError", { type: type.toUpperCase() }),
-        variant: "destructive",
-      });
-    }
   };
 
   const handleDelete = async (id: string) => {
@@ -167,7 +120,6 @@ const InvoiceList = () => {
               <TableCell className="text-right">
                 <InvoiceActions
                   invoice={invoice}
-                  onExport={handleExport}
                   onDelete={handleDelete}
                 />
               </TableCell>

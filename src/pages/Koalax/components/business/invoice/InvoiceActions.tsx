@@ -1,37 +1,45 @@
 import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
+import { Trash2, Loader2 } from "lucide-react";
 import { Invoice } from "@/types/business";
 import { useTranslation } from "react-i18next";
+import { useDocumentExport } from "@/hooks/useDocumentExport";
 
 interface InvoiceActionsProps {
   invoice: Invoice;
-  onExport: (invoice: Invoice, type: 'pdf' | 'docx') => void;
   onDelete: (id: string) => void;
 }
 
-const InvoiceActions = ({ invoice, onExport, onDelete }: InvoiceActionsProps) => {
+const InvoiceActions = ({ invoice, onDelete }: InvoiceActionsProps) => {
   const { t } = useTranslation(["admin"]);
+  const { handleExport, isExporting } = useDocumentExport();
 
   return (
     <div className="space-x-2">
       <Button 
         variant="ghost" 
         size="sm"
-        onClick={() => onExport(invoice, 'pdf')}
+        onClick={() => handleExport(invoice, 'pdf')}
+        disabled={isExporting}
       >
-        PDF
+        {isExporting ? (
+          <Loader2 className="h-4 w-4 animate-spin mr-2" />
+        ) : 'PDF'}
       </Button>
       <Button 
         variant="ghost" 
         size="sm"
-        onClick={() => onExport(invoice, 'docx')}
+        onClick={() => handleExport(invoice, 'docx')}
+        disabled={isExporting}
       >
-        DOCX
+        {isExporting ? (
+          <Loader2 className="h-4 w-4 animate-spin mr-2" />
+        ) : 'DOCX'}
       </Button>
       <Button 
         variant="ghost" 
         size="sm"
         onClick={() => onDelete(invoice.id)}
+        disabled={isExporting}
       >
         <Trash2 className="w-4 h-4" />
       </Button>
