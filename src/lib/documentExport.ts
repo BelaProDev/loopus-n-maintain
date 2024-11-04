@@ -12,46 +12,86 @@ const getPdfMake = async () => {
 export const exportToPDF = async (invoice: Invoice) => {
   const docDefinition = {
     content: [
-      { text: 'INVOICE', style: 'header' },
-      { text: `Invoice Number: ${invoice.number}`, margin: [0, 20, 0, 10] },
-      { text: `Date: ${new Date(invoice.date).toLocaleDateString()}` },
-      { text: `Due Date: ${new Date(invoice.dueDate).toLocaleDateString()}` },
-      { text: 'Items:', style: 'subheader', margin: [0, 20, 0, 10] },
+      { text: 'INVOICE', style: 'header', margin: [0, 0, 0, 20] },
+      {
+        columns: [
+          {
+            width: '*',
+            stack: [
+              { text: `Invoice Number: ${invoice.number}`, margin: [0, 0, 0, 5] },
+              { text: `Date: ${new Date(invoice.date).toLocaleDateString()}`, margin: [0, 0, 0, 5] },
+              { text: `Due Date: ${new Date(invoice.dueDate).toLocaleDateString()}`, margin: [0, 0, 0, 20] }
+            ]
+          }
+        ]
+      },
+      { text: 'Items:', style: 'subheader', margin: [0, 0, 0, 10] },
       {
         table: {
           headerRows: 1,
           widths: ['*', 'auto', 'auto', 'auto'],
           body: [
-            ['Description', 'Quantity', 'Unit Price', 'Total'],
+            [
+              { text: 'Description', style: 'tableHeader' },
+              { text: 'Quantity', style: 'tableHeader' },
+              { text: 'Unit Price', style: 'tableHeader' },
+              { text: 'Total', style: 'tableHeader' }
+            ],
             ...invoice.items.map(item => [
               item.description,
-              item.quantity.toString(),
-              `€${item.unitPrice.toFixed(2)}`,
-              `€${item.total.toFixed(2)}`
+              { text: item.quantity.toString(), alignment: 'center' },
+              { text: `€${item.unitPrice.toFixed(2)}`, alignment: 'right' },
+              { text: `€${item.total.toFixed(2)}`, alignment: 'right' }
             ])
           ]
         }
       },
       {
-        text: `Total Amount: €${invoice.totalAmount.toFixed(2)}`,
-        style: 'total',
-        margin: [0, 20, 0, 0]
-      }
+        columns: [
+          { width: '*', text: '' },
+          {
+            width: 'auto',
+            stack: [
+              { text: `Subtotal: €${(invoice.totalAmount - invoice.tax).toFixed(2)}`, alignment: 'right', margin: [0, 10, 0, 5] },
+              { text: `Tax: €${invoice.tax.toFixed(2)}`, alignment: 'right', margin: [0, 0, 0, 5] },
+              { text: `Total Amount: €${invoice.totalAmount.toFixed(2)}`, style: 'total', alignment: 'right' }
+            ]
+          }
+        ]
+      },
+      { text: 'Notes:', style: 'subheader', margin: [0, 30, 0, 10] },
+      { text: invoice.notes || 'No notes', style: 'notes' }
     ],
     styles: {
       header: {
-        fontSize: 22,
-        bold: true
+        fontSize: 24,
+        bold: true,
+        color: '#2563eb'
       },
       subheader: {
-        fontSize: 16,
-        bold: true
+        fontSize: 14,
+        bold: true,
+        margin: [0, 15, 0, 5]
+      },
+      tableHeader: {
+        bold: true,
+        fontSize: 12,
+        color: '#1f2937'
       },
       total: {
         fontSize: 14,
         bold: true,
-        alignment: 'right'
+        color: '#2563eb'
+      },
+      notes: {
+        fontSize: 12,
+        color: '#4b5563',
+        italics: true
       }
+    },
+    defaultStyle: {
+      fontSize: 12,
+      color: '#1f2937'
     }
   };
 
