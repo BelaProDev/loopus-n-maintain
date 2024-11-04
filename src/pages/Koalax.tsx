@@ -11,7 +11,7 @@ import { useTranslation } from "react-i18next";
 
 const CONTENT_TABS = [
   { id: "emails", label: "admin:email.title", icon: Mail, path: "/koalax/emails" },
-  { id: "content", label: "admin:content.title", icon: FileText, path: "/koalax/content" },
+  { id: "content", label: "admin:contentManagement", icon: FileText, path: "/koalax/content" },
 ];
 
 const ADMIN_TABS = [

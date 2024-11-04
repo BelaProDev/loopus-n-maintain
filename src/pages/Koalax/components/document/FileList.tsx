@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Folder, File, Download, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 interface FileListProps {
   files?: Array<{
@@ -14,16 +15,18 @@ interface FileListProps {
 }
 
 const FileList = ({ files = [], onDownload, onDelete, onNavigate }: FileListProps) => {
+  const { t } = useTranslation(["admin", "common"]);
+
   const handleDelete = async (path: string | undefined, isFolder: boolean) => {
     if (!path) return;
     
-    const itemType = isFolder ? 'folder' : 'file';
-    if (confirm(`Are you sure you want to delete this ${itemType}?`)) {
+    const itemType = isFolder ? t("admin:documents.folder") : t("admin:documents.file");
+    if (confirm(t("admin:documents.deleteConfirm", { type: itemType }))) {
       try {
         await onDelete(path);
-        toast.success(`${itemType} deleted successfully`);
+        toast.success(t("admin:documents.deleteSuccess", { type: itemType }));
       } catch (error) {
-        toast.error(`Failed to delete ${itemType}`);
+        toast.error(t("admin:documents.deleteError", { type: itemType }));
       }
     }
   };
@@ -73,7 +76,7 @@ const FileList = ({ files = [], onDownload, onDelete, onNavigate }: FileListProp
       ))}
       {files.length === 0 && (
         <div className="text-center py-8 text-gray-500">
-          No files or folders found
+          {t("admin:documents.noFiles")}
         </div>
       )}
     </div>

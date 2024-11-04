@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next";
 const DocumentManager = () => {
   const [newFolderName, setNewFolderName] = useState("");
   const [currentPath, setCurrentPath] = useState("/");
-  const { t } = useTranslation(["admin"]);
+  const { t } = useTranslation(["admin", "common"]);
   
   const {
     files,
@@ -70,21 +70,19 @@ const DocumentManager = () => {
 
       {isAuthenticated && (
         <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div className="w-full sm:flex-1">
-              <DocumentToolbar
-                onCreateInvoiceFolder={handleCreateInvoiceFolder}
-                onFileSelect={handleFileSelect}
-                isUploading={uploadMutation.isPending}
-                onRefresh={refetch}
-                onLogout={() => {
-                  dropboxAuth.logout();
-                  setIsAuthenticated(false);
-                }}
-                currentPath={currentPath}
-              />
-            </div>
-          </div>
+          <DocumentToolbar
+            onCreateInvoiceFolder={handleCreate
+
+InvoiceFolder}
+            onFileSelect={handleFileSelect}
+            isUploading={uploadMutation.isPending}
+            onRefresh={refetch}
+            onLogout={() => {
+              dropboxAuth.logout();
+              setIsAuthenticated(false);
+            }}
+            currentPath={currentPath}
+          />
 
           <BreadcrumbNav currentPath={currentPath} onNavigate={handleNavigate} />
 

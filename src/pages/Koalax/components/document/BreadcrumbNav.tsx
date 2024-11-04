@@ -1,4 +1,5 @@
 import { ChevronRight, Home } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface BreadcrumbNavProps {
   currentPath: string;
@@ -6,6 +7,7 @@ interface BreadcrumbNavProps {
 }
 
 const BreadcrumbNav = ({ currentPath, onNavigate }: BreadcrumbNavProps) => {
+  const { t } = useTranslation(["admin"]);
   const pathParts = currentPath.split('/').filter(Boolean);
 
   return (
@@ -13,6 +15,7 @@ const BreadcrumbNav = ({ currentPath, onNavigate }: BreadcrumbNavProps) => {
       <button
         onClick={() => onNavigate('/')}
         className="flex items-center hover:text-blue-500"
+        title={t("admin:documents.home")}
       >
         <Home className="w-4 h-4" />
       </button>
