@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { businessQueries } from "@/lib/fauna/business";
+import { businessQueries } from "@/lib/db/businessDb";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, Pencil, Trash2, Star } from "lucide-react";
 import { Provider } from "@/types/business";
 import ProviderDialog from "./ProviderDialog";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
 
 const ProviderList = () => {
@@ -48,6 +48,8 @@ const ProviderList = () => {
       phone: formData.get("phone") as string,
       service: formData.get("service") as Provider["service"],
       availability: true,
+      rating: 0,
+      specialties: []
     };
 
     createMutation.mutate(providerData);
