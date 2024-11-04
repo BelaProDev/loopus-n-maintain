@@ -38,6 +38,16 @@ const InvoiceActions = ({ invoice, onDelete }: InvoiceActionsProps) => {
       <Button 
         variant="ghost" 
         size="sm"
+        onClick={() => handleExport(invoice, 'xlsx')}
+        disabled={isExporting}
+      >
+        {isExporting ? (
+          <Loader2 className="h-4 w-4 animate-spin mr-2" />
+        ) : 'XLSX'}
+      </Button>
+      <Button 
+        variant="ghost" 
+        size="sm"
         onClick={() => onDelete(invoice.id)}
         disabled={isExporting}
       >
