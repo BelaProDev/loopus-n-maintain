@@ -25,56 +25,40 @@ export const dropboxAuth = {
   async initiateAuth() {
     if (!isBrowser || !CLIENT_ID) throw new Error('Dropbox client ID not configured');
     
-    const codeVerifier = crypto.randomUUID();
-    const encoder = new TextEncoder();
-    const data = encoder.encode(codeVerifier);
-    const hash = await crypto.subtle.digest('SHA-256', data);
-    const codeChallenge = btoa(String.fromCharCode(...new Uint8Array(hash)))
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=+$/, '');
-    
-    setStorageValue('dropbox_code_verifier', codeVerifier);
+    const state = crypto.randomUUID();
+    setStorageValue('dropbox_state', state, false);
 
     const params = new URLSearchParams({
       client_id: CLIENT_ID,
-      response_type: 'code',
-      code_challenge: codeChallenge,
-      code_challenge_method: 'S256',
+      response_type: 'token',
       token_access_type: 'offline',
+      state,
       redirect_uri: getRedirectUri()
     });
 
     window.location.href = `${DROPBOX_AUTH_URL}?${params.toString()}`;
   },
 
-  async exchangeCodeForToken(code: string) {
-    if (!isBrowser || !CLIENT_ID) return null;
+  handleRedirect(hash: string) {
+    if (!hash) return null;
     
-    const codeVerifier = getStorageValue('dropbox_code_verifier');
-    if (!codeVerifier) throw new Error('No code verifier found');
-
-    const params = new URLSearchParams({
-      code,
-      grant_type: 'authorization_code',
-      client_id: CLIENT_ID,
-      redirect_uri: getRedirectUri(),
-      code_verifier: codeVerifier
-    });
-
-    const response = await fetch(DROPBOX_TOKEN_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: params
-    });
-
-    if (!response.ok) throw new Error('Failed to exchange code for token');
-
-    const tokens = await response.json();
-    setStorageValue('dropbox_tokens', JSON.stringify(tokens), true);
-    clearStorageValue('dropbox_code_verifier');
+    const params = new URLSearchParams(hash.substring(1));
+    const accessToken = params.get('access_token');
+    const state = params.get('state');
+    const storedState = getStorageValue('dropbox_state');
     
-    return tokens;
+    if (!state || state !== storedState) {
+      throw new Error('Invalid state parameter');
+    }
+    
+    clearStorageValue('dropbox_state');
+    
+    if (accessToken) {
+      setStorageValue('dropbox_tokens', JSON.stringify({ access_token: accessToken }), true);
+      return accessToken;
+    }
+    
+    return null;
   },
 
   logout() {

@@ -1,37 +1,35 @@
 import { useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useToast } from "@/components/ui/use-toast";
 import { dropboxAuth } from '@/lib/auth/dropbox';
 
 const DropboxCallback = () => {
-  const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const handleCallback = async () => {
-      const code = searchParams.get('code');
-      if (code) {
-        try {
-          await dropboxAuth.exchangeCodeForToken(code);
-          toast({
-            title: 'Success',
-            description: 'Successfully connected to Dropbox',
-          });
-          navigate('/koalax/documents', { replace: true });
-        } catch (error) {
-          toast({
-            title: 'Authentication Error',
-            description: 'Failed to complete authentication. Please try again.',
-            variant: 'destructive',
-          });
-          navigate('/koalax/documents');
-        }
+    try {
+      const hash = window.location.hash;
+      const accessToken = dropboxAuth.handleRedirect(hash);
+      
+      if (accessToken) {
+        toast({
+          title: 'Success',
+          description: 'Successfully connected to Dropbox',
+        });
+      } else {
+        throw new Error('No access token received');
       }
-    };
-
-    handleCallback();
-  }, [searchParams, toast, navigate]);
+    } catch (error) {
+      toast({
+        title: 'Authentication Error',
+        description: 'Failed to complete authentication. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      navigate('/koalax/documents', { replace: true });
+    }
+  }, [toast, navigate]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background">
