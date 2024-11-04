@@ -13,10 +13,15 @@ import {
   Globe,
   Shield,
   Mail,
-  FileText,
   Building2,
   FolderOpen
 } from "lucide-react";
+
+// Split into smaller components for better organization
+import OverviewTab from "./Documentation/OverviewTab";
+import FeaturesTab from "./Documentation/FeaturesTab";
+import AdminTab from "./Documentation/AdminTab";
+import TechnicalTab from "./Documentation/TechnicalTab";
 
 const Documentation = () => {
   const { t } = useTranslation(["docs"]);
@@ -52,162 +57,20 @@ const Documentation = () => {
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="overview" className="space-y-6">
-                <Card className="p-6">
-                  <h2 className="text-2xl font-semibold mb-4">{t("docs:overview.title")}</h2>
-                  <p className="text-gray-700 leading-relaxed">
-                    {t("docs:overview.description")}
-                  </p>
-                </Card>
+              <TabsContent value="overview">
+                <OverviewTab />
               </TabsContent>
 
-              <TabsContent value="features" className="space-y-6">
-                <h2 className="text-2xl font-semibold">{t("docs:features.title")}</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Card className="p-6">
-                    <h3 className="text-xl font-semibold mb-4">Core Platform</h3>
-                    <ul className="space-y-3 text-gray-700">
-                      <li className="flex items-start gap-2">
-                        <Globe className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                        <span>Multi-language Support (EN, ES, FR)</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <Shield className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                        <span>Secure Authentication & Sessions</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <Mail className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                        <span>Email Management System</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <FileText className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                        <span>Content Management with Offline Backup</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <Building2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                        <span>Business Management Features</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <FolderOpen className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                        <span>Document Storage & Management</span>
-                      </li>
-                    </ul>
-                  </Card>
-                  <Card className="p-6">
-                    <h3 className="text-xl font-semibold mb-4">Maintenance Services</h3>
-                    <ul className="space-y-3 text-gray-700">
-                      <li className="flex items-center gap-2">
-                        <Wrench className="h-5 w-5 text-primary" />
-                        Electrical Maintenance
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Wrench className="h-5 w-5 text-primary" />
-                        Plumbing Services
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Wrench className="h-5 w-5 text-primary" />
-                        Ironwork Solutions
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Wrench className="h-5 w-5 text-primary" />
-                        Woodworking
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Wrench className="h-5 w-5 text-primary" />
-                        Architectural Consulting
-                      </li>
-                    </ul>
-                  </Card>
-                </div>
+              <TabsContent value="features">
+                <FeaturesTab />
               </TabsContent>
 
-              <TabsContent value="admin" className="space-y-6">
-                <h2 className="text-2xl font-semibold">{t("docs:admin.title")}</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Card className="p-6">
-                    <h3 className="text-xl font-semibold mb-4">Content Management</h3>
-                    <ul className="space-y-3 text-gray-700">
-                      <li className="flex items-center gap-2">
-                        <Settings className="h-5 w-5 text-primary" />
-                        Multi-language Content Editing
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Settings className="h-5 w-5 text-primary" />
-                        Offline Database Backup
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Settings className="h-5 w-5 text-primary" />
-                        Rich Text Editor Support
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Settings className="h-5 w-5 text-primary" />
-                        Version Control System
-                      </li>
-                    </ul>
-                  </Card>
-                  <Card className="p-6">
-                    <h3 className="text-xl font-semibold mb-4">Business Tools</h3>
-                    <ul className="space-y-3 text-gray-700">
-                      <li className="flex items-center gap-2">
-                        <Settings className="h-5 w-5 text-primary" />
-                        Client & Provider Management
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Settings className="h-5 w-5 text-primary" />
-                        Service Tracking System
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Settings className="h-5 w-5 text-primary" />
-                        Invoice Generation
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Settings className="h-5 w-5 text-primary" />
-                        Rating & Review System
-                      </li>
-                    </ul>
-                  </Card>
-                </div>
+              <TabsContent value="admin">
+                <AdminTab />
               </TabsContent>
 
-              <TabsContent value="technical" className="space-y-6">
-                <h2 className="text-2xl font-semibold">Technical Details</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Card className="p-6">
-                    <h3 className="text-xl font-semibold mb-4">PWA Features</h3>
-                    <ul className="space-y-3 text-gray-700">
-                      <li className="flex items-center gap-2">
-                        <Code2 className="h-5 w-5 text-primary" />
-                        Offline Functionality
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Code2 className="h-5 w-5 text-primary" />
-                        Push Notifications
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Code2 className="h-5 w-5 text-primary" />
-                        Service Workers
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Code2 className="h-5 w-5 text-primary" />
-                        IndexedDB Storage
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Code2 className="h-5 w-5 text-primary" />
-                        Real-time Updates
-                      </li>
-                    </ul>
-                  </Card>
-                  <Card className="p-6">
-                    <h3 className="text-xl font-semibold mb-4">{t("docs:setup.title")}</h3>
-                    <div className="bg-gray-100 p-4 rounded-md">
-                      <pre className="overflow-x-auto text-sm">
-{`# ${t("docs:setup.env")}
-VITE_FAUNA_SECRET_KEY=
-VITE_DROPBOX_ACCESS_TOKEN=`}
-                      </pre>
-                    </div>
-                  </Card>
-                </div>
+              <TabsContent value="technical">
+                <TechnicalTab />
               </TabsContent>
             </Tabs>
           </ScrollArea>

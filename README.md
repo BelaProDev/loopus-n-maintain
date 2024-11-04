@@ -31,12 +31,6 @@ Where building maintenance meets good vibes! Our platform keeps buildings happy 
   - Automated notifications
   - Email tracking
 
-- 📝 **Content Management**
-  - Multi-language content
-  - Offline backup database
-  - Rich text editor
-  - Version control
-
 - 💼 **Business Management**
   - Client profiles
   - Provider directory
@@ -81,27 +75,6 @@ Where building maintenance meets good vibes! Our platform keeps buildings happy 
   - Renovation planning
   - Permit assistance
   - Structural assessment
-
-## Quick Start 🌷
-
-1. Clone the repo
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Set up environment variables:
-```env
-VITE_FAUNA_SECRET_KEY=your-fauna-key
-VITE_DROPBOX_ACCESS_TOKEN=your-dropbox-token
-```
-
-4. Start development server:
-```bash
-npm run dev
-```
-
-5. Visit `localhost:5173` 😊
 
 ## Tech Stack 🌹
 
