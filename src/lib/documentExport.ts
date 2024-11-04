@@ -4,8 +4,8 @@ import type { Invoice } from "@/types/business";
 // Dynamically import pdfMake to avoid SSR issues
 const getPdfMake = async () => {
   const pdfMake = (await import('pdfmake/build/pdfmake')).default;
-  const pdfFonts = (await import('pdfmake/build/vfs_fonts')).default;
-  pdfMake.vfs = pdfFonts.pdfMake.vfs;
+  const pdfFonts = (await import('pdfmake/build/vfs_fonts')).pdfMake.vfs;
+  pdfMake.vfs = pdfFonts;
   return pdfMake;
 };
 
@@ -123,13 +123,22 @@ export const exportToPDF = async (invoice: Invoice) => {
     }
   };
 
-  const pdfMake = await getPdfMake();
-  return new Promise((resolve) => {
-    const pdfDoc = pdfMake.createPdf(docDefinition);
-    pdfDoc.getBlob((blob: Blob) => {
-      resolve(blob);
+  try {
+    const pdfMake = await getPdfMake();
+    return new Promise((resolve, reject) => {
+      const pdfDoc = pdfMake.createPdf(docDefinition);
+      pdfDoc.getBlob((blob: Blob) => {
+        if (blob) {
+          resolve(blob);
+        } else {
+          reject(new Error('Failed to generate PDF blob'));
+        }
+      });
     });
-  });
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    throw error;
+  }
 };
 
 export const exportToDOCX = async (invoice: Invoice) => {
