@@ -6,29 +6,54 @@
   },
   "features": {
     "title": "Características Actuales",
-    "auth": "🔐 Inicio de sesión de administrador seguro (prometemos que no es \"contraseña123\")",
-    "email": "📧 Sistema de gestión de correos (porque las palomas mensajeras son del siglo pasado)",
-    "content": "📝 Gestión de contenido con base de datos de respaldo (para esos momentos \"ups, sin internet\")",
-    "business": "💼 Características de gestión empresarial (manteniendo un registro de quién hace qué)",
-    "documents": "📂 Almacenamiento de documentos con integración Dropbox (porque el papel es tan 2019)",
-    "languages": "🌐 Soporte multilingüe (hablamos humano... y JavaScript)"
+    "corePlatform": {
+      "title": "Plataforma Principal",
+      "multilanguage": "Soporte Multilingüe (EN, ES, FR)",
+      "auth": "Autenticación y Sesiones Seguras",
+      "email": "Sistema de Gestión de Correos",
+      "content": "Gestión de Contenido con Respaldo Offline",
+      "business": "Funciones de Gestión Empresarial",
+      "documents": "Almacenamiento y Gestión de Documentos"
+    },
+    "services": {
+      "title": "Servicios de Mantenimiento",
+      "electrical": "Mantenimiento Eléctrico",
+      "plumbing": "Servicios de Fontanería",
+      "ironwork": "Soluciones de Herrería",
+      "woodworking": "Carpintería",
+      "architecture": "Consultoría Arquitectónica"
+    }
   },
   "admin": {
     "title": "Características de Administrador",
     "content": {
       "title": "Gestión de Contenido",
-      "edit": "Editar contenido del sitio web",
-      "offline": "Base de datos de respaldo sin conexión"
+      "multilanguage": "Edición de Contenido Multilingüe",
+      "offline": "Base de Datos de Respaldo Offline",
+      "editor": "Soporte de Editor de Texto Enriquecido",
+      "version": "Sistema de Control de Versiones"
     },
     "business": {
-      "title": "Gestión Empresarial",
-      "clients": "Gestión de clientes",
-      "providers": "Seguimiento de proveedores",
-      "documents": "Organización de documentos"
+      "title": "Herramientas de Negocio",
+      "management": "Gestión de Clientes y Proveedores",
+      "tracking": "Sistema de Seguimiento de Servicios",
+      "invoice": "Generación de Facturas",
+      "rating": "Sistema de Calificación y Reseñas"
     }
   },
-  "setup": {
-    "title": "Configuración del Entorno",
-    "env": "Las Variables de Entorno (la salsa secreta)"
+  "technical": {
+    "title": "Detalles Técnicos",
+    "pwa": {
+      "title": "Características PWA",
+      "offline": "Funcionalidad Offline",
+      "notifications": "Notificaciones Push",
+      "workers": "Service Workers",
+      "storage": "Almacenamiento IndexedDB",
+      "updates": "Actualizaciones en Tiempo Real"
+    },
+    "setup": {
+      "title": "Configuración del Entorno",
+      "env": "Variables de Entorno"
+    }
   }
 }

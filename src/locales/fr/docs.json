@@ -6,29 +6,54 @@
   },
   "features": {
     "title": "Fonctionnalités Actuelles",
-    "auth": "🔐 Connexion administrateur sécurisée (nous promettons que ce n'est pas \"motdepasse123\")",
-    "email": "📧 Système de gestion des emails (parce que les pigeons voyageurs, c'est dépassé)",
-    "content": "📝 Gestion de contenu avec base de données de secours (pour ces moments \"oups, pas d'internet\")",
-    "business": "💼 Fonctionnalités de gestion d'entreprise (garder une trace de qui fait quoi)",
-    "documents": "📂 Stockage de documents avec intégration Dropbox (parce que le papier, c'est tellement 2019)",
-    "languages": "🌐 Support multilingue (nous parlons humain... et JavaScript)"
+    "corePlatform": {
+      "title": "Plateforme Principale",
+      "multilanguage": "Support Multilingue (EN, ES, FR)",
+      "auth": "Authentification et Sessions Sécurisées",
+      "email": "Système de Gestion des Emails",
+      "content": "Gestion de Contenu avec Sauvegarde Hors Ligne",
+      "business": "Fonctionnalités de Gestion d'Entreprise",
+      "documents": "Stockage et Gestion des Documents"
+    },
+    "services": {
+      "title": "Services de Maintenance",
+      "electrical": "Maintenance Électrique",
+      "plumbing": "Services de Plomberie",
+      "ironwork": "Solutions de Ferronnerie",
+      "woodworking": "Menuiserie",
+      "architecture": "Conseil en Architecture"
+    }
   },
   "admin": {
     "title": "Fonctionnalités Administrateur",
     "content": {
       "title": "Gestion de Contenu",
-      "edit": "Éditer le contenu du site",
-      "offline": "Base de données de secours hors ligne"
+      "multilanguage": "Édition de Contenu Multilingue",
+      "offline": "Base de Données de Secours Hors Ligne",
+      "editor": "Support d'Éditeur de Texte Enrichi",
+      "version": "Système de Contrôle de Version"
     },
     "business": {
-      "title": "Gestion d'Entreprise",
-      "clients": "Gestion des clients",
-      "providers": "Suivi des prestataires",
-      "documents": "Organisation des documents"
+      "title": "Outils d'Entreprise",
+      "management": "Gestion des Clients et Fournisseurs",
+      "tracking": "Système de Suivi des Services",
+      "invoice": "Génération de Factures",
+      "rating": "Système d'Évaluation et Avis"
     }
   },
-  "setup": {
-    "title": "Configuration de l'Environnement",
-    "env": "Les Variables d'Environnement (la sauce secrète)"
+  "technical": {
+    "title": "Détails Techniques",
+    "pwa": {
+      "title": "Fonctionnalités PWA",
+      "offline": "Fonctionnalité Hors Ligne",
+      "notifications": "Notifications Push",
+      "workers": "Service Workers",
+      "storage": "Stockage IndexedDB",
+      "updates": "Mises à Jour en Temps Réel"
+    },
+    "setup": {
+      "title": "Configuration de l'Environnement",
+      "env": "Variables d'Environnement"
+    }
   }
 }

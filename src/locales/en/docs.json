@@ -6,29 +6,54 @@
   },
   "features": {
     "title": "Current Features",
-    "auth": "🔐 Secure admin login (we promise it's not \"password123\")",
-    "email": "📧 Email management system (because carrier pigeons are so last century)",
-    "content": "📝 Content management with fallback database (for those \"oops, no internet\" moments)",
-    "business": "💼 Business management features (keeping track of who does what)",
-    "documents": "📂 Document storage with Dropbox integration (because paper is so 2019)",
-    "languages": "🌐 Multi-language support (we speak human... and JavaScript)"
+    "corePlatform": {
+      "title": "Core Platform",
+      "multilanguage": "Multi-language Support (EN, ES, FR)",
+      "auth": "Secure Authentication & Sessions",
+      "email": "Email Management System",
+      "content": "Content Management with Offline Backup",
+      "business": "Business Management Features",
+      "documents": "Document Storage & Management"
+    },
+    "services": {
+      "title": "Maintenance Services",
+      "electrical": "Electrical Maintenance",
+      "plumbing": "Plumbing Services",
+      "ironwork": "Ironwork Solutions",
+      "woodworking": "Woodworking",
+      "architecture": "Architectural Consulting"
+    }
   },
   "admin": {
     "title": "Admin Features",
     "content": {
       "title": "Content Management",
-      "edit": "Edit website content",
-      "offline": "Offline-ready database backup"
+      "multilanguage": "Multi-language Content Editing",
+      "offline": "Offline Database Backup",
+      "editor": "Rich Text Editor Support",
+      "version": "Version Control System"
     },
     "business": {
-      "title": "Business Management",
-      "clients": "Client management",
-      "providers": "Provider tracking",
-      "documents": "Document organization"
+      "title": "Business Tools",
+      "management": "Client & Provider Management",
+      "tracking": "Service Tracking System",
+      "invoice": "Invoice Generation",
+      "rating": "Rating & Review System"
     }
   },
-  "setup": {
-    "title": "Environment Setup",
-    "env": "The Secret Sauce (aka Environment Variables)"
+  "technical": {
+    "title": "Technical Details",
+    "pwa": {
+      "title": "PWA Features",
+      "offline": "Offline Functionality",
+      "notifications": "Push Notifications",
+      "workers": "Service Workers",
+      "storage": "IndexedDB Storage",
+      "updates": "Real-time Updates"
+    },
+    "setup": {
+      "title": "Environment Setup",
+      "env": "Environment Variables"
+    }
   }
 }
