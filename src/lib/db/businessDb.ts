@@ -1,48 +1,55 @@
 import fallbackDb from '../fallback-db.json';
+import { Client, Provider, Invoice } from '@/types/business';
 
 export const businessQueries = {
   // Client operations
-  getClients: () => fallbackDb.clients,
+  getClients: () => {
+    return Promise.resolve(fallbackDb.clients);
+  },
   
-  createClient: (data: any) => {
+  createClient: (data: Omit<Client, 'id'>) => {
     const newClient = { id: `client_${Date.now()}`, ...data };
     fallbackDb.clients.push(newClient);
-    return newClient;
+    return Promise.resolve(newClient);
   },
 
   // Provider operations
-  getProviders: () => fallbackDb.providers,
+  getProviders: () => {
+    return Promise.resolve(fallbackDb.providers);
+  },
   
-  createProvider: (data: any) => {
+  createProvider: (data: Omit<Provider, 'id'>) => {
     const newProvider = { id: `provider_${Date.now()}`, ...data };
     fallbackDb.providers.push(newProvider);
-    return newProvider;
+    return Promise.resolve(newProvider);
   },
 
   // Invoice operations
-  getInvoices: () => fallbackDb.invoices,
+  getInvoices: () => {
+    return Promise.resolve(fallbackDb.invoices);
+  },
   
-  createInvoice: (data: any) => {
+  createInvoice: (data: Omit<Invoice, 'id'>) => {
     const newInvoice = { id: `inv_${Date.now()}`, ...data };
     fallbackDb.invoices.push(newInvoice);
-    return newInvoice;
+    return Promise.resolve(newInvoice);
   },
 
   updateInvoiceStatus: (id: string, status: string) => {
     const invoice = fallbackDb.invoices.find(inv => inv.id === id);
     if (invoice) {
       invoice.status = status;
-      return invoice;
+      return Promise.resolve(invoice);
     }
-    throw new Error('Invoice not found');
+    return Promise.reject(new Error('Invoice not found'));
   },
 
   deleteInvoice: (id: string) => {
     const index = fallbackDb.invoices.findIndex(inv => inv.id === id);
     if (index !== -1) {
       fallbackDb.invoices.splice(index, 1);
-      return { success: true };
+      return Promise.resolve({ success: true });
     }
-    throw new Error('Invoice not found');
+    return Promise.reject(new Error('Invoice not found'));
   }
 };
