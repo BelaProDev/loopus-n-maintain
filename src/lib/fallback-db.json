@@ -26,9 +26,90 @@
       "modifiedBy": "admin"
     }
   ],
-  "clients": [],
-  "providers": [],
-  "invoices": [],
+  "clients": [
+    {
+      "id": "client_1",
+      "name": "John Smith",
+      "email": "john.smith@example.com",
+      "phone": "+32 489 123 456",
+      "company": "Smith & Co",
+      "vatNumber": "BE0123456789"
+    },
+    {
+      "id": "client_2",
+      "name": "Marie Dubois",
+      "email": "marie.dubois@example.com",
+      "phone": "+32 489 987 654",
+      "company": "Dubois Architecture",
+      "vatNumber": "BE9876543210"
+    }
+  ],
+  "providers": [
+    {
+      "id": "provider_1",
+      "name": "Alex Thompson",
+      "email": "alex@electricpro.be",
+      "phone": "+32 489 111 222",
+      "service": "electrics",
+      "availability": true,
+      "rating": 4.8,
+      "specialties": ["Industrial", "Residential"]
+    },
+    {
+      "id": "provider_2",
+      "name": "Sophie Laurent",
+      "email": "sophie@plumbingexperts.be",
+      "phone": "+32 489 333 444",
+      "service": "plumbing",
+      "availability": true,
+      "rating": 4.9,
+      "specialties": ["Emergency repairs", "Installation"]
+    }
+  ],
+  "invoices": [
+    {
+      "id": "inv_1",
+      "number": "INV-2024-001",
+      "date": "2024-03-10",
+      "dueDate": "2024-04-09",
+      "clientId": "client_1",
+      "providerId": "provider_1",
+      "items": [
+        {
+          "id": "item_1",
+          "description": "Electrical installation",
+          "quantity": 1,
+          "unitPrice": 750,
+          "total": 750
+        }
+      ],
+      "status": "sent",
+      "totalAmount": 750,
+      "tax": 157.50,
+      "notes": "Complete electrical installation for office space"
+    },
+    {
+      "id": "inv_2",
+      "number": "INV-2024-002",
+      "date": "2024-03-12",
+      "dueDate": "2024-04-11",
+      "clientId": "client_2",
+      "providerId": "provider_2",
+      "items": [
+        {
+          "id": "item_2",
+          "description": "Emergency plumbing repair",
+          "quantity": 1,
+          "unitPrice": 350,
+          "total": 350
+        }
+      ],
+      "status": "paid",
+      "totalAmount": 350,
+      "tax": 73.50,
+      "notes": "Emergency weekend intervention"
+    }
+  ],
   "settings": [
     {
       "key": "koalax_password",
