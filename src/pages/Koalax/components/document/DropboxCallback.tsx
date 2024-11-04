@@ -13,16 +13,12 @@ const DropboxCallback = () => {
       const code = searchParams.get('code');
       if (code) {
         try {
-          if (window.opener) {
-            window.opener.postMessage({ type: 'DROPBOX_AUTH_CODE', code }, window.location.origin);
-          } else {
-            await dropboxAuth.exchangeCodeForToken(code);
-            toast({
-              title: 'Success',
-              description: 'Successfully connected to Dropbox',
-            });
-            navigate('/koalax/documents');
-          }
+          await dropboxAuth.exchangeCodeForToken(code);
+          toast({
+            title: 'Success',
+            description: 'Successfully connected to Dropbox',
+          });
+          navigate('/koalax/documents', { replace: true });
         } catch (error) {
           toast({
             title: 'Authentication Error',

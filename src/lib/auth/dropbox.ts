@@ -13,26 +13,12 @@ const setStorageValue = (key: string, value: string, persistent = true) => {
   if (!isBrowser) return;
   const storage = persistent ? localStorage : sessionStorage;
   storage.setItem(key, value);
-  
-  // Notify service worker about token changes
-  if (key === 'dropbox_tokens' && navigator.serviceWorker?.controller) {
-    navigator.serviceWorker.controller.postMessage({
-      type: 'STORE_DROPBOX_TOKENS',
-      tokens: JSON.parse(value)
-    });
-  }
 };
 
 const clearStorageValue = (key: string) => {
   if (!isBrowser) return;
   localStorage.removeItem(key);
   sessionStorage.removeItem(key);
-  
-  if (key === 'dropbox_tokens' && navigator.serviceWorker?.controller) {
-    navigator.serviceWorker.controller.postMessage({
-      type: 'REMOVE_DROPBOX_TOKENS'
-    });
-  }
 };
 
 export const dropboxAuth = {
@@ -59,38 +45,7 @@ export const dropboxAuth = {
       redirect_uri: getRedirectUri()
     });
 
-    // For mobile devices, open in same window
-    if (window.innerWidth <= 768) {
-      window.location.href = `${DROPBOX_AUTH_URL}?${params.toString()}`;
-      return new Promise(() => {});
-    }
-
-    // For desktop, open in popup
-    const width = 600;
-    const height = 600;
-    const left = window.screenX + (window.outerWidth - width) / 2;
-    const top = window.screenY + (window.outerHeight - height) / 2;
-    const popup = window.open(
-      `${DROPBOX_AUTH_URL}?${params.toString()}`,
-      'Dropbox Auth',
-      `width=${width},height=${height},left=${left},top=${top}`
-    );
-
-    if (!popup) throw new Error('Popup blocked. Please allow popups and try again.');
-
-    return new Promise((resolve, reject) => {
-      const messageHandler = (event: MessageEvent) => {
-        if (event.origin !== window.location.origin) return;
-        if (event.data?.type === 'DROPBOX_AUTH_CODE') {
-          window.removeEventListener('message', messageHandler);
-          popup.close();
-          this.exchangeCodeForToken(event.data.code)
-            .then(resolve)
-            .catch(reject);
-        }
-      };
-      window.addEventListener('message', messageHandler);
-    });
+    window.location.href = `${DROPBOX_AUTH_URL}?${params.toString()}`;
   },
 
   async exchangeCodeForToken(code: string) {
