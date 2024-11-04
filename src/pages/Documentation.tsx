@@ -8,7 +8,14 @@ import {
   Book, 
   Sparkles, 
   Settings, 
-  Code2 
+  Code2,
+  Wrench,
+  Globe,
+  Shield,
+  Mail,
+  FileText,
+  Building2,
+  FolderOpen
 } from "lucide-react";
 
 const Documentation = () => {
@@ -58,24 +65,57 @@ const Documentation = () => {
                 <h2 className="text-2xl font-semibold">{t("docs:features.title")}</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Card className="p-6">
-                    <h3 className="text-xl font-semibold mb-4">Core Features</h3>
+                    <h3 className="text-xl font-semibold mb-4">Core Platform</h3>
                     <ul className="space-y-3 text-gray-700">
-                      {["auth", "email", "content", "business", "documents", "languages"].map((feature) => (
-                        <li key={feature} className="flex items-start gap-2">
-                          <Sparkles className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                          <span>{t(`docs:features.${feature}`)}</span>
-                        </li>
-                      ))}
+                      <li className="flex items-start gap-2">
+                        <Globe className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                        <span>Multi-language Support (EN, ES, FR)</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Shield className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                        <span>Secure Authentication & Sessions</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Mail className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                        <span>Email Management System</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <FileText className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                        <span>Content Management with Offline Backup</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Building2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                        <span>Business Management Features</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <FolderOpen className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                        <span>Document Storage & Management</span>
+                      </li>
                     </ul>
                   </Card>
                   <Card className="p-6">
-                    <h3 className="text-xl font-semibold mb-4">Services</h3>
+                    <h3 className="text-xl font-semibold mb-4">Maintenance Services</h3>
                     <ul className="space-y-3 text-gray-700">
-                      <li className="flex items-center gap-2">⚡ Electrical Maintenance</li>
-                      <li className="flex items-center gap-2">🔧 Plumbing Services</li>
-                      <li className="flex items-center gap-2">⚒️ Ironwork Solutions</li>
-                      <li className="flex items-center gap-2">🪚 Woodworking</li>
-                      <li className="flex items-center gap-2">🏗️ Architectural Consulting</li>
+                      <li className="flex items-center gap-2">
+                        <Wrench className="h-5 w-5 text-primary" />
+                        Electrical Maintenance
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Wrench className="h-5 w-5 text-primary" />
+                        Plumbing Services
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Wrench className="h-5 w-5 text-primary" />
+                        Ironwork Solutions
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Wrench className="h-5 w-5 text-primary" />
+                        Woodworking
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Wrench className="h-5 w-5 text-primary" />
+                        Architectural Consulting
+                      </li>
                     </ul>
                   </Card>
                 </div>
@@ -85,32 +125,44 @@ const Documentation = () => {
                 <h2 className="text-2xl font-semibold">{t("docs:admin.title")}</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Card className="p-6">
-                    <h3 className="text-xl font-semibold mb-4">{t("docs:admin.content.title")}</h3>
+                    <h3 className="text-xl font-semibold mb-4">Content Management</h3>
                     <ul className="space-y-3 text-gray-700">
                       <li className="flex items-center gap-2">
                         <Settings className="h-5 w-5 text-primary" />
-                        {t("docs:admin.content.edit")}
+                        Multi-language Content Editing
                       </li>
                       <li className="flex items-center gap-2">
                         <Settings className="h-5 w-5 text-primary" />
-                        {t("docs:admin.content.offline")}
+                        Offline Database Backup
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Settings className="h-5 w-5 text-primary" />
+                        Rich Text Editor Support
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Settings className="h-5 w-5 text-primary" />
+                        Version Control System
                       </li>
                     </ul>
                   </Card>
                   <Card className="p-6">
-                    <h3 className="text-xl font-semibold mb-4">{t("docs:admin.business.title")}</h3>
+                    <h3 className="text-xl font-semibold mb-4">Business Tools</h3>
                     <ul className="space-y-3 text-gray-700">
                       <li className="flex items-center gap-2">
                         <Settings className="h-5 w-5 text-primary" />
-                        {t("docs:admin.business.clients")}
+                        Client & Provider Management
                       </li>
                       <li className="flex items-center gap-2">
                         <Settings className="h-5 w-5 text-primary" />
-                        {t("docs:admin.business.providers")}
+                        Service Tracking System
                       </li>
                       <li className="flex items-center gap-2">
                         <Settings className="h-5 w-5 text-primary" />
-                        {t("docs:admin.business.documents")}
+                        Invoice Generation
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Settings className="h-5 w-5 text-primary" />
+                        Rating & Review System
                       </li>
                     </ul>
                   </Card>
@@ -133,11 +185,15 @@ const Documentation = () => {
                       </li>
                       <li className="flex items-center gap-2">
                         <Code2 className="h-5 w-5 text-primary" />
-                        Responsive Design
+                        Service Workers
                       </li>
                       <li className="flex items-center gap-2">
                         <Code2 className="h-5 w-5 text-primary" />
-                        Document Caching
+                        IndexedDB Storage
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Code2 className="h-5 w-5 text-primary" />
+                        Real-time Updates
                       </li>
                     </ul>
                   </Card>

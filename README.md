@@ -2,62 +2,126 @@
 
 Where building maintenance meets good vibes! Our platform keeps buildings happy and facility managers even happier. 
 
-## Current Features 🌺
+## Features 🌺
 
-- 🔐 **Admin Dashboard (Koalax)**
-  - Secure login with session management
-  - Email management system
-  - Content management with offline backup
-  - Document storage with Dropbox integration
-  - Business management (clients & providers)
-  - WhatsApp integration for quick service requests
-  - Logo and navigation customization
-
-- 📱 **Technical Features**
-  - Progressive Web App (PWA)
+### Core Platform
+- 🚀 **Progressive Web App (PWA)**
   - Offline functionality
-  - Multi-language support (English, Spanish, French)
+  - Push notifications
   - Responsive design
+  - Document caching
   - Real-time status indicators
-  - Toast notifications
 
-- 🛠️ **Maintenance Services**
-  - Electrical maintenance
-  - Plumbing services
-  - Ironwork solutions
-  - Woodworking expertise
-  - Architectural consulting
+- 🌐 **Multi-language Support**
+  - English, Spanish, French
+  - Automatic language detection
+  - Easy language switching
+  - Fallback translations
+
+### Admin Dashboard (Koalax)
+- 🔐 **Authentication & Security**
+  - Secure session management
+  - Role-based access control
+  - Password protection
+  - Session timeout handling
+
+- 📧 **Email Management**
+  - Multiple email accounts
+  - Email templates
+  - Automated notifications
+  - Email tracking
+
+- 📝 **Content Management**
+  - Multi-language content
+  - Offline backup database
+  - Rich text editor
+  - Version control
+
+- 💼 **Business Management**
+  - Client profiles
+  - Provider directory
+  - Service tracking
+  - Invoice management
+  - Rating system
+
+- 📂 **Document Management**
+  - Dropbox integration
+  - Folder organization
+  - File versioning
+  - Invoice generation
+  - Offline access
+
+### Maintenance Services
+- ⚡ **Electrical**
+  - Circuit diagnostics
+  - Emergency repairs
+  - Preventive maintenance
+  - Installation services
+
+- 🔧 **Plumbing**
+  - Leak detection
+  - Emergency repairs
+  - Installation services
+  - Preventive maintenance
+
+- ⚒️ **Ironwork**
+  - Structural repairs
+  - Custom fabrication
+  - Welding services
+  - Gate & fence work
+
+- 🪚 **Woodworking**
+  - Custom carpentry
+  - Furniture repair
+  - Installation services
+  - Wood restoration
+
+- 🏗️ **Architecture**
+  - Design consultation
+  - Renovation planning
+  - Permit assistance
+  - Structural assessment
 
 ## Quick Start 🌷
 
 1. Clone the repo
-2. Install dependencies: `npm install`
-3. Set up environment variables:
+2. Install dependencies:
+```bash
+npm install
+```
 
+3. Set up environment variables:
 ```env
 VITE_FAUNA_SECRET_KEY=your-fauna-key
 VITE_DROPBOX_ACCESS_TOKEN=your-dropbox-token
 ```
 
-4. Start development server: `npm run dev`
+4. Start development server:
+```bash
+npm run dev
+```
+
 5. Visit `localhost:5173` 😊
 
 ## Tech Stack 🌹
 
-- React + TypeScript
-- Vite
-- TanStack Query
-- Tailwind CSS + shadcn/ui
-- FaunaDB
-- Dropbox API
-- i18next
+- **Frontend**
+  - React + TypeScript
+  - Vite
+  - TanStack Query
+  - Tailwind CSS
+  - shadcn/ui
+  - i18next
 
-## PWA Features 🌻
+- **Backend & Storage**
+  - FaunaDB
+  - Dropbox API
+  - Service Workers
+  - IndexedDB (offline)
 
-- Works offline
-- Responsive design
-- Push notifications
-- Status indicators
-- Document caching
+- **Integrations**
+  - WhatsApp Business API
+  - Email Services
+  - Push Notifications
 
 Made with 💖 by BelaProDev
