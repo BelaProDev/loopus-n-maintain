@@ -55,10 +55,18 @@
     "message": "Bonjour, j'ai besoin d'aide avec les problèmes suivants : {{issues}}"
   },
   "faq": {
-    "title": "Questions fréquentes",
-    "powerOutageQ": "Que faire en cas de panne de courant ?",
-    "powerOutageA": "D'abord, vérifiez si vos voisins ont du courant. Si oui, vérifiez vos disjoncteurs. Sinon, contactez votre compagnie d'électricité.",
-    "inspectionQ": "À quelle fréquence dois-je faire une inspection électrique ?",
-    "inspectionA": "Nous recommandons une inspection professionnelle tous les 3-5 ans, ou lors de l'achat d'une nouvelle propriété."
+    "title": "Questions Fréquentes",
+    "designProcessQ": "Quel est votre processus de conception architecturale ?",
+    "designProcessA": "Notre processus comprend la consultation initiale, le développement du concept, la planification détaillée et la documentation finale avec un retour régulier du client.",
+    "timelineQ": "Combien de temps prend un projet architectural typique ?",
+    "timelineA": "Les délais varient selon la portée, mais généralement de 2 à 6 mois pour la conception et la documentation, hors temps de construction.",
+    "woodTypeQ": "Avec quels types de bois travaillez-vous ?",
+    "woodTypeA": "Nous travaillons avec une large gamme de bois incluant chêne, érable, pin, noyer et bois exotiques, choisissant le meilleur matériau pour votre projet.",
+    "maintenanceQ": "Comment dois-je entretenir mes meubles en bois ?",
+    "maintenanceA": "Un dépoussiérage régulier, éviter la lumière directe du soleil et un polissage périodique avec des produits adaptés maintiendront la beauté de vos meubles.",
+    "rustPreventionQ": "Comment prévenir la rouille sur mes ouvrages en fer ?",
+    "rustPreventionA": "Un nettoyage régulier, l'entretien du revêtement et la protection contre l'humidité excessive sont essentiels pour prévenir la rouille.",
+    "servicesQ": "Quels types de services de ferronnerie proposez-vous ?",
+    "servicesA": "Nous proposons la fabrication sur mesure, les réparations, la restauration et l'installation pour les ouvrages en fer décoratifs et structurels."
   }
 }

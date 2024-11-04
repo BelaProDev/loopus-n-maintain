@@ -55,6 +55,18 @@
     "message": "Hello, I need help with the following issues: {{issues}}"
   },
   "faq": {
-    "title": "Frequently Asked Questions"
+    "title": "Frequently Asked Questions",
+    "designProcessQ": "What is your architectural design process?",
+    "designProcessA": "Our design process involves initial consultation, concept development, detailed planning, and final documentation with regular client feedback throughout.",
+    "timelineQ": "How long does a typical architectural project take?",
+    "timelineA": "Project timelines vary based on scope, but typically range from 2-6 months for design and documentation, excluding construction time.",
+    "woodTypeQ": "What types of wood do you work with?",
+    "woodTypeA": "We work with a wide range of woods including oak, maple, pine, walnut, and exotic hardwoods, choosing the best material for your specific project.",
+    "maintenanceQ": "How should I maintain my wooden furniture?",
+    "maintenanceA": "Regular dusting, avoiding direct sunlight, and periodic polishing with appropriate wood care products will help maintain your furniture's beauty.",
+    "rustPreventionQ": "How can I prevent rust on my ironwork?",
+    "rustPreventionA": "Regular cleaning, proper coating maintenance, and protecting from excessive moisture are key to preventing rust on ironwork.",
+    "servicesQ": "What types of ironwork services do you offer?",
+    "servicesA": "We offer custom fabrication, repairs, restoration, and installation services for both decorative and structural ironwork."
   }
 }

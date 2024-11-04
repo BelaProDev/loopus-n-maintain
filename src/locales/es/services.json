@@ -55,10 +55,18 @@
     "message": "Hola, necesito ayuda con los siguientes problemas: {{issues}}"
   },
   "faq": {
-    "title": "Preguntas frecuentes",
-    "powerOutageQ": "¿Qué debo hacer durante un corte de energía?",
-    "powerOutageA": "Primero, verifique si sus vecinos tienen energía. Si la tienen, revise sus disyuntores. Si no, contacte a su compañía eléctrica.",
-    "inspectionQ": "¿Con qué frecuencia debo realizar una inspección eléctrica?",
-    "inspectionA": "Recomendamos realizar una inspección profesional cada 3-5 años, o al comprar una nueva propiedad."
+    "title": "Preguntas Frecuentes",
+    "designProcessQ": "¿Cuál es su proceso de diseño arquitectónico?",
+    "designProcessA": "Nuestro proceso de diseño incluye consulta inicial, desarrollo del concepto, planificación detallada y documentación final con retroalimentación regular del cliente.",
+    "timelineQ": "¿Cuánto tiempo toma un proyecto arquitectónico típico?",
+    "timelineA": "Los tiempos varían según el alcance, pero generalmente van de 2 a 6 meses para diseño y documentación, excluyendo el tiempo de construcción.",
+    "woodTypeQ": "¿Con qué tipos de madera trabajan?",
+    "woodTypeA": "Trabajamos con una amplia gama de maderas incluyendo roble, arce, pino, nogal y maderas duras exóticas, eligiendo el mejor material para su proyecto específico.",
+    "maintenanceQ": "¿Cómo debo mantener mis muebles de madera?",
+    "maintenanceA": "Limpieza regular del polvo, evitar la luz solar directa y pulido periódico con productos adecuados ayudarán a mantener la belleza de sus muebles.",
+    "rustPreventionQ": "¿Cómo puedo prevenir el óxido en mis trabajos de hierro?",
+    "rustPreventionA": "La limpieza regular, el mantenimiento adecuado del recubrimiento y la protección contra la humedad excesiva son clave para prevenir el óxido.",
+    "servicesQ": "¿Qué tipos de servicios de herrería ofrecen?",
+    "servicesA": "Ofrecemos fabricación personalizada, reparaciones, restauración e instalación para trabajos de hierro tanto decorativos como estructurales."
   }
 }
