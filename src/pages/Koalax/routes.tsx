@@ -3,7 +3,7 @@ import EmailManagement from "./components/email/EmailManagement";
 import ContentEditor from "./ContentEditor";
 import SiteSettings from "./SiteSettings";
 import BusinessManagement from "./components/BusinessManagement";
-import DocumentManager from "./components/DocumentManager";
+import DocumentManager from "./components/document/DocumentManager";
 import DropboxCallback from "./components/document/DropboxCallback";
 
 export const koalaxRoutes: RouteObject[] = [

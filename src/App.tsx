@@ -28,7 +28,7 @@ import EmailManagement from "./pages/Koalax/components/email/EmailManagement";
 import ContentEditor from "./pages/Koalax/ContentEditor";
 import SiteSettings from "./pages/Koalax/SiteSettings";
 import BusinessManagement from "./pages/Koalax/components/BusinessManagement";
-import DocumentManager from "./pages/Koalax/components/DocumentManager";
+import DocumentManager from "./pages/Koalax/components/document/DocumentManager";
 import DropboxCallback from "./pages/Koalax/components/document/DropboxCallback";
 
 const queryClient = new QueryClient();
