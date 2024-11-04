@@ -6,6 +6,7 @@ import { Edit2, Clock, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "react-i18next";
 
 interface ContentItem {
   key: string;
@@ -22,6 +23,8 @@ interface ContentGridProps {
 }
 
 const ContentGrid = ({ content, onEdit }: ContentGridProps) => {
+  const { t } = useTranslation(["admin"]);
+
   const getTypeColor = (type: ContentItem['type']) => {
     switch (type) {
       case 'text':
@@ -54,10 +57,15 @@ const ContentGrid = ({ content, onEdit }: ContentGridProps) => {
                       {item.key}
                     </h4>
                     <Badge variant="secondary" className={getTypeColor(item.type)}>
-                      {item.type}
+                      {t(`admin:content.types.${item.type}`)}
                     </Badge>
                   </div>
-                  <Button variant="ghost" size="icon" onClick={() => onEdit(item)}>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={() => onEdit(item)}
+                    title={t("admin:content.edit")}
+                  >
                     <Edit2 className="h-4 w-4" />
                   </Button>
                 </div>
@@ -73,7 +81,7 @@ const ContentGrid = ({ content, onEdit }: ContentGridProps) => {
                   </div>
                   <div className="flex items-center text-xs text-muted-foreground">
                     <User className="h-3 w-3 mr-1" />
-                    {item.modifiedBy}
+                    {t("admin:content.modifiedBy", { user: item.modifiedBy })}
                   </div>
                 </div>
               </Card>

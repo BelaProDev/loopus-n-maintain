@@ -60,7 +60,7 @@ const ContentEditor = () => {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="fauna">Fauna DB</SelectItem>
-            <SelectItem value="fallback">Fallback JSON</SelectItem>
+            <SelectItem value="fallback">{t("admin:content.fallbackStorage")}</SelectItem>
           </SelectContent>
         </Select>
       </div>
