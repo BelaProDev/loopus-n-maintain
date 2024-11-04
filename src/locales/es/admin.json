@@ -164,5 +164,5 @@
       "deleteSuccess": "Factura eliminada exitosamente",
       "deleteError": "Error al eliminar factura"
     }
-  },
+  }
 }
