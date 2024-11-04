@@ -29,18 +29,20 @@ export const exportToPDF = async (invoice: Invoice) => {
       {
         table: {
           headerRows: 1,
-          widths: ['*', 'auto', 'auto', 'auto'],
+          widths: ['*', 'auto', 'auto', 'auto', 'auto'],
           body: [
             [
               { text: 'Description', style: 'tableHeader' },
               { text: 'Quantity', style: 'tableHeader' },
               { text: 'Unit Price', style: 'tableHeader' },
+              { text: 'VAT Rate', style: 'tableHeader' },
               { text: 'Total', style: 'tableHeader' }
             ],
             ...invoice.items.map(item => [
               item.description,
               { text: item.quantity.toString(), alignment: 'center' },
               { text: `€${item.unitPrice.toFixed(2)}`, alignment: 'right' },
+              { text: `${(item.vatRate || 21)}%`, alignment: 'center' },
               { text: `€${item.total.toFixed(2)}`, alignment: 'right' }
             ])
           ]
@@ -52,15 +54,31 @@ export const exportToPDF = async (invoice: Invoice) => {
           {
             width: 'auto',
             stack: [
-              { text: `Subtotal: €${(invoice.totalAmount - invoice.tax).toFixed(2)}`, alignment: 'right', margin: [0, 10, 0, 5] },
-              { text: `Tax: €${invoice.tax.toFixed(2)}`, alignment: 'right', margin: [0, 0, 0, 5] },
-              { text: `Total Amount: €${invoice.totalAmount.toFixed(2)}`, style: 'total', alignment: 'right' }
+              { text: `Subtotal (excl. VAT): €${(invoice.totalAmount - invoice.tax).toFixed(2)}`, alignment: 'right', margin: [0, 10, 0, 5] },
+              { text: `VAT (21%): €${invoice.tax.toFixed(2)}`, alignment: 'right', margin: [0, 0, 0, 5] },
+              { text: `Total Amount (incl. VAT): €${invoice.totalAmount.toFixed(2)}`, style: 'total', alignment: 'right' }
             ]
           }
         ]
       },
+      { text: 'Payment Information:', style: 'subheader', margin: [0, 30, 0, 10] },
+      {
+        style: 'paymentInfo',
+        stack: [
+          { text: 'Bank Transfer Details:', bold: true },
+          { text: 'IBAN: BE00 0000 0000 0000' },
+          { text: 'BIC: GEBABEBB' },
+          { text: 'Bank: Example Bank' },
+          { text: `Reference: ${invoice.number}` }
+        ]
+      },
       { text: 'Notes:', style: 'subheader', margin: [0, 30, 0, 10] },
-      { text: invoice.notes || 'No notes', style: 'notes' }
+      { text: invoice.notes || 'No notes', style: 'notes' },
+      {
+        text: 'VAT Number: BE0123456789',
+        style: 'footer',
+        margin: [0, 30, 0, 0]
+      }
     ],
     styles: {
       header: {
@@ -87,6 +105,16 @@ export const exportToPDF = async (invoice: Invoice) => {
         fontSize: 12,
         color: '#4b5563',
         italics: true
+      },
+      paymentInfo: {
+        fontSize: 12,
+        color: '#1f2937',
+        lineHeight: 1.4
+      },
+      footer: {
+        fontSize: 12,
+        color: '#4b5563',
+        alignment: 'right'
       }
     },
     defaultStyle: {
