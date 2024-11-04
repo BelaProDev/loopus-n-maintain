@@ -26,19 +26,19 @@ export const useDocumentExport = () => {
     invoice.items.forEach(item => {
       invoiceData.push([
         item.description,
-        item.quantity,
-        item.unitPrice,
+        item.quantity.toString(),
+        item.unitPrice.toString(),
         `${item.vatRate}%`,
-        item.total
+        item.total.toString()
       ]);
     });
 
     // Add totals
     invoiceData.push(
       [''],  // Empty row for spacing
-      ['Subtotal (excl. VAT)', '', '', '', invoice.totalAmount - invoice.tax],
-      ['VAT', '', '', '', invoice.tax],
-      ['Total Amount (incl. VAT)', '', '', '', invoice.totalAmount]
+      ['Subtotal (excl. VAT)', '', '', '', (invoice.totalAmount - invoice.tax).toString()],
+      ['VAT', '', '', '', invoice.tax.toString()],
+      ['Total Amount (incl. VAT)', '', '', '', invoice.totalAmount.toString()]
     );
 
     const ws = XLSX.utils.aoa_to_sheet(invoiceData);
