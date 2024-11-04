@@ -52,8 +52,7 @@ const InvoiceDialog = ({
       description: "",
       quantity: 1,
       unitPrice: 0,
-      total: 0,
-      vatRate: 21 // Default VAT rate for Belgium
+      total: 0
     }]);
   };
 
