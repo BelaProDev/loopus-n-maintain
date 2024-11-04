@@ -19,14 +19,6 @@ const Woodwork = () => {
     {
       question: "faq.maintenanceQ",
       answer: "faq.maintenanceA"
-    },
-    {
-      question: "faq.rustPreventionQ",
-      answer: "faq.rustPreventionA"
-    },
-    {
-      question: "faq.servicesQ",
-      answer: "faq.servicesA"
     }
   ];
 
