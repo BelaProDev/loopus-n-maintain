@@ -1,15 +1,17 @@
 import fallbackDb from '../fallback-db.json';
 
+const defaultWhatsAppSettings = {
+  electrics: "",
+  plumbing: "",
+  ironwork: "",
+  woodwork: "",
+  architecture: ""
+};
+
 export const settingsQueries = {
   getWhatsAppNumbers: () => {
     const whatsappSettings = fallbackDb.settings.find(s => s.key === 'whatsapp_numbers');
-    return whatsappSettings?.value || {
-      electrics: "",
-      plumbing: "",
-      ironwork: "",
-      woodwork: "",
-      architecture: ""
-    };
+    return whatsappSettings?.value || defaultWhatsAppSettings;
   },
 
   updateWhatsAppNumbers: (numbers: any) => {
