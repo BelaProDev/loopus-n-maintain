@@ -26,63 +26,6 @@
       "modifiedBy": "admin"
     }
   ],
-  "clients": [
-    {
-      "id": "client_1",
-      "name": "John Smith",
-      "email": "john.smith@example.com",
-      "phone": "+32 489 123 456",
-      "company": "Smith & Co",
-      "vatNumber": "BE0123456789",
-      "totalInvoices": 12,
-      "totalAmount": 15750.00,
-      "status": "active"
-    },
-    {
-      "id": "client_2",
-      "name": "Marie Dubois",
-      "email": "marie.dubois@example.com",
-      "phone": "+32 489 987 654",
-      "company": "Dubois Architecture",
-      "vatNumber": "BE9876543210",
-      "totalInvoices": 8,
-      "totalAmount": 24300.00,
-      "status": "active"
-    },
-    {
-      "id": "client_3",
-      "name": "Carlos Rodriguez",
-      "email": "carlos@buildtech.es",
-      "phone": "+32 489 444 555",
-      "company": "BuildTech Solutions",
-      "vatNumber": "BE5555666777",
-      "totalInvoices": 15,
-      "totalAmount": 45800.00,
-      "status": "active"
-    }
-  ],
-  "providers": [
-    {
-      "id": "provider_1",
-      "name": "Alex Thompson",
-      "email": "alex@electricpro.be",
-      "phone": "+32 489 111 222",
-      "service": "electrics",
-      "availability": true,
-      "rating": 4.8,
-      "specialties": ["Industrial", "Residential"]
-    },
-    {
-      "id": "provider_2",
-      "name": "Sophie Laurent",
-      "email": "sophie@plumbingexperts.be",
-      "phone": "+32 489 333 444",
-      "service": "plumbing",
-      "availability": true,
-      "rating": 4.9,
-      "specialties": ["Emergency repairs", "Installation"]
-    }
-  ],
   "invoices": [
     {
       "id": "inv_1",
@@ -97,76 +40,22 @@
           "description": "Electrical installation - Main Office",
           "quantity": 1,
           "unitPrice": 750,
-          "total": 750
+          "total": 750,
+          "vatRate": 21
         },
         {
           "id": "item_2",
           "description": "Emergency lighting system",
           "quantity": 2,
           "unitPrice": 250,
-          "total": 500
+          "total": 500,
+          "vatRate": 21
         }
       ],
       "status": "sent",
       "totalAmount": 1250,
       "tax": 262.50,
       "notes": "Complete electrical installation for office space including emergency lighting"
-    },
-    {
-      "id": "inv_2",
-      "number": "INV-2024-002",
-      "date": "2024-03-12",
-      "dueDate": "2024-04-11",
-      "clientId": "client_2",
-      "providerId": "provider_2",
-      "items": [
-        {
-          "id": "item_3",
-          "description": "Emergency plumbing repair - Basement",
-          "quantity": 1,
-          "unitPrice": 350,
-          "total": 350
-        },
-        {
-          "id": "item_4",
-          "description": "Pipe replacement",
-          "quantity": 5,
-          "unitPrice": 120,
-          "total": 600
-        }
-      ],
-      "status": "paid",
-      "totalAmount": 950,
-      "tax": 199.50,
-      "notes": "Emergency weekend intervention with pipe replacement"
-    },
-    {
-      "id": "inv_3",
-      "number": "INV-2024-003",
-      "date": "2024-03-15",
-      "dueDate": "2024-04-14",
-      "clientId": "client_3",
-      "providerId": "provider_1",
-      "items": [
-        {
-          "id": "item_5",
-          "description": "Complete rewiring - Floor 3",
-          "quantity": 1,
-          "unitPrice": 2800,
-          "total": 2800
-        },
-        {
-          "id": "item_6",
-          "description": "Network cabinet installation",
-          "quantity": 2,
-          "unitPrice": 450,
-          "total": 900
-        }
-      ],
-      "status": "draft",
-      "totalAmount": 3700,
-      "tax": 777.00,
-      "notes": "Major electrical upgrade for third floor offices"
     }
   ],
   "settings": [
@@ -189,14 +78,6 @@
     {
       "email": "pro.belalawson@gmail.com",
       "password": "miaouw004"
-    },
-    {
-      "email": "belalawson@gmail.com",
-      "password": "miaouw0049"
-    },
-    {
-      "email": "diplodocus@hello.io",
-      "password": "miaouw6749"
     }
   ]
 }
