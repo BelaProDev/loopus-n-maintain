@@ -1,7 +1,7 @@
 import { Dropbox } from 'dropbox';
 import { dropboxAuth } from './auth/dropbox';
 
-const ROOT_FOLDER = '';  // Changed to empty string to access root folder
+const ROOT_FOLDER = '';
 
 export const getDropboxClient = () => {
   if (typeof window === 'undefined') return null;
@@ -15,7 +15,6 @@ export const getDropboxClient = () => {
 };
 
 const sanitizePath = (path: string) => {
-  // Remove any double slashes and leading/trailing slashes
   return path.replace(/\/+/g, '/').replace(/^\/|\/$/g, '');
 };
 
@@ -80,6 +79,10 @@ export const deleteFile = async (path: string) => {
   }
 };
 
+export const deleteFolder = async (path: string) => {
+  return deleteFile(path); // Dropbox API uses same endpoint for both files and folders
+};
+
 export const listFiles = async (path: string = '') => {
   const dbx = getDropboxClient();
   if (!dbx) throw new Error('Dropbox client not initialized');
@@ -107,6 +110,21 @@ export const downloadFile = async (path: string): Promise<Blob> => {
     return response.result.fileBlob;
   } catch (error) {
     console.error('Dropbox download error:', error);
+    throw error;
+  }
+};
+
+export const downloadFolder = async (path: string): Promise<Blob> => {
+  const dbx = getDropboxClient();
+  if (!dbx) throw new Error('Dropbox client not initialized');
+
+  try {
+    const response = await dbx.filesDownloadZip({
+      path: path,
+    }) as any;
+    return response.result.fileBlob;
+  } catch (error) {
+    console.error('Dropbox folder download error:', error);
     throw error;
   }
 };

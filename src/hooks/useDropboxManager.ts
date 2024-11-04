@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { uploadFile, listFiles, downloadFile, deleteFile, createFolder } from "@/lib/dropbox";
+import { uploadFile, listFiles, downloadFile, deleteFile, createFolder, deleteFolder, downloadFolder } from "@/lib/dropbox";
 import { dropboxAuth } from "@/lib/auth/dropbox";
 
 export const useDropboxManager = (currentPath: string) => {
@@ -37,19 +37,20 @@ export const useDropboxManager = (currentPath: string) => {
 
   const deleteMutation = useMutation({
     mutationFn: async (path: string) => {
-      return await deleteFile(path);
+      const isFolder = files?.find(f => f.path_display === path)?.['.tag'] === 'folder';
+      return isFolder ? deleteFolder(path) : deleteFile(path);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['dropbox-files'] });
       toast({
         title: "Success",
-        description: "File deleted successfully",
+        description: "Item deleted successfully",
       });
     },
     onError: (error) => {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to delete file",
+        description: error instanceof Error ? error.message : "Failed to delete item",
         variant: "destructive",
       });
     }
@@ -90,11 +91,12 @@ export const useDropboxManager = (currentPath: string) => {
   const handleDownload = async (path: string | undefined, fileName: string) => {
     if (!path) return;
     try {
-      const blob = await downloadFile(path);
+      const isFolder = files?.find(f => f.path_display === path)?.['.tag'] === 'folder';
+      const blob = isFolder ? await downloadFolder(path) : await downloadFile(path);
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = fileName;
+      link.download = fileName + (isFolder ? '.zip' : '');
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -102,7 +104,7 @@ export const useDropboxManager = (currentPath: string) => {
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to download file",
+        description: "Failed to download item",
         variant: "destructive",
       });
     }

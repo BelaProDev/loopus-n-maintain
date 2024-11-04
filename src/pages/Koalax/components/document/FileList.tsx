@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Folder, File, Download, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface FileListProps {
   files?: Array<{
@@ -13,6 +14,20 @@ interface FileListProps {
 }
 
 const FileList = ({ files = [], onDownload, onDelete, onNavigate }: FileListProps) => {
+  const handleDelete = async (path: string | undefined, isFolder: boolean) => {
+    if (!path) return;
+    
+    const itemType = isFolder ? 'folder' : 'file';
+    if (confirm(`Are you sure you want to delete this ${itemType}?`)) {
+      try {
+        await onDelete(path);
+        toast.success(`${itemType} deleted successfully`);
+      } catch (error) {
+        toast.error(`Failed to delete ${itemType}`);
+      }
+    }
+  };
+
   return (
     <div className="space-y-2">
       {files.map((file, index) => (
@@ -39,24 +54,20 @@ const FileList = ({ files = [], onDownload, onDelete, onNavigate }: FileListProp
           </div>
 
           <div className="flex gap-2">
-            {file['.tag'] === 'file' && (
-              <>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onDownload(file.path_display, file.name)}
-                >
-                  <Download className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onDelete(file.path_display)}
-                >
-                  <Trash2 className="w-4 h-4 text-red-500" />
-                </Button>
-              </>
-            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onDownload(file.path_display, file.name)}
+            >
+              <Download className="w-4 h-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => handleDelete(file.path_display, file['.tag'] === 'folder')}
+            >
+              <Trash2 className="w-4 h-4 text-red-500" />
+            </Button>
           </div>
         </div>
       ))}
