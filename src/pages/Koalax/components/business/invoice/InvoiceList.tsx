@@ -1,83 +1,34 @@
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { businessQueries } from "@/lib/fauna/business";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus } from "lucide-react";
-import { Invoice } from "@/types/business";
 import InvoiceDialog from "../InvoiceDialog";
 import InvoiceActions from "./InvoiceActions";
 import InvoiceStatus from "./InvoiceStatus";
-import { useToast } from "@/components/ui/use-toast";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
+import { useInvoiceOperations } from "@/hooks/useInvoiceOperations";
 
 const InvoiceList = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null);
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
+  const [editingInvoice, setEditingInvoice] = useState(null);
   const { t } = useTranslation(["admin", "common"]);
+  const { handleCreateInvoice, deleteMutation, isCreating } = useInvoiceOperations();
 
   const { data: invoices, isLoading } = useQuery({
     queryKey: ['invoices'],
     queryFn: businessQueries.getInvoices
   });
 
-  const createMutation = useMutation({
-    mutationFn: businessQueries.createInvoice,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['invoices'] });
-      toast({ 
-        title: t("common:common.success"), 
-        description: t("admin:business.invoices.addSuccess") 
-      });
-      setIsDialogOpen(false);
-    },
-    onError: () => {
-      toast({ 
-        title: t("common:common.error"), 
-        description: t("admin:business.invoices.addError"), 
-        variant: "destructive" 
-      });
-    }
-  });
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
-    
-    const invoiceData = {
-      clientId: formData.get("clientId") as string,
-      providerId: formData.get("providerId") as string,
-      notes: formData.get("notes") as string,
-      number: `INV-${Date.now()}`,
-      date: new Date().toISOString(),
-      dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-      status: "draft" as const,
-      items: [],
-      totalAmount: 0,
-      tax: 0
-    };
-
-    createMutation.mutate(invoiceData);
-  };
-
-  const handleDelete = async (id: string) => {
-    try {
-      await businessQueries.deleteInvoice(id);
-      queryClient.invalidateQueries({ queryKey: ['invoices'] });
-      toast({ 
-        title: t("common:common.success"), 
-        description: t("admin:business.invoices.deleteSuccess") 
-      });
-    } catch (error) {
-      toast({ 
-        title: t("common:common.error"), 
-        description: t("admin:business.invoices.deleteError"), 
-        variant: "destructive" 
-      });
+    const isPending = handleCreateInvoice(formData);
+    if (!isPending) {
+      setIsDialogOpen(false);
     }
   };
 
@@ -108,7 +59,7 @@ const InvoiceList = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {invoices?.map((invoice: Invoice) => (
+          {invoices?.map((invoice) => (
             <TableRow key={invoice.id}>
               <TableCell>{invoice.number}</TableCell>
               <TableCell>{format(new Date(invoice.date), 'PPP')}</TableCell>
@@ -120,7 +71,7 @@ const InvoiceList = () => {
               <TableCell className="text-right">
                 <InvoiceActions
                   invoice={invoice}
-                  onDelete={handleDelete}
+                  onDelete={(id) => deleteMutation.mutate(id)}
                 />
               </TableCell>
             </TableRow>
@@ -133,7 +84,7 @@ const InvoiceList = () => {
         onOpenChange={setIsDialogOpen}
         editingInvoice={editingInvoice}
         onSubmit={handleSubmit}
-        isLoading={createMutation.isPending}
+        isLoading={isCreating}
       />
     </div>
   );
