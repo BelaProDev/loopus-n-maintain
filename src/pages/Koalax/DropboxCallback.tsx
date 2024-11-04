@@ -1,27 +1,52 @@
 import { useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useToast } from "@/components/ui/use-toast";
+import { dropboxAuth } from '@/lib/auth/dropbox';
 
 const DropboxCallback = () => {
-  const [searchParams] = useSearchParams();
+  const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const code = searchParams.get('code');
-    if (code) {
-      // Send the auth code back to the opener window
-      if (window.opener) {
-        window.opener.postMessage({ type: 'DROPBOX_AUTH_CODE', code }, '*');
-        // Close the popup after sending the message
-        window.close();
+    const handleAuth = async () => {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        
+        if (!code) {
+          throw new Error('No authorization code received');
+        }
+
+        const accessToken = await dropboxAuth.handleCallback(code);
+        
+        if (accessToken) {
+          toast({
+            title: 'Success',
+            description: 'Successfully connected to Dropbox',
+          });
+          // Use replace to prevent back navigation issues
+          navigate('/koalax/documents', { replace: true });
+        }
+      } catch (error) {
+        toast({
+          title: 'Authentication Error',
+          description: error instanceof Error ? error.message : 'Failed to complete authentication',
+          variant: 'destructive',
+        });
+        // Redirect to documents page even on error, but show the error toast
+        navigate('/koalax/documents', { replace: true });
       }
-    }
-  }, [searchParams]);
+    };
+
+    handleAuth();
+  }, [toast, navigate]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background">
       <div className="text-center space-y-4 p-6 max-w-md mx-auto">
-        <h1 className="text-2xl font-bold">Authentication Successful</h1>
+        <h1 className="text-2xl font-bold">Connecting to Dropbox...</h1>
         <p className="text-muted-foreground">
-          You can close this window and return to Loopus & Maintain.
+          Please wait while we complete the authentication process.
         </p>
       </div>
     </div>

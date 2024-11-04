@@ -12,23 +12,28 @@ const DropboxCallback = () => {
       try {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
-        const accessToken = code ? await dropboxAuth.handleCallback(code) : null;
+        
+        if (!code) {
+          throw new Error('No authorization code received');
+        }
+
+        const accessToken = await dropboxAuth.handleCallback(code);
         
         if (accessToken) {
           toast({
             title: 'Success',
             description: 'Successfully connected to Dropbox',
           });
-        } else {
-          throw new Error('No access token received');
+          // Use replace to prevent back navigation issues
+          navigate('/koalax/documents', { replace: true });
         }
       } catch (error) {
         toast({
           title: 'Authentication Error',
-          description: 'Failed to complete authentication. Please try again.',
+          description: error instanceof Error ? error.message : 'Failed to complete authentication',
           variant: 'destructive',
         });
-      } finally {
+        // Redirect to documents page even on error, but show the error toast
         navigate('/koalax/documents', { replace: true });
       }
     };
