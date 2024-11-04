@@ -67,6 +67,14 @@
     "rustPreventionQ": "Comment prévenir la rouille sur mes ouvrages en fer ?",
     "rustPreventionA": "Un nettoyage régulier, l'entretien du revêtement et la protection contre l'humidité excessive sont essentiels pour prévenir la rouille.",
     "servicesQ": "Quels types de services de ferronnerie proposez-vous ?",
-    "servicesA": "Nous proposons la fabrication sur mesure, les réparations, la restauration et l'installation pour les ouvrages en fer décoratifs et structurels."
+    "servicesA": "Nous proposons la fabrication sur mesure, les réparations, la restauration et l'installation pour les ouvrages en fer décoratifs et structurels.",
+    "plumbingInspectionQ": "À quelle fréquence dois-je faire inspecter ma plomberie ?",
+    "plumbingInspectionA": "Nous recommandons une inspection professionnelle annuelle pour prévenir les problèmes majeurs et assurer un fonctionnement efficace.",
+    "leakQ": "Que dois-je faire si je découvre une fuite d'eau ?",
+    "leakA": "D'abord, coupez l'alimentation en eau de la zone affectée. Ensuite, documentez les dégâts et contactez-nous immédiatement pour un service de réparation d'urgence.",
+    "powerOutageQ": "Que faire en cas de panne de courant ?",
+    "powerOutageA": "D'abord, vérifiez si vos voisins ont du courant. Si oui, vérifiez vos disjoncteurs. Sinon, contactez votre compagnie d'électricité.",
+    "electricalInspectionQ": "À quelle fréquence dois-je faire une inspection électrique ?",
+    "electricalInspectionA": "Nous recommandons une inspection professionnelle tous les 3-5 ans, ou lors de l'achat d'une nouvelle propriété."
   }
 }

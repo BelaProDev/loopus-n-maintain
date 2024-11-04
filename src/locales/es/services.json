@@ -67,6 +67,14 @@
     "rustPreventionQ": "¿Cómo puedo prevenir el óxido en mis trabajos de hierro?",
     "rustPreventionA": "La limpieza regular, el mantenimiento adecuado del recubrimiento y la protección contra la humedad excesiva son clave para prevenir el óxido.",
     "servicesQ": "¿Qué tipos de servicios de herrería ofrecen?",
-    "servicesA": "Ofrecemos fabricación personalizada, reparaciones, restauración e instalación para trabajos de hierro tanto decorativos como estructurales."
+    "servicesA": "Ofrecemos fabricación personalizada, reparaciones, restauración e instalación para trabajos de hierro tanto decorativos como estructurales.",
+    "plumbingInspectionQ": "¿Con qué frecuencia debo inspeccionar mi fontanería?",
+    "plumbingInspectionA": "Recomendamos una inspección profesional anual para prevenir problemas mayores y asegurar que todo funcione eficientemente.",
+    "leakQ": "¿Qué debo hacer si descubro una fuga de agua?",
+    "leakA": "Primero, cierre el suministro de agua del área afectada. Luego documente el daño y contáctenos inmediatamente para un servicio de reparación de emergencia.",
+    "powerOutageQ": "¿Qué debo hacer durante un corte de energía?",
+    "powerOutageA": "Primero, verifique si sus vecinos tienen energía. Si la tienen, revise sus disyuntores. Si no, contacte a su compañía eléctrica.",
+    "electricalInspectionQ": "¿Con qué frecuencia debo realizar una inspección eléctrica?",
+    "electricalInspectionA": "Recomendamos realizar una inspección profesional cada 3-5 años, o al comprar una nueva propiedad."
   }
 }

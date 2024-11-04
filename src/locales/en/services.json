@@ -67,6 +67,14 @@
     "rustPreventionQ": "How can I prevent rust on my ironwork?",
     "rustPreventionA": "Regular cleaning, proper coating maintenance, and protecting from excessive moisture are key to preventing rust on ironwork.",
     "servicesQ": "What types of ironwork services do you offer?",
-    "servicesA": "We offer custom fabrication, repairs, restoration, and installation services for both decorative and structural ironwork."
+    "servicesA": "We offer custom fabrication, repairs, restoration, and installation services for both decorative and structural ironwork.",
+    "plumbingInspectionQ": "How often should I have my plumbing inspected?",
+    "plumbingInspectionA": "We recommend a professional plumbing inspection annually to prevent major issues and ensure everything is working efficiently.",
+    "leakQ": "What should I do if I discover a water leak?",
+    "leakA": "First, shut off the water supply to the affected area. Then document the damage and contact us immediately for emergency repair service.",
+    "powerOutageQ": "What should I do during a power outage?",
+    "powerOutageA": "First, check if your neighbors have power. If they do, check your circuit breakers. If not, contact your electricity provider.",
+    "electricalInspectionQ": "How often should I have an electrical inspection?",
+    "electricalInspectionA": "We recommend a professional electrical inspection every 3-5 years, or when purchasing a new property."
   }
 }
