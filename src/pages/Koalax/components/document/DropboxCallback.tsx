@@ -8,27 +8,32 @@ const DropboxCallback = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    try {
-      const hash = window.location.hash;
-      const accessToken = dropboxAuth.handleRedirect(hash);
-      
-      if (accessToken) {
+    const handleAuth = async () => {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const accessToken = code ? await dropboxAuth.handleCallback(code) : null;
+        
+        if (accessToken) {
+          toast({
+            title: 'Success',
+            description: 'Successfully connected to Dropbox',
+          });
+        } else {
+          throw new Error('No access token received');
+        }
+      } catch (error) {
         toast({
-          title: 'Success',
-          description: 'Successfully connected to Dropbox',
+          title: 'Authentication Error',
+          description: 'Failed to complete authentication. Please try again.',
+          variant: 'destructive',
         });
-      } else {
-        throw new Error('No access token received');
+      } finally {
+        navigate('/koalax/documents', { replace: true });
       }
-    } catch (error) {
-      toast({
-        title: 'Authentication Error',
-        description: 'Failed to complete authentication. Please try again.',
-        variant: 'destructive',
-      });
-    } finally {
-      navigate('/koalax/documents', { replace: true });
-    }
+    };
+
+    handleAuth();
   }, [toast, navigate]);
 
   return (

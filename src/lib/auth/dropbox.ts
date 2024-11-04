@@ -30,8 +30,7 @@ export const dropboxAuth = {
 
     const params = new URLSearchParams({
       client_id: CLIENT_ID,
-      response_type: 'token',
-      token_access_type: 'offline',
+      response_type: 'code',  // Changed from 'token' to 'code'
       state,
       redirect_uri: getRedirectUri()
     });
@@ -39,11 +38,48 @@ export const dropboxAuth = {
     window.location.href = `${DROPBOX_AUTH_URL}?${params.toString()}`;
   },
 
+  async handleCallback(code: string) {
+    if (!code) return null;
+    
+    const storedState = getStorageValue('dropbox_state');
+    clearStorageValue('dropbox_state');
+    
+    try {
+      const response = await fetch(DROPBOX_TOKEN_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          code,
+          grant_type: 'authorization_code',
+          client_id: CLIENT_ID,
+          redirect_uri: getRedirectUri(),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to exchange code for token');
+      }
+
+      const data = await response.json();
+      setStorageValue('dropbox_tokens', JSON.stringify({
+        access_token: data.access_token,
+        refresh_token: data.refresh_token,
+      }));
+
+      return data.access_token;
+    } catch (error) {
+      console.error('Error exchanging code for token:', error);
+      return null;
+    }
+  },
+
   handleRedirect(hash: string) {
     if (!hash) return null;
     
     const params = new URLSearchParams(hash.substring(1));
-    const accessToken = params.get('access_token');
+    const code = params.get('code');
     const state = params.get('state');
     const storedState = getStorageValue('dropbox_state');
     
@@ -51,14 +87,7 @@ export const dropboxAuth = {
       throw new Error('Invalid state parameter');
     }
     
-    clearStorageValue('dropbox_state');
-    
-    if (accessToken) {
-      setStorageValue('dropbox_tokens', JSON.stringify({ access_token: accessToken }), true);
-      return accessToken;
-    }
-    
-    return null;
+    return this.handleCallback(code || '');
   },
 
   logout() {
