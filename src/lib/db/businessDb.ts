@@ -7,14 +7,13 @@ export const businessQueries = {
     return Promise.resolve(fallbackDb.clients);
   },
   
-  createClient: (data: Omit<Client, 'id'>) => {
+  createClient: (data: Omit<Client, 'id' | 'totalInvoices' | 'totalAmount' | 'status'>) => {
     const newClient: Client = {
       id: `client_${Date.now()}`,
-      name: data.name,
-      email: data.email,
-      phone: data.phone || '',
-      company: data.company || '',
-      vatNumber: data.vatNumber || '',
+      ...data,
+      totalInvoices: 0,
+      totalAmount: 0,
+      status: 'active'
     };
     fallbackDb.clients.push(newClient);
     return Promise.resolve(newClient);
@@ -28,13 +27,7 @@ export const businessQueries = {
   createProvider: (data: Omit<Provider, 'id'>) => {
     const newProvider: Provider = {
       id: `provider_${Date.now()}`,
-      name: data.name,
-      email: data.email,
-      phone: data.phone,
-      service: data.service,
-      availability: data.availability,
-      rating: data.rating || 0,
-      specialties: data.specialties || [],
+      ...data,
     };
     fallbackDb.providers.push(newProvider);
     return Promise.resolve(newProvider);
@@ -48,16 +41,7 @@ export const businessQueries = {
   createInvoice: (data: Omit<Invoice, 'id'>) => {
     const newInvoice: Invoice = {
       id: `inv_${Date.now()}`,
-      number: data.number,
-      date: data.date,
-      dueDate: data.dueDate,
-      clientId: data.clientId,
-      providerId: data.providerId,
-      items: data.items,
-      status: data.status,
-      totalAmount: data.totalAmount,
-      tax: data.tax,
-      notes: data.notes || '',
+      ...data,
     };
     fallbackDb.invoices.push(newInvoice);
     return Promise.resolve(newInvoice);
