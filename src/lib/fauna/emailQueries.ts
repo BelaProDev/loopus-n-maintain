@@ -2,12 +2,14 @@ import { getFaunaClient, handleFaunaError } from './client';
 import { EmailData } from './types';
 import { fql } from 'fauna';
 import { SHA256 } from 'crypto-js';
-import fallbackDb from '../fallback-db.json';
+import { fallbackQueries } from '../db/fallbackDb';
 
 export const emailQueries = {
   getAllEmails: async () => {
     const client = getFaunaClient();
-    if (!client) throw new Error('Fauna client not initialized');
+    if (!client) {
+      return fallbackQueries.getAllEmails();
+    }
 
     try {
       const result = await client.query(fql`
@@ -19,24 +21,22 @@ export const emailQueries = {
       `);
       return result.data;
     } catch (error) {
-      return handleFaunaError(error, fallbackDb.emails);
+      return fallbackQueries.getAllEmails();
     }
   },
 
   createEmail: async (data: EmailData) => {
     const client = getFaunaClient();
-    if (!client) throw new Error('Fauna client not initialized');
+    if (!client) {
+      return fallbackQueries.createEmail(data);
+    }
 
     try {
       const timestamp = Date.now();
       const hashedPassword = data.password ? SHA256(data.password).toString() : undefined;
       
       const result = await client.query(fql`
-        let collection = Collection.byName("emails")
-        if (collection == null) {
-          abort("Collection not found")
-        }
-        let doc = collection.create({
+        let doc = Collection.byName("emails").create({
           data: {
             email: ${data.email},
             name: ${data.name},
@@ -53,24 +53,19 @@ export const emailQueries = {
       `);
       return result;
     } catch (error) {
-      return handleFaunaError(error, { data });
+      return fallbackQueries.createEmail(data);
     }
   },
 
   updateEmail: async (id: string, data: Partial<EmailData>) => {
     const client = getFaunaClient();
-    if (!client) throw new Error('Fauna client not initialized');
+    if (!client) {
+      return fallbackQueries.updateEmail(id, data);
+    }
 
     try {
       const result = await client.query(fql`
-        let collection = Collection.byName("emails")
-        if (collection == null) {
-          abort("Collection not found")
-        }
-        let doc = collection.document(${id})
-        if (doc == null) {
-          abort("Document not found")
-        }
+        let doc = Collection.byName("emails").document(${id})
         let updated = doc.update({
           data: ${data},
           updatedAt: Time.now()
@@ -82,29 +77,23 @@ export const emailQueries = {
       `);
       return result;
     } catch (error) {
-      return handleFaunaError(error, { id, data });
+      return fallbackQueries.updateEmail(id, data);
     }
   },
 
   deleteEmail: async (id: string) => {
     const client = getFaunaClient();
-    if (!client) throw new Error('Fauna client not initialized');
+    if (!client) {
+      return fallbackQueries.deleteEmail(id);
+    }
 
     try {
       await client.query(fql`
-        let collection = Collection.byName("emails")
-        if (collection == null) {
-          abort("Collection not found")
-        }
-        let doc = collection.document(${id})
-        if (doc == null) {
-          abort("Document not found")
-        }
-        doc.delete()
+        Collection.byName("emails").document(${id}).delete()
       `);
       return { success: true };
     } catch (error) {
-      return handleFaunaError(error, { success: false });
+      return fallbackQueries.deleteEmail(id);
     }
   }
 };

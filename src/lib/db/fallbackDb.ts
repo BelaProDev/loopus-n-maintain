@@ -1,11 +1,14 @@
 import fallbackDb from '../fallback-db.json';
 import { SHA256 } from 'crypto-js';
+import { EmailData } from '@/lib/fauna/types';
 
 export const fallbackQueries = {
   // Email operations
-  getAllEmails: () => fallbackDb.emails,
+  getAllEmails: () => {
+    return Promise.resolve(fallbackDb.emails);
+  },
   
-  createEmail: (data: any) => {
+  createEmail: (data: EmailData) => {
     const timestamp = Date.now();
     const hashedPassword = data.password ? SHA256(data.password).toString() : undefined;
     const newEmail = {
@@ -18,28 +21,28 @@ export const fallbackQueries = {
       }
     };
     fallbackDb.emails.push(newEmail);
-    return newEmail;
+    return Promise.resolve(newEmail);
   },
 
-  updateEmail: (id: string, data: any) => {
+  updateEmail: (id: string, data: Partial<EmailData>) => {
     const index = fallbackDb.emails.findIndex(email => email.ref.id === id);
     if (index !== -1) {
       fallbackDb.emails[index] = {
         ...fallbackDb.emails[index],
         data: { ...fallbackDb.emails[index].data, ...data, updatedAt: Date.now() }
       };
-      return fallbackDb.emails[index];
+      return Promise.resolve(fallbackDb.emails[index]);
     }
-    throw new Error('Email not found');
+    return Promise.reject(new Error('Email not found'));
   },
 
   deleteEmail: (id: string) => {
     const index = fallbackDb.emails.findIndex(email => email.ref.id === id);
     if (index !== -1) {
       fallbackDb.emails.splice(index, 1);
-      return { success: true };
+      return Promise.resolve({ success: true });
     }
-    throw new Error('Email not found');
+    return Promise.reject(new Error('Email not found'));
   },
 
   // Content operations
