@@ -25,7 +25,6 @@ import Login from "./pages/Login";
 import Koalax from "./pages/Koalax";
 import Documentation from "./pages/Documentation";
 import EmailManagement from "./pages/Koalax/components/email/EmailManagement";
-import ContentEditor from "./pages/Koalax/ContentEditor";
 import SiteSettings from "./pages/Koalax/SiteSettings";
 import BusinessManagement from "./pages/Koalax/components/BusinessManagement";
 import DocumentManager from "./pages/Koalax/components/document/DocumentManager";
@@ -52,7 +51,6 @@ const App = () => {
               <Route path="/koalax" element={<Koalax />}>
                 <Route index element={<EmailManagement />} />
                 <Route path="emails" element={<EmailManagement />} />
-                <Route path="content" element={<ContentEditor />} />
                 <Route path="settings" element={<SiteSettings />} />
                 <Route path="business" element={<BusinessManagement />} />
                 <Route path="documents" element={<DocumentManager />} />

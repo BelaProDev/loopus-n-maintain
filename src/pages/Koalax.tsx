@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Mail, FileText, Settings, Building2, Folder } from "lucide-react";
+import { Mail, Settings, Building2, Folder } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -11,7 +11,6 @@ import { useTranslation } from "react-i18next";
 
 const CONTENT_TABS = [
   { id: "emails", label: "admin:email.title", icon: Mail, path: "/koalax/emails" },
-  { id: "content", label: "admin:contentManagement", icon: FileText, path: "/koalax/content" },
 ];
 
 const ADMIN_TABS = [
