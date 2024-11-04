@@ -17,8 +17,8 @@ const Electrics = () => {
       answer: "faq.powerOutageA"
     },
     {
-      question: "faq.inspectionQ",
-      answer: "faq.inspectionA"
+      question: "faq.electricalInspectionQ",
+      answer: "faq.electricalInspectionA"
     }
   ];
 
