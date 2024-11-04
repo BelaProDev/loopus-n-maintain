@@ -2,46 +2,46 @@
   "title": "Documentation",
   "overview": {
     "title": "Overview",
-    "description": "Welcome to Loopus & Maintain - where we maintain buildings with the same dedication Sisyphus had for his boulder! Our PWA helps coordinate maintenance services because, as Kafka would say, 'In the fight between you and the building, back the building.' 🏗️"
+    "description": "Welcome to Loopus & Maintain - our professional building maintenance platform. Our PWA helps coordinate maintenance services efficiently and effectively."
   },
   "features": {
     "title": "Current Features",
     "corePlatform": {
       "title": "Core Platform",
-      "multilanguage": "Multi-language Support (EN, ES, FR) - Because Babel wasn't just a tower",
-      "auth": "Secure Authentication - More layers than Dante's Inferno",
-      "email": "Email Management System - Faster than Hermes' winged sandals",
-      "business": "Business Management Features - Running smoother than Gatsby's parties",
-      "documents": "Document Storage & Management - Filing system that would make Dewey proud"
+      "multilanguage": "Multi-language Support (EN, ES, FR)",
+      "auth": "Secure Authentication System",
+      "email": "Email Management System",
+      "business": "Business Management Features",
+      "documents": "Document Storage & Management"
     },
     "services": {
       "title": "Maintenance Services",
-      "electrical": "Electrical Maintenance - Harnessing Zeus' power responsibly",
-      "plumbing": "Plumbing Services - Navigating pipes like Theseus in the labyrinth",
-      "ironwork": "Ironwork Solutions - Crafted with Hephaestus' precision",
-      "woodworking": "Woodworking - Carpentry that would impress Geppetto",
-      "architecture": "Architectural Consulting - Because even Poe cared about the house of Usher's foundation"
+      "electrical": "Electrical Maintenance Services",
+      "plumbing": "Professional Plumbing Services",
+      "ironwork": "Ironwork Solutions",
+      "woodworking": "Professional Woodworking",
+      "architecture": "Architectural Consulting"
     }
   },
   "admin": {
     "title": "Admin Features",
     "business": {
       "title": "Business Tools",
-      "management": "Client & Provider Management - A network Dickens would write about",
-      "tracking": "Service Tracking System - More precise than Phileas Fogg's schedule",
-      "invoice": "Invoice Generation - Keeping books better than Bob Cratchit",
-      "rating": "Rating & Review System - Critical analysis worthy of Virginia Woolf"
+      "management": "Client & Provider Management",
+      "tracking": "Service Tracking System",
+      "invoice": "Invoice Generation",
+      "rating": "Rating & Review System"
     }
   },
   "technical": {
     "title": "Technical Details",
     "pwa": {
       "title": "PWA Features",
-      "offline": "Offline Functionality - Like Robinson Crusoe, but with better tools",
-      "notifications": "Push Notifications - More reliable than Poe's raven",
-      "workers": "Service Workers - Harder working than Boxer from Animal Farm",
-      "storage": "IndexedDB Storage - A digital Alexandria",
-      "updates": "Real-time Updates - Swifter than Hermes' messages"
+      "offline": "Offline Functionality",
+      "notifications": "Push Notifications",
+      "workers": "Service Workers",
+      "storage": "IndexedDB Storage",
+      "updates": "Real-time Updates"
     }
   }
 }

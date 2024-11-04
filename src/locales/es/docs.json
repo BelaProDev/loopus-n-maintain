@@ -2,46 +2,46 @@
   "title": "Documentación",
   "overview": {
     "title": "Descripción General",
-    "description": "¡Bienvenido a Loopus & Maintain - donde mantenemos edificios con la misma dedicación que Sísifo tenía por su piedra! Nuestra PWA ayuda a coordinar servicios de mantenimiento porque, como diría Kafka, 'En la lucha entre tú y el edificio, apuesta por el edificio.' 🏗️"
+    "description": "Bienvenido a Loopus & Maintain - nuestra plataforma profesional de mantenimiento de edificios. Nuestra PWA ayuda a coordinar servicios de mantenimiento de manera eficiente y efectiva."
   },
   "features": {
     "title": "Características Actuales",
     "corePlatform": {
       "title": "Plataforma Principal",
-      "multilanguage": "Soporte Multilingüe (EN, ES, FR) - Porque Babel no era solo una torre",
-      "auth": "Autenticación Segura - Más capas que el Infierno de Dante",
-      "email": "Sistema de Gestión de Correos - Más rápido que las sandalias aladas de Hermes",
-      "business": "Funciones de Gestión Empresarial - Más fluido que las fiestas de Gatsby",
-      "documents": "Almacenamiento y Gestión - Un sistema que enorgullecería a Dewey"
+      "multilanguage": "Soporte Multilingüe (EN, ES, FR)",
+      "auth": "Sistema de Autenticación Segura",
+      "email": "Sistema de Gestión de Correos",
+      "business": "Funciones de Gestión Empresarial",
+      "documents": "Almacenamiento y Gestión de Documentos"
     },
     "services": {
       "title": "Servicios de Mantenimiento",
-      "electrical": "Mantenimiento Eléctrico - Dominando el poder de Zeus responsablemente",
-      "plumbing": "Servicios de Fontanería - Navegando tuberías como Teseo en el laberinto",
-      "ironwork": "Soluciones de Herrería - Forjadas con la precisión de Hefesto",
-      "woodworking": "Carpintería - Trabajo que impresionaría a Geppetto",
-      "architecture": "Consultoría Arquitectónica - Porque hasta Poe se preocupaba por los cimientos de la Casa Usher"
+      "electrical": "Mantenimiento Eléctrico",
+      "plumbing": "Servicios de Fontanería",
+      "ironwork": "Soluciones de Herrería",
+      "woodworking": "Carpintería Profesional",
+      "architecture": "Consultoría Arquitectónica"
     }
   },
   "admin": {
     "title": "Características de Administrador",
     "business": {
       "title": "Herramientas de Negocio",
-      "management": "Gestión de Clientes y Proveedores - Una red digna de Dickens",
-      "tracking": "Sistema de Seguimiento - Más preciso que el itinerario de Phileas Fogg",
-      "invoice": "Generación de Facturas - Mejor contabilidad que Bob Cratchit",
-      "rating": "Sistema de Calificación - Análisis crítico digno de Virginia Woolf"
+      "management": "Gestión de Clientes y Proveedores",
+      "tracking": "Sistema de Seguimiento",
+      "invoice": "Generación de Facturas",
+      "rating": "Sistema de Calificación"
     }
   },
   "technical": {
     "title": "Detalles Técnicos",
     "pwa": {
       "title": "Características PWA",
-      "offline": "Funcionalidad Offline - Como Robinson Crusoe, pero con mejores herramientas",
-      "notifications": "Notificaciones Push - Más fiables que el cuervo de Poe",
-      "workers": "Service Workers - Más trabajadores que Boxer de Rebelión en la Granja",
-      "storage": "Almacenamiento IndexedDB - Una Alejandría digital",
-      "updates": "Actualizaciones en Tiempo Real - Más veloces que los mensajes de Hermes"
+      "offline": "Funcionalidad Offline",
+      "notifications": "Notificaciones Push",
+      "workers": "Service Workers",
+      "storage": "Almacenamiento IndexedDB",
+      "updates": "Actualizaciones en Tiempo Real"
     }
   }
 }

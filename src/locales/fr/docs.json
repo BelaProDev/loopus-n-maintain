@@ -2,46 +2,46 @@
   "title": "Documentation",
   "overview": {
     "title": "Vue d'ensemble",
-    "description": "Bienvenue chez Loopus & Maintain - où nous entretenons les bâtiments avec la même dévotion que Sisyphe pour son rocher ! Notre PWA aide à coordonner les services de maintenance car, comme dirait Kafka, 'Dans la lutte entre toi et le bâtiment, parie sur le bâtiment.' 🏗️"
+    "description": "Bienvenue chez Loopus & Maintain - notre plateforme professionnelle de maintenance des bâtiments. Notre PWA aide à coordonner les services de maintenance de manière efficace et efficiente."
   },
   "features": {
     "title": "Fonctionnalités Actuelles",
     "corePlatform": {
       "title": "Plateforme Principale",
-      "multilanguage": "Support Multilingue (EN, ES, FR) - Car Babel n'était pas qu'une tour",
-      "auth": "Authentification Sécurisée - Plus de couches que l'Enfer de Dante",
-      "email": "Système de Gestion des Emails - Plus rapide que les sandales ailées d'Hermès",
-      "business": "Fonctionnalités de Gestion - Plus fluide que les fêtes de Gatsby",
-      "documents": "Stockage et Gestion - Un système qui rendrait Dewey fier"
+      "multilanguage": "Support Multilingue (EN, ES, FR)",
+      "auth": "Authentification Sécurisée",
+      "email": "Système de Gestion des Emails",
+      "business": "Fonctionnalités de Gestion",
+      "documents": "Stockage et Gestion des Documents"
     },
     "services": {
       "title": "Services de Maintenance",
-      "electrical": "Maintenance Électrique - Maîtrisant le pouvoir de Zeus responsablement",
-      "plumbing": "Services de Plomberie - Naviguant les tuyaux comme Thésée dans le labyrinthe",
-      "ironwork": "Solutions de Ferronnerie - Forgées avec la précision d'Héphaïstos",
-      "woodworking": "Menuiserie - Un travail qui impressionnerait Geppetto",
-      "architecture": "Conseil en Architecture - Car même Poe se souciait des fondations de la Maison Usher"
+      "electrical": "Maintenance Électrique",
+      "plumbing": "Services de Plomberie",
+      "ironwork": "Solutions de Ferronnerie",
+      "woodworking": "Menuiserie Professionnelle",
+      "architecture": "Conseil en Architecture"
     }
   },
   "admin": {
     "title": "Fonctionnalités Administrateur",
     "business": {
       "title": "Outils d'Entreprise",
-      "management": "Gestion des Clients et Fournisseurs - Un réseau digne de Dickens",
-      "tracking": "Système de Suivi - Plus précis que l'itinéraire de Phileas Fogg",
-      "invoice": "Génération de Factures - Meilleure comptabilité que Bob Cratchit",
-      "rating": "Système d'Évaluation - Analyse critique digne de Virginia Woolf"
+      "management": "Gestion des Clients et Fournisseurs",
+      "tracking": "Système de Suivi",
+      "invoice": "Génération de Factures",
+      "rating": "Système d'Évaluation"
     }
   },
   "technical": {
     "title": "Détails Techniques",
     "pwa": {
       "title": "Fonctionnalités PWA",
-      "offline": "Fonctionnalité Hors Ligne - Comme Robinson Crusoé, mais avec de meilleurs outils",
-      "notifications": "Notifications Push - Plus fiables que le corbeau de Poe",
-      "workers": "Service Workers - Plus travailleurs que Boxer de La Ferme des Animaux",
-      "storage": "Stockage IndexedDB - Une Alexandrie numérique",
-      "updates": "Mises à Jour en Temps Réel - Plus rapides que les messages d'Hermès"
+      "offline": "Fonctionnalité Hors Ligne",
+      "notifications": "Notifications Push",
+      "workers": "Service Workers",
+      "storage": "Stockage IndexedDB",
+      "updates": "Mises à Jour en Temps Réel"
     }
   }
 }
