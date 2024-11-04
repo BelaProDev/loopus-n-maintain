@@ -13,12 +13,16 @@ const Ironwork = () => {
 
   const faqs = [
     {
-      question: "services:faq.rustPreventionQ",
-      answer: "services:faq.rustPreventionA"
+      question: "faq.ironwork.rustQ",
+      answer: "faq.ironwork.rustA"
     },
     {
-      question: "services:faq.servicesQ",
-      answer: "services:faq.servicesA"
+      question: "faq.ironwork.customQ",
+      answer: "faq.ironwork.customA"
+    },
+    {
+      question: "faq.ironwork.strengthQ",
+      answer: "faq.ironwork.strengthA"
     }
   ];
 

@@ -13,12 +13,16 @@ const Plumbing = () => {
 
   const faqs = [
     {
-      question: "faq.plumbingInspectionQ",
-      answer: "faq.plumbingInspectionA"
+      question: "faq.plumbing.preventionQ",
+      answer: "faq.plumbing.preventionA"
     },
     {
-      question: "faq.leakQ",
-      answer: "faq.leakA"
+      question: "faq.plumbing.winterQ",
+      answer: "faq.plumbing.winterA"
+    },
+    {
+      question: "faq.plumbing.waterBillQ",
+      answer: "faq.plumbing.waterBillA"
     }
   ];
 
