@@ -33,7 +33,10 @@
       "email": "john.smith@example.com",
       "phone": "+32 489 123 456",
       "company": "Smith & Co",
-      "vatNumber": "BE0123456789"
+      "vatNumber": "BE0123456789",
+      "totalInvoices": 12,
+      "totalAmount": 15750.00,
+      "status": "active"
     },
     {
       "id": "client_2",
@@ -41,7 +44,21 @@
       "email": "marie.dubois@example.com",
       "phone": "+32 489 987 654",
       "company": "Dubois Architecture",
-      "vatNumber": "BE9876543210"
+      "vatNumber": "BE9876543210",
+      "totalInvoices": 8,
+      "totalAmount": 24300.00,
+      "status": "active"
+    },
+    {
+      "id": "client_3",
+      "name": "Carlos Rodriguez",
+      "email": "carlos@buildtech.es",
+      "phone": "+32 489 444 555",
+      "company": "BuildTech Solutions",
+      "vatNumber": "BE5555666777",
+      "totalInvoices": 15,
+      "totalAmount": 45800.00,
+      "status": "active"
     }
   ],
   "providers": [
@@ -77,16 +94,23 @@
       "items": [
         {
           "id": "item_1",
-          "description": "Electrical installation",
+          "description": "Electrical installation - Main Office",
           "quantity": 1,
           "unitPrice": 750,
           "total": 750
+        },
+        {
+          "id": "item_2",
+          "description": "Emergency lighting system",
+          "quantity": 2,
+          "unitPrice": 250,
+          "total": 500
         }
       ],
       "status": "sent",
-      "totalAmount": 750,
-      "tax": 157.50,
-      "notes": "Complete electrical installation for office space"
+      "totalAmount": 1250,
+      "tax": 262.50,
+      "notes": "Complete electrical installation for office space including emergency lighting"
     },
     {
       "id": "inv_2",
@@ -97,17 +121,52 @@
       "providerId": "provider_2",
       "items": [
         {
-          "id": "item_2",
-          "description": "Emergency plumbing repair",
+          "id": "item_3",
+          "description": "Emergency plumbing repair - Basement",
           "quantity": 1,
           "unitPrice": 350,
           "total": 350
+        },
+        {
+          "id": "item_4",
+          "description": "Pipe replacement",
+          "quantity": 5,
+          "unitPrice": 120,
+          "total": 600
         }
       ],
       "status": "paid",
-      "totalAmount": 350,
-      "tax": 73.50,
-      "notes": "Emergency weekend intervention"
+      "totalAmount": 950,
+      "tax": 199.50,
+      "notes": "Emergency weekend intervention with pipe replacement"
+    },
+    {
+      "id": "inv_3",
+      "number": "INV-2024-003",
+      "date": "2024-03-15",
+      "dueDate": "2024-04-14",
+      "clientId": "client_3",
+      "providerId": "provider_1",
+      "items": [
+        {
+          "id": "item_5",
+          "description": "Complete rewiring - Floor 3",
+          "quantity": 1,
+          "unitPrice": 2800,
+          "total": 2800
+        },
+        {
+          "id": "item_6",
+          "description": "Network cabinet installation",
+          "quantity": 2,
+          "unitPrice": 450,
+          "total": 900
+        }
+      ],
+      "status": "draft",
+      "totalAmount": 3700,
+      "tax": 777.00,
+      "notes": "Major electrical upgrade for third floor offices"
     }
   ],
   "settings": [

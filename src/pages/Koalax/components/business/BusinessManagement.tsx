@@ -1,9 +1,10 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
-import { Users, UserCog, Receipt } from "lucide-react";
+import { Users, UserCog, Receipt, GitGraph } from "lucide-react";
 import ClientList from "./ClientList";
 import ProviderList from "./ProviderList";
 import InvoiceList from "./InvoiceList";
+import ClientInvoiceRelationship from "./ClientInvoiceRelationship";
 import { useTranslation } from "react-i18next";
 
 const BusinessManagement = () => {
@@ -27,6 +28,10 @@ const BusinessManagement = () => {
             <Receipt className="w-4 h-4 mr-2" />
             {t("admin:business.invoices.title")}
           </TabsTrigger>
+          <TabsTrigger value="relationships">
+            <GitGraph className="w-4 h-4 mr-2" />
+            {t("admin:business.relationships")}
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="clients">
@@ -44,6 +49,12 @@ const BusinessManagement = () => {
         <TabsContent value="invoices">
           <Card className="p-6">
             <InvoiceList />
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="relationships">
+          <Card className="p-6">
+            <ClientInvoiceRelationship />
           </Card>
         </TabsContent>
       </Tabs>
