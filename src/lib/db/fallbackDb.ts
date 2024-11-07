@@ -3,7 +3,6 @@ import { SHA256 } from 'crypto-js';
 import { EmailData } from '@/lib/fauna/types';
 
 export const fallbackQueries = {
-  // Email operations
   getAllEmails: () => {
     return Promise.resolve(fallbackDb.emails);
   },

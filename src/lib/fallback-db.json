@@ -1,5 +1,22 @@
 {
-  "emails": [],
+  "emails": [
+    {
+      "ref": { "id": "1" },
+      "data": {
+        "email": "info@loopus.be",
+        "name": "Info Loopus",
+        "type": "info"
+      }
+    },
+    {
+      "ref": { "id": "2" },
+      "data": {
+        "email": "support@loopus.be",
+        "name": "Support Loopus",
+        "type": "support"
+      }
+    }
+  ],
   "content": [
     {
       "key": "home_hero_title",
