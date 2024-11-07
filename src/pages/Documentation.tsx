@@ -30,7 +30,7 @@ const Documentation = () => {
           </h1>
           
           <Tabs defaultValue="overview" className="space-y-8">
-            <TabsList className="flex flex-wrap justify-start gap-2 mb-4">
+            <TabsList className="flex flex-wrap justify-center gap-2 mb-4">
               <TabsTrigger value="overview" className="flex items-center gap-2">
                 <Book className="h-4 w-4" />
                 <span className="hidden sm:inline">Overview</span>
