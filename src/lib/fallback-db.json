@@ -26,63 +26,6 @@
       "modifiedBy": "admin"
     }
   ],
-  "clients": [
-    {
-      "id": "client_1",
-      "name": "John Smith",
-      "email": "john.smith@example.com",
-      "phone": "+32 489 123 456",
-      "company": "Smith & Co",
-      "vatNumber": "BE0123456789",
-      "totalInvoices": 12,
-      "totalAmount": 15750.00,
-      "status": "active"
-    }
-  ],
-  "providers": [
-    {
-      "id": "provider_1",
-      "name": "Alex Thompson",
-      "email": "alex@electricpro.be",
-      "phone": "+32 489 111 222",
-      "service": "electrics",
-      "availability": true,
-      "rating": 4.8,
-      "specialties": ["Industrial", "Residential"]
-    }
-  ],
-  "invoices": [
-    {
-      "id": "inv_1",
-      "number": "INV-2024-001",
-      "date": "2024-03-10",
-      "dueDate": "2024-04-09",
-      "clientId": "client_1",
-      "providerId": "provider_1",
-      "items": [
-        {
-          "id": "item_1",
-          "description": "Electrical installation - Main Office",
-          "quantity": 1,
-          "unitPrice": 750,
-          "total": 750,
-          "vatRate": 21
-        },
-        {
-          "id": "item_2",
-          "description": "Emergency lighting system",
-          "quantity": 2,
-          "unitPrice": 250,
-          "total": 500,
-          "vatRate": 21
-        }
-      ],
-      "status": "sent",
-      "totalAmount": 1250,
-      "tax": 262.50,
-      "notes": "Complete electrical installation for office space including emergency lighting"
-    }
-  ],
   "settings": [
     {
       "key": "koalax_password",

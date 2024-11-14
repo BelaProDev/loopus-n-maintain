@@ -4,7 +4,6 @@ import type { Client, Provider, Invoice } from '@/types/business';
 import { extractFaunaData } from './utils';
 
 const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
-  // Client operations
   getClients: async (): Promise<Client[]> => {
     if (!client) return [];
     try {
@@ -20,7 +19,6 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
   createClient: async (data: Omit<Client, 'id' | 'totalInvoices' | 'totalAmount' | 'status'>) => {
     if (!client) return null;
     try {
-      const timestamp = Date.now();
       const query = fql`
         Client.create({
           name: ${data.name},
@@ -41,7 +39,6 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
     }
   },
 
-  // Provider operations
   getProviders: async (): Promise<Provider[]> => {
     if (!client) return [];
     try {
@@ -76,7 +73,6 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
     }
   },
 
-  // Invoice operations
   getInvoices: async (): Promise<Invoice[]> => {
     if (!client) return [];
     try {
