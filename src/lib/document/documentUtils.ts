@@ -1,5 +1,5 @@
 import { dropboxAuth } from '@/lib/auth/dropbox';
-import { files, DropboxResponse } from 'dropbox/types/dropbox_types';
+import { files } from 'dropbox/types/dropbox_types';
 
 export interface FileMetadata {
   id: string;
@@ -35,7 +35,9 @@ export const uploadFile = async (file: File, path: string): Promise<FileMetadata
 
   const response = await client.filesUpload({
     path: `${path}/${file.name}`,
-    contents: await file.arrayBuffer()
+    contents: await file.arrayBuffer(),
+    mode: { '.tag': 'overwrite' },
+    autorename: true
   });
 
   return {
@@ -54,10 +56,14 @@ export const downloadFile = async (path: string): Promise<Blob> => {
   const client = dropboxAuth.getClient();
   if (!client) throw new Error('Not authenticated with Dropbox');
 
-  const response = await client.filesDownload({ path });
-  // The Dropbox API types are incorrect, the actual response includes a fileBlob
-  const result = response as unknown as { result: { fileBlob: Blob } };
-  return result.result.fileBlob;
+  type DropboxDownloadResponse = {
+    result: {
+      fileBlob: Blob;
+    };
+  };
+
+  const response = await client.filesDownload({ path }) as unknown as DropboxDownloadResponse;
+  return response.result.fileBlob;
 };
 
 export const createFolder = async (path: string): Promise<FileMetadata> => {
