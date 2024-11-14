@@ -1,11 +1,9 @@
-import { Client, fql, QueryArgument, type QuerySuccess } from 'fauna';
-import type { Client as ClientType, Provider, Invoice, InvoiceItem } from '@/types/business';
+import { Client as FaunaClient, fql, QueryArgument, type QuerySuccess } from 'fauna';
+import type { Client, Provider, Invoice, InvoiceItem } from '@/types/business';
 import { getFaunaClient } from './client';
 
 // Helper type for Fauna-compatible invoice items
-type FaunaInvoiceItem = {
-  [K in keyof InvoiceItem]: InvoiceItem[K];
-} & QueryArgument;
+type FaunaInvoiceItem = InvoiceItem & QueryArgument;
 
 export const businessQueries = {
   getClients: async () => {
@@ -14,18 +12,15 @@ export const businessQueries = {
 
     try {
       const query = fql`Client.all()`;
-      const result = await client.query<ClientType[]>(query);
-      return result.data.map((doc: any) => ({
-        id: doc.id,
-        ...doc.data
-      }));
+      const result = await client.query<QuerySuccess<Client[]>>(query);
+      return result.data;
     } catch (error) {
       console.error('Fauna query error:', error);
       return [];
     }
   },
 
-  createClient: async (data: Omit<ClientType, 'id' | 'totalInvoices' | 'totalAmount' | 'status'>) => {
+  createClient: async (data: Omit<Client, 'id' | 'totalInvoices' | 'totalAmount' | 'status'>) => {
     const client = getFaunaClient();
     if (!client) return null;
 
@@ -42,11 +37,8 @@ export const businessQueries = {
           data: ${clientData as QueryArgument}
         })
       `;
-      const result = await client.query<QuerySuccess<ClientType>>(query);
-      return {
-        id: result.data.id,
-        ...result.data
-      };
+      const result = await client.query<QuerySuccess<Client>>(query);
+      return result.data;
     } catch (error) {
       console.error('Fauna create error:', error);
       return null;
@@ -59,11 +51,8 @@ export const businessQueries = {
 
     try {
       const query = fql`Provider.all()`;
-      const result = await client.query<Provider[]>(query);
-      return result.data.map((doc: any) => ({
-        id: doc.id,
-        ...doc.data
-      }));
+      const result = await client.query<QuerySuccess<Provider[]>>(query);
+      return result.data;
     } catch (error) {
       console.error('Fauna query error:', error);
       return [];
@@ -81,10 +70,7 @@ export const businessQueries = {
         })
       `;
       const result = await client.query<QuerySuccess<Provider>>(query);
-      return {
-        id: result.data.id,
-        ...result.data
-      };
+      return result.data;
     } catch (error) {
       console.error('Fauna create error:', error);
       return null;
@@ -97,11 +83,8 @@ export const businessQueries = {
 
     try {
       const query = fql`Invoice.all()`;
-      const result = await client.query<Invoice[]>(query);
-      return result.data.map((doc: any) => ({
-        id: doc.id,
-        ...doc.data
-      }));
+      const result = await client.query<QuerySuccess<Invoice[]>>(query);
+      return result.data;
     } catch (error) {
       console.error('Fauna query error:', error);
       return [];
@@ -130,10 +113,7 @@ export const businessQueries = {
         })
       `;
       const result = await client.query<QuerySuccess<Invoice>>(query);
-      return {
-        id: result.data.id,
-        ...result.data
-      };
+      return result.data;
     } catch (error) {
       console.error('Fauna create error:', error);
       return null;
