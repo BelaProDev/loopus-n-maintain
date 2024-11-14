@@ -10,19 +10,15 @@ export const useDocumentExport = () => {
   const { toast } = useToast();
 
   const exportToExcel = async (invoice: Invoice): Promise<Blob> => {
-    // Create workbook and worksheet
     const wb = XLSX.utils.book_new();
-    
-    // Format invoice data for Excel
     const invoiceData = [
       ['Invoice Number', invoice.number],
       ['Date', new Date(invoice.date).toLocaleDateString()],
       ['Due Date', new Date(invoice.dueDate).toLocaleDateString()],
-      [''],  // Empty row for spacing
+      [''],
       ['Description', 'Quantity', 'Unit Price', 'VAT Rate', 'Total']
     ];
 
-    // Add invoice items
     invoice.items.forEach(item => {
       invoiceData.push([
         item.description,
@@ -33,20 +29,15 @@ export const useDocumentExport = () => {
       ]);
     });
 
-    // Add totals
     invoiceData.push(
-      [''],  // Empty row for spacing
+      [''],
       ['Subtotal (excl. VAT)', '', '', '', (invoice.totalAmount - invoice.tax).toString()],
       ['VAT', '', '', '', invoice.tax.toString()],
       ['Total Amount (incl. VAT)', '', '', '', invoice.totalAmount.toString()]
     );
 
     const ws = XLSX.utils.aoa_to_sheet(invoiceData);
-
-    // Add worksheet to workbook
     XLSX.utils.book_append_sheet(wb, ws, 'Invoice');
-
-    // Generate blob
     const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
     return new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
   };
@@ -88,7 +79,6 @@ export const useDocumentExport = () => {
         }
       }
 
-      // Always provide local download
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
