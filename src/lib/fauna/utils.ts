@@ -13,8 +13,8 @@ export const extractFaunaData = <T>(result: QueryValue): FaunaDocument<T>[] => {
   // Handle Set response
   if (resultObj.data?.['@set']?.data) {
     return resultObj.data['@set'].data.map((item: any) => ({
-      ref: { id: item['@doc']?.id || item.id },
-      data: normalizeDocument(item['@doc'] || item)
+      ref: { id: item['@doc'].id },
+      data: normalizeDocument(item['@doc'])
     }));
   }
 
@@ -45,7 +45,7 @@ const normalizeDocument = (doc: any): any => {
   delete normalized.coll;
   delete normalized.ts;
   
-  // Convert Fauna time types
+  // Convert Fauna time types to ISO strings
   Object.keys(normalized).forEach(key => {
     if (normalized[key]?.['@time']) {
       normalized[key] = new Date(normalized[key]['@time']).toISOString();
