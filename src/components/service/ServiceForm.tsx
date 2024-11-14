@@ -5,14 +5,24 @@ import { useToast } from "@/components/ui/use-toast";
 import { Send } from "lucide-react";
 import ValidatedInput from "@/components/form/ValidatedInput";
 import { validateFormInput } from "@/lib/formValidation";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
-interface ServiceFormProps {
-  title: string;
-  isAuthenticated: boolean;
+interface Issue {
+  id: string;
+  label: string;
 }
 
-const ServiceForm = ({ title, isAuthenticated }: ServiceFormProps) => {
+interface ServiceFormProps {
+  title?: string;
+  service: string;
+  isAuthenticated?: boolean;
+  commonIssues: Issue[];
+}
+
+const ServiceForm = ({ title, service, isAuthenticated, commonIssues }: ServiceFormProps) => {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const [selectedIssues, setSelectedIssues] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
@@ -44,7 +54,8 @@ const ServiceForm = ({ title, isAuthenticated }: ServiceFormProps) => {
         method: 'POST',
         body: JSON.stringify({
           ...formData,
-          service: title
+          service,
+          selectedIssues
         }),
         headers: {
           'Content-Type': 'application/json'
@@ -62,6 +73,7 @@ const ServiceForm = ({ title, isAuthenticated }: ServiceFormProps) => {
         description: "Message sent successfully. We'll get back to you soon.",
       });
       setFormData({ name: "", email: "", message: "" });
+      setSelectedIssues([]);
     } catch (error) {
       toast({
         title: "Error",
@@ -96,6 +108,26 @@ const ServiceForm = ({ title, isAuthenticated }: ServiceFormProps) => {
           required
           className="border border-[#2e5984] border-solid p-0.5"
         />
+        <div className="space-y-2">
+          <Label>Common Issues</Label>
+          <div className="grid gap-2">
+            {commonIssues.map((issue) => (
+              <div key={issue.id} className="flex items-center space-x-2">
+                <Checkbox
+                  id={issue.id}
+                  checked={selectedIssues.includes(issue.id)}
+                  onCheckedChange={(checked) => {
+                    setSelectedIssues(checked
+                      ? [...selectedIssues, issue.id]
+                      : selectedIssues.filter(i => i !== issue.id)
+                    );
+                  }}
+                />
+                <Label htmlFor={issue.id}>{issue.label}</Label>
+              </div>
+            ))}
+          </div>
+        </div>
         <ValidatedInput
           id="message"
           name="message"

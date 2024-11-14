@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface ServicesState {
   availableServices: string[];
@@ -9,7 +9,7 @@ interface ServicesState {
 
 const initialState: ServicesState = {
   availableServices: ['electrics', 'plumbing', 'ironwork', 'woodwork', 'architecture'],
-  implementedServices: ['plumbing', 'ironwork', 'architecture', 'electrics'],
+  implementedServices: ['plumbing', 'ironwork', 'architecture', 'electrics', 'woodwork'],
   status: 'idle',
   error: null,
 };
@@ -18,14 +18,18 @@ const servicesSlice = createSlice({
   name: 'services',
   initialState,
   reducers: {
-    setImplementedService(state, action) {
-      const service = action.payload;
-      if (!state.implementedServices.includes(service)) {
-        state.implementedServices.push(service);
-      }
+    setStatus: (state, action: PayloadAction<ServicesState['status']>) => {
+      state.status = action.payload;
+    },
+    setError: (state, action: PayloadAction<string>) => {
+      state.error = action.payload;
+      state.status = 'failed';
+    },
+    clearError: (state) => {
+      state.error = null;
     },
   },
 });
 
-export const { setImplementedService } = servicesSlice.actions;
+export const { setStatus, setError, clearError } = servicesSlice.actions;
 export default servicesSlice.reducer;

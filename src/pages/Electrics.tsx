@@ -1,6 +1,6 @@
-import { ServiceHeader } from "@/components/service/ServiceHeader";
-import { ServiceForm } from "@/components/service/ServiceForm";
-import { FAQSection } from "@/components/service/FAQSection";
+import ServiceHeader from "@/components/service/ServiceHeader";
+import ServiceForm from "@/components/service/ServiceForm";
+import FAQSection from "@/components/service/FAQSection";
 import { useTranslation } from "react-i18next";
 
 const Electrics = () => {
