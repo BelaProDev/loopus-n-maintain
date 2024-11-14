@@ -23,5 +23,23 @@ export const settingsQueries = {
       settings.push({ key: 'whatsapp_numbers', value: numbers });
     }
     return numbers;
+  },
+
+  getUsers: () => {
+    return fallbackDb.users;
+  },
+
+  createUser: (email: string, password: string) => {
+    fallbackDb.users.push({ email, password });
+    return { email };
+  },
+
+  updateUserPassword: (email: string, newPassword: string) => {
+    const userIndex = fallbackDb.users.findIndex(u => u.email === email);
+    if (userIndex >= 0) {
+      fallbackDb.users[userIndex].password = newPassword;
+      return true;
+    }
+    return false;
   }
 };

@@ -8,6 +8,11 @@ interface AuthState {
   user: string | null;
 }
 
+interface User {
+  email: string;
+  password: string;
+}
+
 export const useAuth = () => {
   const [authState, setAuthState] = useState<AuthState>({
     isAuthenticated: false,
@@ -33,7 +38,7 @@ export const useAuth = () => {
   const login = async (email: string, password: string) => {
     try {
       const hashedPassword = SHA256(password).toString();
-      const users = await settingsQueries.getUsers();
+      const users: User[] = await settingsQueries.getUsers();
       const user = users.find(u => u.email === email && u.password === hashedPassword);
 
       if (user) {
@@ -60,6 +65,7 @@ export const useAuth = () => {
         return false;
       }
     } catch (error) {
+      console.error('Login error:', error);
       toast({
         title: "Error",
         description: "Login failed",
