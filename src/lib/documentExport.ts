@@ -1,6 +1,14 @@
 import { Document, Packer, Paragraph, TextRun } from "docx";
 import type { Invoice } from "@/types/business";
 
+// Dynamically import pdfMake to avoid SSR issues
+const getPdfMake = async () => {
+  const pdfMake = (await import('pdfmake/build/pdfmake')).default;
+  const pdfFonts = (await import('pdfmake/build/vfs_fonts')).pdfMake.vfs;
+  pdfMake.vfs = pdfFonts;
+  return pdfMake;
+};
+
 export const exportToPDF = async (invoice: Invoice) => {
   try {
     const response = await fetch('/.netlify/functions/generate-pdf', {

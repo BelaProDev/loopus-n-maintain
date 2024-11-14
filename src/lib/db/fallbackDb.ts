@@ -3,6 +3,7 @@ import { SHA256 } from 'crypto-js';
 import { EmailData } from '@/lib/fauna/types';
 
 export const fallbackQueries = {
+  // Email operations
   getAllEmails: () => {
     return Promise.resolve(fallbackDb.emails);
   },
@@ -13,11 +14,10 @@ export const fallbackQueries = {
     const newEmail = {
       ref: { id: `fallback-${timestamp}` },
       data: {
-        email: data.email,
-        name: data.name,
-        type: data.type,
+        ...data,
         password: hashedPassword,
-        createdAt: timestamp
+        createdAt: timestamp,
+        updatedAt: timestamp
       }
     };
     fallbackDb.emails.push(newEmail);
@@ -29,10 +29,7 @@ export const fallbackQueries = {
     if (index !== -1) {
       fallbackDb.emails[index] = {
         ...fallbackDb.emails[index],
-        data: { 
-          ...fallbackDb.emails[index].data, 
-          ...data 
-        }
+        data: { ...fallbackDb.emails[index].data, ...data, updatedAt: Date.now() }
       };
       return Promise.resolve(fallbackDb.emails[index]);
     }
