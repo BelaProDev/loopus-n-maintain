@@ -9,24 +9,39 @@ export const extractFaunaData = <T>(result: QueryValue): T[] => {
   if (resultObj.data?.['@set']?.data) {
     return resultObj.data['@set'].data.map((item: any) => {
       if (item['@doc']) {
-        return normalizeDocument(item['@doc']);
+        return {
+          ref: { id: item['@doc'].id },
+          data: normalizeDocument(item['@doc'])
+        };
       }
-      return normalizeDocument(item);
+      return {
+        ref: { id: item.id },
+        data: normalizeDocument(item)
+      };
     });
   }
 
   // Handle direct document response
   if (resultObj.data?.['@doc']) {
-    return [normalizeDocument(resultObj.data['@doc'])];
+    return [{
+      ref: { id: resultObj.data['@doc'].id },
+      data: normalizeDocument(resultObj.data['@doc'])
+    }];
   }
 
   // Handle array response
   if (Array.isArray(resultObj.data)) {
     return resultObj.data.map((item: any) => {
       if (item['@doc']) {
-        return normalizeDocument(item['@doc']);
+        return {
+          ref: { id: item['@doc'].id },
+          data: normalizeDocument(item['@doc'])
+        };
       }
-      return normalizeDocument(item);
+      return {
+        ref: { id: item.id },
+        data: normalizeDocument(item)
+      };
     });
   }
 
@@ -36,23 +51,15 @@ export const extractFaunaData = <T>(result: QueryValue): T[] => {
 const normalizeDocument = (doc: any): any => {
   const normalized = { ...doc };
   
+  // Remove Fauna metadata fields
+  delete normalized.id;
+  delete normalized.coll;
+  delete normalized.ts;
+  
+  // Convert Fauna time types
   Object.keys(normalized).forEach(key => {
-    // Convert Fauna number types
-    if (normalized[key]?.['@int']) {
-      normalized[key] = Number(normalized[key]['@int']);
-    }
-    if (normalized[key]?.['@double']) {
-      normalized[key] = Number(normalized[key]['@double']);
-    }
-    
-    // Convert Fauna time
     if (normalized[key]?.['@time']) {
       normalized[key] = new Date(normalized[key]['@time']).toISOString();
-    }
-    
-    // Remove Fauna metadata fields
-    if (key === '@ts' || key === '@ref') {
-      delete normalized[key];
     }
   });
 
