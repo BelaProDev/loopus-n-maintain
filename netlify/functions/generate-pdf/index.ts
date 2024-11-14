@@ -68,8 +68,9 @@ const handler: Handler = async (event) => {
 
     const browser = await puppeteer.launch({
       args: chromium.args,
-      executablePath: process.env.CHROME_EXECUTABLE_PATH || await chromium.executablePath,
-      headless: true,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath,
+      headless: chromium.headless,
     });
 
     const page = await browser.newPage();
