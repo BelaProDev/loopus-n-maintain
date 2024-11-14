@@ -18,7 +18,7 @@ export const fetchEmails = createAsyncThunk(
   'emails/fetchEmails',
   async () => {
     const response = await emailQueries.getAllEmails();
-    return response;
+    return response as Email[];
   }
 );
 
@@ -26,7 +26,7 @@ export const createEmail = createAsyncThunk(
   'emails/createEmail',
   async (emailData: any) => {
     const response = await emailQueries.createEmail(emailData);
-    return response;
+    return response as Email;
   }
 );
 
@@ -48,7 +48,9 @@ const emailsSlice = createSlice({
         state.error = action.error.message || null;
       })
       .addCase(createEmail.fulfilled, (state, action) => {
-        state.items.push(action.payload);
+        if (action.payload) {
+          state.items.push(action.payload);
+        }
       });
   },
 });
