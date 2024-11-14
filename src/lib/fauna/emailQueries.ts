@@ -48,7 +48,7 @@ export const emailQueries = {
     try {
       const timestamp = Date.now();
       const query = fql`
-        Collection.byName("emails")!.create({
+        let newDoc = {
           data: {
             email: ${data.email},
             name: ${data.name},
@@ -57,7 +57,8 @@ export const emailQueries = {
             createdAt: ${timestamp},
             updatedAt: ${timestamp}
           }
-        })
+        }
+        Collection.byName("emails")!.insert(newDoc)
       `;
       
       const response = await client.query(query);
