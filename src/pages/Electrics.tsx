@@ -33,6 +33,7 @@ const Electrics = () => {
       <ServiceHeader
         title={t("services:electrical.title")}
         description={t("services:electrical.description")}
+        imagePath="/images/services/electrical.jpg"
       />
 
       <div className="container mx-auto px-4 py-8">
