@@ -1,9 +1,6 @@
 import { Client as FaunaClient, fql, QueryArgument, type QuerySuccess } from 'fauna';
-import type { Client, Provider, Invoice, InvoiceItem } from '@/types/business';
+import type { Client, Provider, Invoice } from '@/types/business';
 import { getFaunaClient } from './client';
-
-// Helper type for Fauna-compatible invoice items
-type FaunaInvoiceItem = InvoiceItem & QueryArgument;
 
 export const businessQueries = {
   getClients: async () => {
@@ -13,7 +10,7 @@ export const businessQueries = {
     try {
       const query = fql`Client.all()`;
       const result = await client.query<QuerySuccess<Client[]>>(query);
-      return result.data || [];
+      return Array.isArray(result.data) ? result.data : [];
     } catch (error) {
       console.error('Fauna query error:', error);
       return [];
@@ -52,7 +49,7 @@ export const businessQueries = {
     try {
       const query = fql`Provider.all()`;
       const result = await client.query<QuerySuccess<Provider[]>>(query);
-      return result.data || [];
+      return Array.isArray(result.data) ? result.data : [];
     } catch (error) {
       console.error('Fauna query error:', error);
       return [];
@@ -84,7 +81,7 @@ export const businessQueries = {
     try {
       const query = fql`Invoice.all()`;
       const result = await client.query<QuerySuccess<Invoice[]>>(query);
-      return result.data || [];
+      return Array.isArray(result.data) ? result.data : [];
     } catch (error) {
       console.error('Fauna query error:', error);
       return [];
@@ -95,21 +92,10 @@ export const businessQueries = {
     const client = getFaunaClient();
     if (!client) return null;
 
-    // Convert invoice items to Fauna-compatible format
-    const faunaItems = data.items.map(item => ({
-      ...item,
-      id: item.id || crypto.randomUUID()
-    })) as FaunaInvoiceItem[];
-
-    const invoiceData = {
-      ...data,
-      items: faunaItems
-    };
-
     try {
       const query = fql`
         Invoice.create({
-          data: ${invoiceData as QueryArgument}
+          data: ${data as QueryArgument}
         })
       `;
       const result = await client.query<QuerySuccess<Invoice>>(query);
