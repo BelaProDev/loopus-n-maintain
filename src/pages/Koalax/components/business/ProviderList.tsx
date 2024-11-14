@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { businessQueries } from "@/lib/db/businessDb";
+import { businessQueries } from "@/lib/fauna/business";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, Pencil, Trash2, Star } from "lucide-react";
 import { Provider } from "@/types/business";
 import ProviderDialog from "./ProviderDialog";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { useTranslation } from "react-i18next";
 
 const ProviderList = () => {
@@ -14,24 +14,28 @@ const ProviderList = () => {
   const [editingProvider, setEditingProvider] = useState<Provider | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { t } = useTranslation();
+  const { t } = useTranslation(["admin", "common"]);
 
-  const { data: providers, isLoading } = useQuery({
+  const { data: providers = [], isLoading } = useQuery({
     queryKey: ['providers'],
-    queryFn: businessQueries.getProviders
+    queryFn: businessQueries.getProviders,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
   const createMutation = useMutation({
     mutationFn: businessQueries.createProvider,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['providers'] });
-      toast({ title: t("common.success"), description: t("admin.providers.addSuccess") });
+      toast({ 
+        title: t("common:common.success"), 
+        description: t("admin:providers.addSuccess") 
+      });
       setIsDialogOpen(false);
     },
     onError: () => {
       toast({ 
-        title: t("common.error"), 
-        description: t("admin.providers.addError"), 
+        title: t("common:common.error"), 
+        description: t("admin:providers.addError"), 
         variant: "destructive" 
       });
     }
@@ -55,47 +59,47 @@ const ProviderList = () => {
     createMutation.mutate(providerData);
   };
 
-  if (isLoading) return <div>{t("common.loading")}</div>;
+  if (isLoading) return <div>{t("common:common.loading")}</div>;
 
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">{t("admin.providers.title")}</h2>
+        <h2 className="text-2xl font-bold">{t("admin:providers.title")}</h2>
         <Button onClick={() => {
           setEditingProvider(null);
           setIsDialogOpen(true);
         }}>
           <Plus className="w-4 h-4 mr-2" />
-          {t("admin.providers.add")}
+          {t("admin:providers.add")}
         </Button>
       </div>
 
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>{t("admin.providers.name")}</TableHead>
-            <TableHead>{t("admin.providers.service")}</TableHead>
-            <TableHead>{t("admin.providers.rating")}</TableHead>
-            <TableHead>{t("common.status")}</TableHead>
-            <TableHead className="text-right">{t("common.actions")}</TableHead>
+            <TableHead>{t("admin:providers.name")}</TableHead>
+            <TableHead>{t("admin:providers.service")}</TableHead>
+            <TableHead>{t("admin:providers.rating")}</TableHead>
+            <TableHead>{t("admin:providers.status")}</TableHead>
+            <TableHead className="text-right">{t("common:common.actions")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {providers?.map((provider: Provider) => (
             <TableRow key={provider.id}>
               <TableCell>{provider.name}</TableCell>
-              <TableCell className="capitalize">{provider.service}</TableCell>
+              <TableCell className="capitalize">{t(`services:${provider.service}.title`)}</TableCell>
               <TableCell>
                 <div className="flex items-center">
                   <Star className="w-4 h-4 text-yellow-400 mr-1" />
-                  {provider.rating || t("common.na")}
+                  {provider.rating || t("common:common.na")}
                 </div>
               </TableCell>
               <TableCell>
                 <span className={`px-2 py-1 rounded-full text-xs ${
                   provider.availability ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                 }`}>
-                  {provider.availability ? t("admin.providers.available") : t("admin.providers.unavailable")}
+                  {provider.availability ? t("admin:providers.available") : t("admin:providers.unavailable")}
                 </span>
               </TableCell>
               <TableCell className="text-right">
