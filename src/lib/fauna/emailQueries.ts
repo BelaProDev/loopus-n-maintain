@@ -30,15 +30,15 @@ export const emailQueries = {
     }
 
     try {
-      const timestamp = Date.now();
+      const timestamp = new Date().toISOString();
       const query = fql`
         emails.create({
           email: ${data.email},
           name: ${data.name},
           type: ${data.type},
           password: ${data.password},
-          createdAt: Time(${timestamp}),
-          updatedAt: Time(${timestamp})
+          createdAt: Time("${timestamp}"),
+          updatedAt: Time("${timestamp}")
         })
       `;
       
