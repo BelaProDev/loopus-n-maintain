@@ -13,7 +13,7 @@ export const businessQueries = {
     try {
       const query = fql`Client.all()`;
       const result = await client.query<QuerySuccess<Client[]>>(query);
-      return result.data;
+      return result.data || [];
     } catch (error) {
       console.error('Fauna query error:', error);
       return [];
@@ -52,7 +52,7 @@ export const businessQueries = {
     try {
       const query = fql`Provider.all()`;
       const result = await client.query<QuerySuccess<Provider[]>>(query);
-      return result.data;
+      return result.data || [];
     } catch (error) {
       console.error('Fauna query error:', error);
       return [];
@@ -84,7 +84,7 @@ export const businessQueries = {
     try {
       const query = fql`Invoice.all()`;
       const result = await client.query<QuerySuccess<Invoice[]>>(query);
-      return result.data;
+      return result.data || [];
     } catch (error) {
       console.error('Fauna query error:', error);
       return [];

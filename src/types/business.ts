@@ -10,7 +10,7 @@ export interface Client extends QueryValueObject {
   totalInvoices: number;
   totalAmount: number;
   status: string;
-  [key: string]: any; // Required for QueryValueObject
+  [key: string]: any;
 }
 
 export interface Provider extends QueryValueObject {
@@ -22,7 +22,7 @@ export interface Provider extends QueryValueObject {
   availability: boolean;
   rating: number;
   specialties: string[];
-  [key: string]: any; // Required for QueryValueObject
+  [key: string]: any;
 }
 
 export interface InvoiceItem extends QueryValueObject {
@@ -32,7 +32,7 @@ export interface InvoiceItem extends QueryValueObject {
   unitPrice: number;
   total: number;
   vatRate: number;
-  [key: string]: any; // Required for QueryValueObject
+  [key: string]: any;
 }
 
 export interface Invoice extends QueryValueObject {
@@ -47,5 +47,5 @@ export interface Invoice extends QueryValueObject {
   totalAmount: number;
   tax: number;
   notes: string;
-  [key: string]: any; // Required for QueryValueObject
+  [key: string]: any;
 }

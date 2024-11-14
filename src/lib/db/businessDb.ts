@@ -15,7 +15,7 @@ export const businessQueries = {
       totalAmount: 0,
       status: 'active',
       [Symbol.iterator]: function* () { yield* Object.entries(this); }
-    };
+    } as Client;
     fallbackDb.clients.push(newClient);
     return Promise.resolve(newClient);
   },
@@ -30,7 +30,7 @@ export const businessQueries = {
       id: `provider_${Date.now()}`,
       ...data,
       [Symbol.iterator]: function* () { yield* Object.entries(this); }
-    };
+    } as Provider;
     fallbackDb.providers.push(newProvider);
     return Promise.resolve(newProvider);
   },
@@ -45,7 +45,7 @@ export const businessQueries = {
       id: `inv_${Date.now()}`,
       ...data,
       [Symbol.iterator]: function* () { yield* Object.entries(this); }
-    };
+    } as Invoice;
     fallbackDb.invoices.push(newInvoice);
     return Promise.resolve(newInvoice);
   },
