@@ -1,6 +1,9 @@
 import { QuerySuccess } from 'fauna';
+import { Client, Provider, Invoice } from '@/types/business';
 
-export const extractFaunaData = <T>(result: QuerySuccess): T[] => {
+type FaunaDocument = Client | Provider | Invoice;
+
+export const extractFaunaData = <T extends FaunaDocument>(result: QuerySuccess<T>): T[] => {
   if (!result?.data) return [];
   
   // Handle Set response format

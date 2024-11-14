@@ -1,9 +1,9 @@
-import { Client as FaunaClient, fql } from 'fauna';
-import type { Client, Provider, Invoice } from '@/types/business';
 import { getFaunaClient } from './client';
+import { fql } from 'fauna';
+import type { Client, Provider, Invoice } from '@/types/business';
 import { extractFaunaData } from './utils';
 
-const createBusinessQueries = (client: FaunaClient | null) => ({
+const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
   // Client operations
   getClients: async (): Promise<Client[]> => {
     if (!client) return [];
@@ -20,6 +20,7 @@ const createBusinessQueries = (client: FaunaClient | null) => ({
   createClient: async (data: Omit<Client, 'id' | 'totalInvoices' | 'totalAmount' | 'status'>) => {
     if (!client) return null;
     try {
+      const timestamp = Date.now();
       const query = fql`
         Client.create({
           name: ${data.name},
