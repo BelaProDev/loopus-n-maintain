@@ -1,84 +1,115 @@
-import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { emailQueries } from "@/lib/fauna/emailQueries";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { useEmails } from "@/hooks/useEmails";
-import EmailTable from "../../EmailTable";
-import EmailDialog from "../../EmailDialog";
+import { useToast } from "@/components/ui/use-toast";
 import { useTranslation } from "react-i18next";
+import EmailDialog from "../../EmailDialog";
+import EmailTable from "../../EmailTable";
+import { useState } from "react";
 
 const EmailManagement = () => {
-  const [editingEmail, setEditingEmail] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingEmail, setEditingEmail] = useState<any>(null);
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
   const { t } = useTranslation(["admin"]);
-  
-  const {
-    emails,
-    createEmail,
-    updateEmail,
-    deleteEmail,
-    isCreating,
-    isUpdating,
-    isDeleting,
-  } = useEmails();
 
-  const handleEmailSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
-    const emailData = {
-      email: formData.get("email") as string,
-      name: formData.get("name") as string,
-      type: formData.get("type") as string,
-      password: formData.get("password") as string || undefined,
-    };
+  const { data: emails, isLoading } = useQuery({
+    queryKey: ['emails'],
+    queryFn: emailQueries.getAllEmails
+  });
 
-    if (editingEmail) {
-      if (!emailData.password) {
-        delete emailData.password;
-      }
-      await updateEmail({ id: editingEmail.ref.id, data: emailData });
-    } else {
-      if (!emailData.password) {
-        return;
-      }
-      await createEmail(emailData);
+  const addEmailMutation = useMutation({
+    mutationFn: emailQueries.addEmail,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['emails'] });
+      toast({ description: t("admin:email.addSuccess") });
+      setIsDialogOpen(false);
+    },
+    onError: () => {
+      toast({ 
+        description: t("admin:email.addError"),
+        variant: "destructive" 
+      });
     }
-    setIsDialogOpen(false);
-    form.reset();
+  });
+
+  const updateEmailMutation = useMutation({
+    mutationFn: emailQueries.updateEmail,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['emails'] });
+      toast({ description: t("admin:email.updateSuccess") });
+      setIsDialogOpen(false);
+      setEditingEmail(null);
+    },
+    onError: () => {
+      toast({ 
+        description: t("admin:email.updateError"),
+        variant: "destructive" 
+      });
+    }
+  });
+
+  const deleteEmailMutation = useMutation({
+    mutationFn: emailQueries.deleteEmail,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['emails'] });
+      toast({ description: t("admin:email.deleteSuccess") });
+    },
+    onError: () => {
+      toast({ 
+        description: t("admin:email.deleteError"),
+        variant: "destructive" 
+      });
+    }
+  });
+
+  const handleAdd = () => {
     setEditingEmail(null);
+    setIsDialogOpen(true);
+  };
+
+  const handleEdit = (email: any) => {
+    setEditingEmail(email);
+    setIsDialogOpen(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    await deleteEmailMutation.mutateAsync(id);
+  };
+
+  const handleSave = async (data: any) => {
+    if (editingEmail) {
+      await updateEmailMutation.mutateAsync({ id: editingEmail.id, ...data });
+    } else {
+      await addEmailMutation.mutateAsync(data);
+    }
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold">{t("admin:email.title")}</h1>
-        <Button onClick={() => {
-          setEditingEmail(null);
-          setIsDialogOpen(true);
-        }}>
-          <Plus className="mr-2 h-4 w-4" />
+    <div className="space-y-4">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold">{t("admin:email.title")}</h2>
+        <Button onClick={handleAdd}>
+          <Plus className="w-4 h-4 mr-2" />
           {t("admin:email.add")}
         </Button>
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-x-auto">
-        <EmailTable
-          emails={emails}
-          onEdit={(email) => {
-            setEditingEmail(email);
-            setIsDialogOpen(true);
-          }}
-          onDelete={deleteEmail}
-          isDeleting={isDeleting}
-        />
-      </div>
+      <EmailTable
+        emails={emails || []}
+        isLoading={isLoading}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
 
       <EmailDialog
-        isOpen={isDialogOpen}
+        open={isDialogOpen}
         onOpenChange={setIsDialogOpen}
-        editingEmail={editingEmail}
-        onSubmit={handleEmailSubmit}
-        isLoading={isCreating || isUpdating}
+        email={editingEmail}
+        onSave={handleSave}
+        isLoading={addEmailMutation.isPending || updateEmailMutation.isPending}
       />
     </div>
   );
