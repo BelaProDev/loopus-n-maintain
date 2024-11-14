@@ -8,15 +8,13 @@ import {
   Book, 
   Sparkles, 
   Settings, 
-  Code2,
-  TestTube2
+  Code2
 } from "lucide-react";
 
 import OverviewTab from "./Documentation/OverviewTab";
 import FeaturesTab from "./Documentation/FeaturesTab";
 import AdminTab from "./Documentation/AdminTab";
 import TechnicalTab from "./Documentation/TechnicalTab";
-import TestResults from "./Documentation/TestResults";
 
 const Documentation = () => {
   const { t } = useTranslation(["docs"]);
@@ -49,10 +47,6 @@ const Documentation = () => {
                 <Code2 className="h-4 w-4" />
                 <span className="hidden sm:inline">Technical</span>
               </TabsTrigger>
-              <TabsTrigger value="tests" className="flex items-center gap-2">
-                <TestTube2 className="h-4 w-4" />
-                <span className="hidden sm:inline">Tests</span>
-              </TabsTrigger>
             </TabsList>
 
             <ScrollArea className="h-[calc(100vh-300px)]">
@@ -70,10 +64,6 @@ const Documentation = () => {
 
               <TabsContent value="technical">
                 <TechnicalTab />
-              </TabsContent>
-
-              <TabsContent value="tests">
-                <TestResults />
               </TabsContent>
             </ScrollArea>
           </Tabs>

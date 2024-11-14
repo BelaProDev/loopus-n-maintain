@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { emailQueries } from "@/lib/fauna/emailQueries";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useTranslation } from "react-i18next";
 import EmailDialog from "../../EmailDialog";
@@ -28,6 +27,7 @@ const EmailManagement = () => {
       queryClient.invalidateQueries({ queryKey: ['emails'] });
       toast({ description: t("admin:email.addSuccess") });
       setIsDialogOpen(false);
+      setEditingEmail(null);
     },
     onError: () => {
       toast({ 
@@ -82,14 +82,25 @@ const EmailManagement = () => {
     await deleteEmailMutation.mutateAsync(id);
   };
 
-  const handleSave = async (data: EmailData) => {
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    
+    const emailData: EmailData = {
+      email: formData.get('email') as string,
+      name: formData.get('name') as string,
+      type: formData.get('type') as string,
+      password: formData.get('password') as string
+    };
+
     if (editingEmail) {
       await updateEmailMutation.mutateAsync({ 
         id: editingEmail.ref.id, 
-        data 
+        data: emailData 
       });
     } else {
-      await createEmailMutation.mutateAsync(data);
+      await createEmailMutation.mutateAsync(emailData);
     }
   };
 
@@ -98,7 +109,6 @@ const EmailManagement = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">{t("admin:email.title")}</h2>
         <Button onClick={handleAdd}>
-          <Plus className="w-4 h-4 mr-2" />
           {t("admin:email.add")}
         </Button>
       </div>
@@ -113,7 +123,7 @@ const EmailManagement = () => {
         isOpen={isDialogOpen}
         onOpenChange={setIsDialogOpen}
         editingEmail={editingEmail}
-        onSubmit={handleSave}
+        onSubmit={handleSubmit}
         isLoading={createEmailMutation.isPending || updateEmailMutation.isPending}
       />
     </div>
