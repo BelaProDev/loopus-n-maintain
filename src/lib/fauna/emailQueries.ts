@@ -1,7 +1,8 @@
 import { getFaunaClient } from './client';
-import { Collection } from 'fauna';
+import { fql } from 'fauna';
 import type { EmailData } from './types';
 import { fallbackQueries } from '../db/fallbackDb';
+import { extractFaunaData } from './utils';
 
 export const emailQueries = {
   getAllEmails: async () => {
@@ -11,18 +12,11 @@ export const emailQueries = {
     }
 
     try {
-      const emails = await client.query(
-        Collection.all('emails')
-      );
-      
-      return emails.data.map((doc: any) => ({
-        ref: { id: doc.id },
-        data: {
-          email: doc.data.email,
-          name: doc.data.name,
-          type: doc.data.type
-        }
-      }));
+      const query = fql`
+        Email.all()
+      `;
+      const result = await client.query(query);
+      return extractFaunaData(result);
     } catch (error) {
       console.error('Fauna query error:', error);
       return fallbackQueries.getAllEmails();
@@ -37,27 +31,21 @@ export const emailQueries = {
 
     try {
       const timestamp = Date.now();
-      const emailData = {
-        email: data.email,
-        name: data.name,
-        type: data.type,
-        password: data.password,
-        createdAt: timestamp,
-        updatedAt: timestamp
-      };
-
-      const response = await client.query(
-        Collection.create('emails', emailData)
-      );
-
-      return {
-        ref: { id: response.id },
-        data: {
-          email: response.data.email,
-          name: response.data.name,
-          type: response.data.type
-        }
-      };
+      const query = fql`
+        Email.create({
+          data: {
+            email: ${data.email},
+            name: ${data.name},
+            type: ${data.type},
+            password: ${data.password},
+            createdAt: Time(${timestamp}),
+            updatedAt: Time(${timestamp})
+          }
+        })
+      `;
+      
+      const result = await client.query(query);
+      return extractFaunaData(result)[0];
     } catch (error) {
       console.error('Fauna create error:', error);
       return fallbackQueries.createEmail(data);
@@ -71,22 +59,18 @@ export const emailQueries = {
     }
 
     try {
-      const response = await client.query(
-        Collection.update('emails', id, { data })
-      );
-
-      if (!response) {
+      const query = fql`
+        Email.byId(${id}).update({
+          data: ${data}
+        })
+      `;
+      
+      const result = await client.query(query);
+      if (!result) {
         throw new Error('Email not found');
       }
       
-      return {
-        ref: { id: response.id },
-        data: {
-          email: response.data.email,
-          name: response.data.name,
-          type: response.data.type
-        }
-      };
+      return extractFaunaData(result)[0];
     } catch (error) {
       console.error('Fauna update error:', error);
       return fallbackQueries.updateEmail(id, data);
@@ -100,9 +84,11 @@ export const emailQueries = {
     }
 
     try {
-      await client.query(
-        Collection.delete('emails', id)
-      );
+      const query = fql`
+        Email.byId(${id}).delete()
+      `;
+      
+      await client.query(query);
       return { success: true };
     } catch (error) {
       console.error('Fauna delete error:', error);
