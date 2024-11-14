@@ -8,17 +8,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
 import { businessQueries } from "@/lib/fauna/business";
 import { useTranslation } from "react-i18next";
+import InvoiceItemsList from "./invoice/InvoiceItemsList";
+import InvoiceFormSelects from "./invoice/InvoiceFormSelects";
 
 interface InvoiceDialogProps {
   isOpen: boolean;
@@ -53,8 +47,8 @@ const InvoiceDialog = ({
     queryFn: businessQueries.getProviders
   });
 
-  const clients = Array.isArray(clientsResponse) ? clientsResponse : clientsResponse?.data || [];
-  const providers = Array.isArray(providersResponse) ? providersResponse : providersResponse?.data || [];
+  const clients = clientsResponse || [];
+  const providers = providersResponse || [];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -110,102 +104,20 @@ const InvoiceDialog = ({
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmitForm} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">{t("admin:invoices.client")}</label>
-              <Select
-                name="clientId"
-                value={formData.clientId}
-                onValueChange={(value) => handleSelectChange('clientId', value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder={t("admin:invoices.selectClient")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {clients?.map((client: any) => (
-                    <SelectItem key={client.id} value={client.id}>
-                      {client.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">{t("admin:invoices.provider")}</label>
-              <Select
-                name="providerId"
-                value={formData.providerId}
-                onValueChange={(value) => handleSelectChange('providerId', value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder={t("admin:invoices.selectProvider")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {providers?.map((provider: any) => (
-                    <SelectItem key={provider.id} value={provider.id}>
-                      {provider.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+          <InvoiceFormSelects
+            clientId={formData.clientId}
+            providerId={formData.providerId}
+            clients={clients}
+            providers={providers}
+            onSelectChange={handleSelectChange}
+          />
 
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">{t("admin:invoices.items")}</h3>
-              <Button type="button" onClick={addItem} variant="outline" size="sm">
-                <Plus className="w-4 h-4 mr-2" />
-                {t("admin:invoices.addItem")}
-              </Button>
-            </div>
-            
-            {items.map((item) => (
-              <div key={item.id} className="grid grid-cols-12 gap-2 items-center">
-                <div className="col-span-5">
-                  <Input
-                    placeholder={t("admin:invoices.description")}
-                    value={item.description}
-                    onChange={(e) => updateItem(item.id, 'description', e.target.value)}
-                  />
-                </div>
-                <div className="col-span-2">
-                  <Input
-                    type="number"
-                    placeholder={t("admin:invoices.quantity")}
-                    value={item.quantity}
-                    onChange={(e) => updateItem(item.id, 'quantity', Number(e.target.value))}
-                  />
-                </div>
-                <div className="col-span-2">
-                  <Input
-                    type="number"
-                    placeholder={t("admin:invoices.price")}
-                    value={item.unitPrice}
-                    onChange={(e) => updateItem(item.id, 'unitPrice', Number(e.target.value))}
-                  />
-                </div>
-                <div className="col-span-2">
-                  <Input
-                    type="number"
-                    value={item.total}
-                    readOnly
-                    className="bg-gray-50"
-                  />
-                </div>
-                <div className="col-span-1">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => removeItem(item.id)}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
+          <InvoiceItemsList
+            items={items}
+            onAddItem={addItem}
+            onRemoveItem={removeItem}
+            onUpdateItem={updateItem}
+          />
 
           <div className="space-y-2">
             <label className="text-sm font-medium">{t("admin:invoices.notes")}</label>
