@@ -1,11 +1,13 @@
-import { QueryValue } from 'fauna';
+import { QueryValue, QueryValueObject } from 'fauna';
 
 export const extractFaunaData = <T>(result: QueryValue): T[] => {
-  if (!result) return [];
+  if (!result || typeof result !== 'object') return [];
+  
+  const resultObj = result as QueryValueObject;
 
   // Handle Set response
-  if (result.data?.['@set']?.data) {
-    return result.data['@set'].data.map((item: any) => {
+  if (resultObj.data?.['@set']?.data) {
+    return resultObj.data['@set'].data.map((item: any) => {
       if (item['@doc']) {
         return normalizeDocument(item['@doc']);
       }
@@ -14,13 +16,13 @@ export const extractFaunaData = <T>(result: QueryValue): T[] => {
   }
 
   // Handle direct document response
-  if (result.data?.['@doc']) {
-    return [normalizeDocument(result.data['@doc'])];
+  if (resultObj.data?.['@doc']) {
+    return [normalizeDocument(resultObj.data['@doc'])];
   }
 
   // Handle array response
-  if (Array.isArray(result.data)) {
-    return result.data.map((item: any) => {
+  if (Array.isArray(resultObj.data)) {
+    return resultObj.data.map((item: any) => {
       if (item['@doc']) {
         return normalizeDocument(item['@doc']);
       }

@@ -26,10 +26,6 @@ export const businessQueries = {
     return faunaBusinessQueries.createInvoice(data);
   },
 
-  updateInvoiceStatus: (id: string, status: string) => {
-    return faunaBusinessQueries.updateInvoiceStatus(id, status);
-  },
-
   deleteInvoice: (id: string) => {
     return faunaBusinessQueries.deleteInvoice(id);
   }
