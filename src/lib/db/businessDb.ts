@@ -9,7 +9,11 @@ export const businessQueries = {
   createClient: (data: Omit<Client, 'id' | 'totalInvoices' | 'totalAmount' | 'status'>) => {
     const newClient = {
       id: `client_${Date.now()}`,
-      ...data,
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      company: data.company,
+      vatNumber: data.vatNumber,
       totalInvoices: 0,
       totalAmount: 0,
       status: 'active'
@@ -26,7 +30,13 @@ export const businessQueries = {
   createProvider: (data: Omit<Provider, 'id'>) => {
     const newProvider = {
       id: `provider_${Date.now()}`,
-      ...data
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      service: data.service,
+      availability: data.availability,
+      rating: data.rating,
+      specialties: data.specialties
     } satisfies Provider;
     
     fallbackDb.providers.push(newProvider);
@@ -40,7 +50,16 @@ export const businessQueries = {
   createInvoice: (data: Omit<Invoice, 'id'>) => {
     const newInvoice = {
       id: `inv_${Date.now()}`,
-      ...data
+      number: data.number,
+      date: data.date,
+      dueDate: data.dueDate,
+      clientId: data.clientId,
+      providerId: data.providerId,
+      items: data.items,
+      status: data.status,
+      totalAmount: data.totalAmount,
+      tax: data.tax,
+      notes: data.notes
     } satisfies Invoice;
     
     fallbackDb.invoices.push(newInvoice);
