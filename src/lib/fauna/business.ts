@@ -40,6 +40,18 @@ const createBusinessQueries = (client: FaunaClient | null) => ({
     }
   },
 
+  deleteClient: async (id: string): Promise<boolean> => {
+    if (!client) return false;
+    try {
+      const query = fql`Client.byId(${id}).delete()`;
+      await client.query(query);
+      return true;
+    } catch (error) {
+      handleFaunaError(error);
+      return false;
+    }
+  },
+
   // Provider operations
   getProviders: async (): Promise<Provider[]> => {
     if (!client) return [];
@@ -72,6 +84,18 @@ const createBusinessQueries = (client: FaunaClient | null) => ({
     } catch (error) {
       handleFaunaError(error);
       return null;
+    }
+  },
+
+  deleteProvider: async (id: string): Promise<boolean> => {
+    if (!client) return false;
+    try {
+      const query = fql`Provider.byId(${id}).delete()`;
+      await client.query(query);
+      return true;
+    } catch (error) {
+      handleFaunaError(error);
+      return false;
     }
   },
 
@@ -110,6 +134,18 @@ const createBusinessQueries = (client: FaunaClient | null) => ({
     } catch (error) {
       handleFaunaError(error);
       return null;
+    }
+  },
+
+  deleteInvoice: async (id: string): Promise<boolean> => {
+    if (!client) return false;
+    try {
+      const query = fql`Invoice.byId(${id}).delete()`;
+      await client.query(query);
+      return true;
+    } catch (error) {
+      handleFaunaError(error);
+      return false;
     }
   }
 });

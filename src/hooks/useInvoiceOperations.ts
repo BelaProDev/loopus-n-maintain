@@ -28,7 +28,11 @@ export const useInvoiceOperations = () => {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: businessQueries.deleteInvoice,
+    mutationFn: async (id: string) => {
+      const result = await businessQueries.deleteInvoice(id);
+      if (!result) throw new Error('Failed to delete invoice');
+      return result;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['invoices'] });
       toast({ 
