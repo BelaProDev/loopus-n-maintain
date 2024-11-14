@@ -12,14 +12,11 @@ export const emailQueries = {
 
     try {
       const query = fql`
-        Collection.byName("emails")!.documents().map(doc => {
+        emails.all().map(lambda { email, name, type } => {
           {
-            id: doc.id,
-            data: {
-              email: doc.data.email,
-              name: doc.data.name,
-              type: doc.data.type
-            }
+            email: email,
+            name: name,
+            type: type
           }
         })
       `;
@@ -28,9 +25,9 @@ export const emailQueries = {
       return response.data.map((doc: any) => ({
         ref: { id: doc.id },
         data: {
-          email: doc.data.email,
-          name: doc.data.name,
-          type: doc.data.type
+          email: doc.email,
+          name: doc.name,
+          type: doc.type
         }
       }));
     } catch (error) {
@@ -48,26 +45,23 @@ export const emailQueries = {
     try {
       const timestamp = Date.now();
       const query = fql`
-        let newDoc = {
-          data: {
-            email: ${data.email},
-            name: ${data.name},
-            type: ${data.type},
-            password: ${data.password},
-            createdAt: ${timestamp},
-            updatedAt: ${timestamp}
-          }
-        }
-        Collection.byName("emails")!.insert(newDoc)
+        emails.create({
+          email: ${data.email},
+          name: ${data.name},
+          type: ${data.type},
+          password: ${data.password},
+          createdAt: ${timestamp},
+          updatedAt: ${timestamp}
+        })
       `;
       
       const response = await client.query(query);
       return {
         ref: { id: response.data.id },
         data: {
-          email: response.data.data.email,
-          name: response.data.data.name,
-          type: response.data.data.type
+          email: response.data.email,
+          name: response.data.name,
+          type: response.data.type
         }
       };
     } catch (error) {
@@ -84,10 +78,7 @@ export const emailQueries = {
 
     try {
       const query = fql`
-        let doc = Collection.byName("emails")!.where(.id == ${id}).first()
-        doc.update({
-          data: ${data}
-        })
+        emails.byId(${id}).update(${data})
       `;
       
       const response = await client.query(query);
@@ -98,9 +89,9 @@ export const emailQueries = {
       return {
         ref: { id: response.data.id },
         data: {
-          email: response.data.data.email,
-          name: response.data.data.name,
-          type: response.data.data.type
+          email: response.data.email,
+          name: response.data.name,
+          type: response.data.type
         }
       };
     } catch (error) {
@@ -117,8 +108,7 @@ export const emailQueries = {
 
     try {
       const query = fql`
-        let doc = Collection.byName("emails")!.where(.id == ${id}).first()
-        doc.delete()
+        emails.byId(${id}).delete()
       `;
       
       await client.query(query);
