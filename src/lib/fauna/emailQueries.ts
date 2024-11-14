@@ -30,15 +30,14 @@ export const emailQueries = {
     }
 
     try {
-      const timestamp = new Date().toISOString();
       const query = fql`
         emails.create({
           email: ${data.email},
           name: ${data.name},
           type: ${data.type},
           password: ${data.password},
-          createdAt: Time("${timestamp}"),
-          updatedAt: Time("${timestamp}")
+          createdAt: Time.now(),
+          updatedAt: Time.now()
         })
       `;
       
@@ -59,7 +58,8 @@ export const emailQueries = {
     try {
       const query = fql`
         emails.byId(${id}).update({
-          data: ${data}
+          data: ${data},
+          updatedAt: Time.now()
         })
       `;
       
