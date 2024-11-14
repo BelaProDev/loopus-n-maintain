@@ -22,7 +22,8 @@ export const useInvoiceOperations = () => {
         description: t("admin:business.invoices.addSuccess") 
       });
     },
-    onError: () => {
+    onError: (error) => {
+      console.error('Create invoice error:', error);
       toast({ 
         title: t("common:common.error"), 
         description: t("admin:business.invoices.addError"), 
@@ -44,7 +45,8 @@ export const useInvoiceOperations = () => {
         description: t("admin:business.invoices.deleteSuccess") 
       });
     },
-    onError: () => {
+    onError: (error) => {
+      console.error('Delete invoice error:', error);
       toast({ 
         title: t("common:common.error"), 
         description: t("admin:business.invoices.deleteError"), 

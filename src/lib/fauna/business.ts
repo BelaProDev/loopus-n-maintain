@@ -1,7 +1,7 @@
 import { Client as FaunaClient, fql } from 'fauna';
 import type { Client, Provider, Invoice } from '@/types/business';
 import { getFaunaClient } from './client';
-import { extractFaunaData, handleFaunaError } from './utils';
+import { extractFaunaData } from './utils';
 
 const createBusinessQueries = (client: FaunaClient | null) => ({
   // Client operations
@@ -12,7 +12,7 @@ const createBusinessQueries = (client: FaunaClient | null) => ({
       const result = await client.query(query);
       return extractFaunaData<Client>(result);
     } catch (error) {
-      handleFaunaError(error);
+      console.error('Failed to fetch clients:', error);
       return [];
     }
   },
@@ -35,20 +35,8 @@ const createBusinessQueries = (client: FaunaClient | null) => ({
       const result = await client.query(query);
       return extractFaunaData<Client>(result)[0];
     } catch (error) {
-      handleFaunaError(error);
+      console.error('Failed to create client:', error);
       return null;
-    }
-  },
-
-  deleteClient: async (id: string): Promise<boolean> => {
-    if (!client) return false;
-    try {
-      const query = fql`Client.byId(${id}).delete()`;
-      await client.query(query);
-      return true;
-    } catch (error) {
-      handleFaunaError(error);
-      return false;
     }
   },
 
@@ -60,7 +48,7 @@ const createBusinessQueries = (client: FaunaClient | null) => ({
       const result = await client.query(query);
       return extractFaunaData<Provider>(result);
     } catch (error) {
-      handleFaunaError(error);
+      console.error('Failed to fetch providers:', error);
       return [];
     }
   },
@@ -82,20 +70,8 @@ const createBusinessQueries = (client: FaunaClient | null) => ({
       const result = await client.query(query);
       return extractFaunaData<Provider>(result)[0];
     } catch (error) {
-      handleFaunaError(error);
+      console.error('Failed to create provider:', error);
       return null;
-    }
-  },
-
-  deleteProvider: async (id: string): Promise<boolean> => {
-    if (!client) return false;
-    try {
-      const query = fql`Provider.byId(${id}).delete()`;
-      await client.query(query);
-      return true;
-    } catch (error) {
-      handleFaunaError(error);
-      return false;
     }
   },
 
@@ -107,7 +83,7 @@ const createBusinessQueries = (client: FaunaClient | null) => ({
       const result = await client.query(query);
       return extractFaunaData<Invoice>(result);
     } catch (error) {
-      handleFaunaError(error);
+      console.error('Failed to fetch invoices:', error);
       return [];
     }
   },
@@ -118,8 +94,8 @@ const createBusinessQueries = (client: FaunaClient | null) => ({
       const query = fql`
         Invoice.create({
           number: ${data.number},
-          date: ${data.date},
-          dueDate: ${data.dueDate},
+          date: Time(${data.date}),
+          dueDate: Time(${data.dueDate}),
           clientId: ${data.clientId},
           providerId: ${data.providerId},
           items: ${data.items},
@@ -132,7 +108,7 @@ const createBusinessQueries = (client: FaunaClient | null) => ({
       const result = await client.query(query);
       return extractFaunaData<Invoice>(result)[0];
     } catch (error) {
-      handleFaunaError(error);
+      console.error('Failed to create invoice:', error);
       return null;
     }
   },
@@ -144,7 +120,7 @@ const createBusinessQueries = (client: FaunaClient | null) => ({
       await client.query(query);
       return true;
     } catch (error) {
-      handleFaunaError(error);
+      console.error('Failed to delete invoice:', error);
       return false;
     }
   }

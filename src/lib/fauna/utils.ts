@@ -1,20 +1,13 @@
 import { QuerySuccess } from 'fauna';
 
-export const extractFaunaData = <T>(result: any): T[] => {
+export const extractFaunaData = <T>(result: QuerySuccess): T[] => {
   if (!result?.data) return [];
   
   // Handle Set response format
   if (result.data['@set']) {
     return result.data['@set'].data.map((item: any) => {
       if (item['@doc']) {
-        const doc = item['@doc'];
-        // Convert Fauna specific number format
-        Object.keys(doc).forEach(key => {
-          if (doc[key]?.['@int']) {
-            doc[key] = Number(doc[key]['@int']);
-          }
-        });
-        return doc;
+        return normalizeDocument(item['@doc']);
       }
       return item;
     });
@@ -22,32 +15,33 @@ export const extractFaunaData = <T>(result: any): T[] => {
   
   // Handle direct document response
   if (result.data['@doc']) {
-    const doc = result.data['@doc'];
-    Object.keys(doc).forEach(key => {
-      if (doc[key]?.['@int']) {
-        doc[key] = Number(doc[key]['@int']);
-      }
-    });
-    return [doc];
+    return [normalizeDocument(result.data['@doc'])];
   }
 
   // Handle array response
   if (Array.isArray(result.data)) {
     return result.data.map((item: any) => {
       if (item['@doc']) {
-        const doc = item['@doc'];
-        Object.keys(doc).forEach(key => {
-          if (doc[key]?.['@int']) {
-            doc[key] = Number(doc[key]['@int']);
-          }
-        });
-        return doc;
+        return normalizeDocument(item['@doc']);
       }
       return item;
     });
   }
 
   return [];
+};
+
+const normalizeDocument = (doc: any): any => {
+  const normalized = { ...doc };
+  Object.keys(normalized).forEach(key => {
+    if (normalized[key]?.['@int']) {
+      normalized[key] = Number(normalized[key]['@int']);
+    }
+    if (normalized[key]?.['@time']) {
+      normalized[key] = new Date(normalized[key]['@time']).toISOString();
+    }
+  });
+  return normalized;
 };
 
 export const handleFaunaError = (error: any) => {
