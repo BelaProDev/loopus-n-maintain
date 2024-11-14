@@ -12,7 +12,8 @@ export const emailQueries = {
 
     try {
       const query = fql`
-        Collection.byName("emails")!.documents().map(doc => {
+        let collection = Collection.byName("emails")!
+        collection.all().map(doc => {
           {
             id: doc.id,
             data: {
@@ -48,7 +49,8 @@ export const emailQueries = {
     try {
       const timestamp = Date.now();
       const query = fql`
-        Collection.byName("emails")!.create({
+        let collection = Collection.byName("emails")!
+        collection.create({
           data: {
             email: ${data.email},
             name: ${data.name},
@@ -83,12 +85,11 @@ export const emailQueries = {
 
     try {
       const query = fql`
-        Collection.byName("emails")!
-          .where(.id == ${id})
-          .first()
-          .update({
-            data: ${data}
-          })
+        let collection = Collection.byName("emails")!
+        let doc = collection.where(.id == ${id}).first()
+        doc.update({
+          data: ${data}
+        })
       `;
       
       const response = await client.query(query);
@@ -118,10 +119,9 @@ export const emailQueries = {
 
     try {
       const query = fql`
-        Collection.byName("emails")!
-          .where(.id == ${id})
-          .first()
-          .delete()
+        let collection = Collection.byName("emails")!
+        let doc = collection.where(.id == ${id}).first()
+        doc.delete()
       `;
       
       await client.query(query);
