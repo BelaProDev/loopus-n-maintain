@@ -9,7 +9,7 @@ interface ServicesState {
 
 const initialState: ServicesState = {
   availableServices: ['electrics', 'plumbing', 'ironwork', 'woodwork', 'architecture'],
-  implementedServices: ['plumbing', 'ironwork', 'architecture'],
+  implementedServices: ['plumbing', 'ironwork', 'architecture', 'electrics'],
   status: 'idle',
   error: null,
 };
