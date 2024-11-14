@@ -16,7 +16,7 @@ export const businessQueries = {
 
     try {
       const result = await client.query(fql`
-        Collection.byName("clients")?.documents()
+        Collection.byName("clients")?.all()
           .map(doc => ({
             ref: { id: doc.id },
             data: doc.data
@@ -57,7 +57,7 @@ export const businessQueries = {
 
     try {
       const result = await client.query(fql`
-        Collection.byName("providers")?.documents()
+        Collection.byName("providers")?.all()
           .map(doc => ({
             ref: { id: doc.id },
             data: doc.data
@@ -75,7 +75,7 @@ export const businessQueries = {
 
     try {
       const result = await client.query(fql`
-        Collection.byName("invoices")?.documents()
+        Collection.byName("invoices")?.all()
           .map(doc => ({
             ref: { id: doc.id },
             data: doc.data
@@ -91,7 +91,6 @@ export const businessQueries = {
     const client = getFaunaClient();
     if (!client) return null;
 
-    // Convert invoice items to plain objects for Fauna
     const invoiceData = {
       ...data,
       items: data.items.map(item => ({
