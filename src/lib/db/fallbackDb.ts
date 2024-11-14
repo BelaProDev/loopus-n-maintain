@@ -13,10 +13,11 @@ export const fallbackQueries = {
     const newEmail = {
       ref: { id: `fallback-${timestamp}` },
       data: {
-        ...data,
+        email: data.email,
+        name: data.name,
+        type: data.type,
         password: hashedPassword,
-        createdAt: timestamp,
-        updatedAt: timestamp
+        createdAt: timestamp
       }
     };
     fallbackDb.emails.push(newEmail);
@@ -28,7 +29,10 @@ export const fallbackQueries = {
     if (index !== -1) {
       fallbackDb.emails[index] = {
         ...fallbackDb.emails[index],
-        data: { ...fallbackDb.emails[index].data, ...data, updatedAt: Date.now() }
+        data: { 
+          ...fallbackDb.emails[index].data, 
+          ...data 
+        }
       };
       return Promise.resolve(fallbackDb.emails[index]);
     }
