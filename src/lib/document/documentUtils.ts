@@ -1,5 +1,5 @@
 import { dropboxAuth } from '@/lib/auth/dropbox';
-import { files } from 'dropbox/types/dropbox_types';
+import { files, DropboxResponse } from 'dropbox/types/dropbox_types';
 
 export interface FileMetadata {
   id: string;
@@ -18,7 +18,7 @@ export const listFiles = async (path: string): Promise<FileMetadata[]> => {
 
   const response = await client.filesListFolder({ path });
   return response.result.entries.map(entry => ({
-    id: entry.id || entry.path_lower || entry.path_display || '',
+    id: entry.path_lower || entry.path_display || '',
     name: entry.name,
     path: entry.path_display || '',
     size: 'size' in entry ? entry.size : 0,
@@ -39,7 +39,7 @@ export const uploadFile = async (file: File, path: string): Promise<FileMetadata
   });
 
   return {
-    id: response.result.id,
+    id: response.result.path_lower || response.result.path_display || '',
     name: response.result.name,
     path: response.result.path_display || '',
     size: response.result.size,
@@ -54,8 +54,10 @@ export const downloadFile = async (path: string): Promise<Blob> => {
   const client = dropboxAuth.getClient();
   if (!client) throw new Error('Not authenticated with Dropbox');
 
-  const response = await client.filesDownload({ path }) as { result: { fileBlob: Blob } };
-  return response.result.fileBlob;
+  const response = await client.filesDownload({ path });
+  // The Dropbox API types are incorrect, the actual response includes a fileBlob
+  const result = response as unknown as { result: { fileBlob: Blob } };
+  return result.result.fileBlob;
 };
 
 export const createFolder = async (path: string): Promise<FileMetadata> => {
@@ -66,7 +68,7 @@ export const createFolder = async (path: string): Promise<FileMetadata> => {
   const metadata = response.result.metadata;
 
   return {
-    id: metadata.id,
+    id: metadata.path_lower || metadata.path_display || '',
     name: metadata.name,
     path: metadata.path_display || '',
     size: 0,
