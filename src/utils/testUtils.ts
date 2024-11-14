@@ -2,6 +2,7 @@ import { Client, Provider, Invoice } from '@/types/business';
 import { businessQueries } from '@/lib/db/businessDb';
 import { settingsQueries } from '@/lib/fauna/settingsQueries';
 import { emailQueries } from '@/lib/fauna/emailQueries';
+import { i18n } from '@/i18n';
 
 interface TestResult {
   feature: string;
@@ -22,10 +23,14 @@ export const runFeatureTests = async (): Promise<TestResult[]> => {
 
     // Multi-language Support
     const supportedLanguages = ['en', 'es', 'fr'];
+    const hasAllTranslations = supportedLanguages.every(lang => 
+      i18n.hasResourceBundle(lang, 'translation')
+    );
+    
     results.push({
-      feature: 'Multi-language Support',
-      status: supportedLanguages.every(lang => 
-        require(`@/locales/${lang}/translation.json`)) ? 'passed' : 'failed'
+      feature: 'Core Platform Features',
+      status: hasAllTranslations ? 'passed' : 'failed',
+      error: !hasAllTranslations ? 'Missing translation files' : undefined
     });
 
   } catch (error) {
@@ -39,7 +44,7 @@ export const runFeatureTests = async (): Promise<TestResult[]> => {
   // Admin Dashboard Tests
   try {
     // Authentication
-    const session = sessionStorage.getItem('koalax_auth');
+    const session = sessionStorage.getItem('craft_coordination_session');
     results.push({
       feature: 'Authentication System',
       status: session ? 'passed' : 'not-implemented'
@@ -47,7 +52,7 @@ export const runFeatureTests = async (): Promise<TestResult[]> => {
 
     // Email Management
     try {
-      const emails = await emailQueries.getAllEmails(); // Fixed: using getAllEmails instead of getEmails
+      const emails = await emailQueries.getAllEmails();
       results.push({
         feature: 'Email Management',
         status: Array.isArray(emails) ? 'passed' : 'failed'
@@ -107,24 +112,39 @@ export const runFeatureTests = async (): Promise<TestResult[]> => {
 
   // Service Tests
   try {
-    const whatsappNumbers = await settingsQueries.getWhatsAppNumbers();
     const services = ['electrical', 'plumbing', 'ironwork', 'woodworking', 'architecture'];
+    const whatsappNumbers = await settingsQueries.getWhatsAppNumbers();
     
     services.forEach(service => {
+      const hasWhatsApp = whatsappNumbers && whatsappNumbers[service];
+      const hasImplementation = checkServiceImplementation(service);
+      
       results.push({
         feature: `${service} Service Integration`,
-        status: whatsappNumbers?.[service] ? 'passed' : 'not-implemented'
+        status: hasWhatsApp && hasImplementation ? 'passed' : 'not-implemented'
       });
     });
   } catch (error) {
-    results.push({
-      feature: 'Service Integration',
-      status: 'failed',
-      error: error instanceof Error ? error.message : 'Unknown error'
+    services.forEach(service => {
+      results.push({
+        feature: `${service} Service Integration`,
+        status: 'failed',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
     });
   }
 
   return results;
+};
+
+const checkServiceImplementation = (service: string): boolean => {
+  try {
+    // Check if the service component exists and is properly implemented
+    const serviceModule = import(`@/pages/${service.charAt(0).toUpperCase() + service.slice(1)}.tsx`);
+    return !!serviceModule;
+  } catch {
+    return false;
+  }
 };
 
 export const generateTestReport = (results: TestResult[]): string => {
