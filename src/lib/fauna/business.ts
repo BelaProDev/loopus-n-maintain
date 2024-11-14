@@ -7,9 +7,10 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
   getClients: async (): Promise<Client[]> => {
     if (!client) return [];
     try {
-      const query = fql`Client.all()`;
+      const query = fql`clients.all()`;
       const result = await client.query(query);
-      return extractFaunaData<Client>(result);
+      const documents = extractFaunaData<Client>(result);
+      return documents.map(doc => ({ id: doc.ref.id, ...doc.data }));
     } catch (error) {
       console.error('Failed to fetch clients:', error);
       return [];
@@ -20,7 +21,7 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
     if (!client) return null;
     try {
       const query = fql`
-        Client.create({
+        clients.create({
           name: ${data.name},
           email: ${data.email},
           phone: ${data.phone},
@@ -32,7 +33,8 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
         })
       `;
       const result = await client.query(query);
-      return extractFaunaData<Client>(result)[0];
+      const document = extractFaunaData<Client>(result)[0];
+      return document ? { id: document.ref.id, ...document.data } : null;
     } catch (error) {
       console.error('Failed to create client:', error);
       return null;
@@ -42,9 +44,10 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
   getProviders: async (): Promise<Provider[]> => {
     if (!client) return [];
     try {
-      const query = fql`Provider.all()`;
+      const query = fql`providers.all()`;
       const result = await client.query(query);
-      return extractFaunaData<Provider>(result);
+      const documents = extractFaunaData<Provider>(result);
+      return documents.map(doc => ({ id: doc.ref.id, ...doc.data }));
     } catch (error) {
       console.error('Failed to fetch providers:', error);
       return [];
@@ -55,7 +58,7 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
     if (!client) return null;
     try {
       const query = fql`
-        Provider.create({
+        providers.create({
           name: ${data.name},
           email: ${data.email},
           phone: ${data.phone},
@@ -66,7 +69,8 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
         })
       `;
       const result = await client.query(query);
-      return extractFaunaData<Provider>(result)[0];
+      const document = extractFaunaData<Provider>(result)[0];
+      return document ? { id: document.ref.id, ...document.data } : null;
     } catch (error) {
       console.error('Failed to create provider:', error);
       return null;
@@ -76,9 +80,10 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
   getInvoices: async (): Promise<Invoice[]> => {
     if (!client) return [];
     try {
-      const query = fql`Invoice.all()`;
+      const query = fql`invoices.all()`;
       const result = await client.query(query);
-      return extractFaunaData<Invoice>(result);
+      const documents = extractFaunaData<Invoice>(result);
+      return documents.map(doc => ({ id: doc.ref.id, ...doc.data }));
     } catch (error) {
       console.error('Failed to fetch invoices:', error);
       return [];
@@ -89,7 +94,7 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
     if (!client) return null;
     try {
       const query = fql`
-        Invoice.create({
+        invoices.create({
           number: ${data.number},
           date: Time(${data.date}),
           dueDate: Time(${data.dueDate}),
@@ -103,7 +108,8 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
         })
       `;
       const result = await client.query(query);
-      return extractFaunaData<Invoice>(result)[0];
+      const document = extractFaunaData<Invoice>(result)[0];
+      return document ? { id: document.ref.id, ...document.data } : null;
     } catch (error) {
       console.error('Failed to create invoice:', error);
       return null;
@@ -113,7 +119,7 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
   deleteInvoice: async (id: string): Promise<boolean> => {
     if (!client) return false;
     try {
-      const query = fql`Invoice.byId(${id}).delete()`;
+      const query = fql`invoices.byId(${id}).delete()`;
       await client.query(query);
       return true;
     } catch (error) {
