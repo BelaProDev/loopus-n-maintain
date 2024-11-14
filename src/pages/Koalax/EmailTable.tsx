@@ -8,11 +8,18 @@ interface EmailTableProps {
   emails: Email[] | undefined;
   onEdit: (email: Email) => void;
   onDelete: (id: string) => void;
-  isDeleting: boolean;
 }
 
-const EmailTable = ({ emails, onEdit, onDelete, isDeleting }: EmailTableProps) => {
+const EmailTable = ({ emails, onEdit, onDelete }: EmailTableProps) => {
   const { t } = useTranslation(["admin"]);
+
+  if (!emails?.length) {
+    return (
+      <div className="text-center py-4 text-gray-500">
+        {t("admin:email.noEmails")}
+      </div>
+    );
+  }
 
   return (
     <Table>
@@ -25,7 +32,7 @@ const EmailTable = ({ emails, onEdit, onDelete, isDeleting }: EmailTableProps) =
         </TableRow>
       </TableHeader>
       <TableBody>
-        {emails?.map((email) => (
+        {emails.map((email) => (
           <TableRow key={email.ref.id}>
             <TableCell>{email.data.name}</TableCell>
             <TableCell>{email.data.email}</TableCell>
@@ -42,7 +49,6 @@ const EmailTable = ({ emails, onEdit, onDelete, isDeleting }: EmailTableProps) =
                 variant="ghost"
                 size="sm"
                 onClick={() => onDelete(email.ref.id)}
-                disabled={isDeleting}
               >
                 <Trash2 className="h-4 w-4" />
               </Button>
