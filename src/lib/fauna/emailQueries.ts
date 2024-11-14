@@ -12,7 +12,7 @@ export const emailQueries = {
 
     try {
       const query = fql`
-        Collection.byName("emails")!.all().map(doc => {
+        Collection.byName("emails")!.documents().map(doc => {
           {
             id: doc.id,
             data: {
