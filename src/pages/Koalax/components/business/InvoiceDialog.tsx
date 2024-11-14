@@ -43,15 +43,18 @@ const InvoiceDialog = ({
     notes: editingInvoice?.notes || "",
   });
   
-  const { data: clients } = useQuery({
+  const { data: clientsResponse } = useQuery({
     queryKey: ['clients'],
     queryFn: businessQueries.getClients
   });
 
-  const { data: providers } = useQuery({
+  const { data: providersResponse } = useQuery({
     queryKey: ['providers'],
     queryFn: businessQueries.getProviders
   });
+
+  const clients = Array.isArray(clientsResponse) ? clientsResponse : clientsResponse?.data || [];
+  const providers = Array.isArray(providersResponse) ? providersResponse : providersResponse?.data || [];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -119,7 +122,7 @@ const InvoiceDialog = ({
                   <SelectValue placeholder={t("admin:invoices.selectClient")} />
                 </SelectTrigger>
                 <SelectContent>
-                  {clients?.data?.map((client: any) => (
+                  {clients?.map((client: any) => (
                     <SelectItem key={client.id} value={client.id}>
                       {client.name}
                     </SelectItem>
@@ -138,7 +141,7 @@ const InvoiceDialog = ({
                   <SelectValue placeholder={t("admin:invoices.selectProvider")} />
                 </SelectTrigger>
                 <SelectContent>
-                  {providers?.data?.map((provider: any) => (
+                  {providers?.map((provider: any) => (
                     <SelectItem key={provider.id} value={provider.id}>
                       {provider.name}
                     </SelectItem>
