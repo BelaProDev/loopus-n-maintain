@@ -8,6 +8,7 @@ const extractFaunaData = <T>(result: any): T[] => {
 };
 
 export const businessQueries = {
+  // Client operations
   getClients: async (): Promise<Client[]> => {
     const client = getFaunaClient();
     if (!client) return [];
@@ -28,7 +29,7 @@ export const businessQueries = {
 
     try {
       const query = fql`
-        let clientData = {
+        Client.create({
           name: ${data.name},
           email: ${data.email},
           phone: ${data.phone},
@@ -37,17 +38,48 @@ export const businessQueries = {
           totalInvoices: 0,
           totalAmount: 0,
           status: "active"
-        }
-        Client.create(clientData)
+        })
       `;
       const result = await client.query<QuerySuccess<Client>>(query);
       return result.data;
     } catch (error) {
       console.error('Fauna create error:', error);
-      return null;
+      throw error;
     }
   },
 
+  updateClient: async (id: string, data: Partial<Client>) => {
+    const client = getFaunaClient();
+    if (!client) return null;
+
+    try {
+      const query = fql`
+        let client = Client.byId(${id})
+        client.update(${data as QueryArgument})
+      `;
+      const result = await client.query<QuerySuccess<Client>>(query);
+      return result.data;
+    } catch (error) {
+      console.error('Fauna update error:', error);
+      throw error;
+    }
+  },
+
+  deleteClient: async (id: string) => {
+    const client = getFaunaClient();
+    if (!client) return null;
+
+    try {
+      const query = fql`Client.byId(${id})?.delete()`;
+      await client.query(query);
+      return { success: true };
+    } catch (error) {
+      console.error('Fauna delete error:', error);
+      throw error;
+    }
+  },
+
+  // Provider operations
   getProviders: async (): Promise<Provider[]> => {
     const client = getFaunaClient();
     if (!client) return [];
@@ -62,6 +94,62 @@ export const businessQueries = {
     }
   },
 
+  createProvider: async (data: Omit<Provider, 'id'>) => {
+    const client = getFaunaClient();
+    if (!client) return null;
+
+    try {
+      const query = fql`
+        Provider.create({
+          name: ${data.name},
+          email: ${data.email},
+          phone: ${data.phone},
+          service: ${data.service},
+          availability: ${data.availability},
+          rating: ${data.rating},
+          specialties: ${data.specialties}
+        })
+      `;
+      const result = await client.query<QuerySuccess<Provider>>(query);
+      return result.data;
+    } catch (error) {
+      console.error('Fauna create error:', error);
+      throw error;
+    }
+  },
+
+  updateProvider: async (id: string, data: Partial<Provider>) => {
+    const client = getFaunaClient();
+    if (!client) return null;
+
+    try {
+      const query = fql`
+        let provider = Provider.byId(${id})
+        provider.update(${data as QueryArgument})
+      `;
+      const result = await client.query<QuerySuccess<Provider>>(query);
+      return result.data;
+    } catch (error) {
+      console.error('Fauna update error:', error);
+      throw error;
+    }
+  },
+
+  deleteProvider: async (id: string) => {
+    const client = getFaunaClient();
+    if (!client) return null;
+
+    try {
+      const query = fql`Provider.byId(${id})?.delete()`;
+      await client.query(query);
+      return { success: true };
+    } catch (error) {
+      console.error('Fauna delete error:', error);
+      throw error;
+    }
+  },
+
+  // Invoice operations
   getInvoices: async (): Promise<Invoice[]> => {
     const client = getFaunaClient();
     if (!client) return [];
@@ -76,24 +164,6 @@ export const businessQueries = {
     }
   },
 
-  createProvider: async (data: Omit<Provider, 'id'>) => {
-    const client = getFaunaClient();
-    if (!client) return null;
-
-    try {
-      const query = fql`
-        Provider.create({
-          data: ${data as QueryArgument}
-        })
-      `;
-      const result = await client.query<QuerySuccess<Provider>>(query);
-      return result.data;
-    } catch (error) {
-      console.error('Fauna create error:', error);
-      return null;
-    }
-  },
-
   createInvoice: async (data: Omit<Invoice, 'id'>) => {
     const client = getFaunaClient();
     if (!client) return null;
@@ -101,14 +171,40 @@ export const businessQueries = {
     try {
       const query = fql`
         Invoice.create({
-          data: ${data as QueryArgument}
+          number: ${data.number},
+          date: ${data.date},
+          dueDate: ${data.dueDate},
+          clientId: ${data.clientId},
+          providerId: ${data.providerId},
+          items: ${data.items},
+          status: ${data.status},
+          totalAmount: ${data.totalAmount},
+          tax: ${data.tax},
+          notes: ${data.notes}
         })
       `;
       const result = await client.query<QuerySuccess<Invoice>>(query);
       return result.data;
     } catch (error) {
       console.error('Fauna create error:', error);
-      return null;
+      throw error;
+    }
+  },
+
+  updateInvoice: async (id: string, data: Partial<Invoice>) => {
+    const client = getFaunaClient();
+    if (!client) return null;
+
+    try {
+      const query = fql`
+        let invoice = Invoice.byId(${id})
+        invoice.update(${data as QueryArgument})
+      `;
+      const result = await client.query<QuerySuccess<Invoice>>(query);
+      return result.data;
+    } catch (error) {
+      console.error('Fauna update error:', error);
+      throw error;
     }
   },
 
@@ -122,7 +218,7 @@ export const businessQueries = {
       return { success: true };
     } catch (error) {
       console.error('Fauna delete error:', error);
-      return null;
+      throw error;
     }
   }
 };
