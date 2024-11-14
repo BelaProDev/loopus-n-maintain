@@ -1,4 +1,4 @@
-import { Client, fql, QueryArgument } from 'fauna';
+import { Client, fql, QueryArgument, type QuerySuccess } from 'fauna';
 import type { Client as ClientType, Provider, Invoice, InvoiceItem } from '@/types/business';
 import { getFaunaClient } from './client';
 
@@ -14,7 +14,7 @@ export const businessQueries = {
 
     try {
       const query = fql`Client.all()`;
-      const result = await client.query(query);
+      const result = await client.query<ClientType[]>(query);
       return result.data.map((doc: any) => ({
         id: doc.id,
         ...doc.data
@@ -42,9 +42,9 @@ export const businessQueries = {
           data: ${clientData as QueryArgument}
         })
       `;
-      const result = await client.query(query);
+      const result = await client.query<QuerySuccess<ClientType>>(query);
       return {
-        id: result.id,
+        id: result.data.id,
         ...result.data
       };
     } catch (error) {
@@ -59,7 +59,7 @@ export const businessQueries = {
 
     try {
       const query = fql`Provider.all()`;
-      const result = await client.query(query);
+      const result = await client.query<Provider[]>(query);
       return result.data.map((doc: any) => ({
         id: doc.id,
         ...doc.data
@@ -80,9 +80,9 @@ export const businessQueries = {
           data: ${data as QueryArgument}
         })
       `;
-      const result = await client.query(query);
+      const result = await client.query<QuerySuccess<Provider>>(query);
       return {
-        id: result.id,
+        id: result.data.id,
         ...result.data
       };
     } catch (error) {
@@ -97,7 +97,7 @@ export const businessQueries = {
 
     try {
       const query = fql`Invoice.all()`;
-      const result = await client.query(query);
+      const result = await client.query<Invoice[]>(query);
       return result.data.map((doc: any) => ({
         id: doc.id,
         ...doc.data
@@ -129,9 +129,9 @@ export const businessQueries = {
           data: ${invoiceData as QueryArgument}
         })
       `;
-      const result = await client.query(query);
+      const result = await client.query<QuerySuccess<Invoice>>(query);
       return {
-        id: result.id,
+        id: result.data.id,
         ...result.data
       };
     } catch (error) {
