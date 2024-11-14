@@ -46,19 +46,28 @@ const ValidatedInput = ({
     setError(validationError);
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    onChange(e);
+    if (touched) {
+      const validationError = validateField(name, e.target.value);
+      setError(validationError);
+    }
+  };
+
   const commonProps = {
     id,
     name,
     value,
-    onChange,
+    onChange: handleChange,
     required,
     maxLength,
     onBlur: handleBlur,
     className: cn(
-      "px-4 py-3", // Increased padding
+      "px-4 py-3",
       error ? "border-red-500" : "",
       className
-    )
+    ),
+    disabled: false // Explicitly set disabled to false
   };
 
   return (
