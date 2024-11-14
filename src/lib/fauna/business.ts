@@ -3,14 +3,14 @@ import type { Client, Provider, Invoice } from '@/types/business';
 import { getFaunaClient } from './client';
 
 export const businessQueries = {
-  getClients: async () => {
+  getClients: async (): Promise<Client[]> => {
     const client = getFaunaClient();
     if (!client) return [];
 
     try {
       const query = fql`Client.all()`;
       const result = await client.query<QuerySuccess<Client[]>>(query);
-      return result.data;
+      return result.data || [];
     } catch (error) {
       console.error('Fauna query error:', error);
       return [];
@@ -33,7 +33,7 @@ export const businessQueries = {
           totalAmount: 0,
           status: "active"
         }
-        Client.create({ data: clientData })
+        Client.create(clientData)
       `;
       const result = await client.query<QuerySuccess<Client>>(query);
       return result.data;
@@ -43,14 +43,28 @@ export const businessQueries = {
     }
   },
 
-  getProviders: async () => {
+  getProviders: async (): Promise<Provider[]> => {
     const client = getFaunaClient();
     if (!client) return [];
 
     try {
       const query = fql`Provider.all()`;
       const result = await client.query<QuerySuccess<Provider[]>>(query);
-      return Array.isArray(result.data) ? result.data : [];
+      return result.data || [];
+    } catch (error) {
+      console.error('Fauna query error:', error);
+      return [];
+    }
+  },
+
+  getInvoices: async (): Promise<Invoice[]> => {
+    const client = getFaunaClient();
+    if (!client) return [];
+
+    try {
+      const query = fql`Invoice.all()`;
+      const result = await client.query<QuerySuccess<Invoice[]>>(query);
+      return result.data || [];
     } catch (error) {
       console.error('Fauna query error:', error);
       return [];
@@ -72,20 +86,6 @@ export const businessQueries = {
     } catch (error) {
       console.error('Fauna create error:', error);
       return null;
-    }
-  },
-
-  getInvoices: async () => {
-    const client = getFaunaClient();
-    if (!client) return [];
-
-    try {
-      const query = fql`Invoice.all()`;
-      const result = await client.query<QuerySuccess<Invoice[]>>(query);
-      return Array.isArray(result.data) ? result.data : [];
-    } catch (error) {
-      console.error('Fauna query error:', error);
-      return [];
     }
   },
 

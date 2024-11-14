@@ -37,18 +37,15 @@ const InvoiceDialog = ({
     notes: editingInvoice?.notes || "",
   });
   
-  const { data: clientsResponse } = useQuery({
+  const { data: clients = [] } = useQuery({
     queryKey: ['clients'],
-    queryFn: businessQueries.getClients
+    queryFn: businessQueries.getClients,
   });
 
-  const { data: providersResponse } = useQuery({
+  const { data: providers = [] } = useQuery({
     queryKey: ['providers'],
-    queryFn: businessQueries.getProviders
+    queryFn: businessQueries.getProviders,
   });
-
-  const clients = clientsResponse || [];
-  const providers = providersResponse || [];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;

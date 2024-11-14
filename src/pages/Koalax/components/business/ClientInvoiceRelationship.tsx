@@ -9,12 +9,12 @@ const ClientInvoiceRelationship = () => {
   
   const { data: clients = [] } = useQuery({
     queryKey: ['clients'],
-    queryFn: businessQueries.getClients
+    queryFn: businessQueries.getClients,
   });
 
   const { data: invoices = [] } = useQuery({
     queryKey: ['invoices'],
-    queryFn: businessQueries.getInvoices
+    queryFn: businessQueries.getInvoices,
   });
 
   const getClientInvoices = (clientId: string) => {
