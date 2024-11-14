@@ -10,6 +10,8 @@ import "@fontsource/nunito/700.css";
 import { Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { Provider } from 'react-redux';
+import { store } from './store';
 import { AuthProvider } from "./contexts/AuthContext";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { Toaster } from "./components/ui/sonner";
@@ -34,12 +36,13 @@ const queryClient = new QueryClient();
 
 const App = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <div className="flex flex-col min-h-screen">
-            <Routes>
+    <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <div className="flex flex-col min-h-screen">
+              <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/login" element={<Login />} />
               <Route path="/electrics" element={<Electrics />} />
@@ -56,12 +59,13 @@ const App = () => {
                 <Route path="documents" element={<DocumentManager />} />
                 <Route path="dropbox-callback" element={<DropboxCallback />} />
               </Route>
-            </Routes>
-          </div>
-          <ReactQueryDevtools />
-        </TooltipProvider>
-      </AuthProvider>
-    </QueryClientProvider>
+              </Routes>
+            </div>
+            <ReactQueryDevtools />
+          </TooltipProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    </Provider>
   );
 };
 
