@@ -22,8 +22,10 @@ export const runFeatureTests = async (): Promise<TestResult[]> => {
 
     // Multi-language Support
     const supportedLanguages = ['en', 'es', 'fr'];
+    const requiredNamespaces = ['common', 'services', 'admin', 'auth', 'docs'];
+    
     const hasAllTranslations = supportedLanguages.every(lang => 
-      i18n.hasResourceBundle(lang, 'translation')
+      requiredNamespaces.every(ns => i18n.hasResourceBundle(lang, ns))
     );
     
     results.push({
@@ -115,15 +117,25 @@ export const runFeatureTests = async (): Promise<TestResult[]> => {
   try {
     const whatsappNumbers = await settingsQueries.getWhatsAppNumbers();
     
-    servicesList.forEach(service => {
-      const hasWhatsApp = whatsappNumbers && whatsappNumbers[service];
-      const hasImplementation = checkServiceImplementation(service);
-      
-      results.push({
-        feature: `${service} Service Integration`,
-        status: hasWhatsApp && hasImplementation ? 'passed' : 'not-implemented'
-      });
-    });
+    for (const service of servicesList) {
+      try {
+        const hasWhatsApp = whatsappNumbers && whatsappNumbers[service];
+        const serviceModule = await import(`@/pages/${service.charAt(0).toUpperCase() + service.slice(1)}.tsx`);
+        const hasImplementation = !!serviceModule.default;
+        
+        results.push({
+          feature: `${service} Service Integration`,
+          status: hasWhatsApp && hasImplementation ? 'passed' : 'not-implemented',
+          error: !hasWhatsApp ? 'Missing WhatsApp number' : !hasImplementation ? 'Service not implemented' : undefined
+        });
+      } catch (error) {
+        results.push({
+          feature: `${service} Service Integration`,
+          status: 'failed',
+          error: error instanceof Error ? error.message : 'Unknown error'
+        });
+      }
+    }
   } catch (error) {
     servicesList.forEach(service => {
       results.push({
@@ -135,16 +147,6 @@ export const runFeatureTests = async (): Promise<TestResult[]> => {
   }
 
   return results;
-};
-
-const checkServiceImplementation = (service: string): boolean => {
-  try {
-    // Check if the service component exists and is properly implemented
-    const serviceModule = import(`@/pages/${service.charAt(0).toUpperCase() + service.slice(1)}.tsx`);
-    return !!serviceModule;
-  } catch {
-    return false;
-  }
 };
 
 export const generateTestReport = (results: TestResult[]): string => {
