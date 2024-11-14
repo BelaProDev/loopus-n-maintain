@@ -108,7 +108,11 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
             </div>
           </Card>
 
-          <ServiceForm title={title} isAuthenticated={isAuthenticated} />
+          <ServiceForm 
+            service={title.toLowerCase()}
+            commonIssues={commonIssues}
+            isAuthenticated={isAuthenticated}
+          />
         </div>
 
         <FAQSection faqs={faqs} />
