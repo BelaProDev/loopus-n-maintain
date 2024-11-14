@@ -7,23 +7,23 @@ import { useTranslation } from "react-i18next";
 const ClientInvoiceRelationship = () => {
   const { t } = useTranslation(["admin"]);
   
-  const { data: clients } = useQuery({
+  const { data: clients = [] } = useQuery({
     queryKey: ['clients'],
     queryFn: businessQueries.getClients
   });
 
-  const { data: invoices } = useQuery({
+  const { data: invoices = [] } = useQuery({
     queryKey: ['invoices'],
     queryFn: businessQueries.getInvoices
   });
 
   const getClientInvoices = (clientId: string) => {
-    return invoices?.filter((invoice: Invoice) => invoice.clientId === clientId) || [];
+    return invoices.filter((invoice: Invoice) => invoice.clientId === clientId) || [];
   };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {clients?.map((client: Client) => {
+      {clients.map((client: Client) => {
         const clientInvoices = getClientInvoices(client.id);
         const totalAmount = clientInvoices.reduce((sum, inv) => sum + inv.totalAmount, 0);
         

@@ -4,7 +4,7 @@ import { Client, Provider, Invoice } from '@/types/business';
 export const businessQueries = {
   // Client operations
   getClients: () => {
-    return Promise.resolve(fallbackDb.clients);
+    return Promise.resolve(fallbackDb.clients as Client[]);
   },
   
   createClient: (data: Omit<Client, 'id' | 'totalInvoices' | 'totalAmount' | 'status'>) => {
@@ -13,7 +13,8 @@ export const businessQueries = {
       ...data,
       totalInvoices: 0,
       totalAmount: 0,
-      status: 'active'
+      status: 'active',
+      [Symbol.iterator]: function* () { yield* Object.entries(this); }
     };
     fallbackDb.clients.push(newClient);
     return Promise.resolve(newClient);
@@ -21,13 +22,14 @@ export const businessQueries = {
 
   // Provider operations
   getProviders: () => {
-    return Promise.resolve(fallbackDb.providers);
+    return Promise.resolve(fallbackDb.providers as Provider[]);
   },
   
   createProvider: (data: Omit<Provider, 'id'>) => {
     const newProvider: Provider = {
       id: `provider_${Date.now()}`,
       ...data,
+      [Symbol.iterator]: function* () { yield* Object.entries(this); }
     };
     fallbackDb.providers.push(newProvider);
     return Promise.resolve(newProvider);
@@ -35,13 +37,14 @@ export const businessQueries = {
 
   // Invoice operations
   getInvoices: () => {
-    return Promise.resolve(fallbackDb.invoices);
+    return Promise.resolve(fallbackDb.invoices as Invoice[]);
   },
   
   createInvoice: (data: Omit<Invoice, 'id'>) => {
     const newInvoice: Invoice = {
       id: `inv_${Date.now()}`,
       ...data,
+      [Symbol.iterator]: function* () { yield* Object.entries(this); }
     };
     fallbackDb.invoices.push(newInvoice);
     return Promise.resolve(newInvoice);
