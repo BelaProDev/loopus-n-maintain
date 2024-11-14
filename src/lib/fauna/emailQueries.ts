@@ -13,7 +13,7 @@ export const emailQueries = {
 
     try {
       const query = fql`
-        Email.all()
+        emails.all()
       `;
       const result = await client.query(query);
       return extractFaunaData(result);
@@ -32,15 +32,13 @@ export const emailQueries = {
     try {
       const timestamp = Date.now();
       const query = fql`
-        Email.create({
-          data: {
-            email: ${data.email},
-            name: ${data.name},
-            type: ${data.type},
-            password: ${data.password},
-            createdAt: Time(${timestamp}),
-            updatedAt: Time(${timestamp})
-          }
+        emails.create({
+          email: ${data.email},
+          name: ${data.name},
+          type: ${data.type},
+          password: ${data.password},
+          createdAt: Time(${timestamp}),
+          updatedAt: Time(${timestamp})
         })
       `;
       
@@ -60,7 +58,7 @@ export const emailQueries = {
 
     try {
       const query = fql`
-        Email.byId(${id}).update({
+        emails.byId(${id}).update({
           data: ${data}
         })
       `;
@@ -85,7 +83,7 @@ export const emailQueries = {
 
     try {
       const query = fql`
-        Email.byId(${id}).delete()
+        emails.byId(${id}).delete()
       `;
       
       await client.query(query);
