@@ -10,114 +10,145 @@ interface TestResult {
   error?: string;
 }
 
-const checkTranslations = () => {
-  const supportedLanguages = ['en', 'es', 'fr'];
-  const requiredNamespaces = ['common', 'services', 'admin', 'auth', 'docs'];
-  
-  return supportedLanguages.every(lang => 
-    requiredNamespaces.every(ns => {
-      const hasBundle = i18n.hasResourceBundle(lang, ns);
-      if (!hasBundle) {
-        console.error(`Missing translation bundle for language: ${lang}, namespace: ${ns}`);
-      }
-      return hasBundle;
-    })
-  );
+// Translation Tests
+const runTranslationTests = async (): Promise<TestResult> => {
+  try {
+    const supportedLanguages = ['en', 'es', 'fr'];
+    const requiredNamespaces = ['common', 'services', 'admin', 'auth', 'docs'];
+    
+    const hasAllTranslations = supportedLanguages.every(lang => 
+      requiredNamespaces.every(ns => i18n.hasResourceBundle(lang, ns))
+    );
+
+    return {
+      feature: 'Multi-language Support',
+      status: hasAllTranslations ? 'passed' : 'failed',
+      error: !hasAllTranslations ? 'Missing translation bundles' : undefined
+    };
+  } catch (error) {
+    return {
+      feature: 'Multi-language Support',
+      status: 'failed',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
 };
 
-const checkServiceImplementation = async (service: string) => {
+// Authentication Tests
+const runAuthTests = async (): Promise<TestResult> => {
+  try {
+    const session = sessionStorage.getItem('craft_coordination_session');
+    return {
+      feature: 'Authentication System',
+      status: session ? 'passed' : 'not-implemented'
+    };
+  } catch (error) {
+    return {
+      feature: 'Authentication System',
+      status: 'failed',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
+};
+
+// Email Management Tests
+const runEmailTests = async (): Promise<TestResult> => {
+  try {
+    const emails = await emailQueries.getAllEmails();
+    return {
+      feature: 'Email Management',
+      status: Array.isArray(emails) ? 'passed' : 'failed'
+    };
+  } catch (error) {
+    return {
+      feature: 'Email Management',
+      status: 'failed',
+      error: 'Could not fetch emails'
+    };
+  }
+};
+
+// Document Management Tests
+const runDocumentTests = async (): Promise<TestResult> => {
+  try {
+    const dropboxTokens = sessionStorage.getItem('dropbox_tokens');
+    return {
+      feature: 'Document Management',
+      status: dropboxTokens ? 'passed' : 'not-implemented'
+    };
+  } catch (error) {
+    return {
+      feature: 'Document Management',
+      status: 'failed',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
+};
+
+// Service Implementation Tests
+const runServiceTests = async (service: string): Promise<TestResult> => {
   try {
     const whatsappNumbers = await settingsQueries.getWhatsAppNumbers();
     const hasWhatsApp = whatsappNumbers && whatsappNumbers[service];
     
-    // Dynamic import of service component
     const serviceModule = await import(`@/pages/${service.charAt(0).toUpperCase() + service.slice(1)}.tsx`);
     const hasImplementation = !!serviceModule.default;
     
     if (!hasWhatsApp) {
       return {
-        status: 'not-implemented' as const,
+        feature: `${service} Service Integration`,
+        status: 'not-implemented',
         error: 'Missing WhatsApp number'
       };
     }
     
     if (!hasImplementation) {
       return {
-        status: 'not-implemented' as const,
+        feature: `${service} Service Integration`,
+        status: 'not-implemented',
         error: 'Service not implemented'
       };
     }
     
     return {
-      status: 'passed' as const
+      feature: `${service} Service Integration`,
+      status: 'passed'
     };
   } catch (error) {
     return {
-      status: 'failed' as const,
+      feature: `${service} Service Integration`,
+      status: 'failed',
       error: error instanceof Error ? error.message : 'Unknown error'
     };
   }
 };
 
+// Main test runner
 export const runFeatureTests = async (): Promise<TestResult[]> => {
   const results: TestResult[] = [];
 
-  // Core Platform Tests
+  // Core Features
   results.push({
     feature: 'PWA - Offline Functionality',
     status: 'passed'
   });
 
-  const hasAllTranslations = checkTranslations();
-  results.push({
-    feature: 'Core Platform Features',
-    status: hasAllTranslations ? 'passed' : 'failed',
-    error: !hasAllTranslations ? 'Missing translation files' : undefined
-  });
-
-  // Authentication System
-  const session = sessionStorage.getItem('craft_coordination_session');
-  results.push({
-    feature: 'Authentication System',
-    status: session ? 'passed' : 'not-implemented'
-  });
-
-  // Email Management
-  try {
-    const emails = await emailQueries.getAllEmails();
-    results.push({
-      feature: 'Email Management',
-      status: Array.isArray(emails) ? 'passed' : 'failed'
-    });
-  } catch (error) {
-    results.push({
-      feature: 'Email Management',
-      status: 'failed',
-      error: 'Could not fetch emails'
-    });
-  }
-
-  // Document Management
-  const dropboxTokens = sessionStorage.getItem('dropbox_tokens');
-  results.push({
-    feature: 'Document Management',
-    status: dropboxTokens ? 'passed' : 'not-implemented'
-  });
+  // Run all test suites
+  results.push(await runTranslationTests());
+  results.push(await runAuthTests());
+  results.push(await runEmailTests());
+  results.push(await runDocumentTests());
 
   // Service Tests
   const services = ['electrical', 'plumbing', 'ironwork', 'woodworking', 'architecture'];
-  
   for (const service of services) {
-    const serviceResult = await checkServiceImplementation(service);
-    results.push({
-      feature: `${service} Service Integration`,
-      ...serviceResult
-    });
+    results.push(await runServiceTests(service));
   }
 
   return results;
 };
 
+// Report generator
 export const generateTestReport = (results: TestResult[]): string => {
   const total = results.length;
   const passed = results.filter(r => r.status === 'passed').length;
