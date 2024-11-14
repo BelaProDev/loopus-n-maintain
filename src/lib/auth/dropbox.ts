@@ -1,3 +1,5 @@
+import { Dropbox } from 'dropbox';
+
 const isBrowser = typeof window !== 'undefined';
 const DROPBOX_AUTH_URL = "https://www.dropbox.com/oauth2/authorize";
 const DROPBOX_TOKEN_URL = "https://api.dropboxapi.com/oauth2/token";
@@ -95,5 +97,15 @@ export const dropboxAuth = {
     } catch {
       return null;
     }
+  },
+
+  getClient() {
+    const accessToken = this.getAccessToken();
+    if (!accessToken) return null;
+    return new Dropbox({ accessToken });
+  },
+
+  authenticate() {
+    return this.initiateAuth();
   }
 };

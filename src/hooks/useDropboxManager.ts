@@ -55,7 +55,7 @@ export const useDropboxManager = (currentPath: string) => {
 
   const handleLogin = async () => {
     try {
-      await dropboxAuth.authenticate();
+      await dropboxAuth.initiateAuth();
       setIsAuthenticated(true);
       toast.success('Connected to Dropbox successfully');
     } catch (error) {

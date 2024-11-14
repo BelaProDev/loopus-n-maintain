@@ -7,10 +7,12 @@ export interface FileMetadata {
   size: number;
   isFolder: boolean;
   lastModified: string;
+  '.tag': string;
+  path_display?: string;
 }
 
 export const listFiles = async (path: string): Promise<FileMetadata[]> => {
-  const client = await dropboxAuth.getClient();
+  const client = dropboxAuth.getClient();
   if (!client) throw new Error('Not authenticated with Dropbox');
 
   const response = await client.filesListFolder({ path });
@@ -20,12 +22,14 @@ export const listFiles = async (path: string): Promise<FileMetadata[]> => {
     path: entry.path_display || '',
     size: 'size' in entry ? entry.size : 0,
     isFolder: entry['.tag'] === 'folder',
-    lastModified: 'server_modified' in entry ? entry.server_modified : new Date().toISOString()
+    lastModified: 'server_modified' in entry ? entry.server_modified : new Date().toISOString(),
+    '.tag': entry['.tag'],
+    path_display: entry.path_display
   }));
 };
 
 export const uploadFile = async (file: File, path: string): Promise<FileMetadata> => {
-  const client = await dropboxAuth.getClient();
+  const client = dropboxAuth.getClient();
   if (!client) throw new Error('Not authenticated with Dropbox');
 
   const response = await client.filesUpload({
@@ -39,12 +43,14 @@ export const uploadFile = async (file: File, path: string): Promise<FileMetadata
     path: response.result.path_display || '',
     size: response.result.size,
     isFolder: false,
-    lastModified: response.result.server_modified
+    lastModified: response.result.server_modified,
+    '.tag': 'file',
+    path_display: response.result.path_display
   };
 };
 
 export const downloadFile = async (path: string): Promise<Blob> => {
-  const client = await dropboxAuth.getClient();
+  const client = dropboxAuth.getClient();
   if (!client) throw new Error('Not authenticated with Dropbox');
 
   const response = await client.filesDownload({ path });
@@ -55,7 +61,7 @@ export const downloadFile = async (path: string): Promise<Blob> => {
 };
 
 export const createFolder = async (path: string): Promise<FileMetadata> => {
-  const client = await dropboxAuth.getClient();
+  const client = dropboxAuth.getClient();
   if (!client) throw new Error('Not authenticated with Dropbox');
 
   const response = await client.filesCreateFolderV2({ path });
@@ -67,12 +73,14 @@ export const createFolder = async (path: string): Promise<FileMetadata> => {
     path: metadata.path_display || '',
     size: 0,
     isFolder: true,
-    lastModified: new Date().toISOString()
+    lastModified: new Date().toISOString(),
+    '.tag': 'folder',
+    path_display: metadata.path_display
   };
 };
 
 export const deleteFile = async (path: string): Promise<void> => {
-  const client = await dropboxAuth.getClient();
+  const client = dropboxAuth.getClient();
   if (!client) throw new Error('Not authenticated with Dropbox');
 
   await client.filesDeleteV2({ path });
