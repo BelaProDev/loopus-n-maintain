@@ -25,7 +25,7 @@ const ClientDialog = ({
   onSubmit,
   isLoading,
 }: ClientDialogProps) => {
-  const { t } = useTranslation(["admin", "common"]);
+  const { t } = useTranslation(["admin"]);
   const [formData, setFormData] = useState({
     name: editingClient?.name || "",
     email: editingClient?.email || "",
@@ -39,19 +39,24 @@ const ClientDialog = ({
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit(e);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
-            {editingClient ? t("admin:business.clients.edit") : t("admin:business.clients.add")}
+            {editingClient ? t("business.clients.edit") : t("business.clients.add")}
           </DialogTitle>
         </DialogHeader>
-        <form onSubmit={onSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <ValidatedInput
             id="name"
             name="name"
-            label={t("common:forms.name")}
+            label={t("business.clients.name")}
             value={formData.name}
             onChange={handleChange}
             required
@@ -59,7 +64,7 @@ const ClientDialog = ({
           <ValidatedInput
             id="email"
             name="email"
-            label={t("common:forms.email")}
+            label={t("business.clients.email")}
             type="email"
             value={formData.email}
             onChange={handleChange}
@@ -68,21 +73,21 @@ const ClientDialog = ({
           <ValidatedInput
             id="phone"
             name="phone"
-            label={t("common:forms.phone")}
+            label={t("business.clients.phone")}
             value={formData.phone}
             onChange={handleChange}
           />
           <ValidatedInput
             id="company"
             name="company"
-            label={t("common:forms.company")}
+            label={t("business.clients.company")}
             value={formData.company}
             onChange={handleChange}
           />
           <ValidatedInput
             id="vatNumber"
             name="vatNumber"
-            label={t("common:forms.vatNumber")}
+            label={t("business.clients.vatNumber")}
             value={formData.vatNumber}
             onChange={handleChange}
           />
@@ -91,7 +96,7 @@ const ClientDialog = ({
             disabled={isLoading}
             className="w-full"
           >
-            {editingClient ? t("common:actions.update") : t("common:actions.add")}
+            {editingClient ? t("business.clients.edit") : t("business.clients.add")}
           </Button>
         </form>
       </DialogContent>

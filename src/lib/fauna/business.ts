@@ -10,7 +10,7 @@ export const businessQueries = {
     try {
       const query = fql`Client.all()`;
       const result = await client.query<QuerySuccess<Client[]>>(query);
-      return Array.isArray(result.data) ? result.data : [];
+      return result.data;
     } catch (error) {
       console.error('Fauna query error:', error);
       return [];
@@ -21,18 +21,19 @@ export const businessQueries = {
     const client = getFaunaClient();
     if (!client) return null;
 
-    const clientData = {
-      ...data,
-      totalInvoices: 0,
-      totalAmount: 0,
-      status: 'active'
-    };
-
     try {
       const query = fql`
-        Client.create({
-          data: ${clientData as QueryArgument}
-        })
+        let clientData = {
+          name: ${data.name},
+          email: ${data.email},
+          phone: ${data.phone},
+          company: ${data.company},
+          vatNumber: ${data.vatNumber},
+          totalInvoices: 0,
+          totalAmount: 0,
+          status: "active"
+        }
+        Client.create({ data: clientData })
       `;
       const result = await client.query<QuerySuccess<Client>>(query);
       return result.data;
