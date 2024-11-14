@@ -1,5 +1,5 @@
 import { getFaunaClient } from './client';
-import { fql } from 'fauna';
+import { Collection } from 'fauna';
 import type { EmailData } from './types';
 import { fallbackQueries } from '../db/fallbackDb';
 
@@ -11,23 +11,16 @@ export const emailQueries = {
     }
 
     try {
-      const query = fql`
-        emails.all().map(lambda { email, name, type } => {
-          {
-            email: email,
-            name: name,
-            type: type
-          }
-        })
-      `;
+      const emails = await client.query(
+        Collection.all('emails')
+      );
       
-      const response = await client.query(query);
-      return response.data.map((doc: any) => ({
+      return emails.data.map((doc: any) => ({
         ref: { id: doc.id },
         data: {
-          email: doc.email,
-          name: doc.name,
-          type: doc.type
+          email: doc.data.email,
+          name: doc.data.name,
+          type: doc.data.type
         }
       }));
     } catch (error) {
@@ -44,20 +37,21 @@ export const emailQueries = {
 
     try {
       const timestamp = Date.now();
-      const query = fql`
-        emails.create({
-          email: ${data.email},
-          name: ${data.name},
-          type: ${data.type},
-          password: ${data.password},
-          createdAt: ${timestamp},
-          updatedAt: ${timestamp}
-        })
-      `;
-      
-      const response = await client.query(query);
+      const emailData = {
+        email: data.email,
+        name: data.name,
+        type: data.type,
+        password: data.password,
+        createdAt: timestamp,
+        updatedAt: timestamp
+      };
+
+      const response = await client.query(
+        Collection.create('emails', emailData)
+      );
+
       return {
-        ref: { id: response.data.id },
+        ref: { id: response.id },
         data: {
           email: response.data.email,
           name: response.data.name,
@@ -77,17 +71,16 @@ export const emailQueries = {
     }
 
     try {
-      const query = fql`
-        emails.byId(${id}).update(${data})
-      `;
-      
-      const response = await client.query(query);
-      if (!response.data) {
+      const response = await client.query(
+        Collection.update('emails', id, { data })
+      );
+
+      if (!response) {
         throw new Error('Email not found');
       }
       
       return {
-        ref: { id: response.data.id },
+        ref: { id: response.id },
         data: {
           email: response.data.email,
           name: response.data.name,
@@ -107,11 +100,9 @@ export const emailQueries = {
     }
 
     try {
-      const query = fql`
-        emails.byId(${id}).delete()
-      `;
-      
-      await client.query(query);
+      await client.query(
+        Collection.delete('emails', id)
+      );
       return { success: true };
     } catch (error) {
       console.error('Fauna delete error:', error);
