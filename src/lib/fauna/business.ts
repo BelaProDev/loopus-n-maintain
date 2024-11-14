@@ -2,6 +2,11 @@ import { Client as FaunaClient, fql, QueryArgument, type QuerySuccess } from 'fa
 import type { Client, Provider, Invoice } from '@/types/business';
 import { getFaunaClient } from './client';
 
+const extractFaunaData = <T>(result: any): T[] => {
+  if (!result?.data?.['@set']?.data) return [];
+  return result.data['@set'].data.map((item: any) => item['@doc']);
+};
+
 export const businessQueries = {
   getClients: async (): Promise<Client[]> => {
     const client = getFaunaClient();
@@ -9,8 +14,8 @@ export const businessQueries = {
 
     try {
       const query = fql`Client.all()`;
-      const result = await client.query<QuerySuccess<Client[]>>(query);
-      return Array.isArray(result.data) ? result.data : [];
+      const result = await client.query(query);
+      return extractFaunaData<Client>(result);
     } catch (error) {
       console.error('Fauna query error:', error);
       return [];
@@ -49,8 +54,8 @@ export const businessQueries = {
 
     try {
       const query = fql`Provider.all()`;
-      const result = await client.query<QuerySuccess<Provider[]>>(query);
-      return Array.isArray(result.data) ? result.data : [];
+      const result = await client.query(query);
+      return extractFaunaData<Provider>(result);
     } catch (error) {
       console.error('Fauna query error:', error);
       return [];
@@ -63,8 +68,8 @@ export const businessQueries = {
 
     try {
       const query = fql`Invoice.all()`;
-      const result = await client.query<QuerySuccess<Invoice[]>>(query);
-      return Array.isArray(result.data) ? result.data : [];
+      const result = await client.query(query);
+      return extractFaunaData<Invoice>(result);
     } catch (error) {
       console.error('Fauna query error:', error);
       return [];
