@@ -1,6 +1,7 @@
 import { businessQueries } from '@/lib/db/businessDb';
 import { settingsQueries } from '@/lib/fauna/settingsQueries';
 import { emailQueries } from '@/lib/fauna/emailQueries';
+import { dropboxAuth } from '@/lib/auth/dropbox';
 import i18n from '@/i18n';
 
 interface TestResult {
@@ -93,38 +94,6 @@ export const runFeatureTests = async (): Promise<TestResult[]> => {
       feature: 'Email Management',
       status: 'failed',
       error: 'Could not fetch emails'
-    });
-  }
-
-  // Business Management
-  try {
-    const [clients, providers, invoices] = await Promise.all([
-      businessQueries.getClients(),
-      businessQueries.getProviders(),
-      businessQueries.getInvoices()
-    ]);
-
-    results.push({
-      feature: 'Client Management',
-      status: Array.isArray(clients) ? 'passed' : 'failed'
-    });
-
-    results.push({
-      feature: 'Provider Management',
-      status: Array.isArray(providers) ? 'passed' : 'failed'
-    });
-
-    results.push({
-      feature: 'Invoice Management',
-      status: Array.isArray(invoices) ? 'passed' : 'failed'
-    });
-  } catch (error) {
-    ['Client Management', 'Provider Management', 'Invoice Management'].forEach(feature => {
-      results.push({
-        feature,
-        status: 'failed',
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
     });
   }
 

@@ -1,112 +1,82 @@
-import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { uploadFile, listFiles, downloadFile, deleteFile, createFolder, deleteFolder, downloadFolder } from "@/lib/dropbox";
-import { dropboxAuth } from "@/lib/auth/dropbox";
+import { useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { dropboxAuth } from '@/lib/auth/dropbox';
+import { toast } from 'sonner';
+import {
+  listFiles,
+  uploadFile,
+  downloadFile,
+  createFolder,
+  deleteFile,
+  type FileMetadata
+} from '@/lib/document/documentUtils';
 
 export const useDropboxManager = (currentPath: string) => {
   const [isAuthenticated, setIsAuthenticated] = useState(!!dropboxAuth.getAccessToken());
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
 
-  const { data: files, isLoading, refetch } = useQuery({
+  const { data: files = [], isLoading, refetch } = useQuery({
     queryKey: ['dropbox-files', currentPath],
     queryFn: () => listFiles(currentPath),
-    enabled: isAuthenticated
+    enabled: isAuthenticated,
   });
 
   const uploadMutation = useMutation({
-    mutationFn: async (file: File) => {
-      return await uploadFile(file, currentPath);
-    },
+    mutationFn: (file: File) => uploadFile(file, currentPath),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['dropbox-files'] });
-      toast({
-        title: "Success",
-        description: "File uploaded successfully",
-      });
+      toast.success('File uploaded successfully');
+      refetch();
     },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to upload file",
-        variant: "destructive",
-      });
-    }
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: async (path: string) => {
-      const isFolder = files?.find(f => f.path_display === path)?.['.tag'] === 'folder';
-      return isFolder ? deleteFolder(path) : deleteFile(path);
+    onError: (error: Error) => {
+      toast.error(`Upload failed: ${error.message}`);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['dropbox-files'] });
-      toast({
-        title: "Success",
-        description: "Item deleted successfully",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to delete item",
-        variant: "destructive",
-      });
-    }
   });
 
   const createFolderMutation = useMutation({
-    mutationFn: async (folderPath: string) => {
-      return await createFolder(folderPath);
-    },
+    mutationFn: createFolder,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['dropbox-files'] });
-      toast({
-        title: "Success",
-        description: "Folder created successfully",
-      });
+      toast.success('Folder created successfully');
+      refetch();
     },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to create folder",
-        variant: "destructive",
-      });
-    }
+    onError: (error: Error) => {
+      toast.error(`Failed to create folder: ${error.message}`);
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteFile,
+    onSuccess: () => {
+      toast.success('Item deleted successfully');
+      refetch();
+    },
+    onError: (error: Error) => {
+      toast.error(`Delete failed: ${error.message}`);
+    },
   });
 
   const handleLogin = async () => {
     try {
-      await dropboxAuth.initiateAuth();
+      await dropboxAuth.authenticate();
+      setIsAuthenticated(true);
+      toast.success('Connected to Dropbox successfully');
     } catch (error) {
-      toast({
-        title: "Authentication Failed",
-        description: error instanceof Error ? error.message : "Failed to connect to Dropbox",
-        variant: "destructive",
-      });
+      toast.error('Failed to connect to Dropbox');
     }
   };
 
-  const handleDownload = async (path: string | undefined, fileName: string) => {
-    if (!path) return;
+  const handleDownload = async (path: string) => {
     try {
-      const isFolder = files?.find(f => f.path_display === path)?.['.tag'] === 'folder';
-      const blob = isFolder ? await downloadFolder(path) : await downloadFile(path);
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = fileName + (isFolder ? '.zip' : '');
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+      const blob = await downloadFile(path);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = path.split('/').pop() || 'download';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      toast.success('File downloaded successfully');
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to download item",
-        variant: "destructive",
-      });
+      toast.error('Failed to download file');
     }
   };
 
@@ -120,6 +90,6 @@ export const useDropboxManager = (currentPath: string) => {
     deleteMutation,
     createFolderMutation,
     refetch,
-    setIsAuthenticated
+    setIsAuthenticated,
   };
 };
