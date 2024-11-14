@@ -1,8 +1,7 @@
-import { Client, Provider, Invoice } from '@/types/business';
 import { businessQueries } from '@/lib/db/businessDb';
 import { settingsQueries } from '@/lib/fauna/settingsQueries';
 import { emailQueries } from '@/lib/fauna/emailQueries';
-import { i18n } from '@/i18n';
+import i18n from '@/i18n';
 
 interface TestResult {
   feature: string;
@@ -111,11 +110,12 @@ export const runFeatureTests = async (): Promise<TestResult[]> => {
   }
 
   // Service Tests
+  const servicesList = ['electrical', 'plumbing', 'ironwork', 'woodworking', 'architecture'];
+  
   try {
-    const services = ['electrical', 'plumbing', 'ironwork', 'woodworking', 'architecture'];
     const whatsappNumbers = await settingsQueries.getWhatsAppNumbers();
     
-    services.forEach(service => {
+    servicesList.forEach(service => {
       const hasWhatsApp = whatsappNumbers && whatsappNumbers[service];
       const hasImplementation = checkServiceImplementation(service);
       
@@ -125,7 +125,7 @@ export const runFeatureTests = async (): Promise<TestResult[]> => {
       });
     });
   } catch (error) {
-    services.forEach(service => {
+    servicesList.forEach(service => {
       results.push({
         feature: `${service} Service Integration`,
         status: 'failed',
