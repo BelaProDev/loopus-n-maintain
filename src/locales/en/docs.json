@@ -29,8 +29,10 @@
       "title": "Business Tools",
       "management": "Client & Provider Management",
       "tracking": "Service Tracking System",
-      "invoice": "Invoice Generation",
-      "rating": "Rating & Review System"
+      "invoice": "Invoice Generation & Management",
+      "rating": "Rating & Review System",
+      "providers": "Service Provider Directory",
+      "clients": "Client Database Management"
     }
   },
   "technical": {
@@ -42,6 +44,13 @@
       "workers": "Service Workers",
       "storage": "IndexedDB Storage",
       "updates": "Real-time Updates"
+    },
+    "database": {
+      "title": "Database",
+      "fauna": "FaunaDB Integration",
+      "queries": "Optimized Query System",
+      "caching": "Response Caching",
+      "sync": "Data Synchronization"
     }
   }
 }

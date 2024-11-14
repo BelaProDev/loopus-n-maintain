@@ -29,8 +29,10 @@
       "title": "Herramientas de Negocio",
       "management": "Gestión de Clientes y Proveedores",
       "tracking": "Sistema de Seguimiento",
-      "invoice": "Generación de Facturas",
-      "rating": "Sistema de Calificación"
+      "invoice": "Generación y Gestión de Facturas",
+      "rating": "Sistema de Calificación",
+      "providers": "Directorio de Proveedores",
+      "clients": "Gestión de Base de Clientes"
     }
   },
   "technical": {
@@ -42,6 +44,13 @@
       "workers": "Service Workers",
       "storage": "Almacenamiento IndexedDB",
       "updates": "Actualizaciones en Tiempo Real"
+    },
+    "database": {
+      "title": "Base de Datos",
+      "fauna": "Integración con FaunaDB",
+      "queries": "Sistema de Consultas Optimizado",
+      "caching": "Caché de Respuestas",
+      "sync": "Sincronización de Datos"
     }
   }
 }
