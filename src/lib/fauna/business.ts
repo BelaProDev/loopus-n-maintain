@@ -4,11 +4,6 @@ import type { QueryArgument } from 'fauna';
 import fallbackDb from '../fallback-db.json';
 import { Client, Provider, Invoice } from '@/types/business';
 
-type FaunaData<T> = {
-  data: T;
-  ref: { id: string };
-};
-
 export const businessQueries = {
   getClients: async () => {
     const client = getFaunaClient();
@@ -16,13 +11,12 @@ export const businessQueries = {
 
     try {
       const result = await client.query(fql`
-        Collection.byName("clients")?.all()
-          .map(doc => ({
-            ref: { id: doc.id },
-            data: doc.data
-          })) ?? []
+        Client.all()
       `);
-      return result.data;
+      return result.data.map((doc: any) => ({
+        id: doc.id,
+        ...doc.data
+      }));
     } catch (error) {
       return fallbackDb.clients;
     }
@@ -41,9 +35,7 @@ export const businessQueries = {
 
     try {
       const result = await client.query(fql`
-        Collection.byName("clients")?.create({
-          data: ${clientData as QueryArgument}
-        })
+        Client.create(${clientData as QueryArgument})
       `);
       return result.data;
     } catch (error) {
@@ -57,13 +49,12 @@ export const businessQueries = {
 
     try {
       const result = await client.query(fql`
-        Collection.byName("providers")?.all()
-          .map(doc => ({
-            ref: { id: doc.id },
-            data: doc.data
-          })) ?? []
+        Provider.all()
       `);
-      return result.data;
+      return result.data.map((doc: any) => ({
+        id: doc.id,
+        ...doc.data
+      }));
     } catch (error) {
       return fallbackDb.providers;
     }
@@ -75,13 +66,12 @@ export const businessQueries = {
 
     try {
       const result = await client.query(fql`
-        Collection.byName("invoices")?.all()
-          .map(doc => ({
-            ref: { id: doc.id },
-            data: doc.data
-          })) ?? []
+        Invoice.all()
       `);
-      return result.data;
+      return result.data.map((doc: any) => ({
+        id: doc.id,
+        ...doc.data
+      }));
     } catch (error) {
       return fallbackDb.invoices;
     }
@@ -104,9 +94,7 @@ export const businessQueries = {
 
     try {
       const result = await client.query(fql`
-        Collection.byName("invoices")?.create({
-          data: ${invoiceData as QueryArgument}
-        })
+        Invoice.create(${invoiceData as QueryArgument})
       `);
       return result.data;
     } catch (error) {
@@ -120,7 +108,7 @@ export const businessQueries = {
 
     try {
       await client.query(fql`
-        Collection.byName("invoices")?.delete(${id})
+        Invoice.byId(${id})?.delete()
       `);
       return { success: true };
     } catch (error) {
