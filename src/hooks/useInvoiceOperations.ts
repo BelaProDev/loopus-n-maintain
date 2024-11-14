@@ -10,7 +10,11 @@ export const useInvoiceOperations = () => {
   const queryClient = useQueryClient();
 
   const createMutation = useMutation({
-    mutationFn: businessQueries.createInvoice,
+    mutationFn: async (data: Omit<Invoice, 'id'>) => {
+      const result = await businessQueries.createInvoice(data);
+      if (!result) throw new Error('Failed to create invoice');
+      return result;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['invoices'] });
       toast({ 

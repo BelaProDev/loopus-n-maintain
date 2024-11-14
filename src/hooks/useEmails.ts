@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { faunaQueries } from "@/lib/fauna";
+import { emailQueries } from "@/lib/fauna/emailQueries";
 import { useToast } from "@/components/ui/use-toast";
+import { useTranslation } from "react-i18next";
 
 export interface Email {
   ref: { id: string };
@@ -13,44 +14,80 @@ export interface Email {
 
 export function useEmails() {
   const { toast } = useToast();
+  const { t } = useTranslation(["admin", "common"]);
   const queryClient = useQueryClient();
 
   const emailsQuery = useQuery({
     queryKey: ['emails'],
-    queryFn: () => Promise.resolve(faunaQueries.getAllEmails()),
+    queryFn: async () => {
+      const result = await emailQueries.getAllEmails();
+      return result;
+    },
   });
 
   const createEmailMutation = useMutation({
-    mutationFn: (data: any) => Promise.resolve(faunaQueries.createEmail(data)),
+    mutationFn: async (data: any) => {
+      const result = await emailQueries.createEmail(data);
+      if (!result) throw new Error('Failed to create email');
+      return result;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['emails'] });
-      toast({ title: "Success", description: "Email added successfully" });
+      toast({ 
+        title: t("common:common.success"), 
+        description: t("admin:email.addSuccess") 
+      });
     },
     onError: () => {
-      toast({ title: "Error", description: "Failed to add email", variant: "destructive" });
+      toast({ 
+        title: t("common:common.error"), 
+        description: t("admin:email.addError"), 
+        variant: "destructive" 
+      });
     },
   });
 
   const updateEmailMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Email['data'] }) => 
-      Promise.resolve(faunaQueries.updateEmail(id, data)),
+    mutationFn: async ({ id, data }: { id: string; data: Email['data'] }) => {
+      const result = await emailQueries.updateEmail(id, data);
+      if (!result) throw new Error('Failed to update email');
+      return result;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['emails'] });
-      toast({ title: "Success", description: "Email updated successfully" });
+      toast({ 
+        title: t("common:common.success"), 
+        description: t("admin:email.updateSuccess") 
+      });
     },
     onError: () => {
-      toast({ title: "Error", description: "Failed to update email", variant: "destructive" });
+      toast({ 
+        title: t("common:common.error"), 
+        description: t("admin:email.updateError"), 
+        variant: "destructive" 
+      });
     },
   });
 
   const deleteEmailMutation = useMutation({
-    mutationFn: (id: string) => Promise.resolve(faunaQueries.deleteEmail(id)),
+    mutationFn: async (id: string) => {
+      const result = await emailQueries.deleteEmail(id);
+      if (!result) throw new Error('Failed to delete email');
+      return result;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['emails'] });
-      toast({ title: "Success", description: "Email deleted successfully" });
+      toast({ 
+        title: t("common:common.success"), 
+        description: t("admin:email.deleteSuccess") 
+      });
     },
     onError: () => {
-      toast({ title: "Error", description: "Failed to delete email", variant: "destructive" });
+      toast({ 
+        title: t("common:common.error"), 
+        description: t("admin:email.deleteError"), 
+        variant: "destructive" 
+      });
     },
   });
 

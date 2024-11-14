@@ -4,16 +4,19 @@ export const extractFaunaData = <T>(result: any): T[] => {
   if (!result?.data) return [];
   
   // Handle Set response format
-  if (result.data['@set']?.data) {
+  if (result.data['@set']) {
     return result.data['@set'].data.map((item: any) => {
-      const doc = item['@doc'];
-      // Convert Fauna specific number format
-      Object.keys(doc).forEach(key => {
-        if (doc[key]?.['@int']) {
-          doc[key] = Number(doc[key]['@int']);
-        }
-      });
-      return doc;
+      if (item['@doc']) {
+        const doc = item['@doc'];
+        // Convert Fauna specific number format
+        Object.keys(doc).forEach(key => {
+          if (doc[key]?.['@int']) {
+            doc[key] = Number(doc[key]['@int']);
+          }
+        });
+        return doc;
+      }
+      return item;
     });
   }
   
@@ -26,6 +29,22 @@ export const extractFaunaData = <T>(result: any): T[] => {
       }
     });
     return [doc];
+  }
+
+  // Handle array response
+  if (Array.isArray(result.data)) {
+    return result.data.map((item: any) => {
+      if (item['@doc']) {
+        const doc = item['@doc'];
+        Object.keys(doc).forEach(key => {
+          if (doc[key]?.['@int']) {
+            doc[key] = Number(doc[key]['@int']);
+          }
+        });
+        return doc;
+      }
+      return item;
+    });
   }
 
   return [];
