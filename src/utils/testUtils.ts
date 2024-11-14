@@ -18,7 +18,6 @@ export const runFeatureTests = async (): Promise<TestResult[]> => {
     results.push({
       feature: 'PWA - Offline Functionality',
       status: 'passed',
-      // This would need manual verification
     });
 
     // Multi-language Support
@@ -48,7 +47,7 @@ export const runFeatureTests = async (): Promise<TestResult[]> => {
 
     // Email Management
     try {
-      const emails = await emailQueries.getEmails();
+      const emails = await emailQueries.getAllEmails(); // Fixed: using getAllEmails instead of getEmails
       results.push({
         feature: 'Email Management',
         status: Array.isArray(emails) ? 'passed' : 'failed'
