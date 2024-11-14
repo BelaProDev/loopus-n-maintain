@@ -1,24 +1,21 @@
 import { QueryValue, QueryValueObject } from 'fauna';
 
-export const extractFaunaData = <T>(result: QueryValue): T[] => {
+interface FaunaDocument<T> {
+  ref: { id: string };
+  data: T;
+}
+
+export const extractFaunaData = <T>(result: QueryValue): FaunaDocument<T>[] => {
   if (!result || typeof result !== 'object') return [];
   
   const resultObj = result as QueryValueObject;
 
   // Handle Set response
   if (resultObj.data?.['@set']?.data) {
-    return resultObj.data['@set'].data.map((item: any) => {
-      if (item['@doc']) {
-        return {
-          ref: { id: item['@doc'].id },
-          data: normalizeDocument(item['@doc'])
-        };
-      }
-      return {
-        ref: { id: item.id },
-        data: normalizeDocument(item)
-      };
-    });
+    return resultObj.data['@set'].data.map((item: any) => ({
+      ref: { id: item['@doc']?.id || item.id },
+      data: normalizeDocument(item['@doc'] || item)
+    }));
   }
 
   // Handle direct document response
@@ -31,18 +28,10 @@ export const extractFaunaData = <T>(result: QueryValue): T[] => {
 
   // Handle array response
   if (Array.isArray(resultObj.data)) {
-    return resultObj.data.map((item: any) => {
-      if (item['@doc']) {
-        return {
-          ref: { id: item['@doc'].id },
-          data: normalizeDocument(item['@doc'])
-        };
-      }
-      return {
-        ref: { id: item.id },
-        data: normalizeDocument(item)
-      };
-    });
+    return resultObj.data.map((item: any) => ({
+      ref: { id: item['@doc']?.id || item.id },
+      data: normalizeDocument(item['@doc'] || item)
+    }));
   }
 
   return [];
