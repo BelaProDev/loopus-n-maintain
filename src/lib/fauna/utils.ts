@@ -1,13 +1,10 @@
-import { QuerySuccess } from 'fauna';
-import { Client, Provider, Invoice } from '@/types/business';
+import { QueryValue } from 'fauna';
 
-type FaunaDocument = Client | Provider | Invoice;
+export const extractFaunaData = <T>(result: QueryValue): T[] => {
+  if (!result) return [];
 
-export const extractFaunaData = <T extends FaunaDocument>(result: QuerySuccess<T>): T[] => {
-  if (!result?.data) return [];
-  
-  // Handle Set response format
-  if (result.data['@set']) {
+  // Handle Set response
+  if (result.data?.['@set']?.data) {
     return result.data['@set'].data.map((item: any) => {
       if (item['@doc']) {
         return normalizeDocument(item['@doc']);
@@ -15,9 +12,9 @@ export const extractFaunaData = <T extends FaunaDocument>(result: QuerySuccess<T
       return normalizeDocument(item);
     });
   }
-  
+
   // Handle direct document response
-  if (result.data['@doc']) {
+  if (result.data?.['@doc']) {
     return [normalizeDocument(result.data['@doc'])];
   }
 
@@ -37,23 +34,26 @@ export const extractFaunaData = <T extends FaunaDocument>(result: QuerySuccess<T
 const normalizeDocument = (doc: any): any => {
   const normalized = { ...doc };
   
-  // Remove Fauna metadata fields
-  delete normalized.coll;
-  delete normalized.ts;
-  
-  // Convert Fauna specific types
   Object.keys(normalized).forEach(key => {
+    // Convert Fauna number types
     if (normalized[key]?.['@int']) {
       normalized[key] = Number(normalized[key]['@int']);
     }
+    if (normalized[key]?.['@double']) {
+      normalized[key] = Number(normalized[key]['@double']);
+    }
+    
+    // Convert Fauna time
     if (normalized[key]?.['@time']) {
       normalized[key] = new Date(normalized[key]['@time']).toISOString();
     }
-    if (normalized[key]?.['@set']) {
-      normalized[key] = normalized[key]['@set'].data.map((item: any) => normalizeDocument(item));
+    
+    // Remove Fauna metadata fields
+    if (key === '@ts' || key === '@ref') {
+      delete normalized[key];
     }
   });
-  
+
   return normalized;
 };
 
