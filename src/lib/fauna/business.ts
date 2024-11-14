@@ -1,24 +1,25 @@
-import { getFaunaClient, handleFaunaError } from './client';
+import { getFaunaClient } from './client';
 import { fql } from 'fauna';
-import type { QueryArgument } from 'fauna';
-import fallbackDb from '../fallback-db.json';
-import { Client, Provider, Invoice } from '@/types/business';
+import type { Client, Provider, Invoice } from '@/types/business';
+import { fallbackQueries } from '../db/fallbackDb';
 
 export const businessQueries = {
   getClients: async () => {
     const client = getFaunaClient();
-    if (!client) return fallbackDb.clients;
+    if (!client) return fallbackQueries.clients;
 
     try {
-      const result = await client.query(fql`
+      const query = fql`
         Client.all()
-      `);
+      `;
+      const result = await client.query(query);
       return result.data.map((doc: any) => ({
         id: doc.id,
         ...doc.data
       }));
     } catch (error) {
-      return fallbackDb.clients;
+      console.error('Fauna query error:', error);
+      return fallbackQueries.clients;
     }
   },
 
@@ -34,46 +35,57 @@ export const businessQueries = {
     };
 
     try {
-      const result = await client.query(fql`
-        Client.create(${clientData as QueryArgument})
-      `);
-      return result.data;
+      const query = fql`
+        Client.create({
+          data: ${clientData}
+        })
+      `;
+      const result = await client.query(query);
+      return {
+        id: result.data.id,
+        ...result.data.data
+      };
     } catch (error) {
+      console.error('Fauna create error:', error);
       return null;
     }
   },
 
   getProviders: async () => {
     const client = getFaunaClient();
-    if (!client) return fallbackDb.providers;
+    if (!client) return fallbackQueries.providers;
 
     try {
-      const result = await client.query(fql`
+      const query = fql`
         Provider.all()
-      `);
+      `;
+      const result = await client.query(query);
       return result.data.map((doc: any) => ({
         id: doc.id,
         ...doc.data
       }));
     } catch (error) {
-      return fallbackDb.providers;
+      console.error('Fauna query error:', error);
+      return fallbackQueries.providers;
     }
   },
 
   getInvoices: async () => {
     const client = getFaunaClient();
-    if (!client) return fallbackDb.invoices;
+    if (!client) return fallbackQueries.invoices;
 
     try {
-      const result = await client.query(fql`
+      const query = fql`
         Invoice.all()
-      `);
+      `;
+      const result = await client.query(query);
       return result.data.map((doc: any) => ({
         id: doc.id,
         ...doc.data
       }));
     } catch (error) {
-      return fallbackDb.invoices;
+      console.error('Fauna query error:', error);
+      return fallbackQueries.invoices;
     }
   },
 
@@ -81,23 +93,19 @@ export const businessQueries = {
     const client = getFaunaClient();
     if (!client) return null;
 
-    const invoiceData = {
-      ...data,
-      items: data.items.map(item => ({
-        id: item.id,
-        description: item.description,
-        quantity: item.quantity,
-        unitPrice: item.unitPrice,
-        total: item.total
-      }))
-    };
-
     try {
-      const result = await client.query(fql`
-        Invoice.create(${invoiceData as QueryArgument})
-      `);
-      return result.data;
+      const query = fql`
+        Invoice.create({
+          data: ${data}
+        })
+      `;
+      const result = await client.query(query);
+      return {
+        id: result.data.id,
+        ...result.data.data
+      };
     } catch (error) {
+      console.error('Fauna create error:', error);
       return null;
     }
   },
@@ -107,11 +115,13 @@ export const businessQueries = {
     if (!client) return null;
 
     try {
-      await client.query(fql`
+      const query = fql`
         Invoice.byId(${id})?.delete()
-      `);
+      `;
+      await client.query(query);
       return { success: true };
     } catch (error) {
+      console.error('Fauna delete error:', error);
       return null;
     }
   }

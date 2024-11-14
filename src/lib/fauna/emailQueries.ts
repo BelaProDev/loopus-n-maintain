@@ -16,7 +16,14 @@ export const emailQueries = {
       `;
       
       const response = await client.query(query);
-      return response.data || [];
+      return response.data.map((doc: any) => ({
+        ref: { id: doc.id },
+        data: {
+          email: doc.data.email,
+          name: doc.data.name,
+          type: doc.data.type
+        }
+      }));
     } catch (error) {
       console.error('Fauna query error:', error);
       return fallbackQueries.getAllEmails();
@@ -45,7 +52,14 @@ export const emailQueries = {
       `;
       
       const response = await client.query(query);
-      return response.data;
+      return {
+        ref: { id: response.data.id },
+        data: {
+          email: response.data.data.email,
+          name: response.data.data.name,
+          type: response.data.data.type
+        }
+      };
     } catch (error) {
       console.error('Fauna create error:', error);
       return fallbackQueries.createEmail(data);
@@ -66,7 +80,18 @@ export const emailQueries = {
       `;
       
       const response = await client.query(query);
-      return response.data || fallbackQueries.updateEmail(id, data);
+      if (!response.data) {
+        throw new Error('Email not found');
+      }
+      
+      return {
+        ref: { id: response.data.id },
+        data: {
+          email: response.data.data.email,
+          name: response.data.data.name,
+          type: response.data.data.type
+        }
+      };
     } catch (error) {
       console.error('Fauna update error:', error);
       return fallbackQueries.updateEmail(id, data);
