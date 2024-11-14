@@ -1,18 +1,37 @@
-import { Client, QueryArgument } from 'fauna';
+import { QuerySuccess } from 'fauna';
 
-export const getFaunaClient = () => {
-  if (typeof window === 'undefined') return null;
-  return new Client({
-    secret: import.meta.env.VITE_FAUNA_SECRET_KEY,
-  });
+export const extractFaunaData = <T>(result: any): T[] => {
+  if (!result?.data) return [];
+  
+  // Handle Set response format
+  if (result.data['@set']?.data) {
+    return result.data['@set'].data.map((item: any) => {
+      const doc = item['@doc'];
+      // Convert Fauna specific number format
+      Object.keys(doc).forEach(key => {
+        if (doc[key]?.['@int']) {
+          doc[key] = Number(doc[key]['@int']);
+        }
+      });
+      return doc;
+    });
+  }
+  
+  // Handle direct document response
+  if (result.data['@doc']) {
+    const doc = result.data['@doc'];
+    Object.keys(doc).forEach(key => {
+      if (doc[key]?.['@int']) {
+        doc[key] = Number(doc[key]['@int']);
+      }
+    });
+    return [doc];
+  }
+
+  return [];
 };
 
-export const handleFaunaError = (error: any, fallbackData: any) => {
-  console.error('Fauna DB Error:', error);
-  return fallbackData;
-};
-
-export const sanitizeForFauna = <T extends object>(data: T): QueryArgument => {
-  const sanitized = JSON.parse(JSON.stringify(data));
-  return sanitized as QueryArgument;
+export const handleFaunaError = (error: any) => {
+  console.error('Fauna query error:', error);
+  throw error;
 };

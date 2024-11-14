@@ -1,32 +1,24 @@
-import { Client as FaunaClient, fql, QueryArgument, type QuerySuccess } from 'fauna';
+import { Client as FaunaClient, fql } from 'fauna';
 import type { Client, Provider, Invoice } from '@/types/business';
 import { getFaunaClient } from './client';
+import { extractFaunaData, handleFaunaError } from './utils';
 
-const extractFaunaData = <T>(result: any): T[] => {
-  if (!result?.data?.['@set']?.data) return [];
-  return result.data['@set'].data.map((item: any) => item['@doc']);
-};
-
-export const businessQueries = {
+const createBusinessQueries = (client: FaunaClient | null) => ({
   // Client operations
   getClients: async (): Promise<Client[]> => {
-    const client = getFaunaClient();
     if (!client) return [];
-
     try {
       const query = fql`Client.all()`;
       const result = await client.query(query);
       return extractFaunaData<Client>(result);
     } catch (error) {
-      console.error('Fauna query error:', error);
+      handleFaunaError(error);
       return [];
     }
   },
 
   createClient: async (data: Omit<Client, 'id' | 'totalInvoices' | 'totalAmount' | 'status'>) => {
-    const client = getFaunaClient();
     if (!client) return null;
-
     try {
       const query = fql`
         Client.create({
@@ -40,64 +32,29 @@ export const businessQueries = {
           status: "active"
         })
       `;
-      const result = await client.query<QuerySuccess<Client>>(query);
-      return result.data;
+      const result = await client.query(query);
+      return extractFaunaData<Client>(result)[0];
     } catch (error) {
-      console.error('Fauna create error:', error);
-      throw error;
-    }
-  },
-
-  updateClient: async (id: string, data: Partial<Client>) => {
-    const client = getFaunaClient();
-    if (!client) return null;
-
-    try {
-      const query = fql`
-        let client = Client.byId(${id})
-        client.update(${data as QueryArgument})
-      `;
-      const result = await client.query<QuerySuccess<Client>>(query);
-      return result.data;
-    } catch (error) {
-      console.error('Fauna update error:', error);
-      throw error;
-    }
-  },
-
-  deleteClient: async (id: string) => {
-    const client = getFaunaClient();
-    if (!client) return null;
-
-    try {
-      const query = fql`Client.byId(${id})?.delete()`;
-      await client.query(query);
-      return { success: true };
-    } catch (error) {
-      console.error('Fauna delete error:', error);
-      throw error;
+      handleFaunaError(error);
+      return null;
     }
   },
 
   // Provider operations
   getProviders: async (): Promise<Provider[]> => {
-    const client = getFaunaClient();
     if (!client) return [];
-
     try {
       const query = fql`Provider.all()`;
       const result = await client.query(query);
       return extractFaunaData<Provider>(result);
     } catch (error) {
-      console.error('Fauna query error:', error);
+      handleFaunaError(error);
       return [];
     }
   },
 
   createProvider: async (data: Omit<Provider, 'id'>) => {
-    const client = getFaunaClient();
     if (!client) return null;
-
     try {
       const query = fql`
         Provider.create({
@@ -110,64 +67,29 @@ export const businessQueries = {
           specialties: ${data.specialties}
         })
       `;
-      const result = await client.query<QuerySuccess<Provider>>(query);
-      return result.data;
+      const result = await client.query(query);
+      return extractFaunaData<Provider>(result)[0];
     } catch (error) {
-      console.error('Fauna create error:', error);
-      throw error;
-    }
-  },
-
-  updateProvider: async (id: string, data: Partial<Provider>) => {
-    const client = getFaunaClient();
-    if (!client) return null;
-
-    try {
-      const query = fql`
-        let provider = Provider.byId(${id})
-        provider.update(${data as QueryArgument})
-      `;
-      const result = await client.query<QuerySuccess<Provider>>(query);
-      return result.data;
-    } catch (error) {
-      console.error('Fauna update error:', error);
-      throw error;
-    }
-  },
-
-  deleteProvider: async (id: string) => {
-    const client = getFaunaClient();
-    if (!client) return null;
-
-    try {
-      const query = fql`Provider.byId(${id})?.delete()`;
-      await client.query(query);
-      return { success: true };
-    } catch (error) {
-      console.error('Fauna delete error:', error);
-      throw error;
+      handleFaunaError(error);
+      return null;
     }
   },
 
   // Invoice operations
   getInvoices: async (): Promise<Invoice[]> => {
-    const client = getFaunaClient();
     if (!client) return [];
-
     try {
       const query = fql`Invoice.all()`;
       const result = await client.query(query);
       return extractFaunaData<Invoice>(result);
     } catch (error) {
-      console.error('Fauna query error:', error);
+      handleFaunaError(error);
       return [];
     }
   },
 
   createInvoice: async (data: Omit<Invoice, 'id'>) => {
-    const client = getFaunaClient();
     if (!client) return null;
-
     try {
       const query = fql`
         Invoice.create({
@@ -183,42 +105,13 @@ export const businessQueries = {
           notes: ${data.notes}
         })
       `;
-      const result = await client.query<QuerySuccess<Invoice>>(query);
-      return result.data;
+      const result = await client.query(query);
+      return extractFaunaData<Invoice>(result)[0];
     } catch (error) {
-      console.error('Fauna create error:', error);
-      throw error;
-    }
-  },
-
-  updateInvoice: async (id: string, data: Partial<Invoice>) => {
-    const client = getFaunaClient();
-    if (!client) return null;
-
-    try {
-      const query = fql`
-        let invoice = Invoice.byId(${id})
-        invoice.update(${data as QueryArgument})
-      `;
-      const result = await client.query<QuerySuccess<Invoice>>(query);
-      return result.data;
-    } catch (error) {
-      console.error('Fauna update error:', error);
-      throw error;
-    }
-  },
-
-  deleteInvoice: async (id: string) => {
-    const client = getFaunaClient();
-    if (!client) return null;
-
-    try {
-      const query = fql`Invoice.byId(${id})?.delete()`;
-      await client.query(query);
-      return { success: true };
-    } catch (error) {
-      console.error('Fauna delete error:', error);
-      throw error;
+      handleFaunaError(error);
+      return null;
     }
   }
-};
+});
+
+export const businessQueries = createBusinessQueries(getFaunaClient());
