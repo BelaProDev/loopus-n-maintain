@@ -1,7 +1,6 @@
 import { getFaunaClient, handleFaunaError } from './client';
 import { EmailData } from './types';
 import { fql } from 'fauna';
-import { SHA256 } from 'crypto-js';
 import { fallbackQueries } from '../db/fallbackDb';
 
 export const emailQueries = {
@@ -13,14 +12,19 @@ export const emailQueries = {
 
     try {
       const result = await client.query(fql`
-        Collection.byName("emails")?.documents()
-          .map(doc => ({
+        let collection = Collection.byName("emails")
+        if (collection != null) {
+          collection.documents().map(doc => ({
             ref: { id: doc.id },
             data: doc.data
-          })) ?? []
+          }))
+        } else {
+          []
+        }
       `);
-      return result.data;
+      return result.data || [];
     } catch (error) {
+      console.error('Fauna query error:', error);
       return fallbackQueries.getAllEmails();
     }
   },
@@ -33,26 +37,26 @@ export const emailQueries = {
 
     try {
       const timestamp = Date.now();
-      const hashedPassword = data.password ? SHA256(data.password).toString() : undefined;
-      
       const result = await client.query(fql`
-        let doc = Collection.byName("emails").create({
-          data: {
-            email: ${data.email},
-            name: ${data.name},
-            type: ${data.type},
-            password: ${hashedPassword},
-            createdAt: ${timestamp},
-            updatedAt: ${timestamp}
+        let collection = Collection.byName("emails")
+        if (collection != null) {
+          let doc = collection.create({
+            data: {
+              email: ${data.email},
+              name: ${data.name},
+              type: ${data.type},
+              createdAt: ${timestamp}
+            }
+          })
+          {
+            ref: { id: doc.id },
+            data: doc.data
           }
-        })
-        {
-          ref: { id: doc.id },
-          data: doc.data
         }
       `);
-      return result;
+      return result || fallbackQueries.createEmail(data);
     } catch (error) {
+      console.error('Fauna create error:', error);
       return fallbackQueries.createEmail(data);
     }
   },
@@ -65,18 +69,23 @@ export const emailQueries = {
 
     try {
       const result = await client.query(fql`
-        let doc = Collection.byName("emails").document(${id})
-        let updated = doc.update({
-          data: ${data},
-          updatedAt: Time.now()
-        })
-        {
-          ref: { id: updated.id },
-          data: updated.data
+        let collection = Collection.byName("emails")
+        if (collection != null) {
+          let doc = collection.document(${id})
+          if (doc != null) {
+            let updated = doc.update({
+              data: ${data}
+            })
+            {
+              ref: { id: updated.id },
+              data: updated.data
+            }
+          }
         }
       `);
-      return result;
+      return result || fallbackQueries.updateEmail(id, data);
     } catch (error) {
+      console.error('Fauna update error:', error);
       return fallbackQueries.updateEmail(id, data);
     }
   },
@@ -89,10 +98,17 @@ export const emailQueries = {
 
     try {
       await client.query(fql`
-        Collection.byName("emails").document(${id}).delete()
+        let collection = Collection.byName("emails")
+        if (collection != null) {
+          let doc = collection.document(${id})
+          if (doc != null) {
+            doc.delete()
+          }
+        }
       `);
       return { success: true };
     } catch (error) {
+      console.error('Fauna delete error:', error);
       return fallbackQueries.deleteEmail(id);
     }
   }

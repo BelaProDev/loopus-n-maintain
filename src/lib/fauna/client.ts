@@ -1,12 +1,20 @@
-import { Client } from 'fauna';
+import { Client, ClientConfiguration } from 'fauna';
 
 export const getFaunaClient = () => {
   if (typeof window === 'undefined') return null;
   
+  const secret = import.meta.env.VITE_FAUNA_SECRET_KEY;
+  if (!secret) {
+    console.warn('Fauna secret key not found');
+    return null;
+  }
+
   try {
-    return new Client({
-      secret: import.meta.env.VITE_FAUNA_SECRET_KEY,
-    });
+    const config: ClientConfiguration = {
+      secret,
+      endpoint: import.meta.env.VITE_FAUNA_ENDPOINT || 'https://db.fauna.com'
+    };
+    return new Client(config);
   } catch (error) {
     console.error('Failed to initialize Fauna client:', error);
     return null;
