@@ -5,10 +5,19 @@ interface FaunaDocument<T> {
   data: T;
 }
 
+interface FaunaResponse {
+  data: {
+    data?: any[];
+    '@set'?: {
+      data: any[];
+    };
+  };
+}
+
 export const extractFaunaData = <T>(result: QueryValue): FaunaDocument<T>[] => {
   if (!result || typeof result !== 'object') return [];
   
-  const resultObj = result as QueryValueObject;
+  const resultObj = result as FaunaResponse;
   
   // Handle the new response format where data is nested in data.data
   if (resultObj.data?.data && Array.isArray(resultObj.data.data)) {
