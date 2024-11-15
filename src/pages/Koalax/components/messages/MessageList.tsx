@@ -23,12 +23,7 @@ const MessageList = ({ service }: MessageListProps) => {
   
   const { data: messages = [], isLoading } = useQuery({
     queryKey: ['messages', service],
-    queryFn: () => contactQueries.getAllMessages(service),
-    select: (data) => data.map(doc => ({
-      id: doc.ref.id,
-      ...doc.data,
-      service // Ensure service is properly set
-    })) as ContactMessage[]
+    queryFn: () => contactQueries.getAllMessages(service)
   });
 
   if (isLoading) {
@@ -48,25 +43,25 @@ const MessageList = ({ service }: MessageListProps) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {messages.map((message: ContactMessage) => (
-            <TableRow key={message.id}>
+          {messages.map((message) => (
+            <TableRow key={message.ref.id}>
               <TableCell>
-                {message.createdAt && format(new Date(message.createdAt), 'PPp')}
+                {message.data.createdAt && format(new Date(message.data.createdAt), 'PPp')}
               </TableCell>
-              <TableCell>{message.name}</TableCell>
-              <TableCell>{message.email}</TableCell>
-              <TableCell className="max-w-md truncate">{message.message}</TableCell>
+              <TableCell>{message.data.name}</TableCell>
+              <TableCell>{message.data.email}</TableCell>
+              <TableCell className="max-w-md truncate">{message.data.message}</TableCell>
               <TableCell>
                 <Badge
                   variant={
-                    message.status === 'new'
+                    message.data.status === 'new'
                       ? 'default'
-                      : message.status === 'read'
+                      : message.data.status === 'read'
                       ? 'secondary'
                       : 'outline'
                   }
                 >
-                  {t(`admin:messages.status_${message.status}`)}
+                  {t(`admin:messages.status_${message.data.status}`)}
                 </Badge>
               </TableCell>
             </TableRow>

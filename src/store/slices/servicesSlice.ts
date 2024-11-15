@@ -1,8 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { ContactMessage } from '@/lib/fauna/types';
+
+type ServiceName = ContactMessage['service'];
 
 interface ServicesState {
-  availableServices: string[];
-  implementedServices: string[];
+  availableServices: ServiceName[];
+  implementedServices: ServiceName[];
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
 }

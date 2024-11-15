@@ -9,8 +9,10 @@ export const contactQueries = {
     if (!client) throw new Error('Fauna client not initialized');
 
     try {
+      // Construct the collection name as a single string
+      const collectionName = `${service}_messages`;
       const result = await client.query(
-        fql`${service}_messages.all()`
+        fql`${collectionName}.all()`
       );
       return extractFaunaData(result);
     } catch (error) {
@@ -31,8 +33,10 @@ export const contactQueries = {
         createdAt: new Date().toISOString()
       };
 
+      // Construct the collection name as a single string
+      const collectionName = `${data.service}_messages`;
       const result = await client.query(
-        fql`${data.service}_messages.create(${JSON.stringify(messageData)})`
+        fql`${collectionName}.create(${JSON.stringify(messageData)})`
       );
       
       const document = extractFaunaData(result)[0];
@@ -47,8 +51,10 @@ export const contactQueries = {
     if (!client) throw new Error('Fauna client not initialized');
 
     try {
+      // Construct the collection name as a single string
+      const collectionName = `${service}_messages`;
       const result = await client.query(
-        fql`${service}_messages.byId(${JSON.stringify(id)}).update({ status: ${JSON.stringify(status)} })`
+        fql`${collectionName}.byId(${JSON.stringify(id)}).update({ status: ${JSON.stringify(status)} })`
       );
       
       const document = extractFaunaData(result)[0];
