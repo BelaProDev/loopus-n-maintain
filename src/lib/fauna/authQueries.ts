@@ -15,11 +15,11 @@ export const authQueries = {
     if (!client) throw new Error('Fauna client not initialized');
 
     try {
-      const result = await client.query(
-        fql`emails.firstWhere(.email == ${JSON.stringify(email)} && .password == ${JSON.stringify(password)})`
-      );
-      const data = extractFaunaData(result);
-      return data[0]?.data as EmailUser | null;
+      const query = fql`
+        emails.firstWhere(.email == ${email} && .password == ${password})
+      `;
+      const result = await client.query(query);
+      return extractFaunaData(result);
     } catch (error) {
       console.error('Auth query error:', error);
       return null;
