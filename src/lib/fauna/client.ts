@@ -1,28 +1,19 @@
-import { Client, type ClientConfiguration } from 'fauna';
+import { Client, fql } from 'fauna';
+
+let client: Client | null = null;
 
 export const getFaunaClient = () => {
-  const secret = import.meta.env.VITE_FAUNA_SECRET_KEY;
-  if (!secret) {
-    console.warn('Fauna secret key not found');
-    return null;
+  if (!client) {
+    const faunaKey = import.meta.env.VITE_FAUNA_SECRET_KEY;
+    if (!faunaKey) {
+      console.error('Fauna secret key not found in environment variables');
+      return null;
+    }
+    client = new Client({ secret: faunaKey });
   }
-
-  try {
-    const config: ClientConfiguration = {
-      secret,
-      // Add reasonable defaults for our use case
-      query_timeout_ms: 30000,
-      max_attempts: 3,
-      typecheck: true
-    };
-    return new Client(config);
-  } catch (error) {
-    console.error('Failed to initialize Fauna client:', error);
-    return null;
-  }
+  return client;
 };
 
-export const handleFaunaError = (error: any, fallbackData: any) => {
-  console.error('Fauna DB Error:', error);
-  return fallbackData;
-};
+export const client = getFaunaClient();
+
+export { fql };

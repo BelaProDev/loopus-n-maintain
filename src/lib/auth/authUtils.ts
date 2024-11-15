@@ -1,4 +1,4 @@
-import { authQueries } from '../fauna/authQueries';
+import { SHA256 } from 'crypto-js';
 
 export const validateCredentials = async (email: string, password: string) => {
   const user = await authQueries.validateUser(email, password);
@@ -8,6 +8,10 @@ export const validateCredentials = async (email: string, password: string) => {
   }
 
   return user;
+};
+
+export const hashPassword = (password: string): string => {
+  return SHA256(password).toString().toLowerCase();
 };
 
 export const createSession = (email: string) => {

@@ -11,3 +11,35 @@ export interface NavigationLink {
   url: string;
   location: "header" | "footer";
 }
+
+export interface EmailUser {
+  email: string;
+  password: string;
+}
+
+export interface EmailData {
+  email: string;
+  name: string;
+  type: string;
+  password?: string;
+}
+
+export interface ContactMessage {
+  id?: string;
+  service: 'electrics' | 'plumbing' | 'ironwork' | 'woodwork' | 'architecture';
+  name: string;
+  email: string;
+  message: string;
+  status?: 'new' | 'read' | 'archived';
+  createdAt?: string;
+}
+
+export interface ContentData {
+  key: string;
+  language: string;
+  content: string;
+}
+
+export type ToQueryArg<T> = {
+  [K in keyof T]: T[K];
+};
