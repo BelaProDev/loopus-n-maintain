@@ -30,6 +30,25 @@
     "selectStorage": "Select storage",
     "fallbackStorage": "Fallback Storage"
   },
+  "providers": {
+    "title": "Service Providers",
+    "name": "Name",
+    "service": "Service",
+    "rating": "Rating",
+    "status": "Status",
+    "available": "Available",
+    "unavailable": "Unavailable",
+    "add": "Add Provider",
+    "edit": "Edit Provider",
+    "update": "Update Provider",
+    "selectService": "Select service",
+    "addSuccess": "Provider added successfully",
+    "addError": "Failed to add provider",
+    "updateSuccess": "Provider updated successfully",
+    "updateError": "Failed to update provider",
+    "deleteSuccess": "Provider deleted successfully",
+    "deleteError": "Failed to delete provider"
+  },
   "documents": {
     "title": "Document Manager",
     "upload": "Upload File",

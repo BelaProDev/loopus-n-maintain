@@ -30,6 +30,25 @@
     "selectStorage": "Sélectionner le stockage",
     "fallbackStorage": "Stockage de Secours"
   },
+  "providers": {
+    "title": "Prestataires de Services",
+    "name": "Nom",
+    "service": "Service",
+    "rating": "Évaluation",
+    "status": "Statut",
+    "available": "Disponible",
+    "unavailable": "Indisponible",
+    "add": "Ajouter un Prestataire",
+    "edit": "Modifier le Prestataire",
+    "update": "Mettre à jour le Prestataire",
+    "selectService": "Sélectionner un service",
+    "addSuccess": "Prestataire ajouté avec succès",
+    "addError": "Échec de l'ajout du prestataire",
+    "updateSuccess": "Prestataire mis à jour avec succès",
+    "updateError": "Échec de la mise à jour du prestataire",
+    "deleteSuccess": "Prestataire supprimé avec succès",
+    "deleteError": "Échec de la suppression du prestataire"
+  },
   "documents": {
     "title": "Gestionnaire de Documents",
     "upload": "Téléverser un Fichier",
@@ -55,7 +74,7 @@
   "whatsapp": "Numéros WhatsApp",
   "whatsappUpdate": "Mettre à jour les numéros WhatsApp",
   "whatsappUpdateSuccess": "Numéros de WhatsApp mis à jour avec succès",
-  "whatsappUpdateError": "Échec de la mise à jour des numéros WhatsApp",
+  "whatsappUpdateError": "Échec de la mise à jour des numéros de WhatsApp",
   "whatsappPlaceholder": "Entrez le numéro WhatsApp pour {{service}}",
   "logo": {
     "title": "Paramètres du Logo",
@@ -132,7 +151,6 @@
       "title": "Clients",
       "add": "Ajouter un Client",
       "edit": "Modifier le Client",
-      "update": "Mettre à jour le Client",
       "name": "Nom",
       "email": "Email",
       "phone": "Téléphone",
