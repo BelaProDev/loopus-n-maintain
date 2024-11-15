@@ -1,6 +1,6 @@
 import { getFaunaClient, handleFaunaError } from './client';
 import { ContactMessage } from './types';
-import { fql } from 'fauna';
+import { Client } from 'fauna';
 import { extractFaunaData } from './utils';
 
 export const contactQueries = {
@@ -9,12 +9,10 @@ export const contactQueries = {
     if (!client) throw new Error('Fauna client not initialized');
 
     try {
-      const query = fql`
-        Collection.byName(${service + "_messages"})!
-        .all()
-        .documents()
-      `;
-      const result = await client.query(query);
+      const result = await client.query({
+        collection: `${service}_messages`,
+        filter: {},
+      });
       return extractFaunaData(result);
     } catch (error) {
       return handleFaunaError(error, []);
@@ -35,14 +33,11 @@ export const contactQueries = {
         createdAt: new Date().toISOString()
       };
 
-      const query = fql`
-        Collection.byName(${data.service + "_messages"})!
-        .create({
-          data: ${messageData}
-        })
-      `;
+      const result = await client.query({
+        collection: `${data.service}_messages`,
+        document: messageData
+      });
       
-      const result = await client.query(query);
       const document = extractFaunaData(result)[0];
       return document ? { id: document.ref.id, ...document.data } : null;
     } catch (error) {
@@ -55,17 +50,14 @@ export const contactQueries = {
     if (!client) throw new Error('Fauna client not initialized');
 
     try {
-      const query = fql`
-        Collection.byName(${service + "_messages"})!
-        .document(${id})!
-        .update({
-          data: {
-            status: ${status}
-          }
-        })
-      `;
+      const result = await client.query({
+        collection: `${service}_messages`,
+        id: id,
+        data: {
+          status: status
+        }
+      });
       
-      const result = await client.query(query);
       const document = extractFaunaData(result)[0];
       return document ? { id: document.ref.id, ...document.data } : null;
     } catch (error) {
