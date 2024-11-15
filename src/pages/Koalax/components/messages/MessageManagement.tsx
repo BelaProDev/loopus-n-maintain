@@ -1,8 +1,9 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslation } from "react-i18next";
 import MessageList from "./MessageList";
+import { ContactMessage } from "@/lib/fauna/types";
 
-const SERVICES = ['electrics', 'plumbing', 'woodwork', 'ironwork', 'architecture'] as const;
+const SERVICES: ContactMessage['service'][] = ['electrics', 'plumbing', 'woodwork', 'ironwork', 'architecture'];
 
 const MessageManagement = () => {
   const { t } = useTranslation(["admin", "services"]);
