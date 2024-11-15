@@ -1,5 +1,5 @@
 import { Handler } from '@netlify/functions';
-import chromium from 'chrome-aws-lambda';
+import chromium from '@sparticuz/chromium';
 import puppeteer from 'puppeteer-core';
 import { Invoice } from '../../../src/types/business';
 
@@ -66,11 +66,13 @@ const handler: Handler = async (event) => {
     const invoice: Invoice = JSON.parse(event.body || '');
     const html = generateHTML(invoice);
 
+    const executablePath = await chromium.executablePath();
+
     const browser = await puppeteer.launch({
       args: chromium.args,
       defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath,
-      headless: true,
+      executablePath,
+      headless: chromium.headless,
     });
 
     const page = await browser.newPage();
