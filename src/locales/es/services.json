@@ -1,6 +1,6 @@
 {
   "electrical": {
-    "title": "Electricidad",
+    "title": "Servicios Eléctricos",
     "description": "Servicios profesionales de mantenimiento y reparación eléctrica",
     "issues": {
       "powerOutage": "Corte de Energía",
@@ -55,6 +55,14 @@
     "message": "Hola, necesito ayuda con los siguientes problemas: {{issues}}"
   },
   "faq": {
-    "title": "Preguntas Frecuentes"
+    "title": "Preguntas Frecuentes",
+    "electrical": {
+      "safetyQ": "¿Qué medidas de seguridad siguen?",
+      "safetyA": "Seguimos todos los códigos y regulaciones de seguridad eléctrica, utilizando equipos y protección adecuados.",
+      "costQ": "¿Cómo determinan el costo?",
+      "costA": "Los costos se basan en el tipo de trabajo, materiales necesarios y tiempo requerido. Proporcionamos presupuestos detallados antes de comenzar.",
+      "emergencyQ": "¿Ofrecen servicios de emergencia?",
+      "emergencyA": "Sí, ofrecemos servicios eléctricos de emergencia las 24/7 para problemas urgentes."
+    }
   }
 }
