@@ -91,10 +91,5 @@
       "sustainableQ": "Proposez-vous des options de conception durable ?",
       "sustainableA": "Oui, nous intégrons des principes de conception durable et écoénergétique dans nos projets."
     }
-  },
-  "quickHelp": "Aide Rapide",
-  "whatsapp": {
-    "contact": "Contacter via WhatsApp",
-    "message": "Bonjour, j'ai besoin d'aide avec les problèmes suivants : {{issues}}"
   }
 }
