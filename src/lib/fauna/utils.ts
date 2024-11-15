@@ -77,11 +77,14 @@ const normalizeDocData = (doc: Record<string, any>): any => {
     
     if (value && typeof value === 'object') {
       if ('@time' in value) {
-        normalized[key] = value['@time'];
+        // Convert Fauna Time objects to ISO strings
+        normalized[key] = new Date(value['@time']).toISOString();
       } else if ('@int' in value) {
         normalized[key] = parseInt(value['@int'], 10);
       } else if (Array.isArray(value)) {
-        normalized[key] = value;
+        normalized[key] = value.map(item => 
+          typeof item === 'object' && item !== null ? normalizeDocData(item) : item
+        );
       } else {
         normalized[key] = normalizeDocData(value);
       }

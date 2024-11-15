@@ -86,8 +86,13 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
       return documents.map(doc => ({
         id: doc.ref?.id || '',
         ...doc.data,
-        date: doc.data.date?.toString() || new Date().toISOString(),
-        dueDate: doc.data.dueDate?.toString() || new Date().toISOString()
+        // Properly handle Fauna Time objects by extracting the ISO string
+        date: doc.data.date?.toString?.() || new Date().toISOString(),
+        dueDate: doc.data.dueDate?.toString?.() || new Date().toISOString(),
+        items: doc.data.items || [],
+        totalAmount: doc.data.totalAmount || 0,
+        tax: doc.data.tax || 0,
+        notes: doc.data.notes || ''
       }));
     } catch (error) {
       console.error('Error fetching invoices:', error);
@@ -105,17 +110,25 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
           dueDate: Time(${data.dueDate}),
           clientId: ${data.clientId},
           providerId: ${data.providerId},
-          items: ${data.items},
+          items: ${data.items || []},
           status: ${data.status},
-          totalAmount: ${data.totalAmount},
-          tax: ${data.tax},
-          notes: ${data.notes}
+          totalAmount: ${data.totalAmount || 0},
+          tax: ${data.tax || 0},
+          notes: ${data.notes || ''}
         })
       `;
       const result = await client.query(query);
       const document = extractFaunaData<Invoice>(result)[0];
-      return document ? { id: document.ref.id, ...document.data } : null;
+      if (!document) return null;
+      
+      return {
+        id: document.ref.id,
+        ...document.data,
+        date: document.data.date?.toString() || new Date().toISOString(),
+        dueDate: document.data.dueDate?.toString() || new Date().toISOString()
+      };
     } catch (error) {
+      console.error('Error creating invoice:', error);
       return null;
     }
   },
