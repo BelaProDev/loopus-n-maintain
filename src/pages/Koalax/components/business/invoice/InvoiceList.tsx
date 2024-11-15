@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { businessQueries } from "@/lib/fauna/business";
-import InvoiceDialog from "../InvoiceDialog";
-import ImportInvoiceDialog from "@/components/business/invoice/ImportInvoiceDialog";
+import InvoiceDialog from "./InvoiceDialog";
+import ImportInvoiceDialog from "./ImportInvoiceDialog";
 import { useTranslation } from "react-i18next";
 import { useInvoiceOperations } from "@/hooks/useInvoiceOperations";
 import InvoiceTable from "./InvoiceTable";
 import InvoiceToolbar from "./InvoiceToolbar";
+import { useToast } from "@/components/ui/use-toast";
 
 const InvoiceList = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -14,11 +15,30 @@ const InvoiceList = () => {
   const [editingInvoice, setEditingInvoice] = useState(null);
   const { t } = useTranslation(["admin", "common"]);
   const { handleCreateInvoice, deleteMutation, isCreating } = useInvoiceOperations();
+  const { toast } = useToast();
 
-  const { data: invoices, isLoading } = useQuery({
+  const { data: invoices = [], isLoading, error } = useQuery({
     queryKey: ['invoices'],
-    queryFn: businessQueries.getInvoices
+    queryFn: async () => {
+      const response = await businessQueries.getInvoices();
+      if (!response) {
+        throw new Error('Failed to fetch invoices');
+      }
+      return response.map(invoice => ({
+        ...invoice,
+        date: new Date(invoice.date).toISOString(),
+        dueDate: new Date(invoice.dueDate).toISOString()
+      }));
+    }
   });
+
+  if (error) {
+    toast({
+      title: t("common:common.error"),
+      description: t("admin:business.invoices.fetchError"),
+      variant: "destructive"
+    });
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,8 +50,6 @@ const InvoiceList = () => {
     }
   };
 
-  if (isLoading) return <div>{t("common:common.loading")}</div>;
-
   return (
     <div className="space-y-4">
       <InvoiceToolbar 
@@ -42,10 +60,14 @@ const InvoiceList = () => {
         onImportClick={() => setIsImportDialogOpen(true)}
       />
 
-      <InvoiceTable 
-        invoices={invoices}
-        onDelete={(id) => deleteMutation.mutate(id)}
-      />
+      {isLoading ? (
+        <div className="text-center py-4">{t("common:common.loading")}</div>
+      ) : (
+        <InvoiceTable 
+          invoices={invoices}
+          onDelete={(id) => deleteMutation.mutate(id)}
+        />
+      )}
 
       <InvoiceDialog
         isOpen={isDialogOpen}

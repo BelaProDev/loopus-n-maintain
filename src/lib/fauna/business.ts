@@ -79,8 +79,18 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
       const query = fql`invoices.all()`;
       const result = await client.query(query);
       const documents = extractFaunaData<Invoice>(result);
-      return documents.map(doc => ({ id: doc.ref.id, ...doc.data }));
+      if (!documents || !Array.isArray(documents)) {
+        console.error('Invalid invoice data format:', documents);
+        return [];
+      }
+      return documents.map(doc => ({
+        id: doc.ref?.id || '',
+        ...doc.data,
+        date: doc.data.date?.toString() || new Date().toISOString(),
+        dueDate: doc.data.dueDate?.toString() || new Date().toISOString()
+      }));
     } catch (error) {
+      console.error('Error fetching invoices:', error);
       return [];
     }
   },
