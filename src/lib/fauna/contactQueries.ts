@@ -9,11 +9,16 @@ export const contactQueries = {
 
     try {
       const result = await client.query(fql`
-        let messages = Collection.byName(${service + "_messages"})!.documents()
-        messages.map(message => {
+        Collection.byName(${service + "_messages"})!.documents()
+        .map(message => {
           {
             id: message.id,
-            ...message.data
+            name: message.data.name,
+            email: message.data.email,
+            message: message.data.message,
+            service: message.data.service,
+            status: message.data.status,
+            createdAt: message.data.createdAt
           }
         })
       `);
@@ -36,15 +41,15 @@ export const contactQueries = {
 
       const result = await client.query(fql`
         let collection = Collection.byName(${data.service + "_messages"})!
-        let doc = collection.create({
+        collection.create({
           data: ${messageData}
         })
-        {
-          id: doc.id,
-          ...doc.data
-        }
       `);
-      return result.data;
+      
+      return {
+        id: result.data.id,
+        ...messageData
+      };
     } catch (error) {
       return handleFaunaError(error, null);
     }
@@ -56,19 +61,26 @@ export const contactQueries = {
 
     try {
       const result = await client.query(fql`
-        let collection = Collection.byName(${service + "_messages"})!
-        let doc = collection.documents().firstWhere(.id == ${id})!
-        let updated = doc.update({
+        let doc = Collection.byName(${service + "_messages"})!
+          .documents()
+          .firstWhere(.id == ${id})!
+        
+        doc.update({
           data: {
             status: ${status}
           }
         })
-        {
-          id: updated.id,
-          ...updated.data
-        }
       `);
-      return result.data;
+      
+      return {
+        id: result.data.id,
+        status,
+        name: result.data.data.name,
+        email: result.data.data.email,
+        message: result.data.data.message,
+        service: result.data.data.service,
+        createdAt: result.data.data.createdAt
+      };
     } catch (error) {
       return handleFaunaError(error, null);
     }
