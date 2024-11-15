@@ -1,7 +1,7 @@
 {
   "electrical": {
     "title": "Electrics",
-    "description": "Professional electrical maintenance and repair services for your home or business.",
+    "description": "Professional electrical maintenance and repair services",
     "issues": {
       "powerOutage": "Power Outage",
       "circuitBreaker": "Circuit Breaker Issues",
@@ -11,7 +11,7 @@
   },
   "plumbing": {
     "title": "Plumbing",
-    "description": "Expert plumbing solutions for your home or business.",
+    "description": "Expert plumbing solutions for your home or business",
     "issues": {
       "leaks": "Leaks",
       "clogs": "Clogged Drains",
@@ -21,7 +21,7 @@
   },
   "woodwork": {
     "title": "Woodwork",
-    "description": "Expert woodworking and carpentry services for your home.",
+    "description": "Expert woodworking and carpentry services",
     "issues": {
       "repairs": "Furniture Repairs",
       "restoration": "Wood Restoration",
@@ -31,7 +31,7 @@
   },
   "ironwork": {
     "title": "Ironwork",
-    "description": "Professional ironwork services for both functional and decorative needs.",
+    "description": "Professional ironwork services",
     "issues": {
       "rust": "Rust and Corrosion",
       "structuralDamage": "Structural Damage",
@@ -41,18 +41,13 @@
   },
   "architecture": {
     "title": "Architecture",
-    "description": "Professional architectural design, planning and other services.",
+    "description": "Professional architectural design and planning",
     "issues": {
       "designConsultation": "Design Consultation",
       "permitAssistance": "Building Permit Assistance",
       "renovationPlanning": "Renovation Planning",
       "structuralAssessment": "Structural Assessment"
     }
-  },
-  "quickHelp": "Quick Help",
-  "whatsapp": {
-    "contact": "Contact via WhatsApp",
-    "message": "Hello, I need help with the following issues: {{issues}}"
   },
   "faq": {
     "title": "Frequently Asked Questions",
@@ -63,6 +58,19 @@
       "costA": "Costs are based on the type of work, materials needed, and time required. We provide detailed quotes before starting.",
       "emergencyQ": "Do you offer emergency services?",
       "emergencyA": "Yes, we offer 24/7 emergency electrical services for urgent issues."
+    },
+    "plumbing": {
+      "preventionQ": "How can I prevent plumbing issues?",
+      "preventionA": "Regular maintenance, avoiding harsh chemicals, and being mindful of what goes down drains can prevent most common issues.",
+      "winterQ": "How do I prepare my plumbing for winter?",
+      "winterA": "Insulate pipes, seal leaks, and maintain proper heating to prevent freezing during cold weather.",
+      "waterBillQ": "Why is my water bill suddenly higher?",
+      "waterBillA": "Sudden increases often indicate leaks, running toilets, or inefficient fixtures. We can help identify and fix the cause."
     }
+  },
+  "quickHelp": "Quick Help",
+  "whatsapp": {
+    "contact": "Contact via WhatsApp",
+    "message": "Hello, I need help with the following issues: {{issues}}"
   }
 }
