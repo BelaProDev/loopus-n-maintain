@@ -1,6 +1,6 @@
 export interface WhatsAppNumbers {
   [key: string]: string;
-  electrical: string;
+  electrics: string;
   plumbing: string;
   ironwork: string;
   woodwork: string;

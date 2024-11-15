@@ -12,7 +12,7 @@ export const settingsQueries = {
       const result = await client.query(fql`
         let doc = whatsapp_numbers.all().first()!
         {
-          electrical: doc.electrical,
+          electrics: doc.electrics,
           plumbing: doc.plumbing,
           ironwork: doc.ironwork,
           woodwork: doc.woodwork,
@@ -24,7 +24,7 @@ export const settingsQueries = {
     } catch (error) {
       console.error('Error fetching WhatsApp numbers:', error);
       return {
-        electrical: "",
+        electrics: "",
         plumbing: "",
         ironwork: "",
         woodwork: "",
