@@ -14,14 +14,14 @@
     "description": "Soluciones expertas en plomería para su hogar o negocio",
     "issues": {
       "leaks": "Fugas",
-      "clogs": "Desagües Bouchés",
+      "clogs": "Desagües Obstruidos",
       "lowPressure": "Baja Presión de Agua",
       "waterHeater": "Problemas con el Calentador"
     }
   },
   "woodwork": {
     "title": "Carpintería",
-    "description": "Servicios expertos de carpintería y ebanistería",
+    "description": "Servicios expertos de carpintería para su hogar",
     "issues": {
       "repairs": "Reparaciones de Muebles",
       "restoration": "Restauración de Madera",
@@ -53,5 +53,8 @@
   "whatsapp": {
     "contact": "Contactar por WhatsApp",
     "message": "Hola, necesito ayuda con los siguientes problemas: {{issues}}"
+  },
+  "faq": {
+    "title": "Preguntas Frecuentes"
   }
 }

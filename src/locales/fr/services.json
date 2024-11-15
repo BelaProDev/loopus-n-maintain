@@ -3,10 +3,10 @@
     "title": "Électricité",
     "description": "Services professionnels de maintenance et de réparation électrique",
     "issues": {
-      "powerOutage": "Panne de courant",
-      "circuitBreaker": "Problèmes de disjoncteur",
-      "flickeringLights": "Lumières vacillantes",
-      "outletNotWorking": "Prise ne fonctionne pas"
+      "powerOutage": "Panne de Courant",
+      "circuitBreaker": "Problèmes de Disjoncteur",
+      "flickeringLights": "Lumières Vacillantes",
+      "outletNotWorking": "Prise Ne Fonctionne Pas"
     }
   },
   "plumbing": {
@@ -14,44 +14,47 @@
     "description": "Solutions expertes en plomberie pour votre maison ou entreprise",
     "issues": {
       "leaks": "Fuites",
-      "clogs": "Canalisations bouchées",
-      "lowPressure": "Faible pression d'eau",
-      "waterHeater": "Problèmes de chauffe-eau"
+      "clogs": "Canalisations Bouchées",
+      "lowPressure": "Faible Pression d'Eau",
+      "waterHeater": "Problèmes de Chauffe-eau"
     }
   },
   "woodwork": {
     "title": "Menuiserie",
     "description": "Services experts de menuiserie pour votre maison",
     "issues": {
-      "repairs": "Réparations de meubles",
-      "restoration": "Restauration de bois",
-      "customWork": "Travail sur mesure",
-      "installation": "Services d'installation"
+      "repairs": "Réparations de Meubles",
+      "restoration": "Restauration de Bois",
+      "customWork": "Travail Sur Mesure",
+      "installation": "Services d'Installation"
     }
   },
   "ironwork": {
     "title": "Ferronnerie",
     "description": "Services professionnels de ferronnerie fonctionnelle et décorative",
     "issues": {
-      "rust": "Rouille et corrosion",
-      "structuralDamage": "Dommages structurels",
-      "weldingRepairs": "Réparations de soudure",
-      "gateFenceIssues": "Problèmes de portails et clôtures"
+      "rust": "Rouille et Corrosion",
+      "structuralDamage": "Dommages Structurels",
+      "weldingRepairs": "Réparations de Soudure",
+      "gateFenceIssues": "Problèmes de Portails et Clôtures"
     }
   },
   "architecture": {
     "title": "Architecture",
     "description": "Conception architecturale professionnelle et services de planification",
     "issues": {
-      "designConsultation": "Consultation de design",
-      "permitAssistance": "Assistance aux permis",
-      "renovationPlanning": "Planification de rénovation",
-      "structuralAssessment": "Évaluation structurelle"
+      "designConsultation": "Consultation de Design",
+      "permitAssistance": "Assistance aux Permis",
+      "renovationPlanning": "Planification de Rénovation",
+      "structuralAssessment": "Évaluation Structurelle"
     }
   },
-  "quickHelp": "Aide rapide",
+  "quickHelp": "Aide Rapide",
   "whatsapp": {
     "contact": "Contacter via WhatsApp",
     "message": "Bonjour, j'ai besoin d'aide avec les problèmes suivants : {{issues}}"
+  },
+  "faq": {
+    "title": "Questions Fréquentes"
   }
 }
