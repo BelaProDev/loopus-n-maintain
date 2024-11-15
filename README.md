@@ -2,6 +2,24 @@
 
 Where building maintenance meets good vibes! Our platform keeps buildings happy and facility managers even happier. 
 
+## Project Structure 🏗️
+
+```
+src/
+├── features/          # Feature-specific components and logic
+│   ├── auth/         # Authentication related
+│   ├── business/     # Business management
+│   ├── documents/    # Document handling
+│   └── services/     # Maintenance services
+├── shared/           # Shared components and utilities
+│   ├── components/   # Reusable UI components
+│   ├── hooks/        # Custom React hooks
+│   └── utils/        # Utility functions
+├── lib/              # Third-party integrations
+├── styles/           # Global styles and themes
+└── tests/            # Test files
+```
+
 ## Features 🌺
 
 ### Core Platform

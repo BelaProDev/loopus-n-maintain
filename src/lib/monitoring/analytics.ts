@@ -1,4 +1,4 @@
-import { getCLS, getFID, getLCP, getFCP, getTTFB } from 'web-vitals';
+import { onCLS, onFID, onLCP, onFCP, onTTFB } from 'web-vitals';
 
 const vitalsCallback = (metric: any) => {
   // Analytics callback
@@ -18,9 +18,9 @@ const vitalsCallback = (metric: any) => {
 };
 
 export const initVitals = () => {
-  getCLS(vitalsCallback);
-  getFID(vitalsCallback);
-  getLCP(vitalsCallback);
-  getFCP(vitalsCallback);
-  getTTFB(vitalsCallback);
+  onCLS(vitalsCallback);
+  onFID(vitalsCallback);
+  onLCP(vitalsCallback);
+  onFCP(vitalsCallback);
+  onTTFB(vitalsCallback);
 };
