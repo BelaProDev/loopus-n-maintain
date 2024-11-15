@@ -1,6 +1,6 @@
 import { getFaunaClient, handleFaunaError } from './client';
 import { ContactMessage } from './types';
-import { Client, fql } from 'fauna';
+import { fql } from 'fauna';
 import { extractFaunaData } from './utils';
 
 export const contactQueries = {
@@ -9,9 +9,8 @@ export const contactQueries = {
     if (!client) throw new Error('Fauna client not initialized');
 
     try {
-      const collectionName = `${service}_messages`;
       const result = await client.query(
-        fql`${collectionName}.all()`
+        fql`${service}_messages.all()`
       );
       return extractFaunaData(result);
     } catch (error) {
@@ -24,7 +23,6 @@ export const contactQueries = {
     if (!client) throw new Error('Fauna client not initialized');
 
     try {
-      const collectionName = `${data.service}_messages`;
       const messageData = {
         name: data.name,
         email: data.email,
@@ -35,7 +33,7 @@ export const contactQueries = {
       };
 
       const result = await client.query(
-        fql`${collectionName}.create(${JSON.stringify(messageData)})`
+        fql`${data.service}_messages.create(${JSON.stringify(messageData)})`
       );
       
       const document = extractFaunaData(result)[0];
@@ -50,9 +48,8 @@ export const contactQueries = {
     if (!client) throw new Error('Fauna client not initialized');
 
     try {
-      const collectionName = `${service}_messages`;
       const result = await client.query(
-        fql`${collectionName}.byId(${JSON.stringify(id)}).update({ status: ${JSON.stringify(status)} })`
+        fql`${service}_messages.byId(${JSON.stringify(id)}).update({ status: ${JSON.stringify(status)} })`
       );
       
       const document = extractFaunaData(result)[0];
