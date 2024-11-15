@@ -38,7 +38,7 @@ const InvoiceTable = ({ invoices, onDelete }: InvoiceTableProps) => {
             <TableCell className="text-right">
               <InvoiceActions
                 invoice={invoice}
-                onDelete={onDelete}
+                onDelete={() => onDelete(invoice.id)}
               />
             </TableCell>
           </TableRow>
