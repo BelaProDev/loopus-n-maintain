@@ -1,5 +1,5 @@
 {
-  "electrics": {
+  "electrical": {
     "title": "Electrical Services",
     "description": "Professional electrical maintenance and repair services for your home or business.",
     "issues": {
@@ -10,7 +10,7 @@
     }
   },
   "plumbing": {
-    "title": "Plumbing",
+    "title": "Plumbing Services",
     "description": "Expert plumbing solutions for your home or business.",
     "issues": {
       "leaks": "Leaks",
@@ -20,7 +20,7 @@
     }
   },
   "woodwork": {
-    "title": "Woodwork",
+    "title": "Woodworking Services",
     "description": "Expert woodworking and carpentry services for your home.",
     "issues": {
       "repairs": "Furniture Repairs",
@@ -30,7 +30,7 @@
     }
   },
   "ironwork": {
-    "title": "Ironwork",
+    "title": "Ironwork Services",
     "description": "Professional ironwork services for both functional and decorative needs.",
     "issues": {
       "rust": "Rust and Corrosion",
@@ -40,7 +40,7 @@
     }
   },
   "architecture": {
-    "title": "Architecture",
+    "title": "Architecture Services",
     "description": "Professional architectural design, planning and other services.",
     "issues": {
       "designConsultation": "Design Consultation",
@@ -56,7 +56,7 @@
   },
   "faq": {
     "title": "Frequently Asked Questions",
-    "electrics": {
+    "electrical": {
       "safetyQ": "What safety measures do you follow?",
       "safetyA": "We follow all electrical safety codes and regulations, using proper equipment and protective gear.",
       "costQ": "How do you determine the cost?",

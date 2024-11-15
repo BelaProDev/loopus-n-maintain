@@ -1,5 +1,5 @@
 {
-  "electrics": {
+  "electrical": {
     "title": "Servicios Eléctricos",
     "description": "Servicios profesionales de mantenimiento y reparación eléctrica",
     "issues": {
@@ -10,7 +10,7 @@
     }
   },
   "plumbing": {
-    "title": "Plomería",
+    "title": "Servicios de Plomería",
     "description": "Soluciones expertas en plomería para su hogar o negocio",
     "issues": {
       "leaks": "Fugas",
@@ -20,7 +20,7 @@
     }
   },
   "woodwork": {
-    "title": "Carpintería",
+    "title": "Servicios de Carpintería",
     "description": "Servicios expertos de carpintería para su hogar",
     "issues": {
       "repairs": "Reparaciones de Muebles",
@@ -30,7 +30,7 @@
     }
   },
   "ironwork": {
-    "title": "Herrería",
+    "title": "Servicios de Herrería",
     "description": "Servicios profesionales de herrería funcional y decorativa",
     "issues": {
       "rust": "Óxido y Corrosión",
@@ -40,7 +40,7 @@
     }
   },
   "architecture": {
-    "title": "Arquitectura",
+    "title": "Servicios de Arquitectura",
     "description": "Diseño arquitectónico profesional y servicios de planificación",
     "issues": {
       "designConsultation": "Consulta de Diseño",
@@ -56,7 +56,7 @@
   },
   "faq": {
     "title": "Preguntas Frecuentes",
-    "electrics": {
+    "electrical": {
       "safetyQ": "¿Qué medidas de seguridad siguen?",
       "safetyA": "Seguimos todos los códigos y regulaciones de seguridad eléctrica, utilizando equipos y protección adecuados.",
       "costQ": "¿Cómo determinan el costo?",
