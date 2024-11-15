@@ -3,6 +3,15 @@ import { fql } from 'fauna';
 import type { Invoice, InvoiceItem } from '@/types/invoice';
 import { extractFaunaData } from '../utils';
 
+const parseDate = (date: any): string => {
+  if (!date) return new Date().toISOString();
+  try {
+    return new Date(date).toISOString();
+  } catch (e) {
+    return new Date().toISOString();
+  }
+};
+
 export const invoiceQueries = {
   getInvoices: async (): Promise<Invoice[]> => {
     const client = getFaunaClient();
@@ -14,8 +23,8 @@ export const invoiceQueries = {
       return documents.map(doc => ({
         id: doc.ref.id,
         ...doc.data,
-        date: doc.data.date ? new Date(doc.data.date).toISOString() : new Date().toISOString(),
-        dueDate: doc.data.dueDate ? new Date(doc.data.dueDate).toISOString() : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        date: parseDate(doc.data.date),
+        dueDate: parseDate(doc.data.dueDate),
         items: (doc.data.items || []).map((item: InvoiceItem) => ({
           ...item,
           [Symbol.iterator]: undefined
@@ -31,22 +40,21 @@ export const invoiceQueries = {
     const client = getFaunaClient();
     if (!client) return null;
     try {
-      // Ensure valid dates
       const currentDate = new Date().toISOString();
       const thirtyDaysFromNow = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
       
       const query = fql`
         invoices.create({
-          number: ${data.number},
-          date: Time(${data.date || currentDate}),
-          dueDate: Time(${data.dueDate || thirtyDaysFromNow}),
+          number: ${data.number || `INV-${Date.now()}`},
+          date: Time(${parseDate(data.date || currentDate)}),
+          dueDate: Time(${parseDate(data.dueDate || thirtyDaysFromNow)}),
           clientId: ${data.clientId},
           providerId: ${data.providerId},
           items: ${data.items.map(item => ({ ...item, [Symbol.iterator]: undefined }))},
           status: ${data.status || 'draft'},
-          totalAmount: ${data.totalAmount},
-          tax: ${data.tax},
-          notes: ${data.notes}
+          totalAmount: ${data.totalAmount || 0},
+          tax: ${data.tax || 0},
+          notes: ${data.notes || ''}
         })
       `;
       const result = await client.query(query);
@@ -54,8 +62,8 @@ export const invoiceQueries = {
       return document ? {
         id: document.ref.id,
         ...document.data,
-        date: new Date(document.data.date).toISOString(),
-        dueDate: new Date(document.data.dueDate).toISOString(),
+        date: parseDate(document.data.date),
+        dueDate: parseDate(document.data.dueDate),
         items: (document.data.items || []).map((item: InvoiceItem) => ({
           ...item,
           [Symbol.iterator]: undefined
