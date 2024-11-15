@@ -1,4 +1,5 @@
 import { SHA256 } from 'crypto-js';
+import { authQueries } from '../fauna/authQueries';
 
 export const hashPassword = (password: string): string => {
   // Ensure consistent encoding by using lowercase hex output
@@ -6,16 +7,10 @@ export const hashPassword = (password: string): string => {
 };
 
 export const validateCredentials = async (email: string, password: string) => {
-  const users = await settingsQueries.getUsers();
-  const user = users.find(u => u.email === email);
+  const user = await authQueries.validateUser(email, password);
   
   if (!user) {
-    throw new Error('User not found');
-  }
-
-  const hashedPassword = hashPassword(password);
-  if (user.password !== hashedPassword) {
-    throw new Error('Invalid password');
+    throw new Error('Invalid credentials');
   }
 
   return user;
