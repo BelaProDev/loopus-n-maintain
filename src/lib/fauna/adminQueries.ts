@@ -11,17 +11,24 @@ export interface AdminUser {
 
 export const adminQueries = {
   validateAdmin: async (email: string, password: string): Promise<AdminUser | null> => {
-    const client = getFaunaClient();
-    if (!client) throw new Error('Fauna client not initialized');
-
     try {
-      const hashedPassword = hashPassword(password);
-      const query = fql`
-        admin_koalax.firstWhere(.email == ${email} && .password == ${hashedPassword})
-      `;
-      const result = await client.query(query);
-      const data = extractFaunaData(result);
-      return data[0]?.data as AdminUser | null;
+      const response = await fetch('/.netlify/functions/auth-admin', {
+        method: 'POST',
+        body: JSON.stringify({
+          email,
+          password
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        return null;
+      }
+
+      const data = await response.json();
+      return data.success ? data.user : null;
     } catch (error) {
       console.error('Admin auth query error:', error);
       return null;
