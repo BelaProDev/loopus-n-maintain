@@ -1,6 +1,6 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Invoice } from "@/types/business";
-import { format, isValid, parseISO } from "date-fns";
+import { formatSafeDate } from "@/utils/dateUtils";
 import InvoiceStatus from "./InvoiceStatus";
 import InvoiceActions from "./InvoiceActions";
 import { useTranslation } from "react-i18next";
@@ -12,16 +12,6 @@ interface InvoiceTableProps {
 
 const InvoiceTable = ({ invoices, onDelete }: InvoiceTableProps) => {
   const { t } = useTranslation(["admin", "common"]);
-
-  const formatDate = (dateString: string) => {
-    try {
-      const date = parseISO(dateString);
-      return isValid(date) ? format(date, 'PPP') : 'Invalid date';
-    } catch (error) {
-      console.error('Date formatting error:', error);
-      return 'Invalid date';
-    }
-  };
 
   return (
     <Table>
@@ -39,8 +29,8 @@ const InvoiceTable = ({ invoices, onDelete }: InvoiceTableProps) => {
         {invoices?.map((invoice) => (
           <TableRow key={invoice.id}>
             <TableCell>{invoice.number}</TableCell>
-            <TableCell>{formatDate(invoice.date)}</TableCell>
-            <TableCell>{formatDate(invoice.dueDate)}</TableCell>
+            <TableCell>{formatSafeDate(invoice.date)}</TableCell>
+            <TableCell>{formatSafeDate(invoice.dueDate)}</TableCell>
             <TableCell>€{invoice.totalAmount.toFixed(2)}</TableCell>
             <TableCell>
               <InvoiceStatus status={invoice.status} />
@@ -48,7 +38,7 @@ const InvoiceTable = ({ invoices, onDelete }: InvoiceTableProps) => {
             <TableCell className="text-right">
               <InvoiceActions
                 invoice={invoice}
-                onDelete={() => onDelete(invoice.id)}
+                onDelete={onDelete}
               />
             </TableCell>
           </TableRow>
