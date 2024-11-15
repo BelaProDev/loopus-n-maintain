@@ -66,6 +66,30 @@
       "winterA": "Insulate pipes, seal leaks, and maintain proper heating to prevent freezing during cold weather.",
       "waterBillQ": "Why is my water bill suddenly higher?",
       "waterBillA": "Sudden increases often indicate leaks, running toilets, or inefficient fixtures. We can help identify and fix the cause."
+    },
+    "woodwork": {
+      "materialsQ": "What types of wood do you work with?",
+      "materialsA": "We work with a wide range of woods including hardwoods, softwoods, and engineered wood products.",
+      "finishingQ": "What finishing options are available?",
+      "finishingA": "We offer various finishes including stains, varnishes, oils, and paints to protect and beautify your woodwork.",
+      "customQ": "Can you match existing woodwork?",
+      "customA": "Yes, we can match existing woodwork styles, colors, and finishes for seamless integration."
+    },
+    "ironwork": {
+      "customQ": "Do you create custom designs?",
+      "customA": "Yes, we create custom ironwork designs tailored to your specific needs and preferences.",
+      "maintenanceQ": "How do I maintain ironwork?",
+      "maintenanceA": "Regular cleaning and rust prevention treatments help maintain ironwork in good condition.",
+      "repairQ": "Can damaged ironwork be repaired?",
+      "repairA": "Most ironwork can be repaired through welding, reinforcement, or part replacement."
+    },
+    "architecture": {
+      "processQ": "What is your design process?",
+      "processA": "Our process includes initial consultation, concept development, detailed design, and implementation planning.",
+      "timelineQ": "How long does the design process take?",
+      "timelineA": "Timeline varies by project scope, typically ranging from several weeks to months.",
+      "sustainableQ": "Do you offer sustainable design options?",
+      "sustainableA": "Yes, we incorporate sustainable and energy-efficient design principles in our projects."
     }
   },
   "quickHelp": "Quick Help",

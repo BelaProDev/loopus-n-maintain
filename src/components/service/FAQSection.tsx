@@ -21,9 +21,9 @@ const FAQSection = ({ faqs }: FAQSectionProps) => {
         {faqs.map((faq, index) => (
           <div key={index} className="glass-effect p-6 rounded-lg">
             <h3 className="font-semibold text-lg text-[#2E5984] mb-2">
-              {t(`services:faq.${faq.question}`)}
+              {t(faq.question)}
             </h3>
-            <p className="text-gray-700">{t(`services:faq.${faq.answer}`)}</p>
+            <p className="text-gray-700">{t(faq.answer)}</p>
           </div>
         ))}
       </div>
