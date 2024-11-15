@@ -59,30 +59,17 @@ const normalizeDocument = <T>(doc: any): FaunaDocument<T> => {
 
   const normalized: FaunaDocument<T> = {
     ref: { id: doc.id || doc.ref?.id || '' },
-    data: { ...doc } as T
+    data: normalizeDocData(doc) as T
   };
 
   if (doc.ts?.isoString) {
     normalized.ts = { isoString: doc.ts.isoString };
   }
 
-  // Remove Fauna metadata from data
-  const data = normalized.data as any;
-  delete data.id;
-  delete data.ref;
-  delete data.ts;
-  delete data.coll;
-
   return normalized;
 };
 
-interface FaunaValue {
-  '@time'?: string;
-  '@int'?: string;
-  [key: string]: any;
-}
-
-const normalizeDocData = (doc: Record<string, FaunaValue | string | number | boolean>): any => {
+const normalizeDocData = (doc: Record<string, any>): any => {
   const normalized: Record<string, any> = {};
   
   for (const [key, value] of Object.entries(doc)) {
@@ -92,9 +79,11 @@ const normalizeDocData = (doc: Record<string, FaunaValue | string | number | boo
       if ('@time' in value) {
         normalized[key] = value['@time'];
       } else if ('@int' in value) {
-        normalized[key] = parseInt(String(value['@int']), 10);
-      } else {
+        normalized[key] = parseInt(value['@int'], 10);
+      } else if (Array.isArray(value)) {
         normalized[key] = value;
+      } else {
+        normalized[key] = normalizeDocData(value);
       }
     } else {
       normalized[key] = value;
@@ -105,5 +94,6 @@ const normalizeDocData = (doc: Record<string, FaunaValue | string | number | boo
 };
 
 export const handleFaunaError = (error: any, fallbackData: any) => {
+  console.error('Fauna error:', error);
   return fallbackData;
 };
