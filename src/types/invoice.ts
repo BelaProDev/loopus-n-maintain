@@ -7,7 +7,7 @@ export interface InvoiceItem extends QueryValueObject {
   unitPrice: number;
   total: number;
   vatRate: number;
-  [key: string]: any; // Add index signature for Fauna compatibility
+  [key: string]: any;
 }
 
 export interface Invoice extends QueryValueObject {
@@ -17,12 +17,20 @@ export interface Invoice extends QueryValueObject {
   dueDate: string;
   clientId: string;
   providerId: string;
+  client?: {
+    id: string;
+    name: string;
+  };
+  provider?: {
+    id: string;
+    name: string;
+  };
   items: InvoiceItem[];
   status: 'draft' | 'sent' | 'paid' | 'overdue';
   totalAmount: number;
   tax: number;
   notes: string;
-  [key: string]: any; // Add index signature for Fauna compatibility
+  [key: string]: any;
 }
 
 export interface CreateInvoiceDTO {

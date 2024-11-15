@@ -8,11 +8,88 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
   getClients: async (): Promise<Client[]> => {
     if (!client) return [];
     try {
-      const query = fql`clients.all()`;
+      const query = fql`
+        let clients = clients.all()
+        clients.map(client => {
+          {
+            ...client,
+            id: client.id,
+            totalInvoices: invoices.all().filter(i => i.clientId == client.id).count(),
+            totalAmount: invoices.all()
+              .filter(i => i.clientId == client.id)
+              .map(i => i.totalAmount)
+              .sum() || 0
+          }
+        })
+      `;
       const result = await client.query(query);
       const documents = extractFaunaData<Client>(result);
       return documents.map(doc => ({ id: doc.ref.id, ...doc.data }));
     } catch (error) {
+      console.error('Error fetching clients:', error);
+      return [];
+    }
+  },
+
+  getProviders: async (): Promise<Provider[]> => {
+    if (!client) return [];
+    try {
+      const query = fql`
+        let providers = providers.all()
+        providers.map(provider => {
+          {
+            ...provider,
+            id: provider.id,
+            invoiceCount: invoices.all().filter(i => i.providerId == provider.id).count()
+          }
+        })
+      `;
+      const result = await client.query(query);
+      const documents = extractFaunaData<Provider>(result);
+      return documents.map(doc => ({ id: doc.ref.id, ...doc.data }));
+    } catch (error) {
+      console.error('Error fetching providers:', error);
+      return [];
+    }
+  },
+
+  getInvoices: async (): Promise<Invoice[]> => {
+    if (!client) return [];
+    try {
+      const query = fql`
+        let invoices = invoices.all()
+        let clients = clients.all().index('by_id')
+        let providers = providers.all().index('by_id')
+        
+        invoices.map(invoice => {
+          let client = clients.get(invoice.clientId)
+          let provider = providers.get(invoice.providerId)
+          
+          {
+            ...invoice,
+            id: invoice.id,
+            client: client ? { id: client.id, name: client.name } : null,
+            provider: provider ? { id: provider.id, name: provider.name } : null
+          }
+        })
+      `;
+      const result = await client.query(query);
+      const documents = extractFaunaData<Invoice>(result);
+      
+      return documents.map(doc => ({
+        id: doc.ref.id,
+        ...doc.data,
+        date: new Date(doc.data.date).toISOString(),
+        dueDate: new Date(doc.data.dueDate).toISOString(),
+        items: (doc.data.items || []).map((item: InvoiceItem) => ({
+          ...item,
+          [Symbol.iterator]: undefined
+        })),
+        totalAmount: Number(doc.data.totalAmount?.['@int'] || 0),
+        tax: Number(doc.data.tax?.['@int'] || 0)
+      }));
+    } catch (error) {
+      console.error('Error fetching invoices:', error);
       return [];
     }
   },
@@ -40,18 +117,6 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
     }
   },
 
-  getProviders: async (): Promise<Provider[]> => {
-    if (!client) return [];
-    try {
-      const query = fql`providers.all()`;
-      const result = await client.query(query);
-      const documents = extractFaunaData<Provider>(result);
-      return documents.map(doc => ({ id: doc.ref.id, ...doc.data }));
-    } catch (error) {
-      return [];
-    }
-  },
-
   createProvider: async (data: Omit<Provider, 'id'>) => {
     if (!client) return null;
     try {
@@ -71,31 +136,6 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
       return document ? { id: document.ref.id, ...document.data } : null;
     } catch (error) {
       return null;
-    }
-  },
-
-  getInvoices: async (): Promise<Invoice[]> => {
-    if (!client) return [];
-    try {
-      const query = fql`invoices.all()`;
-      const result = await client.query(query);
-      const documents = extractFaunaData<Invoice>(result);
-      
-      return documents.map(doc => ({
-        id: doc.ref.id,
-        ...doc.data,
-        date: new Date(doc.data.date).toISOString(),
-        dueDate: new Date(doc.data.dueDate).toISOString(),
-        items: (doc.data.items || []).map((item: InvoiceItem) => ({
-          ...item,
-          [Symbol.iterator]: undefined
-        })),
-        totalAmount: Number(doc.data.totalAmount?.['@int'] || 0),
-        tax: Number(doc.data.tax?.['@int'] || 0)
-      }));
-    } catch (error) {
-      console.error('Error fetching invoices:', error);
-      return [];
     }
   },
 
