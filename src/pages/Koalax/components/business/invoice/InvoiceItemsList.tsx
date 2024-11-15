@@ -24,51 +24,71 @@ const InvoiceItemsList = ({ items, onAddItem, onRemoveItem, onUpdateItem }: Invo
         </Button>
       </div>
       
-      {items.map((item) => (
-        <div key={item.id} className="grid grid-cols-12 gap-2 items-center">
-          <div className="col-span-5">
-            <Input
-              placeholder={t("admin:invoices.description")}
-              value={item.description}
-              onChange={(e) => onUpdateItem(item.id, 'description', e.target.value)}
-            />
-          </div>
-          <div className="col-span-2">
-            <Input
-              type="number"
-              placeholder={t("admin:invoices.quantity")}
-              value={item.quantity}
-              onChange={(e) => onUpdateItem(item.id, 'quantity', Number(e.target.value))}
-            />
-          </div>
-          <div className="col-span-2">
-            <Input
-              type="number"
-              placeholder={t("admin:invoices.price")}
-              value={item.unitPrice}
-              onChange={(e) => onUpdateItem(item.id, 'unitPrice', Number(e.target.value))}
-            />
-          </div>
-          <div className="col-span-2">
-            <Input
-              type="number"
-              value={item.total}
-              readOnly
-              className="bg-gray-50"
-            />
-          </div>
-          <div className="col-span-1">
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => onRemoveItem(item.id)}
-            >
-              <Trash2 className="w-4 h-4" />
-            </Button>
-          </div>
+      <div className="border rounded-lg overflow-hidden">
+        <div className="grid grid-cols-12 gap-2 bg-gray-100 p-2 text-sm font-medium">
+          <div className="col-span-5">Description</div>
+          <div className="col-span-2">Quantity</div>
+          <div className="col-span-2">Unit Price</div>
+          <div className="col-span-1">VAT %</div>
+          <div className="col-span-1">Total</div>
+          <div className="col-span-1"></div>
         </div>
-      ))}
+        
+        <div className="divide-y">
+          {items.map((item) => (
+            <div key={item.id} className="grid grid-cols-12 gap-2 p-2 items-center hover:bg-gray-50">
+              <div className="col-span-5">
+                <Input
+                  placeholder={t("admin:invoices.description")}
+                  value={item.description}
+                  onChange={(e) => onUpdateItem(item.id, 'description', e.target.value)}
+                />
+              </div>
+              <div className="col-span-2">
+                <Input
+                  type="number"
+                  min="1"
+                  placeholder={t("admin:invoices.quantity")}
+                  value={item.quantity}
+                  onChange={(e) => onUpdateItem(item.id, 'quantity', Number(e.target.value))}
+                />
+              </div>
+              <div className="col-span-2">
+                <Input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  placeholder={t("admin:invoices.price")}
+                  value={item.unitPrice}
+                  onChange={(e) => onUpdateItem(item.id, 'unitPrice', Number(e.target.value))}
+                />
+              </div>
+              <div className="col-span-1">
+                <Input
+                  type="number"
+                  min="0"
+                  max="100"
+                  value={item.vatRate}
+                  onChange={(e) => onUpdateItem(item.id, 'vatRate', Number(e.target.value))}
+                />
+              </div>
+              <div className="col-span-1 text-right font-medium">
+                {item.total.toFixed(2)} €
+              </div>
+              <div className="col-span-1">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onRemoveItem(item.id)}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
