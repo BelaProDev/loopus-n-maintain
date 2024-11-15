@@ -11,7 +11,7 @@ export const contactQueries = {
     try {
       const collectionName = `${service}_messages`;
       const query = fql`
-        Collection.byName("${collectionName}")!
+        Collection.byName(${collectionName})!
         .all()
         .documents()
       `;
@@ -38,7 +38,7 @@ export const contactQueries = {
 
       const collectionName = `${data.service}_messages`;
       const query = fql`
-        Collection.byName("${collectionName}")!
+        Collection.byName(${collectionName})!
         .create({
           data: ${JSON.stringify(messageData)}
         })
@@ -59,11 +59,11 @@ export const contactQueries = {
     try {
       const collectionName = `${service}_messages`;
       const query = fql`
-        Collection.byName("${collectionName}")!
-        .document("${id}")!
+        Collection.byName(${collectionName})!
+        .document(${id})!
         .update({
           data: {
-            status: "${status}"
+            status: ${status}
           }
         })
       `;
