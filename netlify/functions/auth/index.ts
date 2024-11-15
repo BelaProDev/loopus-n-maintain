@@ -34,6 +34,7 @@ const handler: Handler = async (event) => {
 
     const client = getFaunaClient();
     const hashedPassword = hashPassword(password);
+    console.log('Server hashed password:', hashedPassword); // Debug log
 
     if (action === 'validateAdmin') {
       try {
@@ -42,6 +43,7 @@ const handler: Handler = async (event) => {
         `;
         
         const result = await client.query(query);
+        console.log('Fauna query result:', result); // Debug log
         
         if (!result.data) {
           return {

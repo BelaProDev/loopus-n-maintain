@@ -3,6 +3,7 @@ import { authQueries } from '../fauna/authQueries';
 
 export const validateCredentials = async (email: string, password: string) => {
   const hashedPassword = hashPassword(password);
+  console.log('Client hashed password:', hashedPassword); // Debug log
   const user = await authQueries.validateUser(email, hashedPassword);
   
   if (!user) {
