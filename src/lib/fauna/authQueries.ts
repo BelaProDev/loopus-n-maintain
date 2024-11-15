@@ -1,6 +1,7 @@
 import { getFaunaClient } from './client';
 import { fql } from 'fauna';
 import { extractFaunaData } from './utils';
+import { hashPassword } from '../auth/authUtils';
 
 export interface EmailUser {
   email: string;
@@ -15,8 +16,9 @@ export const authQueries = {
     if (!client) throw new Error('Fauna client not initialized');
 
     try {
+      const hashedPassword = hashPassword(password);
       const query = fql`
-        emails.firstWhere(.email == ${email} && .password == ${password})
+        emails.firstWhere(.email == ${email} && .password == ${hashedPassword})
       `;
       const result = await client.query(query);
       const data = extractFaunaData(result);
