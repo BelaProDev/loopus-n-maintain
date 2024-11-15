@@ -11,9 +11,8 @@ export const contactQueries = {
     try {
       const collectionName = `${service}_messages`;
       const query = fql`
-        Collection.byName(${JSON.stringify(collectionName)})!
-        .all()
-        .documents()
+        let collection = Collection.byName(${JSON.stringify(collectionName)})!
+        collection.all().documents()
       `;
       const result = await client.query(query);
       return extractFaunaData(result);
@@ -38,10 +37,11 @@ export const contactQueries = {
 
       const collectionName = `${data.service}_messages`;
       const query = fql`
-        Collection.byName(${JSON.stringify(collectionName)})!
-        .create({
-          data: ${JSON.stringify(messageData)}
+        let collection = Collection.byName(${JSON.stringify(collectionName)})!
+        let doc = collection.create({ 
+          data: ${JSON.stringify(messageData)} 
         })
+        doc
       `;
       
       const result = await client.query(query);
@@ -59,9 +59,9 @@ export const contactQueries = {
     try {
       const collectionName = `${service}_messages`;
       const query = fql`
-        Collection.byName(${JSON.stringify(collectionName)})!
-        .document(${JSON.stringify(id)})!
-        .update({
+        let collection = Collection.byName(${JSON.stringify(collectionName)})!
+        let doc = collection.document(${JSON.stringify(id)})!
+        doc.update({
           data: {
             status: ${JSON.stringify(status)}
           }
