@@ -58,18 +58,23 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
     try {
       const query = fql`
         let invoices = invoices.all()
-        let clients = clients.all().index('by_id')
-        let providers = providers.all().index('by_id')
+        let clients = clients.all()
+        let providers = providers.all()
         
         invoices.map(invoice => {
-          let client = clients.get(invoice.clientId)
-          let provider = providers.get(invoice.providerId)
+          let client = clients.filter(c => c.id == invoice.clientId).first()
+          let provider = providers.filter(p => p.id == invoice.providerId).first()
           
           {
             ...invoice,
             id: invoice.id,
             client: client ? { id: client.id, name: client.name } : null,
-            provider: provider ? { id: provider.id, name: provider.name } : null
+            provider: provider ? { id: provider.id, name: provider.name } : null,
+            date: invoice.date,
+            dueDate: invoice.dueDate,
+            items: invoice.items || [],
+            totalAmount: invoice.totalAmount || 0,
+            tax: invoice.tax || 0
           }
         })
       `;
