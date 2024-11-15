@@ -8,9 +8,10 @@ interface FaunaDocument<T> {
 interface FaunaResponse {
   data: {
     data?: any[];
-    '@set'?: {
-      data: any[];
-    };
+    coll?: { name: string };
+    id?: string;
+    ts?: any;
+    [key: string]: any;
   };
 }
 
@@ -25,6 +26,14 @@ export const extractFaunaData = <T>(result: QueryValue): FaunaDocument<T>[] => {
       ref: { id: item.id },
       data: normalizeDocument(item)
     }));
+  }
+
+  // Handle single document response (e.g., from create/update operations)
+  if (resultObj.data?.id) {
+    return [{
+      ref: { id: resultObj.data.id },
+      data: normalizeDocument(resultObj.data)
+    }];
   }
 
   // Handle Set response (keeping for backwards compatibility)
