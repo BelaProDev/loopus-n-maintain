@@ -36,11 +36,7 @@ const EmailManagement = () => {
     await deleteEmail(id);
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const form = event.currentTarget;
-    const formData = new FormData(form);
-    
+  const handleSubmit = async (formData: FormData) => {
     const emailData = {
       email: formData.get('email') as string,
       name: formData.get('name') as string,
