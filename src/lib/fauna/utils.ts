@@ -76,8 +76,14 @@ const normalizeDocument = <T>(doc: any): FaunaDocument<T> => {
   return normalized;
 };
 
-const normalizeDocData = (doc: any): any => {
-  const normalized: any = {};
+interface FaunaValue {
+  '@time'?: string;
+  '@int'?: string;
+  [key: string]: any;
+}
+
+const normalizeDocData = (doc: Record<string, FaunaValue | string | number | boolean>): any => {
+  const normalized: Record<string, any> = {};
   
   for (const [key, value] of Object.entries(doc)) {
     if (key === 'id' || key === 'ts' || key === 'coll') continue;
@@ -86,7 +92,7 @@ const normalizeDocData = (doc: any): any => {
       if ('@time' in value) {
         normalized[key] = value['@time'];
       } else if ('@int' in value) {
-        normalized[key] = parseInt(value['@int'], 10);
+        normalized[key] = parseInt(String(value['@int']), 10);
       } else {
         normalized[key] = value;
       }
