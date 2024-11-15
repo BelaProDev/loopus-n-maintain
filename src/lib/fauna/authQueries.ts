@@ -10,7 +10,7 @@ export interface EmailUser {
 }
 
 export const authQueries = {
-  validateUser: async (email: string, password: string) => {
+  validateUser: async (email: string, password: string): Promise<EmailUser | null> => {
     const client = getFaunaClient();
     if (!client) throw new Error('Fauna client not initialized');
 
@@ -19,7 +19,8 @@ export const authQueries = {
         emails.firstWhere(.email == ${email} && .password == ${password})
       `;
       const result = await client.query(query);
-      return extractFaunaData(result);
+      const data = extractFaunaData(result);
+      return data[0]?.data as EmailUser | null;
     } catch (error) {
       console.error('Auth query error:', error);
       return null;

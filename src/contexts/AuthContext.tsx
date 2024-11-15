@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
-import { authQueries } from "@/lib/fauna/authQueries";
+import { authQueries, EmailUser } from "@/lib/fauna/authQueries";
 
 interface AuthContextType {
   isAuthenticated: boolean;
