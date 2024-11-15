@@ -11,7 +11,7 @@
   },
   "plumbing": {
     "title": "Plomería",
-    "description": "Soluciones expertas en plomería para su hogar o negocio",
+    "description": "Soluciones expertas en plomería",
     "issues": {
       "leaks": "Fugas",
       "clogs": "Desagües Obstruidos",
@@ -21,7 +21,7 @@
   },
   "woodwork": {
     "title": "Carpintería",
-    "description": "Servicios expertos de carpintería para su hogar",
+    "description": "Servicios expertos de carpintería",
     "issues": {
       "repairs": "Reparaciones de Muebles",
       "restoration": "Restauración de Madera",
@@ -31,7 +31,7 @@
   },
   "ironwork": {
     "title": "Herrería",
-    "description": "Servicios profesionales de herrería funcional y decorativa",
+    "description": "Servicios profesionales de herrería",
     "issues": {
       "rust": "Óxido y Corrosión",
       "structuralDamage": "Daño Estructural",
@@ -41,18 +41,13 @@
   },
   "architecture": {
     "title": "Arquitectura",
-    "description": "Diseño arquitectónico profesional y servicios de planificación",
+    "description": "Diseño arquitectónico profesional",
     "issues": {
       "designConsultation": "Consulta de Diseño",
       "permitAssistance": "Asistencia con Permisos",
       "renovationPlanning": "Planificación de Renovaciones",
       "structuralAssessment": "Evaluación Estructural"
     }
-  },
-  "quickHelp": "Ayuda Rápida",
-  "whatsapp": {
-    "contact": "Contactar por WhatsApp",
-    "message": "Hola, necesito ayuda con los siguientes problemas: {{issues}}"
   },
   "faq": {
     "title": "Preguntas Frecuentes",
@@ -63,6 +58,43 @@
       "costA": "Los costos se basan en el tipo de trabajo, materiales necesarios y tiempo requerido. Proporcionamos presupuestos detallados antes de comenzar.",
       "emergencyQ": "¿Ofrecen servicios de emergencia?",
       "emergencyA": "Sí, ofrecemos servicios eléctricos de emergencia las 24/7 para problemas urgentes."
+    },
+    "plumbing": {
+      "preventionQ": "¿Cómo puedo prevenir problemas de plomería?",
+      "preventionA": "El mantenimiento regular, evitar químicos fuertes y tener cuidado con lo que va por los desagües puede prevenir la mayoría de los problemas comunes.",
+      "winterQ": "¿Cómo preparo la plomería para el invierno?",
+      "winterA": "Aísle las tuberías, selle fugas y mantenga una calefacción adecuada para prevenir congelamiento durante el clima frío.",
+      "waterBillQ": "¿Por qué mi factura de agua es repentinamente más alta?",
+      "waterBillA": "Los aumentos repentinos suelen indicar fugas, inodoros con fugas o accesorios ineficientes. Podemos ayudar a identificar y solucionar la causa."
+    },
+    "woodwork": {
+      "materialsQ": "¿Con qué tipos de madera trabajan?",
+      "materialsA": "Trabajamos con una amplia gama de maderas, incluyendo maderas duras, blandas y productos de madera procesada.",
+      "finishingQ": "¿Qué opciones de acabado están disponibles?",
+      "finishingA": "Ofrecemos varios acabados incluyendo tintes, barnices, aceites y pinturas para proteger y embellecer su carpintería.",
+      "customQ": "¿Pueden igualar carpintería existente?",
+      "customA": "Sí, podemos igualar estilos, colores y acabados de carpintería existente para una integración perfecta."
+    },
+    "ironwork": {
+      "customQ": "¿Crean diseños personalizados?",
+      "customA": "Sí, creamos diseños de herrería personalizados adaptados a sus necesidades y preferencias específicas.",
+      "maintenanceQ": "¿Cómo mantengo la herrería?",
+      "maintenanceA": "La limpieza regular y los tratamientos de prevención de óxido ayudan a mantener la herrería en buen estado.",
+      "repairQ": "¿Se puede reparar la herrería dañada?",
+      "repairA": "La mayoría de la herrería puede repararse mediante soldadura, refuerzo o reemplazo de piezas."
+    },
+    "architecture": {
+      "processQ": "¿Cuál es su proceso de diseño?",
+      "processA": "Nuestro proceso incluye consulta inicial, desarrollo de concepto, diseño detallado y planificación de implementación.",
+      "timelineQ": "¿Cuánto tiempo toma el proceso de diseño?",
+      "timelineA": "El tiempo varía según el alcance del proyecto, típicamente desde varias semanas hasta meses.",
+      "sustainableQ": "¿Ofrecen opciones de diseño sostenible?",
+      "sustainableA": "Sí, incorporamos principios de diseño sostenible y energéticamente eficiente en nuestros proyectos."
     }
+  },
+  "quickHelp": "Ayuda Rápida",
+  "whatsapp": {
+    "contact": "Contactar por WhatsApp",
+    "message": "Hola, necesito ayuda con los siguientes problemas: {{issues}}"
   }
 }
