@@ -55,7 +55,7 @@ export const useInvoiceOperations = () => {
     }
   });
 
-  const handleCreateInvoice = (formData: FormData) => {
+  const handleCreateInvoice = async (formData: FormData) => {
     const invoiceData = {
       clientId: formData.get("clientId") as string,
       providerId: formData.get("providerId") as string,
@@ -69,7 +69,7 @@ export const useInvoiceOperations = () => {
       tax: 0
     };
 
-    createMutation.mutate(invoiceData);
+    await createMutation.mutateAsync(invoiceData);
     return createMutation.isPending;
   };
 
