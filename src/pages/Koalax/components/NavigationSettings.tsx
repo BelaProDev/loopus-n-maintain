@@ -14,7 +14,7 @@ const NavigationSettings = () => {
   const queryClient = useQueryClient();
   const { t } = useTranslation(["settings", "ui"]);
 
-  const { data: links, isLoading } = useQuery({
+  const { data: links = [], isLoading } = useQuery({
     queryKey: ['navigation-links'],
     queryFn: settingsQueries.getNavigationLinks
   });
@@ -60,6 +60,7 @@ const NavigationSettings = () => {
               id="label"
               name="label"
               placeholder={t("settings:navigation.label")}
+              required
             />
           </div>
           <div className="space-y-2">
@@ -68,6 +69,7 @@ const NavigationSettings = () => {
               id="url"
               name="url"
               placeholder={t("settings:navigation.url")}
+              required
             />
           </div>
           <div className="space-y-2">
@@ -91,7 +93,7 @@ const NavigationSettings = () => {
       <div className="mt-6">
         <h3 className="text-lg font-semibold mb-4">{t("settings:navigation.title")}</h3>
         <div className="space-y-2">
-          {links?.map((link, index) => (
+          {Array.isArray(links) && links.map((link, index) => (
             <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
               <div>
                 <span className="font-medium">{link.label}</span>
