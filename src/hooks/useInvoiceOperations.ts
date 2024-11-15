@@ -10,7 +10,15 @@ export const useInvoiceOperations = () => {
   const queryClient = useQueryClient();
 
   const createMutation = useMutation({
-    mutationFn: invoiceService.createInvoice,
+    mutationFn: (dto: CreateInvoiceDTO) => {
+      // Ensure dates are properly formatted
+      const formattedDto = {
+        ...dto,
+        date: new Date().toISOString(),
+        dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+      };
+      return invoiceService.createInvoice(formattedDto);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['invoices'] });
       toast({ 
