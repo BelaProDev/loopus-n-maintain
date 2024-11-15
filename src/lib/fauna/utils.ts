@@ -10,7 +10,15 @@ export const extractFaunaData = <T>(result: QueryValue): FaunaDocument<T>[] => {
   
   const resultObj = result as QueryValueObject;
 
-  // Handle Set response
+  // Handle the new response format where data is nested in data.data
+  if (resultObj.data?.data && Array.isArray(resultObj.data.data)) {
+    return resultObj.data.data.map((item: any) => ({
+      ref: { id: item.id },
+      data: normalizeDocument(item)
+    }));
+  }
+
+  // Handle Set response (keeping for backwards compatibility)
   if (resultObj.data?.['@set']?.data) {
     return resultObj.data['@set'].data.map((item: any) => ({
       ref: { id: item['@doc'].id },
@@ -47,6 +55,9 @@ const normalizeDocument = (doc: any): any => {
   
   // Convert Fauna time types to ISO strings
   Object.keys(normalized).forEach(key => {
+    if (normalized[key]?.isoString) {
+      normalized[key] = normalized[key].isoString;
+    }
     if (normalized[key]?.['@time']) {
       normalized[key] = new Date(normalized[key]['@time']).toISOString();
     }
