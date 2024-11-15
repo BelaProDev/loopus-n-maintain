@@ -16,6 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 import { settingsQueries } from "@/lib/fauna/settingsQueries";
 import { useTranslation } from "react-i18next";
 import FAQSection from "@/components/service/FAQSection";
+import { ContactMessage } from "@/lib/fauna/types";
 
 interface ServiceLayoutProps {
   title: string;
@@ -56,6 +57,9 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank");
   };
+
+  // Convert title to proper service type
+  const serviceType = title.toLowerCase() as ContactMessage['service'];
 
   return (
     <div className={styles.container}>
@@ -109,9 +113,7 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
           </Card>
 
           <ServiceForm 
-            service={title.toLowerCase()}
-            commonIssues={commonIssues}
-            isAuthenticated={isAuthenticated}
+            service={serviceType}
           />
         </div>
 
