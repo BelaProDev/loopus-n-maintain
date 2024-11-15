@@ -39,7 +39,7 @@ const WhatsAppSettings = () => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const newNumbers = {
-      electrics: formData.get("electrics") as string,
+      electrical: formData.get("electrical") as string,
       plumbing: formData.get("plumbing") as string,
       ironwork: formData.get("ironwork") as string,
       woodwork: formData.get("woodwork") as string,
@@ -54,7 +54,7 @@ const WhatsAppSettings = () => {
     <Card className="p-6">
       <form onSubmit={handleWhatsAppUpdate} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {["electrics", "plumbing", "ironwork", "woodwork", "architecture"].map((service) => (
+          {["electrical", "plumbing", "ironwork", "woodwork", "architecture"].map((service) => (
             <div key={service} className="space-y-2">
               <Label htmlFor={service}>
                 {t(`services:${service}.title`)} WhatsApp

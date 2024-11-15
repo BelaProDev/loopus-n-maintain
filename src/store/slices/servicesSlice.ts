@@ -11,8 +11,8 @@ interface ServicesState {
 }
 
 const initialState: ServicesState = {
-  availableServices: ['electrics', 'plumbing', 'ironwork', 'woodwork', 'architecture'],
-  implementedServices: ['plumbing', 'ironwork', 'architecture', 'electrics', 'woodwork'],
+  availableServices: ['electrical', 'plumbing', 'ironwork', 'woodwork', 'architecture'],
+  implementedServices: ['plumbing', 'ironwork', 'architecture', 'electrical', 'woodwork'],
   status: 'idle',
   error: null,
 };

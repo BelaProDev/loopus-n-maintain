@@ -9,20 +9,18 @@ export const settingsQueries = {
         throw new Error('Fauna client not initialized');
       }
 
-      const result = await client.query({
-        query: fql`
-          let doc = whatsapp_numbers.all().first()!
-          {
-            electrical: doc.electrical,
-            plumbing: doc.plumbing,
-            ironwork: doc.ironwork,
-            woodwork: doc.woodwork,
-            architecture: doc.architecture
-          }
-        `
-      });
+      const result = await client.query(fql`
+        let doc = whatsapp_numbers.all().first()!
+        {
+          electrical: doc.electrical,
+          plumbing: doc.plumbing,
+          ironwork: doc.ironwork,
+          woodwork: doc.woodwork,
+          architecture: doc.architecture
+        }
+      `);
 
-      return result.data;
+      return result.data as WhatsAppNumbers;
     } catch (error) {
       console.error('Error fetching WhatsApp numbers:', error);
       return {
@@ -42,13 +40,11 @@ export const settingsQueries = {
         throw new Error('Fauna client not initialized');
       }
 
-      const result = await client.query({
-        query: fql`
-          let doc = whatsapp_numbers.all().first()!
-          doc.update(${numbers})
-        `
-      });
-      return result.data;
+      const result = await client.query(fql`
+        let doc = whatsapp_numbers.all().first()!
+        doc.update(${numbers})
+      `);
+      return result.data as WhatsAppNumbers;
     } catch (error) {
       console.error('Error updating WhatsApp numbers:', error);
       throw error;
@@ -62,16 +58,16 @@ export const settingsQueries = {
         throw new Error('Fauna client not initialized');
       }
 
-      const result = await client.query({
-        query: fql`
-          navigation_links.all().map(link => {
+      const result = await client.query(fql`
+        navigation_links.all().map(link => {
+          {
             label: link.label,
             url: link.url,
             location: link.location
-          })
-        `
-      });
-      return Array.isArray(result.data) ? result.data : [];
+          }
+        })
+      `);
+      return (Array.isArray(result.data) ? result.data : []) as NavigationLink[];
     } catch (error) {
       console.error('Error fetching navigation links:', error);
       return [];
@@ -85,12 +81,10 @@ export const settingsQueries = {
         throw new Error('Fauna client not initialized');
       }
 
-      const result = await client.query({
-        query: fql`
-          navigation_links.create(${link})
-        `
-      });
-      return result.data;
+      const result = await client.query(fql`
+        navigation_links.create(${link})
+      `);
+      return result.data as NavigationLink;
     } catch (error) {
       console.error('Error updating navigation link:', error);
       throw error;

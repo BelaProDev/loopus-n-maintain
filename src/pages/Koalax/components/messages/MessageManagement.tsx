@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import MessageList from "./MessageList";
 import { ContactMessage } from "@/lib/fauna/types";
 
-const SERVICES: ContactMessage['service'][] = ['electrics', 'plumbing', 'woodwork', 'ironwork', 'architecture'];
+const SERVICES: ContactMessage['service'][] = ['electrical', 'plumbing', 'woodwork', 'ironwork', 'architecture'];
 
 const MessageManagement = () => {
   const { t } = useTranslation(["admin", "services"]);
@@ -12,7 +12,7 @@ const MessageManagement = () => {
     <div className="space-y-6">
       <h1 className="text-3xl font-bold">{t("admin:messages.title")}</h1>
       
-      <Tabs defaultValue="electrics" className="space-y-4">
+      <Tabs defaultValue="electrical" className="space-y-4">
         <TabsList>
           {SERVICES.map((service) => (
             <TabsTrigger key={service} value={service}>
