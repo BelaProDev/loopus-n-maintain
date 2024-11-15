@@ -13,16 +13,16 @@ const Architecture = () => {
 
   const faqs = [
     {
-      question: "faq.architecture.processQ",
-      answer: "faq.architecture.processA"
+      question: "services:faq.architecture.processQ",
+      answer: "services:faq.architecture.processA"
     },
     {
-      question: "faq.architecture.timelineQ",
-      answer: "faq.architecture.timelineA"
+      question: "services:faq.architecture.timelineQ",
+      answer: "services:faq.architecture.timelineA"
     },
     {
-      question: "faq.architecture.sustainableQ",
-      answer: "faq.architecture.sustainableA"
+      question: "services:faq.architecture.sustainableQ",
+      answer: "services:faq.architecture.sustainableA"
     }
   ];
 

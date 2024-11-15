@@ -5,31 +5,31 @@ const Woodwork = () => {
   const { t } = useTranslation(["services"]);
 
   const commonIssues = [
-    { id: "repairs", label: t("services:woodworking.issues.repairs") },
-    { id: "restoration", label: t("services:woodworking.issues.restoration") },
-    { id: "customWork", label: t("services:woodworking.issues.customWork") },
-    { id: "installation", label: t("services:woodworking.issues.installation") },
+    { id: "repairs", label: t("services:woodwork.issues.repairs") },
+    { id: "restoration", label: t("services:woodwork.issues.restoration") },
+    { id: "customWork", label: t("services:woodwork.issues.customWork") },
+    { id: "installation", label: t("services:woodwork.issues.installation") },
   ];
 
   const faqs = [
     {
-      question: "faq.woodworking.maintenanceQ",
-      answer: "faq.woodworking.maintenanceA"
+      question: "services:faq.woodwork.materialsQ",
+      answer: "services:faq.woodwork.materialsA"
     },
     {
-      question: "faq.woodworking.customQ",
-      answer: "faq.woodworking.customA"
+      question: "services:faq.woodwork.finishingQ",
+      answer: "services:faq.woodwork.finishingA"
     },
     {
-      question: "faq.woodworking.repairQ",
-      answer: "faq.woodworking.repairA"
+      question: "services:faq.woodwork.customQ",
+      answer: "services:faq.woodwork.customA"
     }
   ];
 
   return (
     <ServiceLayout
-      title={t("services:woodworking.title")}
-      description={t("services:woodworking.description")}
+      title={t("services:woodwork.title")}
+      description={t("services:woodwork.description")}
       commonIssues={commonIssues}
       faqs={faqs}
     />

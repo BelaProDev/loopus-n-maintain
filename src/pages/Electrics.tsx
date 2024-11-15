@@ -13,16 +13,16 @@ const Electrics = () => {
 
   const faqs = [
     {
-      question: "faq.electrical.safetyQ",
-      answer: "faq.electrical.safetyA"
+      question: "services:faq.electrical.safetyQ",
+      answer: "services:faq.electrical.safetyA"
     },
     {
-      question: "faq.electrical.costQ",
-      answer: "faq.electrical.costA"
+      question: "services:faq.electrical.costQ",
+      answer: "services:faq.electrical.costA"
     },
     {
-      question: "faq.electrical.emergencyQ",
-      answer: "faq.electrical.emergencyA"
+      question: "services:faq.electrical.emergencyQ",
+      answer: "services:faq.electrical.emergencyA"
     }
   ];
 
