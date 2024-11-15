@@ -1,12 +1,13 @@
 import { QueryValueObject } from 'fauna';
 
-export interface InvoiceItem {
+export interface InvoiceItem extends QueryValueObject {
   id: string;
   description: string;
   quantity: number;
   unitPrice: number;
   total: number;
   vatRate: number;
+  [key: string]: any; // Add index signature for Fauna compatibility
 }
 
 export interface Invoice extends QueryValueObject {
@@ -21,6 +22,7 @@ export interface Invoice extends QueryValueObject {
   totalAmount: number;
   tax: number;
   notes: string;
+  [key: string]: any; // Add index signature for Fauna compatibility
 }
 
 export interface CreateInvoiceDTO {

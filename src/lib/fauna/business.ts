@@ -1,7 +1,7 @@
 import { getFaunaClient } from './client';
 import { fql } from 'fauna';
 import type { Client, Provider } from '@/types/business';
-import type { Invoice } from '@/types/invoice';
+import type { Invoice, InvoiceItem } from '@/types/invoice';
 import { extractFaunaData } from './utils';
 
 const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
@@ -86,7 +86,10 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
         ...doc.data,
         date: new Date(doc.data.date).toISOString(),
         dueDate: new Date(doc.data.dueDate).toISOString(),
-        items: doc.data.items || [],
+        items: (doc.data.items || []).map((item: InvoiceItem) => ({
+          ...item,
+          [Symbol.iterator]: undefined
+        })),
         totalAmount: Number(doc.data.totalAmount?.['@int'] || 0),
         tax: Number(doc.data.tax?.['@int'] || 0)
       }));
@@ -106,7 +109,7 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
           dueDate: Time(${data.dueDate}),
           clientId: ${data.clientId},
           providerId: ${data.providerId},
-          items: ${data.items},
+          items: ${data.items.map(item => ({ ...item, [Symbol.iterator]: undefined }))},
           status: ${data.status},
           totalAmount: ${data.totalAmount},
           tax: ${data.tax},
@@ -121,6 +124,10 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
         ...document.data,
         date: new Date(document.data.date).toISOString(),
         dueDate: new Date(document.data.dueDate).toISOString(),
+        items: (document.data.items || []).map((item: InvoiceItem) => ({
+          ...item,
+          [Symbol.iterator]: undefined
+        })),
         totalAmount: Number(document.data.totalAmount?.['@int'] || 0),
         tax: Number(document.data.tax?.['@int'] || 0)
       } : null;

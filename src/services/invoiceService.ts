@@ -1,10 +1,10 @@
 import { businessQueries } from '@/lib/fauna/business';
-import type { CreateInvoiceDTO, Invoice } from '@/types/invoice';
+import type { CreateInvoiceDTO, Invoice, InvoiceItem } from '@/types/invoice';
 
 export const invoiceService = {
   generateInvoiceNumber: () => `INV-${Date.now()}`,
 
-  calculateTotals: (items: Invoice['items']) => {
+  calculateTotals: (items: InvoiceItem[]) => {
     const totalAmount = items.reduce((sum, item) => sum + item.total, 0);
     const tax = totalAmount * 0.21; // 21% VAT
     return { totalAmount, tax };
@@ -20,7 +20,8 @@ export const invoiceService = {
       dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
       status: 'draft',
       totalAmount,
-      tax
+      tax,
+      items: dto.items.map(item => ({ ...item, [Symbol.iterator]: undefined }))
     };
   },
 
