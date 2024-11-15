@@ -46,12 +46,10 @@ const handler: Handler = async (event) => {
         const debugResult = await client.query(debugQuery);
         console.log('[Auth Function] All admin users:', JSON.stringify(debugResult, null, 2));
 
-        // Original authentication query
+        // Updated authentication query with proper null handling
         const query = fql`
           let user = admin_koalax.firstWhere(.email == ${email})
-          if (user == null) {
-            null
-          } else if (user.password == ${hashedPassword}) {
+          if (user != null && user!.password == ${hashedPassword}) {
             user
           } else {
             null
