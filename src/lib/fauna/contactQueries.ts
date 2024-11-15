@@ -9,8 +9,9 @@ export const contactQueries = {
     if (!client) throw new Error('Fauna client not initialized');
 
     try {
+      const collectionName = `${service}_messages`;
       const query = fql`
-        Collection.byName(${service + "_messages}")!
+        Collection.byName("${collectionName}")!
         .all()
         .documents()
       `;
@@ -35,10 +36,11 @@ export const contactQueries = {
         createdAt: new Date().toISOString()
       };
 
+      const collectionName = `${data.service}_messages`;
       const query = fql`
-        Collection.byName(${data.service + "_messages"})!
+        Collection.byName("${collectionName}")!
         .create({
-          data: ${messageData}
+          data: ${JSON.stringify(messageData)}
         })
       `;
       
@@ -55,12 +57,13 @@ export const contactQueries = {
     if (!client) throw new Error('Fauna client not initialized');
 
     try {
+      const collectionName = `${service}_messages`;
       const query = fql`
-        Collection.byName(${service + "_messages"})!
-        .document(${id})!
+        Collection.byName("${collectionName}")!
+        .document("${id}")!
         .update({
           data: {
-            status: ${status}
+            status: "${status}"
           }
         })
       `;
