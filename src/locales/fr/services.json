@@ -69,7 +69,7 @@
     },
     "woodwork": {
       "materialsQ": "Avec quels types de bois travaillez-vous ?",
-      "materialsA": "Nous travaillons avec une large gamme de bois, y compris les bois durs, les bois tendres et les produits de bois d'ingénierie.",
+      "materialsA": "Nous travaillons avec une large gamme de bois, y compris les bois durs, les bois tendres et les produits de bois ingéniosité.",
       "finishingQ": "Quelles options de finition sont disponibles ?",
       "finishingA": "Nous proposons diverses finitions, notamment des teintures, vernis, huiles et peintures pour protéger et embellir votre menuiserie.",
       "customQ": "Pouvez-vous assortir la menuiserie existante ?",
@@ -91,5 +91,10 @@
       "sustainableQ": "Proposez-vous des options de conception durable ?",
       "sustainableA": "Oui, nous intégrons des principes de conception durable et écoénergétique dans nos projets."
     }
+  },
+  "quickHelp": "Aide Rapide",
+  "whatsapp": {
+    "contact": "Contacter via WhatsApp",
+    "message": "Bonjour, j'ai besoin d'aide avec les problèmes suivants : {{issues}}"
   }
 }

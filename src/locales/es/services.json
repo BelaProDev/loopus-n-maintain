@@ -91,5 +91,10 @@
       "sustainableQ": "¿Ofrecen opciones de diseño sostenible?",
       "sustainableA": "Sí, incorporamos principios de diseño sostenible y energéticamente eficiente en nuestros proyectos."
     }
+  },
+  "quickHelp": "Ayuda Rápida",
+  "whatsapp": {
+    "contact": "Contactar por WhatsApp",
+    "message": "Hola, necesito ayuda con los siguientes problemas: {{issues}}"
   }
 }
