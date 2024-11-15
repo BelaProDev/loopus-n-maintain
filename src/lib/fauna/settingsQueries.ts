@@ -1,77 +1,82 @@
-import { client } from './client';
+import { getFaunaClient, fql, handleFaunaError } from './client';
 import { WhatsAppNumbers, NavigationLink } from './types';
 
 export const settingsQueries = {
   getWhatsAppNumbers: async (): Promise<WhatsAppNumbers> => {
-    const result = await client.query({
-      query: `
-        Query(
-          Let(
-            {
-              numbers: First(Collection("whatsapp_numbers"))
-            },
-            {
-              electrics: Select(["data", "electrics"], Var("numbers"), ""),
-              plumbing: Select(["data", "plumbing"], Var("numbers"), ""),
-              ironwork: Select(["data", "ironwork"], Var("numbers"), ""),
-              woodwork: Select(["data", "woodwork"], Var("numbers"), ""),
-              architecture: Select(["data", "architecture"], Var("numbers"), "")
-            }
-          )
-        )
-      `
-    });
-    return result.data;
+    const client = getFaunaClient();
+    if (!client) throw new Error('Fauna client not initialized');
+
+    try {
+      const result = await client.query(fql`
+        let doc = whatsapp_numbers.firstWhere(true)
+        {
+          electrics: doc.electrics,
+          plumbing: doc.plumbing,
+          ironwork: doc.ironwork,
+          woodwork: doc.woodwork,
+          architecture: doc.architecture
+        }
+      `);
+      return result.data as WhatsAppNumbers;
+    } catch (error) {
+      return handleFaunaError(error, {
+        electrics: "",
+        plumbing: "",
+        ironwork: "",
+        woodwork: "",
+        architecture: ""
+      }) as WhatsAppNumbers;
+    }
   },
 
   updateWhatsAppNumbers: async (numbers: WhatsAppNumbers): Promise<void> => {
-    await client.query({
-      query: `
-        Let(
-          {
-            doc: First(Collection("whatsapp_numbers"))
-          },
-          If(
-            IsNull(Var("doc")),
-            Create(Collection("whatsapp_numbers"), { data: ${JSON.stringify(numbers)} }),
-            Update(Select(["ref"], Var("doc")), { data: ${JSON.stringify(numbers)} })
-          )
-        )
-      `
-    });
+    const client = getFaunaClient();
+    if (!client) throw new Error('Fauna client not initialized');
+
+    try {
+      await client.query(fql`
+        let doc = whatsapp_numbers.firstWhere(true)
+        if (doc == null) {
+          whatsapp_numbers.create(${numbers})
+        } else {
+          doc.update(${numbers})
+        }
+      `);
+    } catch (error) {
+      handleFaunaError(error, null);
+    }
   },
 
   getNavigationLinks: async (): Promise<NavigationLink[]> => {
-    const result = await client.query({
-      query: `
-        Map(
-          Documents(Collection("navigation_links")),
-          Lambda(
-            "link",
-            Let(
-              {
-                data: Select(["data"], Get(Var("link")))
-              },
-              {
-                label: Select(["label"], Var("data")),
-                url: Select(["url"], Var("data")),
-                location: Select(["location"], Var("data"))
-              }
-            )
-          )
-        )
-      `
-    });
-    return result.data;
+    const client = getFaunaClient();
+    if (!client) throw new Error('Fauna client not initialized');
+
+    try {
+      const result = await client.query(fql`
+        navigation_links.all().map(link => {
+          {
+            label: link.label,
+            url: link.url,
+            location: link.location
+          }
+        })
+      `);
+      return result.data as NavigationLink[];
+    } catch (error) {
+      return handleFaunaError(error, []) as NavigationLink[];
+    }
   },
 
   updateNavigationLink: async (link: NavigationLink): Promise<void> => {
-    await client.query({
-      query: `
-        Create(Collection("navigation_links"), {
-          data: ${JSON.stringify(link)}
-        })
-      `
-    });
+    const client = getFaunaClient();
+    if (!client) throw new Error('Fauna client not initialized');
+
+    try {
+      await client.query(fql`
+        navigation_links.create(${link})
+      `);
+    } catch (error) {
+      handleFaunaError(error, null);
+    }
   }
 };

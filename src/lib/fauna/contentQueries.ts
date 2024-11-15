@@ -1,7 +1,5 @@
-import { getFaunaClient, handleFaunaError } from './client';
+import { getFaunaClient, fql, handleFaunaError } from './client';
 import { ContentData, ToQueryArg } from './types';
-import { fql } from 'fauna';
-import fallbackDb from '../fallback-db.json';
 
 export const contentQueries = {
   getAllContent: async () => {
@@ -10,12 +8,11 @@ export const contentQueries = {
 
     try {
       const result = await client.query(fql`
-        let collection = Collection.byName("contents")!
-        collection!.documents().map(doc => doc.data)
+        contents.all().map(doc => doc.data)
       `);
       return result.data;
     } catch (error) {
-      return handleFaunaError(error, fallbackDb.content);
+      return handleFaunaError(error, []);
     }
   },
 
@@ -25,15 +22,11 @@ export const contentQueries = {
 
     try {
       const result = await client.query(fql`
-        let collection = Collection.byName("contents")!
-        collection!.firstWhere(.data.key == ${key} && .data.language == ${language})
+        contents.firstWhere(.key == ${key} && .language == ${language})
       `);
-      return result;
+      return result.data;
     } catch (error) {
-      return handleFaunaError(
-        error,
-        fallbackDb.content.find(c => c.key === key && c.language === language)
-      );
+      return handleFaunaError(error, null);
     }
   },
 
@@ -44,21 +37,16 @@ export const contentQueries = {
     try {
       const queryData: ToQueryArg<ContentData> = { ...data };
       const result = await client.query(fql`
-        let collection = Collection.byName("contents")!
-        let existing = collection!.firstWhere(.data.key == ${data.key} && .data.language == ${data.language})
-        
-        if (existing != null) {
-          existing.update({ data: ${queryData} })
+        let doc = contents.firstWhere(.key == ${data.key} && .language == ${data.language})
+        if (doc == null) {
+          contents.create(${queryData})
         } else {
-          collection!.create({ data: ${queryData} })
+          doc.update(${queryData})
         }
       `);
       return result;
     } catch (error) {
-      return handleFaunaError(error, {
-        ref: { id: `fallback-${Date.now()}` },
-        data
-      });
+      return handleFaunaError(error, null);
     }
   }
 };

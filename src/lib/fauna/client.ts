@@ -1,19 +1,22 @@
 import { Client, fql } from 'fauna';
 
-let client: Client | null = null;
+let faunaClient: Client | null = null;
 
 export const getFaunaClient = () => {
-  if (!client) {
+  if (!faunaClient) {
     const faunaKey = import.meta.env.VITE_FAUNA_SECRET_KEY;
     if (!faunaKey) {
       console.error('Fauna secret key not found in environment variables');
       return null;
     }
-    client = new Client({ secret: faunaKey });
+    faunaClient = new Client({ secret: faunaKey });
   }
-  return client;
+  return faunaClient;
 };
 
-export const client = getFaunaClient();
+export const handleFaunaError = (error: unknown, fallbackData: unknown) => {
+  console.error('Fauna DB Error:', error);
+  return fallbackData;
+};
 
 export { fql };

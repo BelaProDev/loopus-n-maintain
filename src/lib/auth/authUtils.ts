@@ -1,7 +1,9 @@
 import { SHA256 } from 'crypto-js';
+import { authQueries } from '../fauna/authQueries';
 
 export const validateCredentials = async (email: string, password: string) => {
-  const user = await authQueries.validateUser(email, password);
+  const hashedPassword = hashPassword(password);
+  const user = await authQueries.validateUser(email, hashedPassword);
   
   if (!user) {
     throw new Error('Invalid credentials');
