@@ -5,8 +5,10 @@ export const initSentry = () => {
     Sentry.init({
       dsn: import.meta.env.VITE_SENTRY_DSN,
       integrations: [
-        new Sentry.BrowserTracing(),
-        new Sentry.Replay()
+        new Sentry.Replay({
+          maskAllText: true,
+          blockAllMedia: true,
+        })
       ],
       tracesSampleRate: 0.2,
       replaysSessionSampleRate: 0.1,

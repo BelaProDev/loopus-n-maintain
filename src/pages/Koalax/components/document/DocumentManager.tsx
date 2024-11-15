@@ -1,18 +1,17 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { LogIn } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { dropboxAuth } from "@/lib/auth/dropbox";
 import DocumentToolbar from "./DocumentToolbar";
 import FileList from "./FileList";
 import BreadcrumbNav from "./BreadcrumbNav";
 import { useDropboxManager } from "@/hooks/useDropboxManager";
-import { useTranslation } from "react-i18next";
+import DocumentHeader from "./DocumentHeader";
+import FolderCreator from "./FolderCreator";
 
 const DocumentManager = () => {
   const [newFolderName, setNewFolderName] = useState("");
   const [currentPath, setCurrentPath] = useState("/");
-  const { t } = useTranslation(["admin", "common"]);
+  const { t } = useTranslation(["common"]);
   
   const {
     files,
@@ -58,15 +57,10 @@ const DocumentManager = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 className="text-2xl font-bold">{t("admin:documents.title")}</h2>
-        {!isAuthenticated && (
-          <Button onClick={handleLogin} className="w-full sm:w-auto">
-            <LogIn className="w-4 h-4 mr-2" />
-            {t("admin:documents.connect")}
-          </Button>
-        )}
-      </div>
+      <DocumentHeader 
+        isAuthenticated={isAuthenticated}
+        onLogin={handleLogin}
+      />
 
       {isAuthenticated && (
         <div className="space-y-4">
@@ -84,23 +78,14 @@ const DocumentManager = () => {
 
           <BreadcrumbNav currentPath={currentPath} onNavigate={handleNavigate} />
 
-          <div className="flex flex-col sm:flex-row gap-2">
-            <Input
-              placeholder={t("admin:documents.newFolderPlaceholder")}
-              value={newFolderName}
-              onChange={(e) => setNewFolderName(e.target.value)}
-              className="w-full sm:w-auto sm:flex-1"
-            />
-            <Button 
-              onClick={handleCreateFolder}
-              className="w-full sm:w-auto"
-            >
-              {t("admin:documents.createFolder")}
-            </Button>
-          </div>
+          <FolderCreator
+            newFolderName={newFolderName}
+            onNewFolderNameChange={setNewFolderName}
+            onCreateFolder={handleCreateFolder}
+          />
 
           {isLoading ? (
-            <div>{t("common:common.loading")}</div>
+            <div>{t("common.loading")}</div>
           ) : (
             <FileList
               files={files}
