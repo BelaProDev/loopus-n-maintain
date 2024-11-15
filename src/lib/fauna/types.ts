@@ -20,3 +20,13 @@ export interface ContentData {
 export type ToQueryArg<T> = {
   [K in keyof T]: T[K];
 } & QueryArgument;
+
+export interface ContactMessage {
+  id?: string;
+  service: 'electrics' | 'plumbing' | 'woodwork' | 'ironwork' | 'architecture';
+  name: string;
+  email: string;
+  message: string;
+  createdAt?: string;
+  status: 'new' | 'read' | 'archived';
+}

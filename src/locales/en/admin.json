@@ -163,5 +163,16 @@
       "deleteSuccess": "Invoice deleted successfully",
       "deleteError": "Failed to delete invoice"
     }
+  },
+  "messages": {
+    "title": "Contact Messages",
+    "date": "Date",
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "status": "Status",
+    "status_new": "New",
+    "status_read": "Read",
+    "status_archived": "Archived"
   }
 }

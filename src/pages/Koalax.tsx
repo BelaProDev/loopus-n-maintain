@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Mail, Settings, Building2, Folder } from "lucide-react";
+import { Mail, Settings, Building2, Folder, MessageSquare } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -14,6 +14,7 @@ const ADMIN_TABS = [
   { id: "settings", label: "admin:settings.title", icon: Settings, path: "/koalax/settings" },
   { id: "business", label: "admin:business.title", icon: Building2, path: "/koalax/business" },
   { id: "documents", label: "admin:documents.title", icon: Folder, path: "/koalax/documents" },
+  { id: "messages", label: "admin:messages.title", icon: MessageSquare, path: "/koalax/messages" },
 ];
 
 const Koalax = () => {

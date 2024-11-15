@@ -31,6 +31,7 @@ import SiteSettings from "./pages/Koalax/SiteSettings";
 import BusinessManagement from "./pages/Koalax/components/BusinessManagement";
 import DocumentManager from "./pages/Koalax/components/document/DocumentManager";
 import DropboxCallback from "./pages/Koalax/components/document/DropboxCallback";
+import MessageManagement from "./pages/Koalax/components/messages/MessageManagement";
 
 const queryClient = new QueryClient();
 
@@ -43,22 +44,23 @@ const App = () => {
             <Toaster />
             <div className="flex flex-col min-h-screen">
               <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/electrics" element={<Electrics />} />
-              <Route path="/plumbing" element={<Plumbing />} />
-              <Route path="/ironwork" element={<Ironwork />} />
-              <Route path="/woodwork" element={<Woodwork />} />
-              <Route path="/architecture" element={<Architecture />} />
-              <Route path="/docs" element={<Documentation />} />
-              <Route path="/koalax" element={<Koalax />}>
-                <Route index element={<EmailManagement />} />
-                <Route path="emails" element={<EmailManagement />} />
-                <Route path="settings" element={<SiteSettings />} />
-                <Route path="business" element={<BusinessManagement />} />
-                <Route path="documents" element={<DocumentManager />} />
-                <Route path="dropbox-callback" element={<DropboxCallback />} />
-              </Route>
+                <Route path="/" element={<Index />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/electrics" element={<Electrics />} />
+                <Route path="/plumbing" element={<Plumbing />} />
+                <Route path="/ironwork" element={<Ironwork />} />
+                <Route path="/woodwork" element={<Woodwork />} />
+                <Route path="/architecture" element={<Architecture />} />
+                <Route path="/docs" element={<Documentation />} />
+                <Route path="/koalax" element={<Koalax />}>
+                  <Route index element={<EmailManagement />} />
+                  <Route path="emails" element={<EmailManagement />} />
+                  <Route path="settings" element={<SiteSettings />} />
+                  <Route path="business" element={<BusinessManagement />} />
+                  <Route path="documents" element={<DocumentManager />} />
+                  <Route path="messages" element={<MessageManagement />} />
+                  <Route path="dropbox-callback" element={<DropboxCallback />} />
+                </Route>
               </Routes>
             </div>
             <ReactQueryDevtools />

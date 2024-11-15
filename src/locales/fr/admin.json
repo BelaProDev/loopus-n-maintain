@@ -35,7 +35,7 @@
     "name": "Nom",
     "service": "Service",
     "rating": "Évaluation",
-    "status": "Statut",
+    "status": "État",
     "available": "Disponible",
     "unavailable": "Indisponible",
     "add": "Ajouter un Prestataire",
@@ -72,7 +72,7 @@
     "home": "Répertoire Principal"
   },
   "whatsapp": "Numéros WhatsApp",
-  "whatsappUpdate": "Mettre à jour les numéros WhatsApp",
+  "whatsappUpdate": "Mettre à jour les numéros de WhatsApp",
   "whatsappUpdateSuccess": "Numéros de WhatsApp mis à jour avec succès",
   "whatsappUpdateError": "Échec de la mise à jour des numéros de WhatsApp",
   "whatsappPlaceholder": "Entrez le numéro WhatsApp pour {{service}}",
@@ -182,5 +182,16 @@
       "deleteSuccess": "Facture supprimée avec succès",
       "deleteError": "Échec de la suppression de la facture"
     }
+  },
+  "messages": {
+    "title": "Messages de Contact",
+    "date": "Date",
+    "name": "Nom",
+    "email": "Email",
+    "message": "Message",
+    "status": "Statut",
+    "status_new": "Nouveau",
+    "status_read": "Lu",
+    "status_archived": "Archivé"
   }
 }

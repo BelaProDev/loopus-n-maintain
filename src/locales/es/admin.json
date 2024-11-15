@@ -68,7 +68,7 @@
     "deleteConfirm": "¿Está seguro de que desea eliminar este {{type}}?",
     "deleteSuccess": "{{type}} eliminado exitosamente",
     "deleteError": "Error al eliminar {{type}}",
-    "noFiles": "No se encontraron archivos en esta carpeta",
+    "noFiles": "No se encontraron archivos en este folder",
     "home": "Directorio Principal"
   },
   "whatsapp": "Números de WhatsApp",
@@ -163,5 +163,16 @@
       "deleteSuccess": "Factura eliminada exitosamente",
       "deleteError": "Error al eliminar factura"
     }
+  },
+  "messages": {
+    "title": "Mensajes de Contacto",
+    "date": "Fecha",
+    "name": "Nombre",
+    "email": "Correo",
+    "message": "Mensaje",
+    "status": "Estado",
+    "status_new": "Nuevo",
+    "status_read": "Leído",
+    "status_archived": "Archivado"
   }
 }
