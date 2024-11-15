@@ -1,6 +1,6 @@
 {
   "electrical": {
-    "title": "Electrical Services",
+    "title": "Electrics",
     "description": "Professional electrical maintenance and repair services for your home or business.",
     "issues": {
       "powerOutage": "Power Outage",
@@ -10,7 +10,7 @@
     }
   },
   "plumbing": {
-    "title": "Plumbing Services",
+    "title": "Plumbing",
     "description": "Expert plumbing solutions for your home or business.",
     "issues": {
       "leaks": "Leaks",
@@ -20,7 +20,7 @@
     }
   },
   "woodwork": {
-    "title": "Woodworking Services",
+    "title": "Woodwork",
     "description": "Expert woodworking and carpentry services for your home.",
     "issues": {
       "repairs": "Furniture Repairs",
@@ -30,7 +30,7 @@
     }
   },
   "ironwork": {
-    "title": "Ironwork Services",
+    "title": "Ironwork",
     "description": "Professional ironwork services for both functional and decorative needs.",
     "issues": {
       "rust": "Rust and Corrosion",
@@ -40,7 +40,7 @@
     }
   },
   "architecture": {
-    "title": "Architecture Services",
+    "title": "Architecture",
     "description": "Professional architectural design, planning and other services.",
     "issues": {
       "designConsultation": "Design Consultation",

@@ -1,6 +1,6 @@
 {
   "electrical": {
-    "title": "Servicios Eléctricos",
+    "title": "Electricidad",
     "description": "Servicios profesionales de mantenimiento y reparación eléctrica",
     "issues": {
       "powerOutage": "Corte de Energía",
@@ -10,7 +10,7 @@
     }
   },
   "plumbing": {
-    "title": "Servicios de Plomería",
+    "title": "Plomería",
     "description": "Soluciones expertas en plomería para su hogar o negocio",
     "issues": {
       "leaks": "Fugas",
@@ -20,7 +20,7 @@
     }
   },
   "woodwork": {
-    "title": "Servicios de Carpintería",
+    "title": "Carpintería",
     "description": "Servicios expertos de carpintería para su hogar",
     "issues": {
       "repairs": "Reparaciones de Muebles",
@@ -30,7 +30,7 @@
     }
   },
   "ironwork": {
-    "title": "Servicios de Herrería",
+    "title": "Herrería",
     "description": "Servicios profesionales de herrería funcional y decorativa",
     "issues": {
       "rust": "Óxido y Corrosión",
@@ -40,7 +40,7 @@
     }
   },
   "architecture": {
-    "title": "Servicios de Arquitectura",
+    "title": "Arquitectura",
     "description": "Diseño arquitectónico profesional y servicios de planificación",
     "issues": {
       "designConsultation": "Consulta de Diseño",
