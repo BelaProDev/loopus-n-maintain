@@ -36,29 +36,37 @@ const handler: Handler = async (event) => {
     const hashedPassword = hashPassword(password);
 
     if (action === 'validateAdmin') {
-      const query = fql`
-        admin_koalax.firstWhere(.email == ${email} && .password == ${hashedPassword})
-      `;
-      
-      const result = await client.query(query);
-      
-      if (!result) {
+      try {
+        const query = fql`
+          admin_koalax.firstWhere(.email == ${email} && .password == ${hashedPassword})
+        `;
+        
+        const result = await client.query(query);
+        
+        if (!result.data) {
+          return {
+            statusCode: 401,
+            body: JSON.stringify({ error: 'Invalid credentials' }),
+          };
+        }
+
+        return {
+          statusCode: 200,
+          body: JSON.stringify({ 
+            success: true,
+            user: {
+              email: result.data.email,
+              role: result.data.role
+            }
+          }),
+        };
+      } catch (faunaError) {
+        console.error('Fauna query error:', faunaError);
         return {
           statusCode: 401,
           body: JSON.stringify({ error: 'Invalid credentials' }),
         };
       }
-
-      return {
-        statusCode: 200,
-        body: JSON.stringify({ 
-          success: true,
-          user: {
-            email: result.data.email,
-            role: result.data.role
-          }
-        }),
-      };
     }
 
     return {
@@ -69,7 +77,7 @@ const handler: Handler = async (event) => {
     console.error('Auth error:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Internal server error' }),
+      body: JSON.stringify({ error: 'Internal server error', details: error.message }),
     };
   }
 };
