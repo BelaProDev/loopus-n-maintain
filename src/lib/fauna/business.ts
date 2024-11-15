@@ -11,14 +11,22 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
       const query = fql`
         let clients = clients.all()
         clients.map(client => {
+          let totalInvoices = invoices.all().filter(i => i.clientId == client.id).count()
+          let totalAmount = invoices.all()
+            .filter(i => i.clientId == client.id)
+            .map(i => i.totalAmount)
+            .sum() || 0
+          
           {
-            ...client,
             id: client.id,
-            totalInvoices: invoices.all().filter(i => i.clientId == client.id).count(),
-            totalAmount: invoices.all()
-              .filter(i => i.clientId == client.id)
-              .map(i => i.totalAmount)
-              .sum() || 0
+            name: client.name,
+            email: client.email,
+            phone: client.phone,
+            company: client.company,
+            vatNumber: client.vatNumber,
+            totalInvoices: totalInvoices,
+            totalAmount: totalAmount,
+            status: client.status
           }
         })
       `;
