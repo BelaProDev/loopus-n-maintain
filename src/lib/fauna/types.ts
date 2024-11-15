@@ -1,4 +1,5 @@
 export interface WhatsAppNumbers {
+  [key: string]: string;
   electrics: string;
   plumbing: string;
   ironwork: string;
@@ -7,6 +8,7 @@ export interface WhatsAppNumbers {
 }
 
 export interface NavigationLink {
+  [key: string]: string;
   label: string;
   url: string;
   location: "header" | "footer";

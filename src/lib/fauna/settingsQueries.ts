@@ -34,12 +34,20 @@ export const settingsQueries = {
     if (!client) throw new Error('Fauna client not initialized');
 
     try {
+      const queryArg = {
+        electrics: numbers.electrics,
+        plumbing: numbers.plumbing,
+        ironwork: numbers.ironwork,
+        woodwork: numbers.woodwork,
+        architecture: numbers.architecture
+      };
+
       await client.query(fql`
         let doc = whatsapp_numbers.firstWhere(true)
         if (doc == null) {
-          whatsapp_numbers.create(${numbers})
+          whatsapp_numbers.create(${queryArg})
         } else {
-          doc.update(${numbers})
+          doc.update(${queryArg})
         }
       `);
     } catch (error) {
@@ -72,8 +80,14 @@ export const settingsQueries = {
     if (!client) throw new Error('Fauna client not initialized');
 
     try {
+      const queryArg = {
+        label: link.label,
+        url: link.url,
+        location: link.location
+      };
+
       await client.query(fql`
-        navigation_links.create(${link})
+        navigation_links.create(${queryArg})
       `);
     } catch (error) {
       handleFaunaError(error, null);
