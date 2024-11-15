@@ -10,7 +10,8 @@ export const contactQueries = {
 
     try {
       const query = fql`
-        Collection.byName(${service + "_messages"})!.documents().all()
+        let collection = Collection.byName(${service + "_messages"})!
+        collection.all().documents()
       `;
       const result = await client.query(query);
       return extractFaunaData(result);
@@ -30,11 +31,12 @@ export const contactQueries = {
         message: data.message,
         service: data.service,
         status: 'new',
-        createdAt: new Date().toISOString()
+        createdAt: Time.now()
       };
 
       const query = fql`
-        Collection.byName(${data.service + "_messages"})!.create({
+        let collection = Collection.byName(${data.service + "_messages"})!
+        collection.create({
           data: ${messageData}
         })
       `;
@@ -53,13 +55,12 @@ export const contactQueries = {
 
     try {
       const query = fql`
-        Collection.byName(${service + "_messages"})!
-          .document(${id})!
-          .update({
-            data: {
-              status: ${status}
-            }
-          })
+        let doc = Collection.byName(${service + "_messages"})!.document(${id})!
+        doc.update({
+          data: {
+            status: ${status}
+          }
+        })
       `;
       
       const result = await client.query(query);
