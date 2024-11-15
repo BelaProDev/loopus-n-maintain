@@ -27,7 +27,8 @@
     "na": "N/A",
     "offline": "Offline",
     "language": "Change Language",
-    "contact": "Contact"
+    "contact": "Contact",
+    "learnMore": "Learn More"
   },
   "form": {
     "namePlaceholder": "Your Name",

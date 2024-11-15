@@ -27,7 +27,8 @@
     "na": "N/D",
     "offline": "Sin conexión",
     "language": "Cambiar idioma",
-    "contact": "Contacto"
+    "contact": "Contacto",
+    "learnMore": "Saber más"
   },
   "form": {
     "namePlaceholder": "Su Nombre",

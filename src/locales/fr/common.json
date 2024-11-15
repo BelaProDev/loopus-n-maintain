@@ -27,7 +27,8 @@
     "na": "N/D",
     "offline": "Hors ligne",
     "language": "Changer de langue",
-    "contact": "Contact"
+    "contact": "Contact",
+    "learnMore": "En savoir plus"
   },
   "form": {
     "namePlaceholder": "Votre Nom",
