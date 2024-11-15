@@ -8,11 +8,15 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { settingsQueries } from "@/lib/fauna/settingsQueries";
 import { useTranslation } from "react-i18next";
 import { NavigationLink } from "@/lib/fauna/types";
+import { Trash2, ExternalLink, Eye } from "lucide-react";
+import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 const NavigationSettings = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { t } = useTranslation(["settings", "ui"]);
+  const [previewLink, setPreviewLink] = useState<NavigationLink | null>(null);
 
   const { data: links = [], isLoading } = useQuery({
     queryKey: ['navigation-links'],
@@ -40,71 +44,147 @@ const NavigationSettings = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    
+    const url = formData.get("url") as string;
+    if (!url.startsWith('/') && !url.startsWith('http')) {
+      toast({
+        title: t("ui:status.error"),
+        description: "URL must start with '/' or 'http'",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const newLink: NavigationLink = {
       label: formData.get("label") as string,
-      url: formData.get("url") as string,
+      url,
       location: formData.get("location") as "header" | "footer",
     };
+
     updateMutation.mutate(newLink);
+    e.currentTarget.reset();
+  };
+
+  const handlePreview = (link: NavigationLink) => {
+    setPreviewLink(link);
+  };
+
+  const handleDelete = (link: NavigationLink) => {
+    // Implement delete functionality when backend supports it
+    toast({
+      title: t("ui:status.info"),
+      description: "Delete functionality coming soon",
+    });
   };
 
   if (isLoading) return <div>{t("ui:status.loading")}</div>;
 
   return (
-    <Card className="p-6">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="label">{t("settings:navigation.label")}</Label>
-            <Input
-              id="label"
-              name="label"
-              placeholder={t("settings:navigation.label")}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="url">{t("settings:navigation.url")}</Label>
-            <Input
-              id="url"
-              name="url"
-              placeholder={t("settings:navigation.url")}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="location">{t("settings:navigation.location.title")}</Label>
-            <Select name="location" defaultValue="header">
-              <SelectTrigger>
-                <SelectValue placeholder={t("settings:navigation.location.title")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="header">{t("settings:navigation.location.header")}</SelectItem>
-                <SelectItem value="footer">{t("settings:navigation.location.footer")}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-        <Button type="submit" disabled={updateMutation.isPending}>
-          {t("settings:navigation.add")}
-        </Button>
-      </form>
-
-      <div className="mt-6">
-        <h3 className="text-lg font-semibold mb-4">{t("settings:navigation.title")}</h3>
-        <div className="space-y-2">
-          {Array.isArray(links) && links.map((link, index) => (
-            <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
-              <div>
-                <span className="font-medium">{link.label}</span>
-                <span className="text-gray-500 ml-2">({link.url})</span>
-              </div>
-              <span className="text-sm text-gray-500">{link.location}</span>
+    <div className="space-y-6">
+      <Card className="p-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="label">{t("settings:navigation.label")}</Label>
+              <Input
+                id="label"
+                name="label"
+                placeholder={t("settings:navigation.label")}
+                required
+                className="w-full"
+              />
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="url">{t("settings:navigation.url")}</Label>
+              <Input
+                id="url"
+                name="url"
+                placeholder={t("settings:navigation.url")}
+                required
+                className="w-full"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="location">{t("settings:navigation.location.title")}</Label>
+              <Select name="location" defaultValue="header">
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder={t("settings:navigation.location.title")} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="header">{t("settings:navigation.location.header")}</SelectItem>
+                  <SelectItem value="footer">{t("settings:navigation.location.footer")}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <Button type="submit" disabled={updateMutation.isPending}>
+            {t("settings:navigation.add")}
+          </Button>
+        </form>
+      </Card>
+
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold">{t("settings:navigation.title")}</h3>
+        <div className="grid gap-4">
+          {Array.isArray(links) && links.map((link, index) => (
+            <Card key={index} className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <div className="font-medium">{link.label}</div>
+                  <div className="text-sm text-muted-foreground flex items-center gap-2">
+                    <ExternalLink className="h-4 w-4" />
+                    {link.url}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {t(`settings:navigation.location.${link.location}`)}
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handlePreview(link)}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Link Preview</DialogTitle>
+                      </DialogHeader>
+                      <div className="p-4 space-y-2">
+                        <p><strong>Label:</strong> {previewLink?.label}</p>
+                        <p><strong>URL:</strong> {previewLink?.url}</p>
+                        <p><strong>Location:</strong> {previewLink?.location}</p>
+                        <div className="mt-4">
+                          <a
+                            href={previewLink?.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-primary hover:underline"
+                          >
+                            Open in new tab
+                          </a>
+                        </div>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleDelete(link)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </Card>
           ))}
         </div>
       </div>
-    </Card>
+    </div>
   );
 };
 
