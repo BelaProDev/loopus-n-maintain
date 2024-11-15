@@ -15,7 +15,8 @@
     "cancel": "Annuler",
     "delete": "Supprimer",
     "edit": "Modifier",
-    "submit": "Soumettre",
+    "submit": "Envoyer",
+    "submitting": "Envoi en cours...",
     "loading": "Chargement...",
     "success": "Succès",
     "error": "Erreur",
@@ -26,11 +27,14 @@
     "na": "N/D",
     "offline": "Hors ligne",
     "language": "Changer de langue",
-    "languageChanged": "Langue modifiée",
-    "languageChangeSuccess": "Langue mise à jour avec succès",
-    "languageChangeError": "Échec du changement de langue",
-    "contact": "Contact",
-    "learnMore": "En savoir plus"
+    "contact": "Contact"
+  },
+  "form": {
+    "namePlaceholder": "Votre Nom",
+    "emailPlaceholder": "Votre Email",
+    "messagePlaceholder": "Votre Message",
+    "submitSuccess": "Message envoyé avec succès",
+    "submitError": "Échec de l'envoi du message"
   },
   "language": {
     "en": "Anglais",

@@ -7,7 +7,7 @@
     "home": "Home",
     "services": "Services",
     "contact": "Contact",
-    "admin": "Loopus Admin",
+    "admin": "Admin Loopus",
     "docs": "Documentation"
   },
   "common": {
@@ -16,6 +16,7 @@
     "delete": "Delete",
     "edit": "Edit",
     "submit": "Submit",
+    "submitting": "Submitting...",
     "loading": "Loading...",
     "success": "Success",
     "error": "Error",
@@ -26,10 +27,18 @@
     "na": "N/A",
     "offline": "Offline",
     "language": "Change Language",
-    "languageChanged": "Language Changed",
-    "languageChangeSuccess": "Language updated successfully",
-    "languageChangeError": "Failed to change language",
-    "contact": "Contact",
-    "learnMore": "Learn More"
+    "contact": "Contact"
+  },
+  "form": {
+    "namePlaceholder": "Your Name",
+    "emailPlaceholder": "Your Email",
+    "messagePlaceholder": "Your Message",
+    "submitSuccess": "Message sent successfully",
+    "submitError": "Failed to send message"
+  },
+  "language": {
+    "en": "English",
+    "es": "Spanish",
+    "fr": "French"
   }
 }

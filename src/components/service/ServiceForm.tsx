@@ -12,7 +12,7 @@ interface ServiceFormProps {
 }
 
 const ServiceForm = ({ service }: ServiceFormProps) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['common', 'services']);
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
