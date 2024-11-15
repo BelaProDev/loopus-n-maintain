@@ -10,6 +10,7 @@ import {
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useTranslation } from "react-i18next";
+import { hashPassword } from "@/lib/auth/authUtils";
 
 interface EmailDialogProps {
   isOpen: boolean;
@@ -52,9 +53,28 @@ const EmailDialog = ({
         });
         return;
       }
+
+      // Hash the password before submitting
+      const formData = new FormData(e.target as HTMLFormElement);
+      if (password) {
+        formData.set('password', hashPassword(password));
+      }
+      
+      // Convert FormData to a regular form event
+      const syntheticEvent = {
+        ...e,
+        target: {
+          ...e.target,
+          password: {
+            value: formData.get('password')
+          }
+        }
+      };
+      
+      onSubmit(syntheticEvent);
+    } else {
+      onSubmit(e);
     }
-    
-    onSubmit(e);
   };
 
   return (
