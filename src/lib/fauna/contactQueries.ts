@@ -34,7 +34,14 @@ export const contactQueries = {
       };
 
       const query = fql`
-        messages.create(${JSON.stringify(messageData)})
+        messages.create({
+          service: ${messageData.service},
+          name: ${messageData.name},
+          email: ${messageData.email},
+          message: ${messageData.message},
+          status: ${messageData.status},
+          createdAt: ${messageData.createdAt}
+        })
       `;
       const result = await client.query(query);
       
