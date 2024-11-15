@@ -10,7 +10,7 @@ export const contactQueries = {
 
     try {
       const result = await client.query(
-        fql`${`${service}_messages`}.all()`
+        fql`${service}_messages.all()`
       );
       return extractFaunaData(result);
     } catch (error) {
@@ -32,7 +32,7 @@ export const contactQueries = {
       };
 
       const result = await client.query(
-        fql`${`${data.service}_messages`}.create(${JSON.stringify(messageData)})`
+        fql`${data.service}_messages.create(${JSON.stringify(messageData)})`
       );
       
       const document = extractFaunaData(result)[0];
@@ -48,7 +48,7 @@ export const contactQueries = {
 
     try {
       const result = await client.query(
-        fql`${`${service}_messages`}.byId(${JSON.stringify(id)}).update({ status: ${JSON.stringify(status)} })`
+        fql`${service}_messages.byId(${JSON.stringify(id)}).update({ status: ${JSON.stringify(status)} })`
       );
       
       const document = extractFaunaData(result)[0];
