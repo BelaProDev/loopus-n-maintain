@@ -1,8 +1,8 @@
 import { SHA256 } from 'crypto-js';
-import { settingsQueries } from '@/lib/db/settingsDb';
 
 export const hashPassword = (password: string): string => {
-  return SHA256(password).toString();
+  // Ensure consistent encoding by using lowercase hex output
+  return SHA256(password).toString().toLowerCase();
 };
 
 export const validateCredentials = async (email: string, password: string) => {

@@ -18,7 +18,7 @@ export const authQueries = {
     try {
       const hashedPassword = hashPassword(password);
       const query = fql`
-        emails.firstWhere(.email == ${email} && .password == ${hashedPassword})
+        admin_koalax.firstWhere(.email == ${email} && .password == ${hashedPassword})
       `;
       const result = await client.query(query);
       const data = extractFaunaData(result);
