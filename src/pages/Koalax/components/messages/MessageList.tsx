@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { contactQueries } from "@/lib/fauna/contactQueries";
 import { ContactMessage } from "@/lib/fauna/types";
@@ -25,6 +24,11 @@ const MessageList = ({ service }: MessageListProps) => {
   const { data: messages = [], isLoading } = useQuery({
     queryKey: ['messages', service],
     queryFn: () => contactQueries.getAllMessages(service),
+    select: (data) => data.map(doc => ({
+      id: doc.ref.id,
+      ...doc.data,
+      service // Ensure service is properly set
+    })) as ContactMessage[]
   });
 
   if (isLoading) {
