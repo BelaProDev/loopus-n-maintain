@@ -1,5 +1,5 @@
 {
-  "electrical": {
+  "electrics": {
     "title": "Electrical Services",
     "description": "Professional electrical maintenance and repair services for your home or business.",
     "issues": {
@@ -56,7 +56,7 @@
   },
   "faq": {
     "title": "Frequently Asked Questions",
-    "electrical": {
+    "electrics": {
       "safetyQ": "What safety measures do you follow?",
       "safetyA": "We follow all electrical safety codes and regulations, using proper equipment and protective gear.",
       "costQ": "How do you determine the cost?",

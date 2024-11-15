@@ -1,5 +1,5 @@
 {
-  "electrical": {
+  "electrics": {
     "title": "Services Électriques",
     "description": "Services professionnels de maintenance et de réparation électrique",
     "issues": {
@@ -56,7 +56,7 @@
   },
   "faq": {
     "title": "Questions Fréquentes",
-    "electrical": {
+    "electrics": {
       "safetyQ": "Quelles mesures de sécurité suivez-vous ?",
       "safetyA": "Nous suivons tous les codes et réglementations de sécurité électrique, en utilisant des équipements et des protections appropriés.",
       "costQ": "Comment déterminez-vous le coût ?",
