@@ -10,7 +10,7 @@ export const contactQueries = {
 
     try {
       const query = fql`
-        ${service}_messages.all()
+        messages.where(.service == ${service})
       `;
       const result = await client.query(query);
       return extractFaunaData(result);
@@ -25,6 +25,7 @@ export const contactQueries = {
 
     try {
       const messageData = {
+        service: data.service,
         name: data.name,
         email: data.email,
         message: data.message,
@@ -33,7 +34,7 @@ export const contactQueries = {
       };
 
       const query = fql`
-        ${data.service}_messages.create(${JSON.stringify(messageData)})
+        messages.create(${JSON.stringify(messageData)})
       `;
       const result = await client.query(query);
       
@@ -50,7 +51,7 @@ export const contactQueries = {
 
     try {
       const query = fql`
-        ${service}_messages.byId(${JSON.stringify(id)}).update({ status: ${JSON.stringify(status)} })
+        messages.byId(${JSON.stringify(id)}).update({ status: ${JSON.stringify(status)} })
       `;
       const result = await client.query(query);
       
