@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
-import fallbackDb from "@/lib/fallback-db.json";
+import { authQueries } from "@/lib/fauna/authQueries";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -41,9 +41,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const login = async (email: string, password: string) => {
-    const user = fallbackDb.users.find(
-      (u) => u.email === email && u.password === password
-    );
+    const user = await authQueries.validateUser(email, password);
 
     if (user) {
       setIsAuthenticated(true);
