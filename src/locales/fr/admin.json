@@ -192,6 +192,13 @@
     "status": "Statut",
     "status_new": "Nouveau",
     "status_read": "Lu",
-    "status_archived": "Archivé"
+    "status_archived": "Archivé",
+    "noMessages": "Aucun message trouvé",
+    "service": "Service",
+    "actions": "Actions",
+    "markAsRead": "Marquer comme Lu",
+    "markAsArchived": "Archiver",
+    "updateSuccess": "Statut du message mis à jour avec succès",
+    "updateError": "Échec de la mise à jour du statut du message"
   }
 }

@@ -173,6 +173,13 @@
     "status": "Estado",
     "status_new": "Nuevo",
     "status_read": "Leído",
-    "status_archived": "Archivado"
+    "status_archived": "Archivado",
+    "noMessages": "No se encontraron mensajes",
+    "service": "Servicio",
+    "actions": "Acciones",
+    "markAsRead": "Marcar como Leído",
+    "markAsArchived": "Archivar",
+    "updateSuccess": "Estado del mensaje actualizado con éxito",
+    "updateError": "Error al actualizar el estado del mensaje"
   }
 }

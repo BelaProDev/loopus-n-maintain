@@ -173,6 +173,13 @@
     "status": "Status",
     "status_new": "New",
     "status_read": "Read",
-    "status_archived": "Archived"
+    "status_archived": "Archived",
+    "noMessages": "No messages found",
+    "service": "Service",
+    "actions": "Actions",
+    "markAsRead": "Mark as Read",
+    "markAsArchived": "Archive",
+    "updateSuccess": "Message status updated successfully",
+    "updateError": "Failed to update message status"
   }
 }
