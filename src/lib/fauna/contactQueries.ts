@@ -1,6 +1,6 @@
 import { getFaunaClient, handleFaunaError } from './client';
 import { ContactMessage } from './types';
-import { fql, Time } from 'fauna';
+import { fql } from 'fauna';
 import { extractFaunaData } from './utils';
 
 export const contactQueries = {
@@ -10,8 +10,9 @@ export const contactQueries = {
 
     try {
       const query = fql`
-        let collection = Collection.byName(${service + "_messages"})!
-        collection.all().documents()
+        Collection.byName(${service + "_messages"})!
+        .all()
+        .documents()
       `;
       const result = await client.query(query);
       return extractFaunaData(result);
@@ -31,12 +32,12 @@ export const contactQueries = {
         message: data.message,
         service: data.service,
         status: 'new',
-        createdAt: Time.now()
+        createdAt: new Date().toISOString()
       };
 
       const query = fql`
-        let collection = Collection.byName(${data.service + "_messages"})!
-        collection.create({
+        Collection.byName(${data.service + "_messages"})!
+        .create({
           data: ${messageData}
         })
       `;
@@ -55,8 +56,9 @@ export const contactQueries = {
 
     try {
       const query = fql`
-        let doc = Collection.byName(${service + "_messages"})!.document(${id})!
-        doc.update({
+        Collection.byName(${service + "_messages"})!
+        .document(${id})!
+        .update({
           data: {
             status: ${status}
           }
