@@ -1,7 +1,8 @@
 {
   "app": {
     "name": "Loopus & Maintain",
-    "description": "Servicios de mantenimiento profesional para su propiedad"
+    "description": "Servicios de mantenimiento profesional para su propiedad",
+    "title": "Servicios Profesionales de Mantenimiento y Reparación de Edificios"
   },
   "nav": {
     "home": "Inicio",
@@ -28,7 +29,8 @@
     "offline": "Sin conexión",
     "language": "Cambiar idioma",
     "contact": "Contacto",
-    "learnMore": "Saber más"
+    "learnMore": "Saber más",
+    "title": "Título"
   },
   "form": {
     "namePlaceholder": "Su Nombre",
