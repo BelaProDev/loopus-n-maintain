@@ -20,9 +20,9 @@ const ServiceHeader = ({ title, description, imagePath }: ServiceHeaderProps) =>
       {!isAuthenticated && (
         <Alert variant="destructive" className="mb-6">
           <AlertDescription className="flex items-center justify-between flex-wrap gap-4">
-            <span>{t("auth:auth.required")}</span>
+            <span>{t("auth:required")}</span>
             <Button variant="outline" size="sm" onClick={() => navigate("/login")}>
-              {t("auth:auth.signIn")}
+              {t("auth:signIn")}
             </Button>
           </AlertDescription>
         </Alert>

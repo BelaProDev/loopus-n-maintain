@@ -19,7 +19,7 @@ const maintenanceFields = [
 const Header = () => {
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
   const { isAuthenticated, logout } = useAuth();
-  const { t } = useTranslation(["common", "services"]);
+  const { t } = useTranslation(["common", "services", "auth"]);
 
   useEffect(() => {
     const handleStatusChange = () => {
@@ -43,7 +43,7 @@ const Header = () => {
           className="absolute top-2 right-2 md:right-4 flex items-center gap-1 z-50 font-semibold"
         >
           <WifiOff className="h-3 w-3" />
-          {t("common:common.offline")}
+          {t("common:status.offline")}
         </Badge>
       )}
       <div className="container mx-auto px-4 py-4">

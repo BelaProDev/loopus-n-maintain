@@ -37,14 +37,14 @@ const ServiceForm = ({ service }: ServiceFormProps) => {
       });
 
       toast({
-        title: t('common:common.success'),
+        title: t('common:status.success'),
         description: t('common:form.submitSuccess'),
       });
 
       setFormData({ name: '', email: '', message: '' });
     } catch (error) {
       toast({
-        title: t('common:common.error'),
+        title: t('common:status.error'),
         description: t('common:form.submitError'),
         variant: 'destructive',
       });
@@ -91,7 +91,7 @@ const ServiceForm = ({ service }: ServiceFormProps) => {
           disabled={isSubmitting}
           className="w-full bg-primary hover:bg-primary/90"
         >
-          {isSubmitting ? t('common:common.submitting') : t('common:common.submit')}
+          {isSubmitting ? t('common:status.submitting') : t('common:status.submit')}
         </Button>
       </form>
     </Card>

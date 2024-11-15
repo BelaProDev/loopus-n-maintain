@@ -12,7 +12,7 @@ const Footer = () => {
         <div className="flex flex-col space-y-8 md:space-y-0 md:flex-row md:justify-between md:items-start">
           {/* Contact Section */}
           <div className="flex flex-col items-center md:items-start">
-            <h3 className="text-xl font-semibold mb-4">{t("common:common.contact")}</h3>
+            <h3 className="text-xl font-semibold mb-4">{t("common:nav.contact")}</h3>
             <div className="flex flex-col space-y-3">
               <a 
                 href="tel:+32489127067" 
