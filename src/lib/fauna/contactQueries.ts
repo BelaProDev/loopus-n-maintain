@@ -31,10 +31,10 @@ export const contactQueries = {
       };
 
       const result = await client.query(fql`
-        Document.create(
-          Collection.byName(${data.service + "_messages"})!,
-          { data: ${messageData} }
-        )
+        Collection.byName(${data.service + "_messages"})!
+        .create({
+          data: ${messageData}
+        })
       `);
       return result;
     } catch (error) {
