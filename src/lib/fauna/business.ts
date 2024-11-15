@@ -1,6 +1,7 @@
 import { getFaunaClient } from './client';
 import { fql } from 'fauna';
-import type { Client, Provider, Invoice } from '@/types/business';
+import type { Client, Provider } from '@/types/business';
+import type { Invoice } from '@/types/invoice';
 import { extractFaunaData } from './utils';
 
 const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
@@ -79,15 +80,15 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
       const query = fql`invoices.all()`;
       const result = await client.query(query);
       const documents = extractFaunaData<Invoice>(result);
+      
       return documents.map(doc => ({
-        id: doc.ref?.id || '',
+        id: doc.ref.id,
         ...doc.data,
-        date: doc.data.date?.toString?.() || new Date().toISOString(),
-        dueDate: doc.data.dueDate?.toString?.() || new Date().toISOString(),
+        date: new Date(doc.data.date).toISOString(),
+        dueDate: new Date(doc.data.dueDate).toISOString(),
         items: doc.data.items || [],
         totalAmount: Number(doc.data.totalAmount?.['@int'] || 0),
-        tax: Number(doc.data.tax?.['@int'] || 0),
-        notes: doc.data.notes || ''
+        tax: Number(doc.data.tax?.['@int'] || 0)
       }));
     } catch (error) {
       console.error('Error fetching invoices:', error);
@@ -95,7 +96,7 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
     }
   },
 
-  createInvoice: async (data: Omit<Invoice, 'id'>) => {
+  createInvoice: async (data: Omit<Invoice, 'id'>): Promise<Invoice | null> => {
     if (!client) return null;
     try {
       const query = fql`
@@ -105,25 +106,24 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
           dueDate: Time(${data.dueDate}),
           clientId: ${data.clientId},
           providerId: ${data.providerId},
-          items: ${data.items || []},
+          items: ${data.items},
           status: ${data.status},
-          totalAmount: ${data.totalAmount || 0},
-          tax: ${data.tax || 0},
-          notes: ${data.notes || ''}
+          totalAmount: ${data.totalAmount},
+          tax: ${data.tax},
+          notes: ${data.notes}
         })
       `;
       const result = await client.query(query);
       const document = extractFaunaData<Invoice>(result)[0];
-      if (!document) return null;
       
-      return {
+      return document ? {
         id: document.ref.id,
         ...document.data,
+        date: new Date(document.data.date).toISOString(),
+        dueDate: new Date(document.data.dueDate).toISOString(),
         totalAmount: Number(document.data.totalAmount?.['@int'] || 0),
-        tax: Number(document.data.tax?.['@int'] || 0),
-        date: document.data.date?.toString() || new Date().toISOString(),
-        dueDate: document.data.dueDate?.toString() || new Date().toISOString()
-      };
+        tax: Number(document.data.tax?.['@int'] || 0)
+      } : null;
     } catch (error) {
       console.error('Error creating invoice:', error);
       return null;
@@ -137,6 +137,7 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
       await client.query(query);
       return true;
     } catch (error) {
+      console.error('Error deleting invoice:', error);
       return false;
     }
   }
