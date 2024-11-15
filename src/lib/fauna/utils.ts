@@ -6,6 +6,15 @@ interface FaunaDocument<T> {
 
 interface FaunaResponse<T> {
   data: {
+    '@set'?: {
+      data: Array<{
+        '@doc': {
+          id: string;
+          ts: { '@time': string };
+          [key: string]: any;
+        };
+      }>;
+    };
     data?: T[];
     id?: string;
     ts?: { isoString?: string };
@@ -16,6 +25,15 @@ interface FaunaResponse<T> {
 
 export const extractFaunaData = <T>(response: FaunaResponse<T>): FaunaDocument<T>[] => {
   if (!response) return [];
+
+  // Handle Set response format with @set structure
+  if (response.data?.['@set']?.data) {
+    return response.data['@set'].data.map((item) => ({
+      ref: { id: item['@doc'].id },
+      data: normalizeDocData(item['@doc']) as T,
+      ts: { isoString: item['@doc'].ts?.['@time'] }
+    }));
+  }
 
   // Handle Set response format
   if (response.data?.data) {
@@ -55,6 +73,28 @@ const normalizeDocument = <T>(doc: any): FaunaDocument<T> => {
   delete data.ts;
   delete data.coll;
 
+  return normalized;
+};
+
+const normalizeDocData = (doc: any): any => {
+  const normalized: any = {};
+  
+  for (const [key, value] of Object.entries(doc)) {
+    if (key === 'id' || key === 'ts' || key === 'coll') continue;
+    
+    if (value && typeof value === 'object') {
+      if ('@time' in value) {
+        normalized[key] = value['@time'];
+      } else if ('@int' in value) {
+        normalized[key] = parseInt(value['@int'], 10);
+      } else {
+        normalized[key] = value;
+      }
+    } else {
+      normalized[key] = value;
+    }
+  }
+  
   return normalized;
 };
 
