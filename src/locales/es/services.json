@@ -11,7 +11,7 @@
   },
   "plumbing": {
     "title": "Plomería",
-    "description": "Soluciones expertas en plomería",
+    "description": "Soluciones expertas en plomería para su hogar o negocio",
     "issues": {
       "leaks": "Fugas",
       "clogs": "Desagües Obstruidos",
@@ -21,7 +21,7 @@
   },
   "woodwork": {
     "title": "Carpintería",
-    "description": "Servicios expertos de carpintería",
+    "description": "Servicios expertos de carpintería para su hogar",
     "issues": {
       "repairs": "Reparaciones de Muebles",
       "restoration": "Restauración de Madera",
@@ -31,7 +31,7 @@
   },
   "ironwork": {
     "title": "Herrería",
-    "description": "Servicios profesionales de herrería",
+    "description": "Servicios profesionales de herrería funcional y decorativa",
     "issues": {
       "rust": "Óxido y Corrosión",
       "structuralDamage": "Daño Estructural",
@@ -41,7 +41,7 @@
   },
   "architecture": {
     "title": "Arquitectura",
-    "description": "Diseño arquitectónico profesional",
+    "description": "Diseño arquitectónico profesional y servicios de planificación",
     "issues": {
       "designConsultation": "Consulta de Diseño",
       "permitAssistance": "Asistencia con Permisos",
@@ -57,7 +57,7 @@
       "costQ": "¿Cómo determinan el costo?",
       "costA": "Los costos se basan en el tipo de trabajo, materiales necesarios y tiempo requerido. Proporcionamos presupuestos detallados antes de comenzar.",
       "emergencyQ": "¿Ofrecen servicios de emergencia?",
-      "emergencyA": "Sí, ofrecemos servicios eléctricos de emergencia las 24/7 para problemas urgentes."
+      "emergencyA": "Sí, ofrecemos servicios eléctricos de emergencia 24/7 para problemas urgentes."
     },
     "plumbing": {
       "preventionQ": "¿Cómo puedo prevenir problemas de plomería?",
