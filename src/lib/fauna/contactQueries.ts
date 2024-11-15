@@ -1,6 +1,7 @@
 import { getFaunaClient, handleFaunaError } from './client';
 import { ContactMessage } from './types';
 import { fql } from 'fauna';
+import { extractFaunaData } from './utils';
 
 export const contactQueries = {
   getAllMessages: async (service: ContactMessage['service']) => {
@@ -8,21 +9,9 @@ export const contactQueries = {
     if (!client) throw new Error('Fauna client not initialized');
 
     try {
-      const result = await client.query(fql`
-        Collection.byName(${service + "_messages"})!.documents()
-        .map(message => {
-          {
-            id: message.id,
-            name: message.data.name,
-            email: message.data.email,
-            message: message.data.message,
-            service: message.data.service,
-            status: message.data.status,
-            createdAt: message.data.createdAt
-          }
-        })
-      `);
-      return result.data || [];
+      const query = fql`${service}_messages.all()`;
+      const result = await client.query(query);
+      return extractFaunaData(result);
     } catch (error) {
       return handleFaunaError(error, []);
     }
@@ -34,22 +23,28 @@ export const contactQueries = {
 
     try {
       const messageData = {
-        ...data,
+        name: data.name,
+        email: data.email,
+        message: data.message,
+        service: data.service,
         status: 'new',
         createdAt: new Date().toISOString()
       };
 
-      const result = await client.query(fql`
-        let collection = Collection.byName(${data.service + "_messages"})!
-        collection.create({
-          data: ${messageData}
+      const query = fql`
+        ${data.service}_messages.create({
+          name: ${messageData.name},
+          email: ${messageData.email},
+          message: ${messageData.message},
+          service: ${messageData.service},
+          status: ${messageData.status},
+          createdAt: Time(${messageData.createdAt})
         })
-      `);
+      `;
       
-      return {
-        id: result.data.id,
-        ...messageData
-      };
+      const result = await client.query(query);
+      const document = extractFaunaData(result)[0];
+      return document ? { id: document.ref.id, ...document.data } : null;
     } catch (error) {
       return handleFaunaError(error, null);
     }
@@ -60,27 +55,15 @@ export const contactQueries = {
     if (!client) throw new Error('Fauna client not initialized');
 
     try {
-      const result = await client.query(fql`
-        let doc = Collection.byName(${service + "_messages"})!
-          .documents()
-          .firstWhere(.id == ${id})!
-        
-        doc.update({
-          data: {
-            status: ${status}
-          }
+      const query = fql`
+        ${service}_messages.byId(${id}).update({
+          status: ${status}
         })
-      `);
+      `;
       
-      return {
-        id: result.data.id,
-        status,
-        name: result.data.data.name,
-        email: result.data.data.email,
-        message: result.data.data.message,
-        service: result.data.data.service,
-        createdAt: result.data.data.createdAt
-      };
+      const result = await client.query(query);
+      const document = extractFaunaData(result)[0];
+      return document ? { id: document.ref.id, ...document.data } : null;
     } catch (error) {
       return handleFaunaError(error, null);
     }
