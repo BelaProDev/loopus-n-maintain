@@ -9,8 +9,9 @@ export const contactQueries = {
 
     try {
       const result = await client.query(fql`
-        let collection = Collection.byName(${service + "_messages"})!
-        collection!.documents().map(doc => doc.data)
+        Collection.byName(${service + "_messages"})!.documents().map(
+          doc => doc.data
+        )
       `);
       return result.data;
     } catch (error) {
@@ -30,8 +31,10 @@ export const contactQueries = {
       };
 
       const result = await client.query(fql`
-        let collection = Collection.byName(${data.service + "_messages"})!
-        collection!.create({ data: ${messageData} })
+        Document.create(
+          Collection.byName(${data.service + "_messages"})!,
+          { data: ${messageData} }
+        )
       `);
       return result;
     } catch (error) {
@@ -45,8 +48,7 @@ export const contactQueries = {
 
     try {
       const result = await client.query(fql`
-        let collection = Collection.byName(${service + "_messages"})!
-        let doc = collection!.firstWhere(.id == ${id})
+        let doc = Document.byId(Collection.byName(${service + "_messages"})!, ${id})!
         doc.update({ data: { status: ${status} } })
       `);
       return result;
