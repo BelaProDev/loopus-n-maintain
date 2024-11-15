@@ -12,7 +12,7 @@ const getFaunaClient = () => {
 
 const hashPassword = (password: string): string => {
   const hash = SHA256(password).toString().toLowerCase();
-  console.log('Server generated hash:', hash);
+  console.log('[Auth Function] Server generated hash:', hash);
   return hash;
 };
 
@@ -34,10 +34,10 @@ const handler: Handler = async (event) => {
       };
     }
 
-    console.log('Received login attempt for email:', email);
+    console.log('[Auth Function] Login attempt:', { email, action });
     const client = getFaunaClient();
     const hashedPassword = hashPassword(password);
-    console.log('Server hashed password:', hashedPassword);
+    console.log('[Auth Function] Attempting query with hash:', hashedPassword);
 
     if (action === 'validateAdmin') {
       try {
@@ -46,17 +46,17 @@ const handler: Handler = async (event) => {
         `;
         
         const result = await client.query(query);
-        console.log('Fauna query result:', result);
+        console.log('[Auth Function] Query result:', JSON.stringify(result, null, 2));
         
         if (!result.data) {
-          console.log('No matching user found');
+          console.log('[Auth Function] No matching user found');
           return {
             statusCode: 401,
             body: JSON.stringify({ error: 'Invalid credentials' }),
           };
         }
 
-        console.log('User authenticated successfully');
+        console.log('[Auth Function] User authenticated successfully');
         return {
           statusCode: 200,
           body: JSON.stringify({ 
@@ -68,7 +68,7 @@ const handler: Handler = async (event) => {
           }),
         };
       } catch (faunaError) {
-        console.error('Fauna query error:', faunaError);
+        console.error('[Auth Function] Fauna query error:', faunaError);
         return {
           statusCode: 401,
           body: JSON.stringify({ error: 'Invalid credentials' }),
@@ -81,7 +81,7 @@ const handler: Handler = async (event) => {
       body: JSON.stringify({ error: 'Invalid action' }),
     };
   } catch (error) {
-    console.error('Auth error:', error);
+    console.error('[Auth Function] Auth error:', error);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: 'Internal server error', details: error.message }),
