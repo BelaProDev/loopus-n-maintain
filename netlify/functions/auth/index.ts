@@ -11,7 +11,9 @@ const getFaunaClient = () => {
 };
 
 const hashPassword = (password: string): string => {
-  return SHA256(password).toString().toLowerCase();
+  const hash = SHA256(password).toString().toLowerCase();
+  console.log('Server generated hash:', hash);
+  return hash;
 };
 
 const handler: Handler = async (event) => {
@@ -32,9 +34,10 @@ const handler: Handler = async (event) => {
       };
     }
 
+    console.log('Received login attempt for email:', email);
     const client = getFaunaClient();
     const hashedPassword = hashPassword(password);
-    console.log('Server hashed password:', hashedPassword); // Debug log
+    console.log('Server hashed password:', hashedPassword);
 
     if (action === 'validateAdmin') {
       try {
@@ -43,15 +46,17 @@ const handler: Handler = async (event) => {
         `;
         
         const result = await client.query(query);
-        console.log('Fauna query result:', result); // Debug log
+        console.log('Fauna query result:', result);
         
         if (!result.data) {
+          console.log('No matching user found');
           return {
             statusCode: 401,
             body: JSON.stringify({ error: 'Invalid credentials' }),
           };
         }
 
+        console.log('User authenticated successfully');
         return {
           statusCode: 200,
           body: JSON.stringify({ 

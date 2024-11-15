@@ -2,11 +2,13 @@ import { SHA256 } from 'crypto-js';
 import { authQueries } from '../fauna/authQueries';
 
 export const validateCredentials = async (email: string, password: string) => {
+  console.log('Attempting to validate credentials for:', email);
   const hashedPassword = hashPassword(password);
-  console.log('Client hashed password:', hashedPassword); // Debug log
+  console.log('Client hashed password:', hashedPassword);
   const user = await authQueries.validateUser(email, hashedPassword);
   
   if (!user) {
+    console.log('No user found with provided credentials');
     throw new Error('Invalid credentials');
   }
 
@@ -14,7 +16,9 @@ export const validateCredentials = async (email: string, password: string) => {
 };
 
 export const hashPassword = (password: string): string => {
-  return SHA256(password).toString().toLowerCase();
+  const hash = SHA256(password).toString().toLowerCase();
+  console.log('Client generated hash:', hash);
+  return hash;
 };
 
 export const createSession = (email: string) => {
