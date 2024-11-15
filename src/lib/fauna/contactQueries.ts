@@ -11,7 +11,7 @@ export const contactQueries = {
     try {
       const collectionName = `${service}_messages`;
       const result = await client.query(
-        fql`Collection.byName(${collectionName}).all().documents()`
+        fql`Collection.byName(${collectionName})!.all().documents()`
       );
       return extractFaunaData(result);
     } catch (error) {
@@ -35,7 +35,7 @@ export const contactQueries = {
 
       const collectionName = `${data.service}_messages`;
       const result = await client.query(
-        fql`Collection.byName(${collectionName}).create({ data: ${messageData} })`
+        fql`Collection.byName(${collectionName})!.create({ data: ${JSON.stringify(messageData)} })`
       );
       
       const document = extractFaunaData(result)[0];
@@ -52,7 +52,7 @@ export const contactQueries = {
     try {
       const collectionName = `${service}_messages`;
       const result = await client.query(
-        fql`Collection.byName(${collectionName}).document(${id}).update({ data: { status: ${status} } })`
+        fql`Collection.byName(${collectionName})!.document(${id})!.update({ data: { status: ${JSON.stringify(status)} } })`
       );
       
       const document = extractFaunaData(result)[0];
