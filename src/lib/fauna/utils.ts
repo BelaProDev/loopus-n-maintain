@@ -46,11 +46,6 @@ export const extractFaunaData = <T>(response: FaunaResponse<T>): FaunaDocument<T
     return normalized ? [normalized] : [];
   }
 
-  // Handle array response
-  if (Array.isArray(response)) {
-    return response.map((item) => normalizeDocument<T>(item));
-  }
-
   return [];
 };
 
@@ -77,7 +72,6 @@ const normalizeDocData = (doc: Record<string, any>): any => {
     
     if (value && typeof value === 'object') {
       if ('@time' in value) {
-        // Convert Fauna Time objects to ISO strings
         normalized[key] = new Date(value['@time']).toISOString();
       } else if ('@int' in value) {
         normalized[key] = parseInt(value['@int'], 10);
@@ -94,9 +88,4 @@ const normalizeDocData = (doc: Record<string, any>): any => {
   }
   
   return normalized;
-};
-
-export const handleFaunaError = (error: any, fallbackData: any) => {
-  console.error('Fauna error:', error);
-  return fallbackData;
 };
