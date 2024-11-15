@@ -30,3 +30,26 @@ export interface ContactMessage {
   createdAt?: string;
   status: 'new' | 'read' | 'archived';
 }
+
+export interface EmailUser {
+  email: string;
+  password?: string;
+  type: string;
+  name: string;
+  role?: string;
+}
+
+export interface NavigationLink {
+  id?: string;
+  label: string;
+  url: string;
+  location: 'header' | 'footer';
+}
+
+export interface WhatsAppNumbers {
+  electrics: string;
+  plumbing: string;
+  ironwork: string;
+  woodwork: string;
+  architecture: string;
+}

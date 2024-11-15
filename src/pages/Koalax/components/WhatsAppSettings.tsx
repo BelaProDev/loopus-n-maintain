@@ -56,7 +56,7 @@ const WhatsAppSettings = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {["electrics", "plumbing", "ironwork", "woodwork", "architecture"].map((service) => (
             <div key={service} className="space-y-2">
-              <Label htmlFor={service} className="capitalize">
+              <Label htmlFor={service}>
                 {t(`services:${service}.title`)} WhatsApp
               </Label>
               <Input
