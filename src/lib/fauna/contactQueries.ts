@@ -9,11 +9,15 @@ export const contactQueries = {
 
     try {
       const result = await client.query(fql`
-        Collection.byName(${service + "_messages"})!.documents().map(
-          doc => doc.data
-        )
+        let messages = Collection.byName(${service + "_messages"})!.documents()
+        messages.map(message => {
+          {
+            id: message.id,
+            ...message.data
+          }
+        })
       `);
-      return result.data;
+      return result.data || [];
     } catch (error) {
       return handleFaunaError(error, []);
     }
@@ -31,12 +35,16 @@ export const contactQueries = {
       };
 
       const result = await client.query(fql`
-        Collection.byName(${data.service + "_messages"})!
-        .create({
+        let collection = Collection.byName(${data.service + "_messages"})!
+        let doc = collection.create({
           data: ${messageData}
         })
+        {
+          id: doc.id,
+          ...doc.data
+        }
       `);
-      return result;
+      return result.data;
     } catch (error) {
       return handleFaunaError(error, null);
     }
@@ -48,10 +56,19 @@ export const contactQueries = {
 
     try {
       const result = await client.query(fql`
-        let doc = Document.byId(Collection.byName(${service + "_messages"})!, ${id})!
-        doc.update({ data: { status: ${status} } })
+        let collection = Collection.byName(${service + "_messages"})!
+        let doc = collection.documents().firstWhere(.id == ${id})!
+        let updated = doc.update({
+          data: {
+            status: ${status}
+          }
+        })
+        {
+          id: updated.id,
+          ...updated.data
+        }
       `);
-      return result;
+      return result.data;
     } catch (error) {
       return handleFaunaError(error, null);
     }
