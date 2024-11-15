@@ -1,90 +1,57 @@
-import { QueryValue, QueryValueObject } from 'fauna';
+import { Client } from 'fauna';
 
 interface FaunaDocument<T> {
   ref: { id: string };
   data: T;
+  ts?: { isoString?: string };
 }
 
-interface FaunaResponse {
+interface FaunaResponse<T> {
   data: {
-    data?: any[];
-    coll?: { name: string };
-    id?: string;
-    ts?: any;
-    [key: string]: any;
-  };
+    data?: T[];
+  } & T;
+  static_type?: string;
 }
 
-export const extractFaunaData = <T>(result: QueryValue): FaunaDocument<T>[] => {
-  if (!result || typeof result !== 'object') return [];
-  
-  const resultObj = result as FaunaResponse;
-  
-  // Handle the new response format where data is nested in data.data
-  if (resultObj.data?.data && Array.isArray(resultObj.data.data)) {
-    return resultObj.data.data.map((item: any) => ({
-      ref: { id: item.id },
-      data: normalizeDocument(item)
-    }));
-  }
+export const extractFaunaData = <T>(response: FaunaResponse<T>): FaunaDocument<T>[] => {
+  if (!response) return [];
 
-  // Handle single document response (e.g., from create/update operations)
-  if (resultObj.data?.id) {
-    return [{
-      ref: { id: resultObj.data.id },
-      data: normalizeDocument(resultObj.data)
-    }];
-  }
-
-  // Handle Set response (keeping for backwards compatibility)
-  if (resultObj.data?.['@set']?.data) {
-    return resultObj.data['@set'].data.map((item: any) => ({
-      ref: { id: item['@doc'].id },
-      data: normalizeDocument(item['@doc'])
-    }));
+  // Handle Set response format
+  if (response.data?.data) {
+    return response.data.data.map(normalizeDocument);
   }
 
   // Handle direct document response
-  if (resultObj.data?.['@doc']) {
-    return [{
-      ref: { id: resultObj.data['@doc'].id },
-      data: normalizeDocument(resultObj.data['@doc'])
-    }];
+  if (response.data) {
+    const normalized = normalizeDocument(response.data);
+    return normalized ? [normalized] : [];
   }
 
   // Handle array response
-  if (Array.isArray(resultObj.data)) {
-    return resultObj.data.map((item: any) => ({
-      ref: { id: item['@doc']?.id || item.id },
-      data: normalizeDocument(item['@doc'] || item)
-    }));
+  if (Array.isArray(response)) {
+    return response.map(normalizeDocument);
   }
 
   return [];
 };
 
-const normalizeDocument = (doc: any): any => {
-  const normalized = { ...doc };
-  
-  // Remove Fauna metadata fields
-  delete normalized.id;
-  delete normalized.coll;
-  delete normalized.ts;
-  
-  // Convert Fauna time types to ISO strings
-  Object.keys(normalized).forEach(key => {
-    if (normalized[key]?.isoString) {
-      normalized[key] = normalized[key].isoString;
-    }
-    if (normalized[key]?.['@time']) {
-      normalized[key] = new Date(normalized[key]['@time']).toISOString();
-    }
-  });
+const normalizeDocument = <T>(doc: any): FaunaDocument<T> => {
+  if (!doc) return null as any;
+
+  const normalized: FaunaDocument<T> = {
+    ref: { id: doc.id || doc.ref?.id },
+    data: { ...doc }
+  };
+
+  // Remove Fauna metadata from data
+  delete normalized.data.id;
+  delete normalized.data.ref;
+  delete normalized.data.ts;
+  delete normalized.data.coll;
 
   return normalized;
 };
 
-export const handleFaunaError = (error: any) => {
-  console.error('Fauna query error:', error);
-  throw error;
+export const handleFaunaError = (error: any, fallbackData: any) => {
+  return fallbackData;
 };

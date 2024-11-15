@@ -9,12 +9,9 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
     try {
       const query = fql`clients.all()`;
       const result = await client.query(query);
-      console.log('Raw Clients Response:', JSON.stringify(result, null, 2));
       const documents = extractFaunaData<Client>(result);
-      console.log('Extracted Clients:', documents);
       return documents.map(doc => ({ id: doc.ref.id, ...doc.data }));
     } catch (error) {
-      console.error('Failed to fetch clients:', error);
       return [];
     }
   },
@@ -35,11 +32,9 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
         })
       `;
       const result = await client.query(query);
-      console.log('Create Client Response:', JSON.stringify(result, null, 2));
       const document = extractFaunaData<Client>(result)[0];
       return document ? { id: document.ref.id, ...document.data } : null;
     } catch (error) {
-      console.error('Failed to create client:', error);
       return null;
     }
   },
@@ -49,12 +44,9 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
     try {
       const query = fql`providers.all()`;
       const result = await client.query(query);
-      console.log('Raw Providers Response:', JSON.stringify(result, null, 2));
       const documents = extractFaunaData<Provider>(result);
-      console.log('Extracted Providers:', documents);
       return documents.map(doc => ({ id: doc.ref.id, ...doc.data }));
     } catch (error) {
-      console.error('Failed to fetch providers:', error);
       return [];
     }
   },
@@ -74,11 +66,9 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
         })
       `;
       const result = await client.query(query);
-      console.log('Create Provider Response:', JSON.stringify(result, null, 2));
       const document = extractFaunaData<Provider>(result)[0];
       return document ? { id: document.ref.id, ...document.data } : null;
     } catch (error) {
-      console.error('Failed to create provider:', error);
       return null;
     }
   },
@@ -88,12 +78,9 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
     try {
       const query = fql`invoices.all()`;
       const result = await client.query(query);
-      console.log('Raw Invoices Response:', JSON.stringify(result, null, 2));
       const documents = extractFaunaData<Invoice>(result);
-      console.log('Extracted Invoices:', documents);
       return documents.map(doc => ({ id: doc.ref.id, ...doc.data }));
     } catch (error) {
-      console.error('Failed to fetch invoices:', error);
       return [];
     }
   },
@@ -116,11 +103,9 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
         })
       `;
       const result = await client.query(query);
-      console.log('Create Invoice Response:', JSON.stringify(result, null, 2));
       const document = extractFaunaData<Invoice>(result)[0];
       return document ? { id: document.ref.id, ...document.data } : null;
     } catch (error) {
-      console.error('Failed to create invoice:', error);
       return null;
     }
   },
@@ -129,11 +114,9 @@ const createBusinessQueries = (client: ReturnType<typeof getFaunaClient>) => ({
     if (!client) return false;
     try {
       const query = fql`invoices.byId(${id}).delete()`;
-      const result = await client.query(query);
-      console.log('Delete Invoice Response:', JSON.stringify(result, null, 2));
+      await client.query(query);
       return true;
     } catch (error) {
-      console.error('Failed to delete invoice:', error);
       return false;
     }
   }

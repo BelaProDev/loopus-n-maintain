@@ -16,11 +16,8 @@ export const emailQueries = {
         emails.all()
       `;
       const result = await client.query(query);
-      console.log('Raw Fauna Response:', JSON.stringify(result, null, 2));
-      console.log('Extracted Data:', JSON.stringify(extractFaunaData(result), null, 2));
       return extractFaunaData(result);
     } catch (error) {
-      console.error('Fauna query error:', error);
       return fallbackQueries.getAllEmails();
     }
   },
@@ -44,11 +41,8 @@ export const emailQueries = {
       `;
       
       const result = await client.query(query);
-      console.log('Create Email Raw Response:', JSON.stringify(result, null, 2));
-      console.log('Create Email Extracted Data:', JSON.stringify(extractFaunaData(result)[0], null, 2));
       return extractFaunaData(result)[0];
     } catch (error) {
-      console.error('Fauna create error:', error);
       return fallbackQueries.createEmail(data);
     }
   },
@@ -68,8 +62,6 @@ export const emailQueries = {
       `;
       
       const result = await client.query(query);
-      console.log('Update Email Raw Response:', JSON.stringify(result, null, 2));
-      console.log('Update Email Extracted Data:', JSON.stringify(extractFaunaData(result)[0], null, 2));
       
       if (!result) {
         throw new Error('Email not found');
@@ -77,7 +69,6 @@ export const emailQueries = {
       
       return extractFaunaData(result)[0];
     } catch (error) {
-      console.error('Fauna update error:', error);
       return fallbackQueries.updateEmail(id, data);
     }
   },
@@ -93,11 +84,9 @@ export const emailQueries = {
         emails.byId(${id}).delete()
       `;
       
-      const result = await client.query(query);
-      console.log('Delete Email Raw Response:', JSON.stringify(result, null, 2));
+      await client.query(query);
       return { success: true };
     } catch (error) {
-      console.error('Fauna delete error:', error);
       return fallbackQueries.deleteEmail(id);
     }
   }
