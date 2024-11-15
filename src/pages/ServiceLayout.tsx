@@ -30,7 +30,7 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
   const { toast } = useToast();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const { t } = useTranslation(["common", "services", "auth"]);
+  const { t } = useTranslation(["common", "services"]);
 
   const { data: whatsappNumbers } = useQuery({
     queryKey: ['whatsapp-numbers'],
@@ -58,7 +58,6 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
     window.open(whatsappUrl, "_blank");
   };
 
-  // Convert title to proper service type
   const serviceType = title.toLowerCase() as ContactMessage['service'];
 
   return (
@@ -77,7 +76,9 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
         )}
 
         <div className="glass-effect rounded-lg p-6 md:p-8 mb-8">
-          <h1 className="text-3xl md:text-4xl font-serif text-[#2E5984] mb-4">{title}</h1>
+          <h1 className="text-3xl md:text-4xl font-serif text-[#2E5984] mb-4">
+            {t(`services:${serviceType}.title`)}
+          </h1>
           <p className="text-base md:text-lg text-gray-700">{description}</p>
         </div>
 
@@ -112,9 +113,7 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
             </div>
           </Card>
 
-          <ServiceForm 
-            service={serviceType}
-          />
+          <ServiceForm service={serviceType} />
         </div>
 
         <FAQSection faqs={faqs} />
