@@ -1,6 +1,6 @@
 export interface WhatsAppNumbers {
   [key: string]: string;
-  electrics: string;
+  electrical: string;
   plumbing: string;
   ironwork: string;
   woodwork: string;
@@ -28,7 +28,7 @@ export interface EmailData {
 
 export interface ContactMessage {
   id?: string;
-  service: 'electrics' | 'plumbing' | 'ironwork' | 'woodwork' | 'architecture';
+  service: 'electrical' | 'plumbing' | 'ironwork' | 'woodwork' | 'architecture';
   name: string;
   email: string;
   message: string;

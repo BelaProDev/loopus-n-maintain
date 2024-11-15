@@ -1,27 +1,32 @@
-import { faunaClient } from "./client";
+import { getFaunaClient, fql } from "./client";
 import { WhatsAppNumbers, NavigationLink } from "./types";
 
 export const settingsQueries = {
   getWhatsAppNumbers: async (): Promise<WhatsAppNumbers> => {
     try {
-      const result = await faunaClient.query({
-        collection: "whatsapp_numbers",
-        query: `
-          let doc = whatsapp_numbers.all().first()
+      const client = getFaunaClient();
+      if (!client) {
+        throw new Error('Fauna client not initialized');
+      }
+
+      const result = await client.query({
+        query: fql`
+          let doc = whatsapp_numbers.all().first()!
           {
-            electrics: doc!.electrics,
-            plumbing: doc!.plumbing,
-            ironwork: doc!.ironwork,
-            woodwork: doc!.woodwork,
-            architecture: doc!.architecture
+            electrical: doc.electrical,
+            plumbing: doc.plumbing,
+            ironwork: doc.ironwork,
+            woodwork: doc.woodwork,
+            architecture: doc.architecture
           }
         `
       });
+
       return result.data;
     } catch (error) {
       console.error('Error fetching WhatsApp numbers:', error);
       return {
-        electrics: "",
+        electrical: "",
         plumbing: "",
         ironwork: "",
         woodwork: "",
@@ -32,11 +37,15 @@ export const settingsQueries = {
 
   updateWhatsAppNumbers: async (numbers: WhatsAppNumbers) => {
     try {
-      const result = await faunaClient.query({
-        collection: "whatsapp_numbers",
-        query: `
-          let doc = whatsapp_numbers.all().first()
-          doc!.update(${JSON.stringify(numbers)})
+      const client = getFaunaClient();
+      if (!client) {
+        throw new Error('Fauna client not initialized');
+      }
+
+      const result = await client.query({
+        query: fql`
+          let doc = whatsapp_numbers.all().first()!
+          doc.update(${numbers})
         `
       });
       return result.data;
@@ -48,13 +57,19 @@ export const settingsQueries = {
 
   getNavigationLinks: async (): Promise<NavigationLink[]> => {
     try {
-      const result = await faunaClient.query({
-        collection: "navigation_links",
-        query: `navigation_links.all().map(link => {
-          label: link.label,
-          url: link.url,
-          location: link.location
-        })`
+      const client = getFaunaClient();
+      if (!client) {
+        throw new Error('Fauna client not initialized');
+      }
+
+      const result = await client.query({
+        query: fql`
+          navigation_links.all().map(link => {
+            label: link.label,
+            url: link.url,
+            location: link.location
+          })
+        `
       });
       return Array.isArray(result.data) ? result.data : [];
     } catch (error) {
@@ -65,9 +80,15 @@ export const settingsQueries = {
 
   updateNavigationLink: async (link: NavigationLink) => {
     try {
-      const result = await faunaClient.query({
-        collection: "navigation_links",
-        query: `navigation_links.create(${JSON.stringify(link)})`
+      const client = getFaunaClient();
+      if (!client) {
+        throw new Error('Fauna client not initialized');
+      }
+
+      const result = await client.query({
+        query: fql`
+          navigation_links.create(${link})
+        `
       });
       return result.data;
     } catch (error) {

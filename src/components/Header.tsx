@@ -12,7 +12,7 @@ const maintenanceFields = [
   { name: "electrical", path: "/electrics" },
   { name: "plumbing", path: "/plumbing" },
   { name: "ironwork", path: "/ironwork" },
-  { name: "woodworking", path: "/woodwork" },
+  { name: "woodwork", path: "/woodwork" },
   { name: "architecture", path: "/architecture" },
 ];
 
