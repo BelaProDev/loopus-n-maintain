@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { businessQueries } from "@/lib/fauna/business";
-import InvoiceDialog from "../InvoiceDialog";
-import ImportInvoiceDialog from "@/components/business/invoice/ImportInvoiceDialog";
+import InvoiceDialog from "./invoice/InvoiceDialog";
+import ImportInvoiceDialog from "./invoice/ImportInvoiceDialog";
 import { useTranslation } from "react-i18next";
 import { useInvoiceOperations } from "@/hooks/useInvoiceOperations";
-import InvoiceTable from "./InvoiceTable";
-import InvoiceToolbar from "./InvoiceToolbar";
+import InvoiceTable from "./invoice/InvoiceTable";
+import InvoiceToolbar from "./invoice/InvoiceToolbar";
 
 const InvoiceList = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -21,7 +21,6 @@ const InvoiceList = () => {
       const data = await businessQueries.getInvoices();
       return data.map(invoice => ({
         ...invoice,
-        // Ensure dates are proper ISO strings
         date: new Date(invoice.date).toISOString(),
         dueDate: new Date(invoice.dueDate).toISOString()
       }));

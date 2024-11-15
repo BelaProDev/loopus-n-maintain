@@ -1,23 +1,12 @@
-import { format, isValid, parseISO } from "date-fns";
-
-export const formatSafeDate = (dateString: string | null | undefined): string => {
-  if (!dateString) return 'Invalid date';
+export const formatSafeDate = (date: string | Date | null | undefined): string => {
+  if (!date) return '-';
+  
   try {
-    // First try parsing as ISO string
-    let date = parseISO(dateString);
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    if (isNaN(dateObj.getTime())) return '-';
     
-    // If invalid, try parsing as timestamp
-    if (!isValid(date)) {
-      date = new Date(Number(dateString));
-    }
-    
-    // If still invalid, try parsing as regular date string
-    if (!isValid(date)) {
-      date = new Date(dateString);
-    }
-    
-    return isValid(date) ? format(date, 'PPP') : 'Invalid date';
+    return dateObj.toLocaleDateString();
   } catch (error) {
-    return 'Invalid date';
+    return '-';
   }
 };
