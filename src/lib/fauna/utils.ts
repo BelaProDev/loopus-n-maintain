@@ -9,7 +9,7 @@ export const extractFaunaData = <T>(result: QueryValue): FaunaDocument<T>[] => {
   if (!result || typeof result !== 'object') return [];
   
   const resultObj = result as QueryValueObject;
-
+  
   // Handle the new response format where data is nested in data.data
   if (resultObj.data?.data && Array.isArray(resultObj.data.data)) {
     return resultObj.data.data.map((item: any) => ({
