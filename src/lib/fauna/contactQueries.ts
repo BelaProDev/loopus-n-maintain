@@ -1,6 +1,6 @@
 import { getFaunaClient, handleFaunaError } from './client';
 import { ContactMessage } from './types';
-import { fql } from 'fauna';
+import { fql, Time } from 'fauna';
 import { extractFaunaData } from './utils';
 
 export const contactQueries = {
