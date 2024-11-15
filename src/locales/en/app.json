@@ -1,0 +1,11 @@
+{
+  "name": "Loopus & Maintain",
+  "description": "Professional maintenance services for your property",
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "contact": "Contact",
+    "admin": "Admin Loopus",
+    "docs": "Documentation"
+  }
+}

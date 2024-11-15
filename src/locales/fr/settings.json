@@ -1,0 +1,35 @@
+{
+  "title": "Paramètres du Site",
+  "whatsapp": {
+    "title": "Numéros WhatsApp",
+    "update": "Mettre à jour les numéros WhatsApp",
+    "updateSuccess": "Numéros WhatsApp mis à jour avec succès",
+    "updateError": "Échec de la mise à jour des numéros WhatsApp",
+    "placeholder": "Entrez le numéro WhatsApp pour {{service}}"
+  },
+  "navigation": {
+    "title": "Liens de Navigation",
+    "add": "Ajouter un Lien",
+    "edit": "Modifier le Lien",
+    "remove": "Supprimer le Lien",
+    "url": "URL",
+    "label": "Libellé",
+    "location": {
+      "title": "Emplacement",
+      "header": "En-tête",
+      "footer": "Pied de page"
+    },
+    "updateSuccess": "Liens de navigation mis à jour avec succès",
+    "updateError": "Échec de la mise à jour des liens de navigation"
+  },
+  "logo": {
+    "title": "Paramètres du Logo",
+    "current": "Logo Actuel",
+    "upload": "Télécharger un Nouveau Logo",
+    "remove": "Supprimer le Logo",
+    "uploadSuccess": "Logo téléchargé avec succès",
+    "uploadError": "Échec du téléchargement du logo",
+    "removeSuccess": "Logo supprimé avec succès",
+    "removeError": "Échec de la suppression du logo"
+  }
+}

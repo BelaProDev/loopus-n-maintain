@@ -1,0 +1,26 @@
+{
+  "buttons": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "submit": "Submit",
+    "submitting": "Submitting...",
+    "learnMore": "Learn More"
+  },
+  "status": {
+    "loading": "Loading...",
+    "success": "Success",
+    "error": "Error",
+    "offline": "Offline",
+    "required": "Required",
+    "optional": "Optional",
+    "na": "N/A"
+  },
+  "language": {
+    "change": "Change Language",
+    "en": "English",
+    "es": "Spanish",
+    "fr": "French"
+  }
+}

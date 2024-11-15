@@ -12,7 +12,7 @@ import { NavigationLink } from "@/lib/fauna/types";
 const NavigationSettings = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { t } = useTranslation(["common", "admin"]);
+  const { t } = useTranslation(["settings", "ui"]);
 
   const { data: links, isLoading } = useQuery({
     queryKey: ['navigation-links'],
@@ -24,14 +24,14 @@ const NavigationSettings = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['navigation-links'] });
       toast({
-        title: t("common:common.success"),
-        description: t("admin:navigationUpdateSuccess"),
+        title: t("ui:status.success"),
+        description: t("settings:navigation.updateSuccess"),
       });
     },
     onError: () => {
       toast({
-        title: t("common:common.error"),
-        description: t("admin:navigationUpdateError"),
+        title: t("ui:status.error"),
+        description: t("settings:navigation.updateError"),
         variant: "destructive",
       });
     }
@@ -48,48 +48,48 @@ const NavigationSettings = () => {
     updateMutation.mutate(newLink);
   };
 
-  if (isLoading) return <div>{t("common:common.loading")}</div>;
+  if (isLoading) return <div>{t("ui:status.loading")}</div>;
 
   return (
     <Card className="p-6">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="label">{t("admin:navigationLabel")}</Label>
+            <Label htmlFor="label">{t("settings:navigation.label")}</Label>
             <Input
               id="label"
               name="label"
-              placeholder={t("admin:navigationLabelPlaceholder")}
+              placeholder={t("settings:navigation.label")}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="url">{t("admin:navigationUrl")}</Label>
+            <Label htmlFor="url">{t("settings:navigation.url")}</Label>
             <Input
               id="url"
               name="url"
-              placeholder={t("admin:navigationUrlPlaceholder")}
+              placeholder={t("settings:navigation.url")}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="location">{t("admin:navigationLocation")}</Label>
+            <Label htmlFor="location">{t("settings:navigation.location.title")}</Label>
             <Select name="location" defaultValue="header">
               <SelectTrigger>
-                <SelectValue placeholder={t("admin:navigationLocationPlaceholder")} />
+                <SelectValue placeholder={t("settings:navigation.location.title")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="header">{t("admin:navigationLocationHeader")}</SelectItem>
-                <SelectItem value="footer">{t("admin:navigationLocationFooter")}</SelectItem>
+                <SelectItem value="header">{t("settings:navigation.location.header")}</SelectItem>
+                <SelectItem value="footer">{t("settings:navigation.location.footer")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
         <Button type="submit" disabled={updateMutation.isPending}>
-          {t("admin:navigationAdd")}
+          {t("settings:navigation.add")}
         </Button>
       </form>
 
       <div className="mt-6">
-        <h3 className="text-lg font-semibold mb-4">{t("admin:navigationCurrentLinks")}</h3>
+        <h3 className="text-lg font-semibold mb-4">{t("settings:navigation.title")}</h3>
         <div className="space-y-2">
           {links?.map((link, index) => (
             <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">

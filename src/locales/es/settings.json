@@ -1,0 +1,35 @@
+{
+  "title": "Configuración del Sitio",
+  "whatsapp": {
+    "title": "Números de WhatsApp",
+    "update": "Actualizar números de WhatsApp",
+    "updateSuccess": "Números de WhatsApp actualizados correctamente",
+    "updateError": "Error al actualizar los números de WhatsApp",
+    "placeholder": "Ingrese el número de WhatsApp para {{service}}"
+  },
+  "navigation": {
+    "title": "Enlaces de Navegación",
+    "add": "Agregar Enlace",
+    "edit": "Editar Enlace",
+    "remove": "Eliminar Enlace",
+    "url": "URL",
+    "label": "Etiqueta",
+    "location": {
+      "title": "Ubicación",
+      "header": "Encabezado",
+      "footer": "Pie de página"
+    },
+    "updateSuccess": "Enlaces de navegación actualizados correctamente",
+    "updateError": "Error al actualizar los enlaces de navegación"
+  },
+  "logo": {
+    "title": "Configuración del Logo",
+    "current": "Logo Actual",
+    "upload": "Subir Nuevo Logo",
+    "remove": "Eliminar Logo",
+    "uploadSuccess": "Logo subido correctamente",
+    "uploadError": "Error al subir el logo",
+    "removeSuccess": "Logo eliminado correctamente",
+    "removeError": "Error al eliminar el logo"
+  }
+}
