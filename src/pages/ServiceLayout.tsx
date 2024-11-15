@@ -30,7 +30,7 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
   const { toast } = useToast();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const { t } = useTranslation(["common", "services"]);
+  const { t } = useTranslation(["common", "services", "auth"]);
 
   const { data: whatsappNumbers } = useQuery({
     queryKey: ['whatsapp-numbers'],
