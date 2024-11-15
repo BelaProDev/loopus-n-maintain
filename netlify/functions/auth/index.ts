@@ -41,8 +41,21 @@ const handler: Handler = async (event) => {
 
     if (action === 'validateAdmin') {
       try {
+        // Log the collection contents for debugging
+        const debugQuery = fql`admin_koalax.all()`;
+        const debugResult = await client.query(debugQuery);
+        console.log('[Auth Function] All admin users:', JSON.stringify(debugResult, null, 2));
+
+        // Original authentication query
         const query = fql`
-          admin_koalax.firstWhere(.email == ${email} && .password == ${hashedPassword})
+          let user = admin_koalax.firstWhere(.email == ${email})
+          if (user == null) {
+            null
+          } else if (user.password == ${hashedPassword}) {
+            user
+          } else {
+            null
+          }
         `;
         
         const result = await client.query(query);
