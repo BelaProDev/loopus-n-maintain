@@ -1,4 +1,4 @@
-import { getFaunaClient, handleFaunaError } from './client';
+import { getFaunaClient } from './client';
 import { ContactMessage } from './types';
 import { fql } from 'fauna';
 import { extractFaunaData } from './utils';
@@ -14,7 +14,7 @@ export const contactQueries = {
       );
       return extractFaunaData(result);
     } catch (error) {
-      return handleFaunaError(error, []);
+      return [];
     }
   },
 
@@ -39,7 +39,7 @@ export const contactQueries = {
       const document = extractFaunaData(result)[0];
       return document ? { id: document.ref.id, ...document.data } : null;
     } catch (error) {
-      return handleFaunaError(error, null);
+      return null;
     }
   },
 
@@ -55,7 +55,7 @@ export const contactQueries = {
       const document = extractFaunaData(result)[0];
       return document ? { id: document.ref.id, ...document.data } : null;
     } catch (error) {
-      return handleFaunaError(error, null);
+      return null;
     }
   }
 };
