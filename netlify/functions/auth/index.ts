@@ -41,12 +41,11 @@ const handler: Handler = async (event) => {
 
     if (action === 'validateAdmin') {
       try {
-        // Log the collection contents for debugging
+        // Debug admin users collection
         const debugQuery = fql`admin_koalax.all()`;
         const debugResult = await client.query(debugQuery);
         console.log('[Auth Function] All admin users:', JSON.stringify(debugResult, null, 2));
 
-        // Updated authentication query with proper null handling
         const query = fql`
           let user = admin_koalax.firstWhere(.email == ${email})
           if (user != null && user!.password == ${hashedPassword}) {
@@ -57,29 +56,72 @@ const handler: Handler = async (event) => {
         `;
         
         const result = await client.query(query);
-        console.log('[Auth Function] Query result:', JSON.stringify(result, null, 2));
+        console.log('[Auth Function] Admin query result:', JSON.stringify(result, null, 2));
         
         if (!result.data) {
-          console.log('[Auth Function] No matching user found');
+          console.log('[Auth Function] No matching admin user found');
           return {
             statusCode: 401,
             body: JSON.stringify({ error: 'Invalid credentials' }),
           };
         }
 
-        console.log('[Auth Function] User authenticated successfully');
         return {
           statusCode: 200,
           body: JSON.stringify({ 
             success: true,
             user: {
               email: result.data.email,
-              role: result.data.role
+              role: 'admin'
             }
           }),
         };
       } catch (faunaError) {
-        console.error('[Auth Function] Fauna query error:', faunaError);
+        console.error('[Auth Function] Fauna admin query error:', faunaError);
+        return {
+          statusCode: 401,
+          body: JSON.stringify({ error: 'Invalid credentials' }),
+        };
+      }
+    } else if (action === 'validateUser') {
+      try {
+        // Debug emails collection
+        const debugQuery = fql`emails.all()`;
+        const debugResult = await client.query(debugQuery);
+        console.log('[Auth Function] All email users:', JSON.stringify(debugResult, null, 2));
+
+        const query = fql`
+          let user = emails.firstWhere(.email == ${email})
+          if (user != null && user!.password == ${hashedPassword}) {
+            user
+          } else {
+            null
+          }
+        `;
+        
+        const result = await client.query(query);
+        console.log('[Auth Function] Email user query result:', JSON.stringify(result, null, 2));
+        
+        if (!result.data) {
+          console.log('[Auth Function] No matching email user found');
+          return {
+            statusCode: 401,
+            body: JSON.stringify({ error: 'Invalid credentials' }),
+          };
+        }
+
+        return {
+          statusCode: 200,
+          body: JSON.stringify({ 
+            success: true,
+            user: {
+              email: result.data.email,
+              role: 'user'
+            }
+          }),
+        };
+      } catch (faunaError) {
+        console.error('[Auth Function] Fauna email query error:', faunaError);
         return {
           statusCode: 401,
           body: JSON.stringify({ error: 'Invalid credentials' }),
