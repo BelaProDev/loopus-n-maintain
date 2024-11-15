@@ -6,6 +6,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
@@ -16,7 +17,7 @@ interface EmailDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   editingEmail: Email | null;
-  onSubmit: (e: React.FormEvent) => void;
+  onSubmit: (data: FormData) => void;
   isLoading: boolean;
 }
 
@@ -32,7 +33,7 @@ const EmailDialog = ({
   const { toast } = useToast();
   const { t } = useTranslation(["admin", "common"]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     if (!editingEmail || password) {
@@ -54,36 +55,27 @@ const EmailDialog = ({
         return;
       }
 
-      // Hash the password before submitting
-      const formData = new FormData(e.target as HTMLFormElement);
+      const formData = new FormData(e.currentTarget);
       if (password) {
         formData.set('password', hashPassword(password));
       }
       
-      // Convert FormData to a regular form event
-      const syntheticEvent = {
-        ...e,
-        target: {
-          ...e.target,
-          password: {
-            value: formData.get('password')
-          }
-        }
-      };
-      
-      onSubmit(syntheticEvent);
-    } else {
-      onSubmit(e);
+      onSubmit(formData);
     }
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent aria-describedby="email-dialog-description">
         <DialogHeader>
           <DialogTitle>
             {editingEmail ? t("admin:email.edit") : t("admin:email.add")}
           </DialogTitle>
+          <DialogDescription id="email-dialog-description">
+            {editingEmail 
+              ? t("admin:email.editDescription") 
+              : t("admin:email.addDescription")}
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
