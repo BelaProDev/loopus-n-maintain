@@ -72,7 +72,7 @@ const DropboxExplorer = () => {
           >
             <Award className="w-16 h-16 mx-auto text-purple-600 mb-8" />
             <h1 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600 leading-relaxed">
-              Digital Garden Explorer
+              Dropbox Lens Explorer
             </h1>
             <p className="text-xl text-gray-600 leading-relaxed px-6">
               Welcome to your digital sanctuary. Connect with Dropbox to manage your files.
@@ -103,7 +103,7 @@ const DropboxExplorer = () => {
           <div className="flex items-center gap-4">
             <Award className="w-8 h-8 text-purple-600" />
             <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
-              Digital Garden
+              Dropbox Lens
             </h1>
           </div>
           
