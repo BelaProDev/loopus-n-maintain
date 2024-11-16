@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { useTranslation } from "react-i18next";
 import { useState, useRef } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import Synthesizer from "@/components/audio/Synthesizer";
 
 const Audio = () => {
   const { t } = useTranslation(["tools"]);
@@ -83,11 +84,17 @@ const Audio = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="p-6 hover:shadow-lg transition-shadow">
+          <div className="grid grid-cols-1 gap-6">
+            <Synthesizer />
+
+            <Card className="p-6">
               <div className="space-y-4">
-                <Music className="h-12 w-12 mx-auto text-primary" />
-                <h3 className="text-xl font-semibold text-center">Audio Recorder</h3>
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-semibold flex items-center gap-2">
+                    <Mic className="h-5 w-5" />
+                    Audio Recorder
+                  </h3>
+                </div>
                 <div className="flex justify-center gap-4">
                   {!isRecording ? (
                     <Button
@@ -125,19 +132,15 @@ const Audio = () => {
               </div>
             </Card>
 
-            <Card className="p-6 hover:shadow-lg transition-shadow">
+            <Card className="p-6">
               <div className="space-y-4">
-                <Mic className="h-12 w-12 mx-auto text-primary" />
-                <h3 className="text-xl font-semibold text-center">Voice Effects</h3>
-                <p className="text-center text-gray-600">Coming soon</p>
-              </div>
-            </Card>
-
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <div className="space-y-4">
-                <Speaker className="h-12 w-12 mx-auto text-primary" />
-                <h3 className="text-xl font-semibold text-center">Sound Library</h3>
-                <p className="text-center text-gray-600">Coming soon</p>
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-semibold flex items-center gap-2">
+                    <Speaker className="h-5 w-5" />
+                    Sound Library
+                  </h3>
+                </div>
+                <p className="text-center text-gray-600">Coming soon: Browse and use pre-recorded sounds</p>
               </div>
             </Card>
           </div>
