@@ -1,14 +1,12 @@
 import { Dropbox } from 'dropbox';
 
 const DROPBOX_AUTH_URL = "https://www.dropbox.com/oauth2/authorize";
-const DROPBOX_TOKEN_URL = "https://api.dropboxapi.com/oauth2/token";
 const CLIENT_ID = import.meta.env.VITE_DROPBOX_APP_KEY;
-const CLIENT_SECRET = import.meta.env.VITE_DROPBOX_APP_SECRET;
 
 interface TokenResponse {
   access_token: string;
   refresh_token: string;
-  expires_in: number;
+  expiry: number;
 }
 
 export const dropboxAuth = {
@@ -30,116 +28,47 @@ export const dropboxAuth = {
   },
 
   async handleCallback(code: string): Promise<string> {
-    if (!code || !CLIENT_ID || !CLIENT_SECRET) {
-      throw new Error('Missing required authentication parameters');
+    if (!code) {
+      throw new Error('Authorization code is required');
     }
     
     try {
-      const tokens = await this.exchangeCodeForTokens(code);
-      await this.storeTokens(tokens);
-      return tokens.access_token;
+      const response = await fetch('/.netlify/functions/store-dropbox-token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to exchange code for tokens');
+      }
+
+      const data = await response.json();
+      return data.access_token;
     } catch (error) {
-      console.error('Token exchange error:', error);
-      throw new Error('Failed to complete authentication. Please try again.');
+      console.error('Auth callback error:', error);
+      throw new Error('Authentication failed. Please try again.');
     }
-  },
-
-  async refreshAccessToken(refresh_token: string): Promise<TokenResponse> {
-    if (!CLIENT_ID || !CLIENT_SECRET) {
-      throw new Error('Missing client credentials');
-    }
-
-    const response = await fetch(DROPBOX_TOKEN_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        grant_type: 'refresh_token',
-        refresh_token,
-        client_id: CLIENT_ID,
-        client_secret: CLIENT_SECRET
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to refresh token');
-    }
-
-    return response.json();
-  },
-
-  async exchangeCodeForTokens(code: string): Promise<TokenResponse> {
-    const response = await fetch(DROPBOX_TOKEN_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        code,
-        grant_type: 'authorization_code',
-        client_id: CLIENT_ID,
-        client_secret: CLIENT_SECRET,
-        redirect_uri: this.getRedirectUri()
-      })
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(`Token exchange failed: ${errorData.error_description || 'Unknown error'}`);
-    }
-
-    return response.json();
-  },
-
-  async storeTokens(tokens: TokenResponse) {
-    const expiry = Date.now() + (tokens.expires_in * 1000);
-    
-    const response = await fetch('/.netlify/functions/store-dropbox-token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        access_token: tokens.access_token,
-        refresh_token: tokens.refresh_token,
-        expiry
-      })
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Failed to store tokens');
-    }
-
-    const result = await response.json();
-    if (!result.success) {
-      throw new Error(result.error || 'Failed to store tokens');
-    }
-  },
-
-  getRedirectUri(): string {
-    return `${window.location.origin}/dropbox-explorer/callback`;
   },
 
   async getValidAccessToken(): Promise<string | null> {
     try {
       const response = await fetch('/.netlify/functions/get-dropbox-token');
-      if (!response.ok) return null;
+      if (!response.ok) {
+        const error = await response.json();
+        if (error.code === 'NO_TOKEN') {
+          return null;
+        }
+        throw new Error(error.message);
+      }
       
       const data = await response.json();
-      if (!data.token) return null;
-
-      // If token expires in less than 5 minutes, refresh it
-      if (Date.now() + 300000 > data.expiry) {
-        const newTokens = await this.refreshAccessToken(data.refresh_token);
-        await this.storeTokens(newTokens);
-        return newTokens.access_token;
-      }
-
-      return data.token;
+      return data.access_token;
     } catch (error) {
-      console.error('Error getting access token:', error);
+      console.error('Token retrieval error:', error);
       return null;
     }
   },
@@ -150,19 +79,26 @@ export const dropboxAuth = {
     return new Dropbox({ accessToken });
   },
 
+  getRedirectUri(): string {
+    return `${window.location.origin}/dropbox-explorer/callback`;
+  },
+
   async logout() {
     localStorage.removeItem('dropbox_state');
-    // Clear tokens from backend storage
-    await fetch('/.netlify/functions/store-dropbox-token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        access_token: null,
-        refresh_token: null,
-        expiry: 0
-      })
-    });
+    try {
+      await fetch('/.netlify/functions/store-dropbox-token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          access_token: null,
+          refresh_token: null,
+          expiry: 0
+        })
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   }
 };

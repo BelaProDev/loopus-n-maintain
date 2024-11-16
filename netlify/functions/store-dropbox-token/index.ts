@@ -12,7 +12,10 @@ const handler: Handler = async (event) => {
     if (!access_token || !refresh_token) {
       return { 
         statusCode: 400, 
-        body: JSON.stringify({ error: 'Missing required tokens. Please try reconnecting to Dropbox.' }) 
+        body: JSON.stringify({ 
+          error: 'Missing required tokens',
+          code: 'INVALID_TOKENS'
+        }) 
       };
     }
 
@@ -20,20 +23,13 @@ const handler: Handler = async (event) => {
       secret: process.env.VITE_FAUNA_SECRET_KEY || ''
     });
 
-    if (!client) {
-      return {
-        statusCode: 500,
-        body: JSON.stringify({ error: 'Database connection failed. Please try again later.' })
-      };
-    }
-
     const query = fql`
-      let tokenDoc = dropbox_tokens.firstWhere(.type == "default")
-      if (tokenDoc != null) {
-        tokenDoc.update({
+      let existingToken = dropbox_tokens.firstWhere(.type == "default")
+      if (existingToken != null) {
+        existingToken.update({
           access_token: ${access_token},
           refresh_token: ${refresh_token},
-          expiry: ${expiry},
+          expiry: ${expiry || Date.now() + 3600000},
           updated_at: Time.now()
         })
       } else {
@@ -41,7 +37,7 @@ const handler: Handler = async (event) => {
           type: "default",
           access_token: ${access_token},
           refresh_token: ${refresh_token},
-          expiry: ${expiry},
+          expiry: ${expiry || Date.now() + 3600000},
           created_at: Time.now(),
           updated_at: Time.now()
         })
@@ -54,7 +50,8 @@ const handler: Handler = async (event) => {
       statusCode: 200,
       body: JSON.stringify({ 
         success: true,
-        message: 'Dropbox tokens stored successfully'
+        message: 'Token stored successfully',
+        expiry: expiry || Date.now() + 3600000
       })
     };
   } catch (error) {
@@ -62,7 +59,8 @@ const handler: Handler = async (event) => {
     return {
       statusCode: 500,
       body: JSON.stringify({ 
-        error: 'Failed to store Dropbox tokens. Please try reconnecting to Dropbox.',
+        error: 'Failed to store token',
+        code: 'STORAGE_ERROR',
         details: error instanceof Error ? error.message : 'Unknown error'
       })
     };
