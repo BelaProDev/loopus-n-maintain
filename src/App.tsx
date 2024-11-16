@@ -29,9 +29,8 @@ import Documentation from "./pages/Documentation";
 import EmailManagement from "./pages/Koalax/components/email/EmailManagement";
 import SiteSettings from "./pages/Koalax/SiteSettings";
 import BusinessManagement from "./pages/Koalax/components/BusinessManagement";
-import DocumentManager from "./pages/Koalax/components/document/DocumentManager";
-import DropboxCallback from "./pages/Koalax/components/document/DropboxCallback";
 import MessageManagement from "./pages/Koalax/components/messages/MessageManagement";
+import DropboxExplorer from "./pages/DropboxExplorer";
 
 const queryClient = new QueryClient();
 
@@ -52,14 +51,13 @@ const App = () => {
                 <Route path="/woodwork" element={<Woodwork />} />
                 <Route path="/architecture" element={<Architecture />} />
                 <Route path="/docs" element={<Documentation />} />
+                <Route path="/dropbox-explorer" element={<DropboxExplorer />} />
                 <Route path="/koalax" element={<Koalax />}>
                   <Route index element={<EmailManagement />} />
                   <Route path="emails" element={<EmailManagement />} />
                   <Route path="settings" element={<SiteSettings />} />
                   <Route path="business" element={<BusinessManagement />} />
-                  <Route path="documents" element={<DocumentManager />} />
                   <Route path="messages" element={<MessageManagement />} />
-                  <Route path="dropbox-callback" element={<DropboxCallback />} />
                 </Route>
               </Routes>
             </div>

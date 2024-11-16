@@ -1,15 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
 import emailsReducer from './slices/emailsSlice';
 import businessReducer from './slices/businessSlice';
-import documentsReducer from './slices/documentsSlice';
 import servicesReducer from './slices/servicesSlice';
+import explorerReducer from './slices/explorerSlice';
 
 export const store = configureStore({
   reducer: {
     emails: emailsReducer,
     business: businessReducer,
-    documents: documentsReducer,
     services: servicesReducer,
+    explorer: explorerReducer,
   },
 });
 
