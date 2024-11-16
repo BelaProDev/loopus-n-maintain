@@ -6,7 +6,6 @@
   "nav": {
     "home": "Home",
     "tools": "Tools",
-    "services": "Services",
     "contact": "Contact",
     "admin": "Admin",
     "docs": "Documentation",
@@ -33,10 +32,5 @@
     "success": "Success",
     "error": "Error",
     "offline": "Offline"
-  },
-  "auth": {
-    "signIn": "Sign In",
-    "signOut": "Sign Out",
-    "required": "Authentication required"
   }
 }

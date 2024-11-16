@@ -10,6 +10,7 @@ import docs from './locales/en/docs.json';
 import ui from './locales/en/ui.json';
 import app from './locales/en/app.json';
 import settings from './locales/en/settings.json';
+import tools from './locales/en/tools.json';
 
 // Import Spanish translations
 import commonEs from './locales/es/common.json';
@@ -40,7 +41,8 @@ const resources = {
     docs,
     ui,
     app,
-    settings
+    settings,
+    tools
   },
   es: {
     common: commonEs,
@@ -71,7 +73,7 @@ i18n
     lng: localStorage.getItem('language') || 'en',
     fallbackLng: 'en',
     defaultNS: 'common',
-    ns: ['common', 'services', 'admin', 'auth', 'docs', 'ui', 'app', 'settings'],
+    ns: ['common', 'services', 'admin', 'auth', 'docs', 'ui', 'app', 'settings', 'tools'],
     interpolation: {
       escapeValue: false
     },
