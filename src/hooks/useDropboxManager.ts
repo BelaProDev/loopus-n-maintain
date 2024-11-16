@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useToast } from "@/components/ui/use-toast";
 import { uploadFile, downloadFile, listFiles, createFolder, deleteFile } from "@/lib/dropbox";
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAppDispatch, useAppSelector } from './useAppStore';
 import { setFiles } from '@/store/slices/documentsSlice';
-import { DropboxFile } from '@/types/dropbox';
+import { DropboxFile, FileMetadata } from '@/types/dropbox';
 import { dropboxAuth } from '@/lib/auth/dropbox';
+import { convertToFileMetadata, sortFiles } from '@/lib/utils/fileUtils';
 
 export const useDropboxManager = (currentPath: string) => {
   const { toast } = useToast();
@@ -17,13 +18,8 @@ export const useDropboxManager = (currentPath: string) => {
     queryKey: ['files', currentPath],
     queryFn: async () => {
       const response = await listFiles(currentPath);
-      return response.map(file => ({
-        ...file,
-        path: file.path_display || '',
-        isFolder: file['.tag'] === 'folder',
-        lastModified: file['.tag'] === 'file' ? file.server_modified || new Date().toISOString() : new Date().toISOString(),
-        size: file['.tag'] === 'file' ? file.size || 0 : 0,
-      })) as DropboxFile[];
+      const convertedFiles = response.map(convertToFileMetadata);
+      return sortFiles(convertedFiles);
     },
     enabled: isAuthenticated,
   });
