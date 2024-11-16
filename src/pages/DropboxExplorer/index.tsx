@@ -52,28 +52,28 @@ const DropboxExplorer = () => {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-orange-500/10">
-        <div className="container mx-auto px-8 py-16">
+        <div className="container mx-auto px-8 py-32">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="max-w-2xl mx-auto text-center space-y-8"
+            transition={{ duration: 0.8 }}
+            className="max-w-2xl mx-auto text-center space-y-12"
           >
-            <h1 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
+            <h1 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600 leading-relaxed">
               Digital Garden Explorer
             </h1>
-            <p className="text-xl text-gray-600 leading-relaxed">
+            <p className="text-xl text-gray-600 leading-relaxed px-6">
               Welcome to your digital sanctuary. Like a garden that blooms with every season,
               your files await to flourish in this space. Connect with Dropbox to tend to your digital flora.
             </p>
-            <div className="h-px bg-gradient-to-r from-transparent via-purple-200 to-transparent my-12" />
+            <div className="h-px bg-gradient-to-r from-transparent via-purple-200 to-transparent my-16" />
             <Button 
               onClick={login}
               disabled={isAuthLoading}
               size="lg"
-              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-6 rounded-lg transform transition-all hover:scale-105 shadow-lg hover:shadow-xl"
+              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-12 py-8 rounded-2xl transform transition-all hover:scale-105 shadow-lg hover:shadow-xl text-lg"
             >
-              <CloudRain className="mr-2 h-5 w-5" />
+              <CloudRain className="mr-3 h-6 w-6" />
               {isAuthLoading ? "Connecting..." : "Connect to Dropbox"}
             </Button>
           </motion.div>

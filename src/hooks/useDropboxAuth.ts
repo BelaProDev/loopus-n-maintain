@@ -5,6 +5,7 @@ import { setAuthenticated } from '@/store/slices/documentsSlice';
 
 export function useDropboxAuth() {
   const [isLoading, setIsLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticatedState] = useState(false);
   const { toast } = useToast();
   const dispatch = useAppDispatch();
 
@@ -17,6 +18,7 @@ export function useDropboxAuth() {
       }
       localStorage.setItem('dropbox_access_token', token);
       dispatch(setAuthenticated(true));
+      setIsAuthenticatedState(true);
       toast({
         title: 'Success',
         description: 'Successfully connected to Dropbox',
@@ -35,6 +37,7 @@ export function useDropboxAuth() {
   const logout = useCallback(() => {
     localStorage.removeItem('dropbox_access_token');
     dispatch(setAuthenticated(false));
+    setIsAuthenticatedState(false);
     toast({
       title: 'Logged out',
       description: 'Successfully logged out from Dropbox',
@@ -43,6 +46,7 @@ export function useDropboxAuth() {
 
   return {
     isLoading,
+    isAuthenticated,
     login,
     logout
   };
