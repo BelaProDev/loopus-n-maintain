@@ -13,7 +13,7 @@ const getDropboxClient = () => {
 };
 
 const sanitizePath = (path: string) => {
-  if (!path || path === '/') return '';
+  if (path === '/') return '';
   return path.replace(/\/+/g, '/').replace(/^\/|\/$/g, '');
 };
 
@@ -92,6 +92,7 @@ export const listFiles = async (path: string = '') => {
     }));
   } catch (error) {
     if ((error as any)?.status === 409) {
+      // If path not found, return empty array instead of throwing
       return [];
     }
     throw error;
