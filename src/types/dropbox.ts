@@ -1,6 +1,8 @@
 import { files } from 'dropbox';
 
-export { files };
+// Re-export files type properly with 'export type'
+export type { files };
+
 export type DropboxFileTag = 'file' | 'folder' | 'deleted';
 export type MediaType = 'image' | 'video' | 'audio' | 'document' | 'other';
 export type FileStatus = files.FileStatus;
