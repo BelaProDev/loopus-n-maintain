@@ -2,7 +2,13 @@ import { useState, useCallback, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { useAppDispatch } from './useAppStore';
 import { setAuthenticated } from '@/store/slices/documentsSlice';
-import { dropboxAuth } from '@/lib/auth/dropbox';
+
+interface DropboxTokens {
+  access_token: string;
+  refresh_token: string;
+  expires_in: number;
+  token_type: 'bearer';
+}
 
 export function useDropboxAuth() {
   const [isLoading, setIsLoading] = useState(false);
@@ -14,34 +20,91 @@ export function useDropboxAuth() {
     checkAuthStatus();
   }, []);
 
-  const checkAuthStatus = async () => {
-    try {
-      const token = await dropboxAuth.getValidAccessToken();
-      if (token) {
+  const checkAuthStatus = () => {
+    const tokens = localStorage.getItem('dropbox_tokens');
+    if (tokens) {
+      const parsedTokens = JSON.parse(tokens);
+      const expiryTime = localStorage.getItem('dropbox_token_expiry');
+      
+      if (expiryTime && Number(expiryTime) > Date.now()) {
         dispatch(setAuthenticated(true));
         setIsAuthenticatedState(true);
+        return true;
       }
-    } catch (error) {
-      console.error('Auth check error:', error);
     }
+    return false;
   };
 
   const login = useCallback(async () => {
     setIsLoading(true);
     try {
-      await dropboxAuth.initiateAuth();
+      // Get auth URL from our Netlify function
+      const response = await fetch('/.netlify/functions/dropbox-auth');
+      const { authUrl, state } = await response.json();
+      
+      // Store state for verification
+      localStorage.setItem('dropbox_state', state);
+      
+      // Open popup
+      const popup = window.open(authUrl, 'Dropbox Auth', 'width=800,height=600');
+      
+      // Handle popup callback
+      const handleCallback = async (event: MessageEvent) => {
+        if (event.origin !== window.location.origin) return;
+        
+        if (event.data.type === 'DROPBOX_AUTH_CALLBACK') {
+          const { code, state: returnedState } = event.data;
+          
+          // Verify state
+          const savedState = localStorage.getItem('dropbox_state');
+          if (returnedState !== savedState) {
+            throw new Error('Invalid state parameter');
+          }
+          
+          // Exchange code for tokens
+          const tokenResponse = await fetch('/.netlify/functions/dropbox-auth', {
+            method: 'POST',
+            body: JSON.stringify({ code }),
+          });
+          
+          const tokens: DropboxTokens = await tokenResponse.json();
+          
+          // Store tokens
+          localStorage.setItem('dropbox_tokens', JSON.stringify(tokens));
+          localStorage.setItem('dropbox_token_expiry', String(Date.now() + (tokens.expires_in * 1000)));
+          
+          // Update state
+          dispatch(setAuthenticated(true));
+          setIsAuthenticatedState(true);
+          
+          // Close popup
+          if (popup) popup.close();
+          
+          toast({
+            title: 'Success',
+            description: 'Successfully connected to Dropbox',
+          });
+        }
+      };
+      
+      window.addEventListener('message', handleCallback);
+      return () => window.removeEventListener('message', handleCallback);
+      
     } catch (error) {
+      console.error('Auth error:', error);
       toast({
         title: 'Authentication Error',
-        description: 'Failed to authenticate with Dropbox',
+        description: error instanceof Error ? error.message : 'Failed to authenticate',
         variant: 'destructive',
       });
     } finally {
       setIsLoading(false);
     }
-  }, [toast]);
+  }, [toast, dispatch]);
 
   const logout = useCallback(() => {
+    localStorage.removeItem('dropbox_tokens');
+    localStorage.removeItem('dropbox_token_expiry');
     localStorage.removeItem('dropbox_state');
     dispatch(setAuthenticated(false));
     setIsAuthenticatedState(false);
