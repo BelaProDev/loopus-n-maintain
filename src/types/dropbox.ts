@@ -5,7 +5,7 @@ export interface DropboxFile {
   path_display?: string;
   path_lower?: string;
   '.tag': 'file' | 'folder' | 'deleted';
-  size?: number;
+  size: number;
   client_modified?: string;
   server_modified?: string;
   rev?: string;
@@ -23,4 +23,7 @@ export interface FileMetadata extends DropboxFile {
   path: string;
   isFolder: boolean;
   lastModified: string;
+  size: number;
 }
+
+export type MediaType = 'image' | 'video' | 'other';

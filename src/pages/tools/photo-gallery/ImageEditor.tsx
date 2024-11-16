@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
-import { Crop, Contrast, Sun, RotateCcw, Save } from 'lucide-react';
+import { Crop, Contrast, Sun, RotateCcw, Save, Play } from 'lucide-react';
+import { getMediaType } from '@/lib/utils/fileUtils';
 
 interface ImageEditorProps {
   imagePath: string | null;
@@ -15,7 +16,29 @@ export const ImageEditor = ({ imagePath, onSave }: ImageEditorProps) => {
   if (!imagePath) {
     return (
       <div className="flex flex-col items-center justify-center h-64 text-gray-500">
-        <p>Select an image to edit</p>
+        <p>Select media to edit</p>
+      </div>
+    );
+  }
+
+  const mediaType = getMediaType(imagePath);
+
+  if (mediaType === 'video') {
+    return (
+      <div className="space-y-6">
+        <div className="relative aspect-video bg-gray-100 rounded-lg overflow-hidden">
+          <video
+            src={`https://api.dropboxapi.com/2/files/get_temporary_link`}
+            controls
+            className="w-full h-full"
+          />
+        </div>
+        <div className="flex justify-end">
+          <Button onClick={onSave}>
+            <Save className="w-4 h-4 mr-2" />
+            Save Changes
+          </Button>
+        </div>
       </div>
     );
   }
