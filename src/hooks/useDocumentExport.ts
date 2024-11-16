@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useToast } from "@/components/ui/use-toast";
 import { Invoice } from "@/types/business";
 import { exportToPDF, exportToDOCX } from "@/lib/documentExport";
-import { uploadFile } from "@/lib/dropbox";
+import { dropboxClient } from '@/lib/dropbox';
 import * as XLSX from 'xlsx';
 
 export const useDocumentExport = () => {
@@ -64,7 +64,7 @@ export const useDocumentExport = () => {
       const tokens = JSON.parse(sessionStorage.getItem('dropbox_tokens') || '{}');
       if (tokens.access_token) {
         try {
-          await uploadFile(blob, '/invoices', `${invoice.number}.${type}`);
+          await dropboxClient.uploadFile(blob, `/invoices/${invoice.number}.${type}`);
           toast({
             title: "Success",
             description: `Invoice exported and uploaded to Dropbox as ${type.toUpperCase()}`,

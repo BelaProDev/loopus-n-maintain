@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useToast } from "@/components/ui/use-toast";
-import { uploadFile, downloadFile, listFiles, createFolder, deleteFile } from "@/lib/dropbox";
+import { dropboxClient } from '@/lib/dropbox';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export const useDocumentManager = (currentPath: string) => {
@@ -10,13 +10,13 @@ export const useDocumentManager = (currentPath: string) => {
 
   const { data: files, isLoading, refetch } = useQuery({
     queryKey: ['files', currentPath],
-    queryFn: () => listFiles(currentPath),
+    queryFn: () => dropboxClient.listFolder(currentPath),
     enabled: isAuthenticated,
   });
 
   const uploadMutation = useMutation({
     mutationFn: async (file: File) => {
-      await uploadFile(file, currentPath);
+      await dropboxClient.uploadFile(file, currentPath);
     },
     onSuccess: () => {
       toast({
@@ -35,7 +35,7 @@ export const useDocumentManager = (currentPath: string) => {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: deleteFile,
+    mutationFn: dropboxClient.deleteFile,
     onSuccess: () => {
       toast({
         title: "Success",
@@ -52,28 +52,10 @@ export const useDocumentManager = (currentPath: string) => {
     },
   });
 
-  const createFolderMutation = useMutation({
-    mutationFn: createFolder,
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Folder created successfully",
-      });
-      queryClient.invalidateQueries({ queryKey: ['files'] });
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: "Failed to create folder",
-        variant: "destructive",
-      });
-    },
-  });
-
   const handleDownload = async (path: string | undefined, fileName: string) => {
     if (!path) return;
     try {
-      const blob = await downloadFile(path);
+      const blob = await dropboxClient.downloadFile(path);
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -98,7 +80,6 @@ export const useDocumentManager = (currentPath: string) => {
     setIsAuthenticated,
     uploadMutation,
     deleteMutation,
-    createFolderMutation,
     handleDownload,
     refetch,
   };

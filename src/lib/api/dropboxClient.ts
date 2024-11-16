@@ -19,7 +19,7 @@ export const dropboxClient = {
     });
     
     return response.result.entries.map(entry => ({
-      id: entry.id || entry.path_lower || '',
+      id: entry.path_lower || entry.path_display || '',
       name: entry.name,
       path: entry.path_display || '',
       path_display: entry.path_display,

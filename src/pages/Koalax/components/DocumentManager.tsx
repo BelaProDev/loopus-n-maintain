@@ -16,11 +16,10 @@ const DocumentManager = () => {
     files,
     isLoading,
     isAuthenticated,
-    handleLogin,
+    setIsAuthenticated,
     handleDownload,
     uploadMutation,
     deleteMutation,
-    createFolderMutation,
     refetch,
   } = useDropboxManager(currentPath);
 
@@ -29,18 +28,6 @@ const DocumentManager = () => {
     if (file) {
       uploadMutation.mutate(file);
     }
-  };
-
-  const handleCreateFolder = () => {
-    if (newFolderName.trim()) {
-      const fullPath = `${currentPath}${currentPath.endsWith('/') ? '' : '/'}${newFolderName.trim()}`;
-      createFolderMutation.mutate(fullPath);
-      setNewFolderName("");
-    }
-  };
-
-  const handleCreateInvoiceFolder = () => {
-    createFolderMutation.mutate('/invoices');
   };
 
   const handleDelete = (path: string) => {
@@ -56,7 +43,7 @@ const DocumentManager = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h2 className="text-2xl font-bold">Document Manager</h2>
         {!isAuthenticated && (
-          <Button onClick={handleLogin} className="w-full sm:w-auto">
+          <Button onClick={() => setIsAuthenticated(true)} className="w-full sm:w-auto">
             <LogIn className="w-4 h-4 mr-2" />
             Connect Dropbox
           </Button>
@@ -66,32 +53,17 @@ const DocumentManager = () => {
       {isAuthenticated && (
         <div className="space-y-4">
           <DocumentToolbar
-            onCreateInvoiceFolder={handleCreateInvoiceFolder}
             onFileSelect={handleFileSelect}
             isUploading={uploadMutation.isPending}
             onRefresh={refetch}
             onLogout={() => {
               dropboxAuth.logout();
+              setIsAuthenticated(false);
             }}
             currentPath={currentPath}
           />
 
           <BreadcrumbNav currentPath={currentPath} onNavigate={handleNavigate} />
-
-          <div className="flex flex-col sm:flex-row gap-2">
-            <Input
-              placeholder="New folder name"
-              value={newFolderName}
-              onChange={(e) => setNewFolderName(e.target.value)}
-              className="w-full sm:w-auto sm:flex-1"
-            />
-            <Button 
-              onClick={handleCreateFolder}
-              className="w-full sm:w-auto"
-            >
-              Create Folder
-            </Button>
-          </div>
 
           {isLoading ? (
             <div>Loading...</div>
