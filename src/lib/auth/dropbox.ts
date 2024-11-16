@@ -1,9 +1,18 @@
+import { Dropbox } from 'dropbox';
+
 const DROPBOX_AUTH_URL = "https://www.dropbox.com/oauth2/authorize";
 const DROPBOX_TOKEN_URL = "https://api.dropboxapi.com/oauth2/token";
 const CLIENT_ID = import.meta.env.VITE_DROPBOX_APP_KEY;
 const CLIENT_SECRET = import.meta.env.VITE_DROPBOX_APP_SECRET;
 
 export const dropboxAuth = {
+  async getClient(): Promise<Dropbox | null> {
+    const accessToken = await this.getValidAccessToken();
+    if (!accessToken) return null;
+    
+    return new Dropbox({ accessToken });
+  },
+
   async initiateAuth() {
     if (!CLIENT_ID) throw new Error('Dropbox client ID not configured');
     
