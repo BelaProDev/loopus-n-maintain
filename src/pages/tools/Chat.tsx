@@ -6,6 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/components/ui/use-toast";
 import { Send, Users } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface Message {
   id: string;
@@ -14,12 +15,63 @@ interface Message {
   timestamp: Date;
 }
 
+const fetchMessages = async (): Promise<Message[]> => {
+  const response = await fetch('/.netlify/functions/chat-messages', {
+    method: 'POST',
+    body: JSON.stringify({ action: 'list' })
+  });
+  if (!response.ok) throw new Error('Failed to fetch messages');
+  const data = await response.json();
+  return data.data.data.map((msg: any) => ({
+    id: msg.id,
+    text: msg.text,
+    sender: msg.sender,
+    timestamp: new Date(msg.timestamp)
+  }));
+};
+
+const createMessage = async (message: Omit<Message, 'id' | 'timestamp'>) => {
+  const response = await fetch('/.netlify/functions/chat-messages', {
+    method: 'POST',
+    body: JSON.stringify({
+      action: 'create',
+      data: message
+    })
+  });
+  if (!response.ok) throw new Error('Failed to send message');
+  return response.json();
+};
+
 const Chat = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [username, setUsername] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const { data: messages = [] } = useQuery({
+    queryKey: ['chat-messages'],
+    queryFn: fetchMessages,
+    refetchInterval: 3000, // Poll every 3 seconds
+  });
+
+  const mutation = useMutation({
+    mutationFn: createMessage,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['chat-messages'] });
+      toast({
+        title: "Message sent",
+        description: "Your message has been sent successfully",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to send message",
+        variant: "destructive",
+      });
+    },
+  });
 
   useEffect(() => {
     const storedUsername = localStorage.getItem("chat-username");
@@ -42,20 +94,12 @@ const Chat = () => {
     e.preventDefault();
     if (!newMessage.trim()) return;
 
-    const message: Message = {
-      id: crypto.randomUUID(),
+    mutation.mutate({
       text: newMessage,
-      sender: username,
-      timestamp: new Date(),
-    };
-
-    setMessages((prev) => [...prev, message]);
-    setNewMessage("");
-    
-    toast({
-      title: "Message sent",
-      description: "Your message has been sent successfully",
+      sender: username
     });
+
+    setNewMessage("");
   };
 
   return (
@@ -106,7 +150,7 @@ const Chat = () => {
               placeholder="Type your message..."
               className="flex-1"
             />
-            <Button type="submit">
+            <Button type="submit" disabled={mutation.isPending}>
               <Send className="h-4 w-4" />
             </Button>
           </form>

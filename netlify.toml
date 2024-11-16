@@ -41,7 +41,7 @@ status = 200
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
-  external_node_modules = ["nodemailer", "crypto"]
+  external_node_modules = ["nodemailer", "crypto", "fauna"]
 
 [[redirects]]
 from = "/*"
