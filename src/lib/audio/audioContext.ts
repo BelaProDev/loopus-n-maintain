@@ -11,16 +11,22 @@ export const getAudioContext = () => {
 };
 
 export const initializeAudio = async () => {
-  const context = getAudioContext();
-  if (context.state !== 'running') {
-    await context.resume();
+  try {
+    const context = getAudioContext();
+    if (context.state !== 'running') {
+      await context.resume();
+    }
+    await Tone.start();
+    await Tone.loaded(); // Wait for all components to be loaded
+    return context;
+  } catch (error) {
+    console.error('Failed to initialize audio:', error);
+    throw error;
   }
-  await Tone.start();
-  return context;
 };
 
 export const createBufferLoader = async (url: string) => {
   const response = await fetch(url);
   const arrayBuffer = await response.arrayBuffer();
-  return await Tone.context.decodeAudioData(arrayBuffer);
+  return await getAudioContext().decodeAudioData(arrayBuffer);
 };

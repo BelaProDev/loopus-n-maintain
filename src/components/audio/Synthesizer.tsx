@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import * as Tone from 'tone';
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import ShaderVisualizer from './ShaderVisualizer';
 import SynthControls from './SynthControls';
 import EffectProcessor from './EffectProcessor';
@@ -10,6 +11,7 @@ import SynthHeader from './SynthHeader';
 import { initializeAudio } from '@/lib/audio/audioContext';
 
 const Synthesizer = () => {
+  const [isAudioInitialized, setIsAudioInitialized] = useState(false);
   const [synth, setSynth] = useState<Tone.PolySynth | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioData, setAudioData] = useState<number[]>(new Array(128).fill(0));
@@ -37,117 +39,61 @@ const Synthesizer = () => {
   const sequencerRef = useRef<Tone.Sequence | null>(null);
   const recorderRef = useRef<MediaRecorder | null>(null);
 
-  useEffect(() => {
-    const setupAudio = async () => {
-      try {
-        await initializeAudio();
-        const newSynth = new Tone.PolySynth(Tone.Synth, {
-          envelope: {
-            attack: 0.02,
-            decay: 0.1,
-            sustain: 0.3,
-            release: 1
-          }
-        });
-        
-        // Create analyzer after context is initialized
-        const analyser = new Tone.Analyser('waveform', 128);
-        
-        // Connect synth to analyzer first, then to destination
-        newSynth.connect(analyser);
-        analyser.toDestination();
-        
-        setSynth(newSynth);
-        analyserRef.current = analyser;
-
-        // Start animation frame for visualizer
-        const updateVisualizer = () => {
-          if (analyserRef.current) {
-            const data = analyserRef.current.getValue();
-            if (data instanceof Float32Array) {
-              const normalizedData = Array.from(data).map(value => 
-                Math.max(-1, Math.min(1, value))
-              );
-              setAudioData(normalizedData);
-            }
-          }
-          requestAnimationFrame(updateVisualizer);
-        };
-        updateVisualizer();
-
-      } catch (error) {
-        console.error('Audio setup failed:', error);
-        toast.error("Failed to initialize audio");
-      }
-    };
-
-    setupAudio();
-    return () => {
-      synth?.dispose();
-      analyserRef.current?.dispose();
-      if (sequencerRef.current) {
-        sequencerRef.current.dispose();
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!synth) return;
-
-    const seq = new Tone.Sequence(
-      (time, step) => {
-        setCurrentStep(step);
-        steps[step].forEach((stepData) => {
-          if (stepData.active) {
-            synth.triggerAttackRelease(
-              stepData.note,
-              "8n",
-              time,
-              stepData.velocity
-            );
-          }
-        });
-      },
-      [...Array(8).keys()],
-      "8n"
-    );
-
-    sequencerRef.current = seq;
-    Tone.Transport.bpm.value = bpm;
-
-    return () => {
-      seq.dispose();
-    };
-  }, [synth, steps, bpm]);
-
-  const handlePlayStop = async () => {
+  const setupAudio = async () => {
     try {
-      if (!isPlaying) {
-        await Tone.start();
-        if (sequencerRef.current) {
-          sequencerRef.current.start(0);
-          Tone.Transport.start();
+      await initializeAudio();
+      
+      const newSynth = new Tone.PolySynth(Tone.Synth, {
+        envelope: {
+          attack: 0.02,
+          decay: 0.1,
+          sustain: 0.3,
+          release: 1
         }
-      } else {
-        if (sequencerRef.current) {
-          sequencerRef.current.stop();
-          Tone.Transport.stop();
+      }).toDestination();
+      
+      const analyser = new Tone.Analyser('waveform', 128);
+      newSynth.connect(analyser);
+      
+      setSynth(newSynth);
+      analyserRef.current = analyser;
+      setIsAudioInitialized(true);
+
+      // Start animation frame for visualizer
+      const updateVisualizer = () => {
+        if (analyserRef.current) {
+          const data = analyserRef.current.getValue();
+          setAudioData(Array.from(data));
         }
-      }
-      setIsPlaying(!isPlaying);
+        requestAnimationFrame(updateVisualizer);
+      };
+      updateVisualizer();
+
     } catch (error) {
-      toast.error("Failed to start audio");
+      console.error('Audio setup failed:', error);
+      toast.error("Failed to initialize audio");
     }
   };
 
-  const startRecording = () => {
-    setIsRecording(true);
+  const handleInitAudio = async () => {
+    await setupAudio();
   };
 
-  const stopRecording = async () => {
-    setIsRecording(false);
-    return "recording-stopped";
-  };
+  if (!isAudioInitialized) {
+    return (
+      <Card className="p-6 space-y-4">
+        <SynthHeader />
+        <div className="flex flex-col items-center justify-center gap-4 py-12">
+          <p className="text-center text-muted-foreground">
+            Click the button below to initialize audio
+          </p>
+          <Button onClick={handleInitAudio}>
+            Initialize Audio
+          </Button>
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <Card className="p-6 space-y-6">
@@ -173,8 +119,11 @@ const Synthesizer = () => {
         }}
         effectParams={effectParams}
         updateEffects={setEffectParams}
-        onStartRecording={startRecording}
-        onStopRecording={stopRecording}
+        onStartRecording={() => setIsRecording(true)}
+        onStopRecording={async () => {
+          setIsRecording(false);
+          return "recording-stopped";
+        }}
         isRecording={isRecording}
       />
 
