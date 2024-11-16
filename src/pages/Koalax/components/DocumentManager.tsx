@@ -9,14 +9,12 @@ import BreadcrumbNav from "./document/BreadcrumbNav";
 import { useDropboxManager } from "@/hooks/useDropboxManager";
 
 const DocumentManager = () => {
-  const [newFolderName, setNewFolderName] = useState("");
   const [currentPath, setCurrentPath] = useState("/");
   
   const {
     files,
     isLoading,
     isAuthenticated,
-    setIsAuthenticated,
     handleDownload,
     uploadMutation,
     deleteMutation,
@@ -38,12 +36,17 @@ const DocumentManager = () => {
     setCurrentPath(path);
   };
 
+  const handleCreateInvoiceFolder = async () => {
+    // Implementation for creating invoice folder
+    console.log("Create invoice folder");
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h2 className="text-2xl font-bold">Document Manager</h2>
         {!isAuthenticated && (
-          <Button onClick={() => setIsAuthenticated(true)} className="w-full sm:w-auto">
+          <Button onClick={() => dropboxAuth.login()} className="w-full sm:w-auto">
             <LogIn className="w-4 h-4 mr-2" />
             Connect Dropbox
           </Button>
@@ -56,11 +59,9 @@ const DocumentManager = () => {
             onFileSelect={handleFileSelect}
             isUploading={uploadMutation.isPending}
             onRefresh={refetch}
-            onLogout={() => {
-              dropboxAuth.logout();
-              setIsAuthenticated(false);
-            }}
+            onLogout={() => dropboxAuth.logout()}
             currentPath={currentPath}
+            onCreateInvoiceFolder={handleCreateInvoiceFolder}
           />
 
           <BreadcrumbNav currentPath={currentPath} onNavigate={handleNavigate} />

@@ -64,7 +64,12 @@ export const useDocumentExport = () => {
       const tokens = JSON.parse(sessionStorage.getItem('dropbox_tokens') || '{}');
       if (tokens.access_token) {
         try {
-          await dropboxClient.uploadFile(blob, `/invoices/${invoice.number}.${type}`);
+          // Convert Blob to File with required properties
+          const file = new File([blob], `${invoice.number}.${type}`, {
+            type: blob.type,
+            lastModified: Date.now(),
+          });
+          await dropboxClient.uploadFile(file, `/invoices/${invoice.number}.${type}`);
           toast({
             title: "Success",
             description: `Invoice exported and uploaded to Dropbox as ${type.toUpperCase()}`,
