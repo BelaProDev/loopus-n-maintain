@@ -1,22 +1,22 @@
 {
   "documents": {
     "title": "Documents",
-    "description": "Manage and organize your documents securely"
+    "description": "Create, edit and manage your documents with powerful collaboration features"
   },
   "diagrams": {
     "title": "UML Diagrams",
-    "description": "Create and edit UML diagrams with ease"
+    "description": "Design and visualize system architectures with our intuitive UML diagram creator"
   },
   "analytics": {
     "title": "Analytics",
-    "description": "Track trends and analyze tech stacks"
+    "description": "Track trends and analyze tech stacks with comprehensive data visualization tools"
   },
   "audio": {
     "title": "Audio Studio",
-    "description": "Create and edit audio with modular synthesizers"
+    "description": "Create and edit audio with modular synthesizers and professional mixing tools"
   },
   "invoicing": {
     "title": "Invoicing",
-    "description": "Professional invoice management and generation"
+    "description": "Generate, manage and track invoices with our complete business toolkit"
   }
 }

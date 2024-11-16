@@ -9,11 +9,11 @@ import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
 
 const tools = [
-  { name: "documents", path: "/documents" },
-  { name: "diagrams", path: "/diagrams" },
-  { name: "analytics", path: "/analytics" },
-  { name: "audio", path: "/audio" },
-  { name: "invoicing", path: "/invoicing" },
+  { name: "documents", path: "/documents", icon: "📄" },
+  { name: "diagrams", path: "/diagrams", icon: "📊" },
+  { name: "analytics", path: "/analytics", icon: "📈" },
+  { name: "audio", path: "/audio", icon: "🎵" },
+  { name: "invoicing", path: "/invoicing", icon: "📋" }
 ];
 
 const Header = () => {
@@ -36,7 +36,7 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="relative bg-background border-b border-muted/20 backdrop-blur-sm">
+    <header className="relative bg-background/80 border-b border-muted/20 backdrop-blur-sm">
       {isOffline && (
         <Badge 
           variant="destructive" 
@@ -61,10 +61,11 @@ const Header = () => {
                 <Link
                   key={tool.name}
                   to={tool.path}
-                  className="nav-link relative group overflow-hidden"
+                  className="nav-link relative group overflow-hidden flex items-center gap-2"
                 >
+                  <span className="text-lg">{tool.icon}</span>
                   <span className="relative z-10">{t(`tools:${tool.name}.title`)}</span>
-                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary transform origin-left scale-x-0 transition-transform group-hover:scale-x-100" />
+                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-primary via-secondary to-accent transform origin-left scale-x-0 transition-transform group-hover:scale-x-100" />
                 </Link>
               ))}
               {isAuthenticated && (
@@ -91,8 +92,9 @@ const Header = () => {
                   <Link
                     key={tool.name}
                     to={tool.path}
-                    className="nav-link text-lg"
+                    className="nav-link text-lg flex items-center gap-2"
                   >
+                    <span>{tool.icon}</span>
                     {t(`tools:${tool.name}.title`)}
                   </Link>
                 ))}
