@@ -5,10 +5,26 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import { useDropboxManager } from "@/hooks/useDropboxManager";
+import { useToast } from "@/components/ui/use-toast";
 
 const Documents = () => {
   const { t } = useTranslation(["tools"]);
   const navigate = useNavigate();
+  const { isAuthenticated } = useDropboxManager("/");
+  const { toast } = useToast();
+
+  const handleNavigate = (path: string) => {
+    if (!isAuthenticated && path.includes('dropbox')) {
+      toast({
+        title: "Authentication Required",
+        description: "Please connect to Dropbox first",
+        variant: "destructive"
+      });
+      return;
+    }
+    navigate(path);
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -26,33 +42,42 @@ const Documents = () => {
             <Card className="p-6 hover:shadow-lg transition-shadow">
               <Button 
                 variant="outline" 
-                className="w-full h-32 flex flex-col items-center justify-center gap-2"
-                onClick={() => navigate("/dropbox-explorer")}
+                className="w-full h-32 flex flex-col items-center justify-center gap-2 group"
+                onClick={() => handleNavigate("/dropbox-explorer")}
               >
-                <Upload className="h-8 w-8" />
+                <Upload className="h-8 w-8 group-hover:text-primary transition-colors" />
                 <span>Upload Documents</span>
+                <p className="text-sm text-muted-foreground">
+                  Securely store and manage your files
+                </p>
               </Button>
             </Card>
 
             <Card className="p-6 hover:shadow-lg transition-shadow">
               <Button 
                 variant="outline" 
-                className="w-full h-32 flex flex-col items-center justify-center gap-2"
-                onClick={() => navigate("/koalax/documents")}
+                className="w-full h-32 flex flex-col items-center justify-center gap-2 group"
+                onClick={() => handleNavigate("/koalax/documents")}
               >
-                <Download className="h-8 w-8" />
+                <Download className="h-8 w-8 group-hover:text-primary transition-colors" />
                 <span>Access Documents</span>
+                <p className="text-sm text-muted-foreground">
+                  View and download your stored files
+                </p>
               </Button>
             </Card>
 
             <Card className="p-6 hover:shadow-lg transition-shadow">
               <Button 
                 variant="outline" 
-                className="w-full h-32 flex flex-col items-center justify-center gap-2"
-                onClick={() => navigate("/koalax/business")}
+                className="w-full h-32 flex flex-col items-center justify-center gap-2 group"
+                onClick={() => handleNavigate("/koalax/business")}
               >
-                <FolderPlus className="h-8 w-8" />
+                <FolderPlus className="h-8 w-8 group-hover:text-primary transition-colors" />
                 <span>Manage Files</span>
+                <p className="text-sm text-muted-foreground">
+                  Organize and categorize your documents
+                </p>
               </Button>
             </Card>
           </div>
