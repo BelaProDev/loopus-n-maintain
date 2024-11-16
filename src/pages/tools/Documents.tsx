@@ -57,7 +57,7 @@ const Documents = () => {
               <Button 
                 variant="outline" 
                 className="w-full h-32 flex flex-col items-center justify-center gap-2 group"
-                onClick={() => handleNavigate("/koalax/documents")}
+                onClick={() => handleNavigate("/dropbox-explorer")}
               >
                 <Download className="h-8 w-8 group-hover:text-primary transition-colors" />
                 <span>Access Documents</span>
@@ -71,7 +71,7 @@ const Documents = () => {
               <Button 
                 variant="outline" 
                 className="w-full h-32 flex flex-col items-center justify-center gap-2 group"
-                onClick={() => handleNavigate("/koalax/business")}
+                onClick={() => handleNavigate("/dropbox-explorer")}
               >
                 <FolderPlus className="h-8 w-8 group-hover:text-primary transition-colors" />
                 <span>Manage Files</span>

@@ -58,7 +58,6 @@ const queryClient = new QueryClient({
 });
 
 const App = () => {
-  // Register service worker
   useEffect(() => {
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
