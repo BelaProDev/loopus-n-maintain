@@ -29,9 +29,7 @@ export const DropboxProvider = ({ children }: { children: React.ReactNode }) => 
         clientId: import.meta.env.VITE_DROPBOX_APP_KEY,
       });
 
-      const authUrl = await dbx.getAuthenticationUrl(
-        `${window.location.origin}/dropbox-explorer/callback`
-      );
+      const authUrl = `https://www.dropbox.com/oauth2/authorize?client_id=${import.meta.env.VITE_DROPBOX_APP_KEY}&response_type=token&redirect_uri=${encodeURIComponent(`${window.location.origin}/dropbox-explorer/callback`)}`;
 
       window.localStorage.setItem('dropboxAuthPending', 'true');
       window.location.href = authUrl;

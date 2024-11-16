@@ -44,7 +44,7 @@ const PhotoGallery = () => {
       return;
     }
 
-    uploadMutation.mutate(file);
+    uploadMutation.mutate({ file, path: currentPath });
   };
 
   const handleNavigate = (path: string) => {

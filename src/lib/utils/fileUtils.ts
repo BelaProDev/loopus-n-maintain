@@ -57,6 +57,42 @@ export const sortFiles = (files: DropboxEntry[], sortBy: 'name' | 'size' | 'date
   });
 };
 
+export const getMediaType = (fileName: string): 'image' | 'video' | 'audio' | 'document' | 'other' => {
+  const extension = fileName.split('.').pop()?.toLowerCase() || '';
+  
+  const mediaTypes: Record<string, 'image' | 'video' | 'audio' | 'document'> = {
+    // Images
+    jpg: 'image',
+    jpeg: 'image',
+    png: 'image',
+    gif: 'image',
+    webp: 'image',
+    svg: 'image',
+    
+    // Videos
+    mp4: 'video',
+    webm: 'video',
+    mov: 'video',
+    avi: 'video',
+    
+    // Audio
+    mp3: 'audio',
+    wav: 'audio',
+    ogg: 'audio',
+    m4a: 'audio',
+    
+    // Documents
+    pdf: 'document',
+    doc: 'document',
+    docx: 'document',
+    xls: 'document',
+    xlsx: 'document',
+    txt: 'document',
+  };
+
+  return mediaTypes[extension] || 'other';
+};
+
 export const isImage = (fileName: string): boolean => {
   const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
   const extension = fileName.split('.').pop()?.toLowerCase();

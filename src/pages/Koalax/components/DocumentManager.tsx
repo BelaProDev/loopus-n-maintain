@@ -23,7 +23,7 @@ const DocumentManager = () => {
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      uploadMutation.mutate(file);
+      uploadMutation.mutate({ file, path: currentPath });
     }
   };
 
