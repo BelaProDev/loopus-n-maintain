@@ -12,31 +12,36 @@ const tools = [
     icon: FileText,
     title: "documents",
     path: "/documents",
-    gradient: "from-blue-500 to-cyan-500"
+    gradient: "from-blue-500 to-cyan-500",
+    bgClass: "bg-gradient-cool"
   },
   {
     icon: GitBranch,
     title: "diagrams",
     path: "/diagrams",
-    gradient: "from-purple-500 to-pink-500"
+    gradient: "from-purple-500 to-pink-500",
+    bgClass: "bg-gradient-elegant"
   },
   {
     icon: BarChart,
     title: "analytics",
     path: "/analytics",
-    gradient: "from-green-500 to-emerald-500"
+    gradient: "from-green-500 to-emerald-500",
+    bgClass: "bg-gradient-primary"
   },
   {
     icon: Music,
     title: "audio",
     path: "/audio",
-    gradient: "from-orange-500 to-red-500"
+    gradient: "from-orange-500 to-red-500",
+    bgClass: "bg-gradient-warm"
   },
   {
     icon: FileCheck,
     title: "invoicing",
     path: "/invoicing",
-    gradient: "from-violet-500 to-purple-500"
+    gradient: "from-violet-500 to-purple-500",
+    bgClass: "bg-gradient-secondary"
   }
 ];
 
@@ -72,14 +77,14 @@ const Index = () => {
         </div>
 
         <div className="container mx-auto px-4 py-16 md:py-24">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gradient">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gradient animate-fade-in">
             {t("common:nav.tools")}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {tools.map((tool) => (
               <Card 
                 key={tool.title} 
-                className="group hover:shadow-xl transition-all duration-300 border-none overflow-hidden relative"
+                className={`group hover:shadow-xl transition-all duration-300 border-none overflow-hidden relative animate-scale-up ${tool.bgClass} bg-opacity-5`}
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${tool.gradient} opacity-10 group-hover:opacity-20 transition-opacity`} />
                 <CardHeader>

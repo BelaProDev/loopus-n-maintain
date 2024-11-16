@@ -1,22 +1,22 @@
 {
   "documents": {
     "title": "Documents",
-    "description": "Create, edit and manage your documents with powerful collaboration features"
+    "description": "Create, edit and manage your documents with powerful collaboration features. Seamlessly integrate with Dropbox for secure storage and sharing."
   },
   "diagrams": {
     "title": "UML Diagrams",
-    "description": "Design and visualize system architectures with our intuitive UML diagram creator"
+    "description": "Design and visualize system architectures with our intuitive UML diagram creator. Create flowcharts, sequence diagrams, and more."
   },
   "analytics": {
     "title": "Analytics",
-    "description": "Track trends and analyze tech stacks with comprehensive data visualization tools"
+    "description": "Track trends and analyze tech stacks with comprehensive data visualization tools. Get insights from your business data."
   },
   "audio": {
     "title": "Audio Studio",
-    "description": "Create and edit audio with modular synthesizers and professional mixing tools"
+    "description": "Create and edit audio with modular synthesizers and professional mixing tools. Record, edit, and export high-quality audio."
   },
   "invoicing": {
     "title": "Invoicing",
-    "description": "Generate, manage and track invoices with our complete business toolkit"
+    "description": "Generate, manage and track invoices with our complete business toolkit. Automate your billing process and financial reporting."
   }
 }
