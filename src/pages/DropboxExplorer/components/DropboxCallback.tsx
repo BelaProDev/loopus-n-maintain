@@ -1,40 +1,23 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Dropbox } from 'dropbox';
-import { toast } from 'sonner';
 
 const DropboxCallback = () => {
-  const navigate = useNavigate();
-
   useEffect(() => {
-    const handleCallback = async () => {
-      const hash = window.location.hash;
-      if (!hash) {
-        toast.error('Authentication failed');
-        navigate('/dropbox-explorer');
-        return;
-      }
+    const hash = window.location.hash;
+    if (!hash) return;
 
-      const accessToken = hash
-        .substring(1)
-        .split('&')
-        .find(param => param.startsWith('access_token='))
-        ?.split('=')[1];
+    const accessToken = hash
+      .substring(1)
+      .split('&')
+      .find(param => param.startsWith('access_token='))
+      ?.split('=')[1];
 
-      if (!accessToken) {
-        toast.error('No access token received');
-        navigate('/dropbox-explorer');
-        return;
-      }
-
-      window.localStorage.setItem('dropboxToken', accessToken);
-      window.localStorage.removeItem('dropboxAuthPending');
-      toast.success('Successfully connected to Dropbox');
-      navigate('/dropbox-explorer');
-    };
-
-    handleCallback();
-  }, [navigate]);
+    if (accessToken) {
+      window.opener.postMessage(
+        { type: 'DROPBOX_AUTH_SUCCESS', accessToken },
+        window.location.origin
+      );
+    }
+  }, []);
 
   return (
     <div className="flex items-center justify-center min-h-screen">
