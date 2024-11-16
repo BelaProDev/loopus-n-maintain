@@ -1,15 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import * as Tone from 'tone';
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Music2, Waves } from "lucide-react";
 import { toast } from "sonner";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ShaderVisualizer from './ShaderVisualizer';
-import StepSequencer from './StepSequencer';
-import EffectChain from './EffectChain';
-import Looper from './Looper';
-import BPMControl from './BPMControl';
+import SynthControls from './SynthControls';
 
 interface Step {
   active: boolean;
@@ -29,7 +25,7 @@ const Synthesizer = () => {
   );
   const [currentStep, setCurrentStep] = useState(0);
   
-  // Effect parameters
+  // Effect parameters and refs
   const [filterFreq, setFilterFreq] = useState(1000);
   const [filterRes, setFilterRes] = useState(1);
   const [delayTime, setDelayTime] = useState(0.3);
@@ -53,6 +49,65 @@ const Synthesizer = () => {
   const handleBPMChange = (newBpm: number) => {
     setBpm(newBpm);
     Tone.Transport.bpm.value = newBpm;
+  };
+
+  const updateEffects = {
+    filter: (freq: number) => {
+      if (filterRef.current) {
+        filterRef.current.frequency.value = freq;
+        setFilterFreq(freq);
+      }
+    },
+    delay: (time: number, feedback: number) => {
+      if (delayRef.current) {
+        delayRef.current.delayTime.value = time;
+        delayRef.current.feedback.value = feedback;
+        setDelayTime(time);
+        setDelayFeedback(feedback);
+      }
+    },
+    reverb: (mix: number) => {
+      if (reverbRef.current) {
+        reverbRef.current.wet.value = mix;
+        setReverbMix(mix);
+      }
+    },
+    distortion: (amount: number) => {
+      if (distortionRef.current) {
+        distortionRef.current.distortion = amount;
+        setDistortion(amount);
+      }
+    },
+    phaser: (freq: number) => {
+      if (phaserRef.current) {
+        phaserRef.current.frequency.value = freq;
+        setPhaserFreq(freq);
+      }
+    },
+    flanger: (depth: number) => {
+      if (flangerRef.current) {
+        flangerRef.current.feedback.value = depth;
+        setFlangerDepth(depth);
+      }
+    }
+  };
+
+  const startRecording = async () => {
+    if (recorderRef.current) {
+      await recorderRef.current.start();
+      setIsRecording(true);
+      toast.success("Recording started");
+    }
+  };
+
+  const stopRecording = async () => {
+    if (recorderRef.current) {
+      const recording = await recorderRef.current.stop();
+      const url = URL.createObjectURL(recording);
+      setIsRecording(false);
+      toast.success("Recording stopped");
+      return url;
+    }
   };
 
   useEffect(() => {
@@ -140,65 +195,6 @@ const Synthesizer = () => {
     return () => cancelAnimationFrame(frameId);
   }, []);
 
-  const updateEffects = {
-    filter: (freq: number) => {
-      if (filterRef.current) {
-        filterRef.current.frequency.value = freq;
-        setFilterFreq(freq);
-      }
-    },
-    delay: (time: number, feedback: number) => {
-      if (delayRef.current) {
-        delayRef.current.delayTime.value = time;
-        delayRef.current.feedback.value = feedback;
-        setDelayTime(time);
-        setDelayFeedback(feedback);
-      }
-    },
-    reverb: (mix: number) => {
-      if (reverbRef.current) {
-        reverbRef.current.wet.value = mix;
-        setReverbMix(mix);
-      }
-    },
-    distortion: (amount: number) => {
-      if (distortionRef.current) {
-        distortionRef.current.distortion = amount;
-        setDistortion(amount);
-      }
-    },
-    phaser: (freq: number) => {
-      if (phaserRef.current) {
-        phaserRef.current.frequency.value = freq;
-        setPhaserFreq(freq);
-      }
-    },
-    flanger: (depth: number) => {
-      if (flangerRef.current) {
-        flangerRef.current.feedback.value = depth;
-        setFlangerDepth(depth);
-      }
-    }
-  };
-
-  const startRecording = async () => {
-    if (recorderRef.current) {
-      await recorderRef.current.start();
-      setIsRecording(true);
-      toast.success("Recording started");
-    }
-  };
-
-  const stopRecording = async () => {
-    if (recorderRef.current) {
-      const recording = await recorderRef.current.stop();
-      const url = URL.createObjectURL(recording);
-      setIsRecording(false);
-      toast.success("Recording stopped");
-      return url;
-    }
-  };
-
   return (
     <Card className="p-6 space-y-6">
       <div className="flex items-center justify-between">
@@ -206,80 +202,56 @@ const Synthesizer = () => {
           <Music2 className="h-5 w-5" />
           Advanced Synthesizer
         </h3>
-        <div className="flex gap-2">
-          <Button onClick={() => {
-            if (sequencerRef.current) {
-              if (isPlaying) {
-                sequencerRef.current.stop();
-                Tone.Transport.stop();
-              } else {
-                Tone.start();
-                sequencerRef.current.start();
-                Tone.Transport.start();
-              }
-              setIsPlaying(!isPlaying);
+        <Button onClick={() => {
+          if (sequencerRef.current) {
+            if (isPlaying) {
+              sequencerRef.current.stop();
+              Tone.Transport.stop();
+            } else {
+              Tone.start();
+              sequencerRef.current.start();
+              Tone.Transport.start();
             }
-          }} variant={isPlaying ? "default" : "outline"}>
-            {isPlaying ? "Stop" : "Play"}
-          </Button>
-        </div>
+            setIsPlaying(!isPlaying);
+          }
+        }} variant={isPlaying ? "default" : "outline"}>
+          {isPlaying ? "Stop" : "Play"}
+        </Button>
       </div>
-
-      <BPMControl bpm={bpm} onBPMChange={handleBPMChange} />
 
       <ShaderVisualizer audioData={audioData} />
 
-      <Tabs defaultValue="sequencer">
-        <TabsList>
-          <TabsTrigger value="sequencer">Sequencer</TabsTrigger>
-          <TabsTrigger value="effects">Effects</TabsTrigger>
-          <TabsTrigger value="looper">Looper</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="sequencer">
-          <StepSequencer
-            steps={steps}
-            currentStep={currentStep}
-            onStepToggle={(stepIndex, rowIndex) => {
-              const newSteps = [...steps];
-              newSteps[stepIndex][rowIndex].active = !newSteps[stepIndex][rowIndex].active;
-              setSteps(newSteps);
-            }}
-            onNoteChange={(stepIndex, rowIndex, note) => {
-              const newSteps = [...steps];
-              newSteps[stepIndex][rowIndex].note = note;
-              setSteps(newSteps);
-            }}
-          />
-        </TabsContent>
-
-        <TabsContent value="effects">
-          <EffectChain
-            filterFreq={filterFreq}
-            filterRes={filterRes}
-            delayTime={delayTime}
-            delayFeedback={delayFeedback}
-            reverbMix={reverbMix}
-            distortion={distortion}
-            phaserFreq={phaserFreq}
-            flangerDepth={flangerDepth}
-            onFilterChange={updateEffects.filter}
-            onDelayChange={updateEffects.delay}
-            onReverbChange={updateEffects.reverb}
-            onDistortionChange={updateEffects.distortion}
-            onPhaserChange={updateEffects.phaser}
-            onFlangerChange={updateEffects.flanger}
-          />
-        </TabsContent>
-
-        <TabsContent value="looper">
-          <Looper
-            onStartRecording={startRecording}
-            onStopRecording={stopRecording}
-            isRecording={isRecording}
-          />
-        </TabsContent>
-      </Tabs>
+      <SynthControls
+        bpm={bpm}
+        isPlaying={isPlaying}
+        onBPMChange={handleBPMChange}
+        steps={steps}
+        currentStep={currentStep}
+        onStepToggle={(stepIndex, rowIndex) => {
+          const newSteps = [...steps];
+          newSteps[stepIndex][rowIndex].active = !newSteps[stepIndex][rowIndex].active;
+          setSteps(newSteps);
+        }}
+        onNoteChange={(stepIndex, rowIndex, note) => {
+          const newSteps = [...steps];
+          newSteps[stepIndex][rowIndex].note = note;
+          setSteps(newSteps);
+        }}
+        effectParams={{
+          filterFreq,
+          filterRes,
+          delayTime,
+          delayFeedback,
+          reverbMix,
+          distortion,
+          phaserFreq,
+          flangerDepth
+        }}
+        updateEffects={updateEffects}
+        onStartRecording={startRecording}
+        onStopRecording={stopRecording}
+        isRecording={isRecording}
+      />
 
       <div className="flex justify-center">
         <Waves className={`h-6 w-6 ${isPlaying ? 'text-primary animate-pulse' : ''}`} />

@@ -1,106 +1,27 @@
-import type { Config } from "tailwindcss";
+import { type Config } from "tailwindcss";
 
 export default {
-  darkMode: ["class"],
   content: [
-    "./pages/**/*.{ts,tsx}",
-    "./components/**/*.{ts,tsx}",
-    "./app/**/*.{ts,tsx}",
-    "./src/**/*.{ts,tsx}",
+    "./src/**/*.{js,jsx,ts,tsx}",
+    "./public/index.html",
   ],
-  prefix: "",
   theme: {
-    container: {
-      center: true,
-      padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
-    },
     extend: {
       colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "#FFFFFF",
-        foreground: "#1A1F2C",
-        primary: {
-          DEFAULT: "#9b87f5",
-          foreground: "#FFFFFF",
+        primary: "#2E5984",
+        secondary: "#FF5733",
+        accent: "#FFC300",
+        background: {
+          DEFAULT: "rgb(255 255 255 / var(--tw-bg-opacity))",
         },
-        secondary: {
-          DEFAULT: "#7E69AB",
-          foreground: "#FFFFFF",
-        },
-        accent: {
-          DEFAULT: "#D6BCFA",
-          foreground: "#1A1F2C",
-        },
-        destructive: {
-          DEFAULT: "#ea384c",
-          foreground: "#FFFFFF",
-        },
-        muted: {
-          DEFAULT: "#F1F0FB",
-          foreground: "#6E59A5",
-        },
-        popover: {
-          DEFAULT: "#FFFFFF",
-          foreground: "#1A1F2C",
-        },
-        card: {
-          DEFAULT: "#FFFFFF",
-          foreground: "#1A1F2C",
+        foreground: {
+          DEFAULT: "rgb(0 0 0 / var(--tw-text-opacity))",
         },
       },
-      backgroundImage: {
-        'gradient-primary': 'linear-gradient(102.3deg, rgba(147,39,143,1) 5.9%, rgba(234,172,232,1) 64%, rgba(246,219,245,1) 89%)',
-        'gradient-secondary': 'linear-gradient(90deg, hsla(277, 75%, 84%, 1) 0%, hsla(297, 50%, 51%, 1) 100%)',
-        'gradient-accent': 'linear-gradient(109.6deg, rgba(223,234,247,1) 11.2%, rgba(244,248,252,1) 91.1%)',
-        'gradient-elegant': 'linear-gradient(to right, #243949 0%, #517fa4 100%)',
-        'gradient-warm': 'linear-gradient(to right, #ee9ca7, #ffdde1)',
-        'gradient-cool': 'linear-gradient(to top, #accbee 0%, #e7f0fd 100%)',
-      },
-      keyframes: {
-        "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
-        },
-        "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
-        },
-        "float": {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-10px)" },
-        },
-        "pulse-soft": {
-          "0%, 100%": { opacity: "1" },
-          "50%": { opacity: "0.8" },
-        },
-        "slide-up": {
-          "0%": { transform: "translateY(20px)", opacity: "0" },
-          "100%": { transform: "translateY(0)", opacity: "1" },
-        },
-        "fade-in": {
-          "0%": { opacity: "0" },
-          "100%": { opacity: "1" },
-        },
-        "scale-up": {
-          "0%": { transform: "scale(0.95)", opacity: "0" },
-          "100%": { transform: "scale(1)", opacity: "1" },
-        }
-      },
-      animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
-        "float": "float 3s ease-in-out infinite",
-        "pulse-soft": "pulse-soft 2s ease-in-out infinite",
-        "slide-up": "slide-up 0.5s ease-out",
-        "fade-in": "fade-in 0.5s ease-out",
-        "scale-up": "scale-up 0.5s ease-out",
+      gridTemplateColumns: {
+        '16': 'repeat(16, minmax(0, 1fr))',
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [],
 } satisfies Config;
