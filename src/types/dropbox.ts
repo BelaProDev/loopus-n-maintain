@@ -3,7 +3,7 @@ export interface DropboxFile {
   name: string;
   path_display?: string;
   '.tag': 'file' | 'folder' | 'deleted';
-  size?: number;
+  size: number;
   client_modified?: string;
   server_modified?: string;
   rev?: string;
