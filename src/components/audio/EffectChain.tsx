@@ -1,5 +1,6 @@
 import { Slider } from "@/components/ui/slider";
 import { Volume2 } from "lucide-react";
+import { Label } from "@/components/ui/label";
 
 interface EffectChainProps {
   filterFreq: number;
@@ -8,10 +9,14 @@ interface EffectChainProps {
   delayFeedback: number;
   reverbMix: number;
   distortion: number;
+  phaserFreq: number;
+  flangerDepth: number;
   onFilterChange: (freq: number) => void;
   onDelayChange: (time: number, feedback: number) => void;
   onReverbChange: (mix: number) => void;
   onDistortionChange: (amount: number) => void;
+  onPhaserChange: (freq: number) => void;
+  onFlangerChange: (depth: number) => void;
 }
 
 const EffectChain = ({
@@ -21,72 +26,103 @@ const EffectChain = ({
   delayFeedback,
   reverbMix,
   distortion,
+  phaserFreq,
+  flangerDepth,
   onFilterChange,
   onDelayChange,
   onReverbChange,
-  onDistortionChange
+  onDistortionChange,
+  onPhaserChange,
+  onFlangerChange
 }: EffectChainProps) => {
+  const EffectControl = ({ label, value, onChange, min, max, step, unit = "" }) => (
+    <div className="space-y-2">
+      <Label className="text-sm font-medium">
+        {label} {value.toFixed(2)}{unit}
+      </Label>
+      <Slider
+        defaultValue={[value]}
+        max={max}
+        min={min}
+        step={step}
+        onValueChange={([value]) => onChange(value)}
+        className="my-2"
+      />
+    </div>
+  );
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 rounded-lg border">
       <div className="flex items-center gap-2 mb-4">
         <Volume2 className="h-5 w-5" />
         <h4 className="font-semibold">Effect Chain</h4>
       </div>
       
-      <div>
-        <h4 className="text-sm font-medium mb-2">Filter Frequency</h4>
-        <Slider
-          defaultValue={[filterFreq]}
-          max={20000}
-          min={20}
-          step={1}
-          onValueChange={([value]) => onFilterChange(value)}
-        />
-      </div>
+      <EffectControl
+        label="Filter Frequency"
+        value={filterFreq}
+        onChange={onFilterChange}
+        min={20}
+        max={20000}
+        step={1}
+        unit="Hz"
+      />
 
-      <div>
-        <h4 className="text-sm font-medium mb-2">Delay Time</h4>
-        <Slider
-          defaultValue={[delayTime]}
-          max={1}
-          min={0}
-          step={0.01}
-          onValueChange={([value]) => onDelayChange(value, delayFeedback)}
-        />
-      </div>
+      <EffectControl
+        label="Delay Time"
+        value={delayTime}
+        onChange={(value) => onDelayChange(value, delayFeedback)}
+        min={0}
+        max={2}
+        step={0.01}
+        unit="s"
+      />
 
-      <div>
-        <h4 className="text-sm font-medium mb-2">Delay Feedback</h4>
-        <Slider
-          defaultValue={[delayFeedback]}
-          max={0.9}
-          min={0}
-          step={0.01}
-          onValueChange={([value]) => onDelayChange(delayTime, value)}
-        />
-      </div>
+      <EffectControl
+        label="Delay Feedback"
+        value={delayFeedback}
+        onChange={(value) => onDelayChange(delayTime, value)}
+        min={0}
+        max={0.95}
+        step={0.01}
+      />
 
-      <div>
-        <h4 className="text-sm font-medium mb-2">Reverb Mix</h4>
-        <Slider
-          defaultValue={[reverbMix]}
-          max={1}
-          min={0}
-          step={0.01}
-          onValueChange={([value]) => onReverbChange(value)}
-        />
-      </div>
+      <EffectControl
+        label="Reverb Mix"
+        value={reverbMix}
+        onChange={onReverbChange}
+        min={0}
+        max={1}
+        step={0.01}
+      />
 
-      <div>
-        <h4 className="text-sm font-medium mb-2">Distortion</h4>
-        <Slider
-          defaultValue={[distortion]}
-          max={100}
-          min={0}
-          step={1}
-          onValueChange={([value]) => onDistortionChange(value)}
-        />
-      </div>
+      <EffectControl
+        label="Distortion"
+        value={distortion}
+        onChange={onDistortionChange}
+        min={0}
+        max={100}
+        step={0.1}
+      />
+
+      <EffectControl
+        label="Phaser Frequency"
+        value={phaserFreq}
+        onChange={onPhaserChange}
+        min={0.1}
+        max={10}
+        step={0.1}
+        unit="Hz"
+      />
+
+      <EffectControl
+        label="Flanger Depth"
+        value={flangerDepth}
+        onChange={onFlangerChange}
+        min={0}
+        max={1}
+        step={0.01}
+      />
     </div>
   );
 };
