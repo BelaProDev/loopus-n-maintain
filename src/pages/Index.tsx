@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, GitBranch, BarChart, Music, FileCheck } from "lucide-react";
+import { FileText, GitBranch, BarChart, Music, FileCheck, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -42,6 +42,13 @@ const tools = [
     path: "/invoicing",
     gradient: "from-violet-500 to-purple-500",
     bgClass: "bg-gradient-secondary"
+  },
+  {
+    icon: MessageCircle,
+    title: "chat",
+    path: "/chat",
+    gradient: "from-indigo-500 to-blue-500",
+    bgClass: "bg-gradient-social"
   }
 ];
 

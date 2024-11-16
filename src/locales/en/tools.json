@@ -18,5 +18,9 @@
   "invoicing": {
     "title": "Invoicing",
     "description": "Generate, manage and track invoices with our complete business toolkit. Automate your billing process and financial reporting."
+  },
+  "chat": {
+    "title": "Community Chat",
+    "description": "Connect with other members in real-time through our modern chat system. Share ideas, get help, and build relationships in our community."
   }
 }

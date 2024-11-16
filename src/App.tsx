@@ -33,12 +33,13 @@ import MessageManagement from "./pages/Koalax/components/messages/MessageManagem
 import DropboxExplorer from "./pages/DropboxExplorer";
 import DropboxCallback from "./pages/DropboxExplorer/components/DropboxCallback";
 
-// Import new tool pages
+// Import tool pages
 import Documents from "./pages/tools/Documents";
 import Diagrams from "./pages/tools/Diagrams";
 import Analytics from "./pages/tools/Analytics";
 import Audio from "./pages/tools/Audio";
 import Invoicing from "./pages/tools/Invoicing";
+import Chat from "./pages/tools/Chat";
 
 const queryClient = new QueryClient();
 
@@ -67,6 +68,7 @@ const App = () => {
                 <Route path="/analytics" element={<Analytics />} />
                 <Route path="/audio" element={<Audio />} />
                 <Route path="/invoicing" element={<Invoicing />} />
+                <Route path="/chat" element={<Chat />} />
                 
                 {/* Admin Routes */}
                 <Route path="/docs" element={<Documentation />} />
