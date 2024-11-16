@@ -6,7 +6,7 @@ export const invoiceService = {
 
   calculateTotals: (items: InvoiceItem[]) => {
     const totalAmount = items.reduce((sum, item) => sum + item.total, 0);
-    const tax = totalAmount * 0.21; // 21% VAT
+    const tax = items.reduce((sum, item) => sum + (item.total * item.vatRate / 100), 0);
     return { totalAmount, tax };
   },
 
@@ -21,13 +21,24 @@ export const invoiceService = {
       status: 'draft',
       totalAmount,
       tax,
-      items: dto.items.map(item => ({ ...item, [Symbol.iterator]: undefined }))
+      paymentTerms: dto.paymentTerms || 'net30',
+      currency: dto.currency || 'EUR',
+      items: dto.items.map(item => ({ 
+        ...item,
+        [Symbol.iterator]: undefined,
+        total: item.quantity * item.unitPrice
+      }))
     };
   },
 
   createInvoice: async (dto: CreateInvoiceDTO) => {
     const invoiceData = invoiceService.prepareInvoiceData(dto);
     return businessQueries.createInvoice(invoiceData);
+  },
+
+  updateInvoice: async (id: string, dto: CreateInvoiceDTO) => {
+    const invoiceData = invoiceService.prepareInvoiceData(dto);
+    return businessQueries.updateInvoice(id, invoiceData);
   },
 
   deleteInvoice: (id: string) => {
