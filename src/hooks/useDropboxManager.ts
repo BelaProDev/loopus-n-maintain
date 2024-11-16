@@ -1,30 +1,19 @@
-import { useEffect } from 'react';
+import { useState } from 'react';
 import { useToast } from "@/components/ui/use-toast";
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useAppDispatch, useAppSelector } from './useAppStore';
-import { setFiles } from '@/store/slices/documentsSlice';
-import { DropboxFile, FileMetadata } from '@/types/dropbox';
-import { dropboxAuth } from '@/lib/auth/dropbox';
-import { convertToFileMetadata, sortFiles } from '@/lib/utils/fileUtils';
 import { dropboxClient } from '@/lib/api/dropboxClient';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { DropboxEntry } from '@/types/dropbox';
 
 export const useDropboxManager = (currentPath: string) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const dispatch = useAppDispatch();
-  const { isAuthenticated } = useAppSelector(state => state.documents);
 
   const { data: files, isLoading, refetch } = useQuery({
     queryKey: ['files', currentPath],
     queryFn: () => dropboxClient.listFolder(currentPath),
     enabled: isAuthenticated,
   });
-
-  useEffect(() => {
-    if (files) {
-      dispatch(setFiles(files));
-    }
-  }, [files, dispatch]);
 
   const uploadMutation = useMutation({
     mutationFn: async (file: File) => {
@@ -89,6 +78,7 @@ export const useDropboxManager = (currentPath: string) => {
     files,
     isLoading,
     isAuthenticated,
+    setIsAuthenticated,
     uploadMutation,
     deleteMutation,
     handleDownload,

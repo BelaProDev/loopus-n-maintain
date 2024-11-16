@@ -1,9 +1,11 @@
 import { Dropbox, DropboxResponse, files } from 'dropbox';
 import { dropboxAuth } from '@/lib/auth/dropbox';
 import { 
-  DropboxFile, 
-  DropboxSearchResponse, 
-  DropboxUploadResponse 
+  DropboxEntry,
+  DropboxFile,
+  DropboxFolder,
+  DropboxSearchResponse,
+  DropboxListFolderResult
 } from '@/types/dropbox';
 
 class DropboxClient {
@@ -30,26 +32,36 @@ class DropboxClient {
     return this.client;
   }
 
-  private mapFileResponse(entry: files.FileMetadataReference | files.FolderMetadataReference): DropboxFile {
-    return {
-      id: entry.id || entry.path_lower || entry.path_display || '',
+  private mapFileResponse(entry: files.FileMetadataReference | files.FolderMetadataReference): DropboxEntry {
+    const baseMetadata = {
+      id: entry.id,
       name: entry.name,
-      path: entry.path_display || '',
-      path_display: entry.path_display,
       path_lower: entry.path_lower,
-      '.tag': entry['.tag'],
-      size: 'size' in entry ? entry.size : 0,
-      isFolder: entry['.tag'] === 'folder',
-      lastModified: 'server_modified' in entry ? entry.server_modified : new Date().toISOString(),
-      client_modified: 'client_modified' in entry ? entry.client_modified : undefined,
-      server_modified: 'server_modified' in entry ? entry.server_modified : undefined,
-      rev: 'rev' in entry ? entry.rev : undefined,
-      content_hash: 'content_hash' in entry ? entry.content_hash : undefined,
-      is_downloadable: 'is_downloadable' in entry ? entry.is_downloadable : undefined
+      path_display: entry.path_display,
+      '.tag': entry['.tag'] as DropboxEntry['.tag']
+    };
+
+    if (entry['.tag'] === 'file') {
+      const fileEntry = entry as files.FileMetadataReference;
+      return {
+        ...baseMetadata,
+        '.tag': 'file' as const,
+        size: fileEntry.size,
+        is_downloadable: fileEntry.is_downloadable,
+        client_modified: fileEntry.client_modified,
+        server_modified: fileEntry.server_modified,
+        rev: fileEntry.rev,
+        content_hash: fileEntry.content_hash
+      };
+    }
+
+    return {
+      ...baseMetadata,
+      '.tag': 'folder' as const
     };
   }
 
-  async listFolder(path: string, recursive: boolean = false): Promise<DropboxFile[]> {
+  async listFolder(path: string, recursive: boolean = false): Promise<DropboxEntry[]> {
     const client = await this.getClient();
     try {
       const response = await client.filesListFolder({
@@ -69,13 +81,12 @@ class DropboxClient {
     const client = await this.getClient();
     try {
       const response = await client.filesUpload({
-        path,
+        path: `${path}/${file.name}`,
         contents: await file.arrayBuffer(),
         mode: { '.tag': 'overwrite' },
-        autorename: true,
-        strict_conflict: false
+        autorename: true
       });
-      return this.mapFileResponse(response.result);
+      return this.mapFileResponse(response.result) as DropboxFile;
     } catch (error) {
       console.error('Dropbox upload error:', error);
       throw error;
@@ -85,8 +96,8 @@ class DropboxClient {
   async downloadFile(path: string): Promise<Blob> {
     const client = await this.getClient();
     try {
-      const response = await client.filesDownload({ path });
-      return (response as any).result.fileBlob;
+      const response = await client.filesDownload({ path }) as any;
+      return response.result.fileBlob;
     } catch (error) {
       console.error('Dropbox download error:', error);
       throw error;
@@ -103,14 +114,14 @@ class DropboxClient {
     }
   }
 
-  async createFolder(path: string): Promise<DropboxFile> {
+  async createFolder(path: string): Promise<DropboxFolder> {
     const client = await this.getClient();
     try {
       const response = await client.filesCreateFolderV2({
         path,
         autorename: false
       });
-      return this.mapFileResponse(response.result.metadata);
+      return this.mapFileResponse(response.result.metadata) as DropboxFolder;
     } catch (error) {
       console.error('Dropbox create folder error:', error);
       throw error;
@@ -128,28 +139,22 @@ class DropboxClient {
           file_status: 'active'
         }
       });
-      return response.result;
+      
+      return {
+        matches: response.result.matches.map(match => ({
+          match_type: match.match_type,
+          metadata: this.mapFileResponse(match.metadata as files.FileMetadataReference)
+        })),
+        more: response.result.has_more,
+        start: 0
+      };
     } catch (error) {
       console.error('Dropbox search error:', error);
       throw error;
     }
   }
 
-  async getFileMetadata(path: string): Promise<DropboxFile> {
-    const client = await this.getClient();
-    try {
-      const response = await client.filesGetMetadata({
-        path,
-        include_media_info: true
-      });
-      return this.mapFileResponse(response.result);
-    } catch (error) {
-      console.error('Dropbox get metadata error:', error);
-      throw error;
-    }
-  }
-
-  async moveFile(fromPath: string, toPath: string): Promise<DropboxFile> {
+  async moveFile(fromPath: string, toPath: string): Promise<DropboxEntry> {
     const client = await this.getClient();
     try {
       const response = await client.filesMoveV2({
@@ -164,7 +169,7 @@ class DropboxClient {
     }
   }
 
-  async copyFile(fromPath: string, toPath: string): Promise<DropboxFile> {
+  async copyFile(fromPath: string, toPath: string): Promise<DropboxEntry> {
     const client = await this.getClient();
     try {
       const response = await client.filesCopyV2({

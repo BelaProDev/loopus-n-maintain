@@ -1,59 +1,46 @@
+import { files } from 'dropbox';
+
 export type DropboxFileTag = 'file' | 'folder' | 'deleted';
 
-export interface DropboxFile {
+export interface DropboxMetadata extends files.FileMetadataReference {
+  '.tag': DropboxFileTag;
   id: string;
   name: string;
-  path: string;
+  path_lower: string;
   path_display?: string;
-  path_lower?: string;
-  '.tag': DropboxFileTag;
-  size: number;
+  size?: number;
+  is_downloadable?: boolean;
   client_modified?: string;
   server_modified?: string;
   rev?: string;
-  isFolder: boolean;
-  lastModified: string;
   content_hash?: string;
-  sharing_info?: {
-    read_only: boolean;
-    parent_shared_folder_id: string;
-    modified_by: string;
-  };
-  is_downloadable?: boolean;
 }
 
-export interface DropboxResponse {
-  entries: DropboxFile[];
+export interface DropboxFile extends DropboxMetadata {
+  '.tag': 'file';
+}
+
+export interface DropboxFolder extends DropboxMetadata {
+  '.tag': 'folder';
+}
+
+export interface DropboxDeletedFile extends DropboxMetadata {
+  '.tag': 'deleted';
+}
+
+export type DropboxEntry = DropboxFile | DropboxFolder | DropboxDeletedFile;
+
+export interface DropboxListFolderResult {
+  entries: DropboxEntry[];
   cursor: string;
   has_more: boolean;
-}
-
-export interface DropboxError {
-  error_summary: string;
-  error: {
-    '.tag': string;
-    [key: string]: any;
-  };
-}
-
-export interface DropboxUploadResponse {
-  name: string;
-  path_lower: string;
-  path_display: string;
-  id: string;
-  client_modified: string;
-  server_modified: string;
-  rev: string;
-  size: number;
-  is_downloadable: boolean;
-  content_hash?: string;
 }
 
 export interface DropboxSearchMatch {
   match_type: {
     '.tag': string;
   };
-  metadata: DropboxFile;
+  metadata: DropboxEntry;
 }
 
 export interface DropboxSearchResponse {
