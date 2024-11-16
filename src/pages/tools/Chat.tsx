@@ -1,12 +1,11 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from 'react';
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MessageCircle, Send } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
-import { toast } from "sonner";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useToast } from "@/components/ui/use-toast";
+import { Send, Users } from "lucide-react";
 
 interface Message {
   id: string;
@@ -18,27 +17,45 @@ interface Message {
 const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
-  const { isAuthenticated, userEmail } = useAuth();
+  const [username, setUsername] = useState("");
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      toast.error("Please login to use the chat");
+    const storedUsername = localStorage.getItem("chat-username");
+    if (storedUsername) {
+      setUsername(storedUsername);
+    } else {
+      const randomUsername = `User${Math.floor(Math.random() * 1000)}`;
+      localStorage.setItem("chat-username", randomUsername);
+      setUsername(randomUsername);
     }
-  }, [isAuthenticated]);
+  }, []);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMessage.trim() || !isAuthenticated) return;
+    if (!newMessage.trim()) return;
 
     const message: Message = {
       id: crypto.randomUUID(),
       text: newMessage,
-      sender: userEmail || "Anonymous",
+      sender: username,
       timestamp: new Date(),
     };
 
     setMessages((prev) => [...prev, message]);
     setNewMessage("");
+    
+    toast({
+      title: "Message sent",
+      description: "Your message has been sent successfully",
+    });
   };
 
   return (
@@ -46,17 +63,17 @@ const Chat = () => {
       <Card className="max-w-4xl mx-auto">
         <div className="p-6">
           <div className="flex items-center gap-2 mb-6">
-            <MessageCircle className="h-6 w-6 text-primary" />
-            <h1 className="text-2xl font-bold">Community Chat</h1>
+            <Users className="h-6 w-6 text-primary" />
+            <h1 className="text-2xl font-bold">Chat Room</h1>
           </div>
 
-          <ScrollArea className="h-[60vh] rounded-md border p-4">
+          <ScrollArea className="h-[60vh] rounded-md border p-4" ref={scrollRef}>
             <div className="space-y-4">
               {messages.map((message) => (
                 <div
                   key={message.id}
                   className={`flex items-start gap-3 ${
-                    message.sender === userEmail ? "flex-row-reverse" : ""
+                    message.sender === username ? "flex-row-reverse" : ""
                   }`}
                 >
                   <Avatar className="h-8 w-8">
@@ -66,7 +83,7 @@ const Chat = () => {
                   </Avatar>
                   <div
                     className={`max-w-[80%] rounded-lg p-3 ${
-                      message.sender === userEmail
+                      message.sender === username
                         ? "bg-primary text-primary-foreground"
                         : "bg-muted"
                     }`}
@@ -74,7 +91,7 @@ const Chat = () => {
                     <p className="text-sm font-medium mb-1">{message.sender}</p>
                     <p>{message.text}</p>
                     <span className="text-xs opacity-70">
-                      {new Date(message.timestamp).toLocaleTimeString()}
+                      {message.timestamp.toLocaleTimeString()}
                     </span>
                   </div>
                 </div>
@@ -87,10 +104,9 @@ const Chat = () => {
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               placeholder="Type your message..."
-              disabled={!isAuthenticated}
               className="flex-1"
             />
-            <Button type="submit" disabled={!isAuthenticated}>
+            <Button type="submit">
               <Send className="h-4 w-4" />
             </Button>
           </form>
