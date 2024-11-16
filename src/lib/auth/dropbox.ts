@@ -6,7 +6,19 @@ const CLIENT_ID = import.meta.env.VITE_DROPBOX_APP_KEY;
 const CLIENT_SECRET = import.meta.env.VITE_DROPBOX_APP_SECRET;
 const REDIRECT_URI = `${window.location.origin}/dropbox-explorer/callback`;
 
-export const dropboxAuth = {
+class DropboxAuth {
+  private static instance: DropboxAuth;
+  private tokenRefreshTimeout: NodeJS.Timeout | null = null;
+
+  private constructor() {}
+
+  static getInstance(): DropboxAuth {
+    if (!DropboxAuth.instance) {
+      DropboxAuth.instance = new DropboxAuth();
+    }
+    return DropboxAuth.instance;
+  }
+
   async getClient(): Promise<Dropbox | null> {
     const accessToken = await this.getValidAccessToken();
     if (!accessToken) return null;
@@ -15,7 +27,7 @@ export const dropboxAuth = {
       accessToken,
       clientId: CLIENT_ID
     });
-  },
+  }
 
   async initiateAuth() {
     if (!CLIENT_ID) throw new Error('Dropbox client ID not configured');
@@ -32,7 +44,7 @@ export const dropboxAuth = {
     });
 
     window.location.href = `${DROPBOX_AUTH_URL}?${params.toString()}`;
-  },
+  }
 
   async handleCallback(code: string): Promise<string> {
     if (!code) throw new Error('Authorization code is required');
@@ -57,19 +69,36 @@ export const dropboxAuth = {
       }
 
       const data = await response.json();
-      localStorage.setItem('dropbox_access_token', data.access_token);
-      localStorage.setItem('dropbox_refresh_token', data.refresh_token);
-      localStorage.setItem('dropbox_token_expiry', String(Date.now() + (data.expires_in * 1000)));
+      this.saveTokens(data);
+      this.scheduleTokenRefresh(data.expires_in);
       
       return data.access_token;
     } catch (error) {
       console.error('Auth callback error:', error);
       throw error;
     }
-  },
+  }
+
+  private saveTokens(data: any) {
+    localStorage.setItem('dropbox_access_token', data.access_token);
+    localStorage.setItem('dropbox_refresh_token', data.refresh_token);
+    localStorage.setItem('dropbox_token_expiry', String(Date.now() + (data.expires_in * 1000)));
+  }
+
+  private scheduleTokenRefresh(expiresIn: number) {
+    if (this.tokenRefreshTimeout) {
+      clearTimeout(this.tokenRefreshTimeout);
+    }
+
+    // Refresh 5 minutes before expiry
+    const refreshTime = (expiresIn - 300) * 1000;
+    this.tokenRefreshTimeout = setTimeout(() => {
+      this.refreshToken(localStorage.getItem('dropbox_refresh_token') || '');
+    }, refreshTime);
+  }
 
   async refreshToken(refresh_token: string): Promise<string> {
-    const response = await fetch(REDIRECT_URI, {
+    const response = await fetch(DROPBOX_TOKEN_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -83,15 +112,16 @@ export const dropboxAuth = {
     });
 
     if (!response.ok) {
+      this.logout();
       throw new Error('Failed to refresh token');
     }
 
     const data = await response.json();
-    localStorage.setItem('dropbox_access_token', data.access_token);
-    localStorage.setItem('dropbox_token_expiry', String(Date.now() + (data.expires_in * 1000)));
+    this.saveTokens(data);
+    this.scheduleTokenRefresh(data.expires_in);
     
     return data.access_token;
-  },
+  }
 
   async getValidAccessToken(): Promise<string | null> {
     const accessToken = localStorage.getItem('dropbox_access_token');
@@ -110,12 +140,21 @@ export const dropboxAuth = {
     }
 
     return accessToken;
-  },
+  }
 
   logout() {
+    if (this.tokenRefreshTimeout) {
+      clearTimeout(this.tokenRefreshTimeout);
+    }
     localStorage.removeItem('dropbox_access_token');
     localStorage.removeItem('dropbox_refresh_token');
     localStorage.removeItem('dropbox_token_expiry');
     localStorage.removeItem('dropbox_state');
   }
-};
+
+  isAuthenticated(): boolean {
+    return !!localStorage.getItem('dropbox_access_token');
+  }
+}
+
+export const dropboxAuth = DropboxAuth.getInstance();
