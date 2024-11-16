@@ -6,156 +6,84 @@ import { Music2, Waves } from "lucide-react";
 import { toast } from "sonner";
 import ShaderVisualizer from './ShaderVisualizer';
 import SynthControls from './SynthControls';
+import EffectProcessor from './EffectProcessor';
+import ImprovedSequencer from './ImprovedSequencer';
+import { initializeAudio } from '@/lib/audio/audioContext';
 
 interface Step {
   active: boolean;
   note: string;
+  velocity: number;
 }
 
 const Synthesizer = () => {
   const [synth, setSynth] = useState<Tone.PolySynth | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
   const [audioData, setAudioData] = useState<number[]>(new Array(128).fill(0));
   const [bpm, setBpm] = useState(120);
   const [steps, setSteps] = useState<Step[][]>(
     Array(8).fill(null).map(() => 
-      Array(4).fill(null).map(() => ({ active: false, note: 'C4' }))
+      Array(4).fill(null).map(() => ({ active: false, note: 'C4', velocity: 0.7 }))
     )
   );
   const [currentStep, setCurrentStep] = useState(0);
   
-  // Effect parameters and refs
-  const [filterFreq, setFilterFreq] = useState(1000);
-  const [filterRes, setFilterRes] = useState(1);
-  const [delayTime, setDelayTime] = useState(0.3);
-  const [delayFeedback, setDelayFeedback] = useState(0.3);
-  const [reverbMix, setReverbMix] = useState(0.3);
-  const [distortion, setDistortion] = useState(0);
-  const [phaserFreq, setPhaserFreq] = useState(0.5);
-  const [flangerDepth, setFlangerDepth] = useState(0.5);
+  // Effect parameters
+  const [effectParams, setEffectParams] = useState({
+    filterFreq: 1000,
+    filterRes: 1,
+    delayTime: 0.3,
+    delayFeedback: 0.3,
+    reverbMix: 0.3,
+    distortion: 0,
+    phaserFreq: 0.5,
+    flangerDepth: 0.5
+  });
 
-  // Effect nodes
-  const filterRef = useRef<Tone.Filter | null>(null);
-  const delayRef = useRef<Tone.FeedbackDelay | null>(null);
-  const reverbRef = useRef<Tone.Reverb | null>(null);
-  const distortionRef = useRef<Tone.Distortion | null>(null);
-  const phaserRef = useRef<Tone.Phaser | null>(null);
-  const flangerRef = useRef<Tone.FeedbackDelay | null>(null);
   const analyserRef = useRef<Tone.Analyser | null>(null);
-  const recorderRef = useRef<Tone.Recorder | null>(null);
   const sequencerRef = useRef<Tone.Sequence | null>(null);
 
-  const handleBPMChange = (newBpm: number) => {
-    setBpm(newBpm);
-    Tone.Transport.bpm.value = newBpm;
-  };
+  useEffect(() => {
+    const setupAudio = async () => {
+      await initializeAudio();
+      const newSynth = new Tone.PolySynth(Tone.Synth, {
+        envelope: {
+          attack: 0.02,
+          decay: 0.1,
+          sustain: 0.3,
+          release: 1
+        }
+      });
+      
+      const analyser = new Tone.Analyser('waveform', 128);
+      newSynth.connect(analyser);
+      
+      setSynth(newSynth);
+      analyserRef.current = analyser;
 
-  const updateEffects = {
-    filter: (freq: number) => {
-      if (filterRef.current) {
-        filterRef.current.frequency.value = freq;
-        setFilterFreq(freq);
-      }
-    },
-    delay: (time: number, feedback: number) => {
-      if (delayRef.current) {
-        delayRef.current.delayTime.value = time;
-        delayRef.current.feedback.value = feedback;
-        setDelayTime(time);
-        setDelayFeedback(feedback);
-      }
-    },
-    reverb: (mix: number) => {
-      if (reverbRef.current) {
-        reverbRef.current.wet.value = mix;
-        setReverbMix(mix);
-      }
-    },
-    distortion: (amount: number) => {
-      if (distortionRef.current) {
-        distortionRef.current.distortion = amount;
-        setDistortion(amount);
-      }
-    },
-    phaser: (freq: number) => {
-      if (phaserRef.current) {
-        phaserRef.current.frequency.value = freq;
-        setPhaserFreq(freq);
-      }
-    },
-    flanger: (depth: number) => {
-      if (flangerRef.current) {
-        flangerRef.current.feedback.value = depth;
-        setFlangerDepth(depth);
-      }
-    }
-  };
+      return () => {
+        newSynth.dispose();
+        analyser.dispose();
+      };
+    };
 
-  const startRecording = async () => {
-    if (recorderRef.current) {
-      await recorderRef.current.start();
-      setIsRecording(true);
-      toast.success("Recording started");
-    }
-  };
-
-  const stopRecording = async () => {
-    if (recorderRef.current) {
-      const recording = await recorderRef.current.stop();
-      const url = URL.createObjectURL(recording);
-      setIsRecording(false);
-      toast.success("Recording stopped");
-      return url;
-    }
-  };
+    setupAudio();
+  }, []);
 
   useEffect(() => {
-    const newSynth = new Tone.PolySynth().toDestination();
-    const filter = new Tone.Filter(filterFreq, "lowpass");
-    const delay = new Tone.FeedbackDelay(delayTime, delayFeedback);
-    const reverb = new Tone.Reverb({ decay: 2, wet: reverbMix });
-    const distortionEffect = new Tone.Distortion(distortion);
-    const phaser = new Tone.Phaser({
-      frequency: phaserFreq,
-      octaves: 3,
-      baseFrequency: 1000
-    });
-    const flanger = new Tone.FeedbackDelay({
-      delayTime: 0.005,
-      feedback: flangerDepth
-    });
-    const analyser = new Tone.Analyser('waveform', 128);
-    const recorder = new Tone.Recorder();
-
-    // Chain effects
-    newSynth.chain(
-      filter,
-      delay,
-      reverb,
-      distortionEffect,
-      phaser,
-      flanger,
-      analyser,
-      Tone.Destination
-    );
-
-    setSynth(newSynth);
-    filterRef.current = filter;
-    delayRef.current = delay;
-    reverbRef.current = reverb;
-    distortionRef.current = distortionEffect;
-    phaserRef.current = phaser;
-    flangerRef.current = flanger;
-    analyserRef.current = analyser;
-    recorderRef.current = recorder;
+    if (!synth) return;
 
     const seq = new Tone.Sequence(
       (time, step) => {
         setCurrentStep(step);
         steps[step].forEach((stepData) => {
           if (stepData.active) {
-            newSynth.triggerAttackRelease(stepData.note, "8n", time);
+            synth.triggerAttackRelease(
+              stepData.note,
+              "8n",
+              time,
+              stepData.velocity
+            );
           }
         });
       },
@@ -167,18 +95,9 @@ const Synthesizer = () => {
     Tone.Transport.bpm.value = bpm;
 
     return () => {
-      newSynth.dispose();
-      filter.dispose();
-      delay.dispose();
-      reverb.dispose();
-      distortionEffect.dispose();
-      phaser.dispose();
-      flanger.dispose();
-      analyser.dispose();
-      recorder.dispose();
       seq.dispose();
     };
-  }, []);
+  }, [synth, steps, bpm]);
 
   useEffect(() => {
     if (!analyserRef.current) return;
@@ -195,6 +114,26 @@ const Synthesizer = () => {
     return () => cancelAnimationFrame(frameId);
   }, []);
 
+  const handlePlayStop = async () => {
+    try {
+      if (!isPlaying) {
+        await initializeAudio();
+        if (sequencerRef.current) {
+          sequencerRef.current.start();
+          Tone.Transport.start();
+        }
+      } else {
+        if (sequencerRef.current) {
+          sequencerRef.current.stop();
+          Tone.Transport.stop();
+        }
+      }
+      setIsPlaying(!isPlaying);
+    } catch (error) {
+      toast.error("Failed to start audio");
+    }
+  };
+
   return (
     <Card className="p-6 space-y-6">
       <div className="flex items-center justify-between">
@@ -202,29 +141,14 @@ const Synthesizer = () => {
           <Music2 className="h-5 w-5" />
           Advanced Synthesizer
         </h3>
-        <Button onClick={() => {
-          if (sequencerRef.current) {
-            if (isPlaying) {
-              sequencerRef.current.stop();
-              Tone.Transport.stop();
-            } else {
-              Tone.start();
-              sequencerRef.current.start();
-              Tone.Transport.start();
-            }
-            setIsPlaying(!isPlaying);
-          }
-        }} variant={isPlaying ? "default" : "outline"}>
+        <Button onClick={handlePlayStop} variant={isPlaying ? "default" : "outline"}>
           {isPlaying ? "Stop" : "Play"}
         </Button>
       </div>
 
       <ShaderVisualizer audioData={audioData} />
 
-      <SynthControls
-        bpm={bpm}
-        isPlaying={isPlaying}
-        onBPMChange={handleBPMChange}
+      <ImprovedSequencer
         steps={steps}
         currentStep={currentStep}
         onStepToggle={(stepIndex, rowIndex) => {
@@ -232,25 +156,29 @@ const Synthesizer = () => {
           newSteps[stepIndex][rowIndex].active = !newSteps[stepIndex][rowIndex].active;
           setSteps(newSteps);
         }}
+        onVelocityChange={(stepIndex, rowIndex, velocity) => {
+          const newSteps = [...steps];
+          newSteps[stepIndex][rowIndex].velocity = velocity;
+          setSteps(newSteps);
+        }}
         onNoteChange={(stepIndex, rowIndex, note) => {
           const newSteps = [...steps];
           newSteps[stepIndex][rowIndex].note = note;
           setSteps(newSteps);
         }}
-        effectParams={{
-          filterFreq,
-          filterRes,
-          delayTime,
-          delayFeedback,
-          reverbMix,
-          distortion,
-          phaserFreq,
-          flangerDepth
-        }}
-        updateEffects={updateEffects}
-        onStartRecording={startRecording}
-        onStopRecording={stopRecording}
-        isRecording={isRecording}
+      />
+
+      <EffectProcessor
+        synth={synth}
+        effectParams={effectParams}
+      />
+
+      <SynthControls
+        bpm={bpm}
+        isPlaying={isPlaying}
+        onBPMChange={setBpm}
+        effectParams={effectParams}
+        updateEffects={setEffectParams}
       />
 
       <div className="flex justify-center">
