@@ -2,6 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/components/ui/use-toast";
 
 interface ServiceCardProps {
   icon: LucideIcon;
@@ -13,9 +15,22 @@ interface ServiceCardProps {
 
 const ServiceCard = ({ icon: Icon, title, path, gradient, bgClass }: ServiceCardProps) => {
   const { t } = useTranslation("services");
+  const { isAuthenticated } = useAuth();
+  const { toast } = useToast();
+  
+  const handleClick = (e: React.MouseEvent) => {
+    if (!isAuthenticated) {
+      e.preventDefault();
+      toast({
+        title: t("common:auth.required"),
+        description: t("common:auth.signInToAccess"),
+        variant: "default"
+      });
+    }
+  };
   
   return (
-    <Link to={path} className="block h-full">
+    <Link to={path} className="block h-full" onClick={handleClick}>
       <Card className={`group hover:shadow-xl transition-all duration-300 border-none overflow-hidden relative animate-scale-up ${bgClass} bg-opacity-5 h-full`}>
         <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-10 group-hover:opacity-20 transition-opacity`} />
         <CardHeader>
