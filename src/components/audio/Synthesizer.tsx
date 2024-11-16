@@ -1,34 +1,27 @@
 import { useState, useEffect, useRef } from 'react';
 import * as Tone from 'tone';
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Music2, Waves } from "lucide-react";
 import { toast } from "sonner";
 import ShaderVisualizer from './ShaderVisualizer';
 import SynthControls from './SynthControls';
 import EffectProcessor from './EffectProcessor';
+import TransportControls from './TransportControls';
+import SynthHeader from './SynthHeader';
 import { initializeAudio } from '@/lib/audio/audioContext';
-
-interface Step {
-  active: boolean;
-  note: string;
-  velocity: number;
-}
 
 const Synthesizer = () => {
   const [synth, setSynth] = useState<Tone.PolySynth | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioData, setAudioData] = useState<number[]>(new Array(128).fill(0));
   const [bpm, setBpm] = useState(120);
-  const [steps, setSteps] = useState<Step[][]>(
+  const [currentStep, setCurrentStep] = useState(0);
+  const [isRecording, setIsRecording] = useState(false);
+  const [steps, setSteps] = useState(
     Array(8).fill(null).map(() => 
       Array(4).fill(null).map(() => ({ active: false, note: 'C4', velocity: 0.7 }))
     )
   );
-  const [currentStep, setCurrentStep] = useState(0);
-  const [isRecording, setIsRecording] = useState(false);
   
-  // Effect parameters
   const [effectParams, setEffectParams] = useState({
     filterFreq: 1000,
     filterRes: 1,
@@ -61,14 +54,13 @@ const Synthesizer = () => {
       
       setSynth(newSynth);
       analyserRef.current = analyser;
-
-      return () => {
-        newSynth.dispose();
-        analyser.dispose();
-      };
     };
 
     setupAudio();
+    return () => {
+      synth?.dispose();
+      analyserRef.current?.dispose();
+    };
   }, []);
 
   useEffect(() => {
@@ -99,21 +91,6 @@ const Synthesizer = () => {
       seq.dispose();
     };
   }, [synth, steps, bpm]);
-
-  useEffect(() => {
-    if (!analyserRef.current) return;
-
-    const updateVisualizer = () => {
-      if (analyserRef.current) {
-        const data = Array.from(analyserRef.current.getValue() as Float32Array);
-        setAudioData(data);
-      }
-      requestAnimationFrame(updateVisualizer);
-    };
-
-    const frameId = requestAnimationFrame(updateVisualizer);
-    return () => cancelAnimationFrame(frameId);
-  }, []);
 
   const handlePlayStop = async () => {
     try {
@@ -149,7 +126,6 @@ const Synthesizer = () => {
 
   const startRecording = () => {
     setIsRecording(true);
-    // Recording logic here
   };
 
   const stopRecording = async () => {
@@ -159,18 +135,10 @@ const Synthesizer = () => {
 
   return (
     <Card className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <h3 className="text-xl font-semibold flex items-center gap-2">
-          <Music2 className="h-5 w-5" />
-          Advanced Synthesizer
-        </h3>
-        <Button onClick={handlePlayStop} variant={isPlaying ? "default" : "outline"}>
-          {isPlaying ? "Stop" : "Play"}
-        </Button>
-      </div>
-
+      <SynthHeader />
       <ShaderVisualizer audioData={audioData} />
-
+      <TransportControls isPlaying={isPlaying} onPlayStop={handlePlayStop} />
+      
       <SynthControls
         bpm={bpm}
         isPlaying={isPlaying}
@@ -190,10 +158,6 @@ const Synthesizer = () => {
         synth={synth}
         effectParams={effectParams}
       />
-
-      <div className="flex justify-center">
-        <Waves className={`h-6 w-6 ${isPlaying ? 'text-primary animate-pulse' : ''}`} />
-      </div>
     </Card>
   );
 };
