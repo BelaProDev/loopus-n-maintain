@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -16,9 +15,9 @@ const ToolCard = ({ icon: Icon, title, path, gradient, bgClass }: ToolCardProps)
   const { t } = useTranslation(["tools", "common"]);
   
   return (
-    <Card className={`group hover:shadow-xl transition-all duration-300 border-none overflow-hidden relative animate-scale-up ${bgClass} bg-opacity-5`}>
-      <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-10 group-hover:opacity-20 transition-opacity`} />
-      <Link to={path} className="block h-full">
+    <Link to={path} className="block">
+      <Card className={`group hover:shadow-xl transition-all duration-300 border-none overflow-hidden relative animate-scale-up ${bgClass} bg-opacity-5 h-full`}>
+        <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-10 group-hover:opacity-20 transition-opacity`} />
         <CardHeader>
           <div className="flex items-center gap-4">
             <div className="p-3 rounded-lg bg-gradient-to-br from-primary/20 to-secondary/20 backdrop-blur-sm">
@@ -31,15 +30,14 @@ const ToolCard = ({ icon: Icon, title, path, gradient, bgClass }: ToolCardProps)
           <p className="text-gray-600 dark:text-gray-300 mb-6 flex-1">
             {t(`tools:${title}.description`)}
           </p>
-          <Button 
-            variant="outline" 
-            className="w-full group-hover:border-primary/50 transition-colors"
+          <div 
+            className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full group-hover:border-primary/50"
           >
             {t("common:actions.explore")}
-          </Button>
+          </div>
         </CardContent>
-      </Link>
-    </Card>
+      </Card>
+    </Link>
   );
 };
 
