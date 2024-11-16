@@ -33,7 +33,9 @@ const Synthesizer = () => {
 
     const updateVisualizer = () => {
       if (analyserRef.current) {
-        setAudioData([...analyserRef.current.getValue()]);
+        // Convert Float32Array to regular number array
+        const data = Array.from(analyserRef.current.getValue() as Float32Array);
+        setAudioData(data);
       }
       requestAnimationFrame(updateVisualizer);
     };
