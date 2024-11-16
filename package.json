@@ -67,7 +67,7 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "fauna": "^2.3.0",
-    "framer-motion": "^11.11.10",
+    "framer-motion": "^11.11.17",
     "i18next": "^23.16.4",
     "input-otp": "^1.2.4",
     "isbot": "^5.1.17",

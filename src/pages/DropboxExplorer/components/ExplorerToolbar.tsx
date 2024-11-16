@@ -1,8 +1,9 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { Upload, LayoutGrid, List, RefreshCw } from 'lucide-react';
+import { Upload, LayoutGrid, List, RefreshCw, LogOut } from 'lucide-react';
 import { useDropboxAuth } from '@/hooks/useDropboxAuth';
+import { motion } from 'framer-motion';
 
 interface ExplorerToolbarProps {
   onFileSelect: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -17,18 +18,26 @@ export const ExplorerToolbar = ({
   onViewModeChange,
   viewMode,
 }: ExplorerToolbarProps) => {
-  const { isLoading: isAuthLoading, login, logout } = useDropboxAuth();
+  const { logout } = useDropboxAuth();
 
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-center gap-4 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
-      <div className="flex items-center gap-2">
+    <motion.div 
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex flex-wrap gap-4 p-6 bg-white/50 backdrop-blur-sm rounded-xl shadow-lg"
+    >
+      <div className="flex items-center gap-4 flex-1">
         <Input
           type="file"
           onChange={onFileSelect}
-          className="max-w-[200px]"
+          className="max-w-[200px] bg-white/70"
           disabled={isUploading}
         />
-        <Button variant="outline" disabled={isUploading}>
+        <Button 
+          variant="outline"
+          disabled={isUploading}
+          className="bg-white/70 hover:bg-purple-50"
+        >
           <Upload className="w-4 h-4 mr-2" />
           Upload
         </Button>
@@ -36,18 +45,31 @@ export const ExplorerToolbar = ({
       
       <div className="flex items-center gap-4">
         <ToggleGroup type="single" value={viewMode} onValueChange={(v) => onViewModeChange(v as 'grid' | 'list')}>
-          <ToggleGroupItem value="grid">
+          <ToggleGroupItem value="grid" className="data-[state=on]:bg-purple-100">
             <LayoutGrid className="w-4 h-4" />
           </ToggleGroupItem>
-          <ToggleGroupItem value="list">
+          <ToggleGroupItem value="list" className="data-[state=on]:bg-purple-100">
             <List className="w-4 h-4" />
           </ToggleGroupItem>
         </ToggleGroup>
         
-        <Button variant="ghost" size="icon">
+        <Button 
+          variant="ghost" 
+          size="icon"
+          className="hover:bg-purple-50"
+        >
           <RefreshCw className="w-4 h-4" />
         </Button>
+
+        <Button 
+          variant="ghost"
+          onClick={logout}
+          className="hover:bg-pink-50 hover:text-pink-600"
+        >
+          <LogOut className="w-4 h-4 mr-2" />
+          Disconnect
+        </Button>
       </div>
-    </div>
+    </motion.div>
   );
 };
