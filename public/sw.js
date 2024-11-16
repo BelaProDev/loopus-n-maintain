@@ -7,8 +7,20 @@ const urlsToCache = [
 
 let dropboxTokens = null;
 
+// Add message handler for cache clearing
 self.addEventListener('message', (event) => {
-  if (event.data.type === 'STORE_DROPBOX_TOKENS') {
+  if (event.data.type === 'CLEAR_CACHE') {
+    event.waitUntil(
+      caches.keys().then(cacheNames => {
+        return Promise.all(
+          cacheNames.map(cacheName => caches.delete(cacheName))
+        );
+      }).then(() => {
+        // Notify the client that cache was cleared
+        event.ports[0].postMessage({ status: 'Cache cleared successfully' });
+      })
+    );
+  } else if (event.data.type === 'STORE_DROPBOX_TOKENS') {
     dropboxTokens = event.data.tokens;
     if (dropboxTokens) {
       caches.open(CACHE_NAME).then(cache => {
