@@ -15,8 +15,12 @@ import { store } from './store';
 import { AuthProvider } from "./contexts/AuthContext";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { Toaster } from "./components/ui/sonner";
+import ErrorBoundary from "./lib/monitoring/ErrorBoundary";
+import AsyncComponent from "./components/AsyncComponent";
+import { useEffect } from "react";
 import "./i18n";
 
+// Import pages
 import Index from "./pages/Index";
 import Electrics from "./pages/Electrics";
 import Plumbing from "./pages/Plumbing";
@@ -42,52 +46,124 @@ import Invoicing from "./pages/tools/Invoicing";
 import Chat from "./pages/tools/Chat";
 import PhotoGallery from "./pages/tools/PhotoGallery";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      cacheTime: 1000 * 60 * 30, // 30 minutes
+      retry: 3,
+      refetchOnWindowFocus: true,
+    },
+  },
+});
 
 const App = () => {
+  // Register service worker
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(registration => {
+          console.log('ServiceWorker registration successful');
+        }).catch(err => {
+          console.error('ServiceWorker registration failed:', err);
+        });
+      });
+    }
+  }, []);
+
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <TooltipProvider>
-            <Toaster />
-            <div className="flex flex-col min-h-screen">
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/login" element={<Login />} />
-                
-                {/* Service Routes */}
-                <Route path="/electrics" element={<Electrics />} />
-                <Route path="/plumbing" element={<Plumbing />} />
-                <Route path="/ironwork" element={<Ironwork />} />
-                <Route path="/woodwork" element={<Woodwork />} />
-                <Route path="/architecture" element={<Architecture />} />
-                
-                {/* Tool Routes */}
-                <Route path="/documents" element={<Documents />} />
-                <Route path="/diagrams" element={<Diagrams />} />
-                <Route path="/analytics" element={<Analytics />} />
-                <Route path="/audio" element={<Audio />} />
-                <Route path="/invoicing" element={<Invoicing />} />
-                <Route path="/chat" element={<Chat />} />
-                <Route path="/photo-gallery" element={<PhotoGallery />} />
-                
-                {/* Admin Routes */}
-                <Route path="/docs" element={<Documentation />} />
-                <Route path="/dropbox-explorer" element={<DropboxExplorer />} />
-                <Route path="/dropbox-explorer/callback" element={<DropboxCallback />} />
-                <Route path="/koalax" element={<Koalax />}>
-                  <Route index element={<EmailManagement />} />
-                  <Route path="emails" element={<EmailManagement />} />
-                  <Route path="settings" element={<SiteSettings />} />
-                  <Route path="business" element={<BusinessManagement />} />
-                  <Route path="messages" element={<MessageManagement />} />
-                </Route>
-              </Routes>
-            </div>
-            <ReactQueryDevtools />
-          </TooltipProvider>
-        </AuthProvider>
+        <ErrorBoundary>
+          <AuthProvider>
+            <TooltipProvider>
+              <Toaster />
+              <div className="flex flex-col min-h-screen">
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/login" element={<Login />} />
+                  
+                  {/* Service Routes */}
+                  <Route path="/electrics" element={
+                    <AsyncComponent>
+                      <Electrics />
+                    </AsyncComponent>
+                  } />
+                  <Route path="/plumbing" element={
+                    <AsyncComponent>
+                      <Plumbing />
+                    </AsyncComponent>
+                  } />
+                  <Route path="/ironwork" element={
+                    <AsyncComponent>
+                      <Ironwork />
+                    </AsyncComponent>
+                  } />
+                  <Route path="/woodwork" element={
+                    <AsyncComponent>
+                      <Woodwork />
+                    </AsyncComponent>
+                  } />
+                  <Route path="/architecture" element={
+                    <AsyncComponent>
+                      <Architecture />
+                    </AsyncComponent>
+                  } />
+                  
+                  {/* Tool Routes */}
+                  <Route path="/documents" element={
+                    <AsyncComponent>
+                      <Documents />
+                    </AsyncComponent>
+                  } />
+                  <Route path="/diagrams" element={
+                    <AsyncComponent>
+                      <Diagrams />
+                    </AsyncComponent>
+                  } />
+                  <Route path="/analytics" element={
+                    <AsyncComponent>
+                      <Analytics />
+                    </AsyncComponent>
+                  } />
+                  <Route path="/audio" element={
+                    <AsyncComponent>
+                      <Audio />
+                    </AsyncComponent>
+                  } />
+                  <Route path="/invoicing" element={
+                    <AsyncComponent>
+                      <Invoicing />
+                    </AsyncComponent>
+                  } />
+                  <Route path="/chat" element={
+                    <AsyncComponent>
+                      <Chat />
+                    </AsyncComponent>
+                  } />
+                  <Route path="/photo-gallery" element={
+                    <AsyncComponent>
+                      <PhotoGallery />
+                    </AsyncComponent>
+                  } />
+                  
+                  {/* Admin Routes */}
+                  <Route path="/docs" element={<Documentation />} />
+                  <Route path="/dropbox-explorer" element={<DropboxExplorer />} />
+                  <Route path="/dropbox-explorer/callback" element={<DropboxCallback />} />
+                  <Route path="/koalax" element={<Koalax />}>
+                    <Route index element={<EmailManagement />} />
+                    <Route path="emails" element={<EmailManagement />} />
+                    <Route path="settings" element={<SiteSettings />} />
+                    <Route path="business" element={<BusinessManagement />} />
+                    <Route path="messages" element={<MessageManagement />} />
+                  </Route>
+                </Routes>
+              </div>
+              <ReactQueryDevtools />
+            </TooltipProvider>
+          </AuthProvider>
+        </ErrorBoundary>
       </QueryClientProvider>
     </Provider>
   );

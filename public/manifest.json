@@ -22,5 +22,31 @@
   ],
   "orientation": "portrait",
   "categories": ["business", "maintenance", "property services", "home services"],
-  "prefer_related_applications": false
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "url": "/koalax",
+      "description": "Access your dashboard"
+    },
+    {
+      "name": "Documents",
+      "url": "/documents",
+      "description": "Manage your documents"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/home.png",
+      "sizes": "1280x720",
+      "type": "image/png"
+    }
+  ],
+  "related_applications": [],
+  "protocol_handlers": [
+    {
+      "protocol": "web+loopus",
+      "url": "/%s"
+    }
+  ]
 }
