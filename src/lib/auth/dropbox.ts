@@ -4,13 +4,17 @@ const DROPBOX_AUTH_URL = "https://www.dropbox.com/oauth2/authorize";
 const DROPBOX_TOKEN_URL = "https://api.dropboxapi.com/oauth2/token";
 const CLIENT_ID = import.meta.env.VITE_DROPBOX_APP_KEY;
 const CLIENT_SECRET = import.meta.env.VITE_DROPBOX_APP_SECRET;
+const REDIRECT_URI = `${window.location.origin}/dropbox-explorer/callback`;
 
 export const dropboxAuth = {
   async getClient(): Promise<Dropbox | null> {
     const accessToken = await this.getValidAccessToken();
     if (!accessToken) return null;
     
-    return new Dropbox({ accessToken });
+    return new Dropbox({ 
+      accessToken,
+      clientId: CLIENT_ID
+    });
   },
 
   async initiateAuth() {
@@ -24,7 +28,7 @@ export const dropboxAuth = {
       response_type: 'code',
       token_access_type: 'offline',
       state,
-      redirect_uri: this.getRedirectUri()
+      redirect_uri: REDIRECT_URI
     });
 
     window.location.href = `${DROPBOX_AUTH_URL}?${params.toString()}`;
@@ -44,7 +48,7 @@ export const dropboxAuth = {
           code,
           client_id: CLIENT_ID || '',
           client_secret: CLIENT_SECRET || '',
-          redirect_uri: this.getRedirectUri()
+          redirect_uri: REDIRECT_URI
         })
       });
 
@@ -65,7 +69,7 @@ export const dropboxAuth = {
   },
 
   async refreshToken(refresh_token: string): Promise<string> {
-    const response = await fetch(DROPBOX_TOKEN_URL, {
+    const response = await fetch(REDIRECT_URI, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -106,10 +110,6 @@ export const dropboxAuth = {
     }
 
     return accessToken;
-  },
-
-  getRedirectUri(): string {
-    return `${window.location.origin}/dropbox-explorer/callback`;
   },
 
   logout() {

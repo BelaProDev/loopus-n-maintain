@@ -70,93 +70,17 @@ export const listFiles = async (path: string = '') => {
   }
 };
 
-export const searchFiles = async (query: string) => {
-  const dbx = await getDropboxClient();
-  if (!dbx) throw new Error('Dropbox client not initialized');
-
-  const response = await dbx.filesSearchV2({
-    query,
-    options: {
-      path: '',
-      max_results: 20,
-      file_status: { '.tag': 'active' } as files.SearchOptions['file_status'],
-      filename_only: false
-    }
-  });
-  return response.result;
-};
-
-export const getFileMetadata = async (path: string) => {
-  const dbx = await getDropboxClient();
-  if (!dbx) throw new Error('Dropbox client not initialized');
-
-  const response = await dbx.filesGetMetadata({
-    path,
-    include_media_info: true,
-    include_deleted: false,
-    include_has_explicit_shared_members: true
-  });
-  return response.result;
-};
-
-export const createSharedLink = async (path: string) => {
-  const dbx = await getDropboxClient();
-  if (!dbx) throw new Error('Dropbox client not initialized');
-
-  const response = await dbx.sharingCreateSharedLinkWithSettings({
-    path,
-    settings: {
-      requested_visibility: { '.tag': 'public' },
-      audience: { '.tag': 'public' },
-      access: { '.tag': 'viewer' }
-    }
-  });
-  return response.result;
-};
-
-export const moveFile = async (fromPath: string, toPath: string) => {
-  const dbx = await getDropboxClient();
-  if (!dbx) throw new Error('Dropbox client not initialized');
-
-  const response = await dbx.filesMoveV2({
-    from_path: fromPath,
-    to_path: toPath,
-    autorename: true,
-    allow_ownership_transfer: false
-  });
-  return response.result;
-};
-
-export const copyFile = async (fromPath: string, toPath: string) => {
-  const dbx = await getDropboxClient();
-  if (!dbx) throw new Error('Dropbox client not initialized');
-
-  const response = await dbx.filesCopyV2({
-    from_path: fromPath,
-    to_path: toPath,
-    autorename: true
-  });
-  return response.result;
-};
-
-export const deleteFile = async (path: string) => {
-  const dbx = await getDropboxClient();
-  if (!dbx) throw new Error('Dropbox client not initialized');
-
-  const response = await dbx.filesDeleteV2({
-    path,
-  });
-  return response.result;
-};
-
 export const downloadFile = async (path: string): Promise<Blob> => {
   const dbx = await getDropboxClient();
   if (!dbx) throw new Error('Dropbox client not initialized');
 
-  const response = await dbx.filesDownload({
-    path,
-  }) as any;
-  return response.result.fileBlob;
+  try {
+    const response = await dbx.filesDownload({ path }) as any;
+    return response.result.fileBlob;
+  } catch (error) {
+    console.error('Dropbox download error:', error);
+    throw error;
+  }
 };
 
 export const createFolder = async (path: string) => {
@@ -164,9 +88,47 @@ export const createFolder = async (path: string) => {
   if (!dbx) throw new Error('Dropbox client not initialized');
 
   const sanitizedPath = `/${sanitizePath(path)}`;
-  const response = await dbx.filesCreateFolderV2({
-    path: sanitizedPath,
-    autorename: true
-  });
-  return response.result;
+  try {
+    const response = await dbx.filesCreateFolderV2({
+      path: sanitizedPath,
+      autorename: true
+    });
+    return response.result;
+  } catch (error) {
+    console.error('Dropbox create folder error:', error);
+    throw error;
+  }
+};
+
+export const deleteFile = async (path: string) => {
+  const dbx = await getDropboxClient();
+  if (!dbx) throw new Error('Dropbox client not initialized');
+
+  try {
+    const response = await dbx.filesDeleteV2({
+      path,
+    });
+    return response.result;
+  } catch (error) {
+    console.error('Dropbox delete error:', error);
+    throw error;
+  }
+};
+
+export const getThumbnail = async (path: string): Promise<Blob> => {
+  const dbx = await getDropboxClient();
+  if (!dbx) throw new Error('Dropbox client not initialized');
+
+  try {
+    const response = await dbx.filesGetThumbnail({
+      path,
+      format: { '.tag': 'jpeg' },
+      size: { '.tag': 'w256h256' },
+      mode: { '.tag': 'strict' }
+    }) as any;
+    return response.result.fileBlob;
+  } catch (error) {
+    console.error('Dropbox thumbnail error:', error);
+    throw error;
+  }
 };
