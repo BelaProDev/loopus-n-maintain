@@ -23,38 +23,40 @@ export default {
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "#FFFFFF",
-        foreground: "#2E5984",
+        foreground: "#1A1F2C",
         primary: {
-          DEFAULT: "#2E5984", // Ocean blue
+          DEFAULT: "#9b87f5", // Primary Purple
           foreground: "#FFFFFF",
         },
         secondary: {
-          DEFAULT: "#F5F1EA", // Vanilla
-          foreground: "#2E5984",
-        },
-        accent: {
-          DEFAULT: "#4A90E2", // Light ocean blue
+          DEFAULT: "#7E69AB", // Secondary Purple
           foreground: "#FFFFFF",
         },
+        accent: {
+          DEFAULT: "#D6BCFA", // Light Purple
+          foreground: "#1A1F2C",
+        },
         destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+          DEFAULT: "#ea384c",
+          foreground: "#FFFFFF",
         },
         muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          DEFAULT: "#F1F0FB", // Soft Gray
+          foreground: "#6E59A5",
         },
         popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+          DEFAULT: "#FFFFFF",
+          foreground: "#1A1F2C",
         },
         card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+          DEFAULT: "#FFFFFF",
+          foreground: "#1A1F2C",
         },
       },
       backgroundImage: {
-        'forest-pattern': "url('/forest-lidar.png')",
+        'gradient-primary': 'linear-gradient(102.3deg, rgba(147,39,143,1) 5.9%, rgba(234,172,232,1) 64%, rgba(246,219,245,1) 89%)',
+        'gradient-secondary': 'linear-gradient(90deg, hsla(277, 75%, 84%, 1) 0%, hsla(297, 50%, 51%, 1) 100%)',
+        'gradient-accent': 'linear-gradient(109.6deg, rgba(223,234,247,1) 11.2%, rgba(244,248,252,1) 91.1%)',
       },
       borderRadius: {
         lg: "var(--radius)",

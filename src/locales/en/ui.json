@@ -4,23 +4,22 @@
     "cancel": "Cancel",
     "delete": "Delete",
     "edit": "Edit",
-    "submit": "Submit",
-    "submitting": "Submitting...",
-    "learnMore": "Learn More"
+    "submit": "Submit"
   },
-  "status": {
-    "loading": "Loading...",
-    "success": "Success",
-    "error": "Error",
-    "offline": "Offline",
+  "forms": {
     "required": "Required",
     "optional": "Optional",
-    "na": "N/A"
+    "validation": {
+      "required": "This field is required",
+      "email": "Please enter a valid email",
+      "minLength": "Must be at least {min} characters",
+      "maxLength": "Must be less than {max} characters"
+    }
   },
-  "language": {
-    "change": "Change Language",
-    "en": "English",
-    "es": "Spanish",
-    "fr": "French"
+  "notifications": {
+    "success": "Success!",
+    "error": "An error occurred",
+    "saving": "Saving...",
+    "loading": "Loading..."
   }
 }

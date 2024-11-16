@@ -1,44 +1,27 @@
 {
   "app": {
-    "name": "Loopus & Maintain",
-    "description": "Professional maintenance services for your property",
-    "title": "Professional Building Maintenance & Repair Services"
+    "name": "Digital Toolbox",
+    "description": "Your Swiss Army Knife for Digital Tools"
   },
   "nav": {
     "home": "Home",
-    "services": "Services",
+    "tools": "Tools",
     "contact": "Contact",
-    "admin": "Admin Loopus",
+    "admin": "Admin",
     "docs": "Documentation"
-  },
-  "status": {
-    "loading": "Loading...",
-    "success": "Success",
-    "error": "Error",
-    "offline": "Offline",
-    "required": "Required",
-    "optional": "Optional",
-    "na": "N/A",
-    "submit": "Submit",
-    "submitting": "Submitting..."
-  },
-  "form": {
-    "namePlaceholder": "Your Name",
-    "emailPlaceholder": "Your Email",
-    "messagePlaceholder": "Your Message",
-    "submitSuccess": "Message sent successfully",
-    "submitError": "Failed to send message"
-  },
-  "language": {
-    "en": "English",
-    "es": "Spanish",
-    "fr": "French"
   },
   "actions": {
     "save": "Save",
     "cancel": "Cancel",
     "delete": "Delete",
     "edit": "Edit",
-    "learnMore": "Learn More"
+    "create": "Create",
+    "update": "Update"
+  },
+  "status": {
+    "loading": "Loading...",
+    "success": "Success",
+    "error": "Error",
+    "offline": "Offline"
   }
 }

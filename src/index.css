@@ -6,31 +6,7 @@
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --radius: 0.75rem;
   }
 
   * {
@@ -38,72 +14,40 @@
   }
 
   body {
-    @apply bg-[#F5F1EA] text-foreground min-h-screen font-['Nunito'] text-base;
+    @apply bg-background text-foreground min-h-screen font-['Inter'] text-base;
   }
 
   h1 {
-    @apply text-4xl md:text-5xl font-['Playfair_Display'] font-bold;
+    @apply text-4xl md:text-5xl font-bold text-foreground;
   }
 
   h2 {
-    @apply text-3xl md:text-4xl font-['Playfair_Display'] font-semibold;
+    @apply text-3xl md:text-4xl font-semibold text-foreground;
   }
 
   h3 {
-    @apply text-2xl md:text-3xl font-['Playfair_Display'] font-medium;
+    @apply text-2xl md:text-3xl font-medium text-foreground;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-sm border border-muted rounded-lg shadow-lg;
   }
 
-  p, li, a {
-    @apply text-lg md:text-xl leading-relaxed;
+  .tool-card {
+    @apply glass-card p-6 hover:shadow-xl transition-all duration-300;
   }
 
-  /* Improved contrast for form elements */
-  input, textarea, select {
-    @apply bg-white border-primary/30 focus:border-primary text-primary placeholder-primary/60 font-['Nunito'] text-lg !important;
+  .nav-link {
+    @apply text-foreground/80 hover:text-primary transition-colors;
   }
 
-  /* Enhanced focus states */
-  a:focus, button:focus {
-    @apply outline-none ring-2 ring-primary ring-offset-2;
+  .btn-primary {
+    @apply bg-primary text-white hover:bg-primary/90 rounded-md px-4 py-2;
   }
 
-  /* Better contrast for disabled states */
-  [disabled] {
-    @apply opacity-70 cursor-not-allowed;
-  }
-
-  /* Improved text contrast */
-  .text-primary {
-    @apply text-[#2E5984] font-semibold font-['Playfair_Display'];
-  }
-
-  /* Enhanced button contrast */
-  .button-primary {
-    @apply bg-primary text-white hover:bg-primary/90 focus:ring-2 focus:ring-primary focus:ring-offset-2 text-lg;
-  }
-
-  /* Better contrast for alerts and notifications */
-  .alert {
-    @apply border-2 font-medium text-lg;
-  }
-
-  /* Enhanced mobile menu contrast */
-  .mobile-menu {
-    @apply bg-white shadow-lg border-l border-primary/20;
-  }
-
-  /* Navigation text */
-  .nav-text {
-    @apply text-lg md:text-xl font-['Nunito'];
-  }
-
-  /* Card titles */
-  .card-title {
-    @apply text-2xl font-['Playfair_Display'] font-bold;
-  }
-
-  /* Card content */
-  .card-content {
-    @apply text-lg leading-relaxed;
+  .btn-secondary {
+    @apply bg-secondary text-white hover:bg-secondary/90 rounded-md px-4 py-2;
   }
 }

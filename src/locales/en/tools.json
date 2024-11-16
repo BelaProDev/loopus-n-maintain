@@ -1,0 +1,22 @@
+{
+  "documents": {
+    "title": "Documents",
+    "description": "Manage and organize your documents securely"
+  },
+  "diagrams": {
+    "title": "UML Diagrams",
+    "description": "Create and edit UML diagrams with ease"
+  },
+  "analytics": {
+    "title": "Analytics",
+    "description": "Track trends and analyze tech stacks"
+  },
+  "audio": {
+    "title": "Audio Studio",
+    "description": "Create and edit audio with modular synthesizers"
+  },
+  "invoicing": {
+    "title": "Invoicing",
+    "description": "Professional invoice management and generation"
+  }
+}
