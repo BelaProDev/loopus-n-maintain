@@ -17,6 +17,7 @@ export default {
         foreground: {
           DEFAULT: "rgb(0 0 0 / var(--tw-text-opacity))",
         },
+        border: "hsl(var(--border))",
       },
       gridTemplateColumns: {
         '16': 'repeat(16, minmax(0, 1fr))',

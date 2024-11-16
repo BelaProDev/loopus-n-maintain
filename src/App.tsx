@@ -40,6 +40,7 @@ import Analytics from "./pages/tools/Analytics";
 import Audio from "./pages/tools/Audio";
 import Invoicing from "./pages/tools/Invoicing";
 import Chat from "./pages/tools/Chat";
+import PhotoGallery from "./pages/tools/PhotoGallery";
 
 const queryClient = new QueryClient();
 
@@ -69,6 +70,7 @@ const App = () => {
                 <Route path="/audio" element={<Audio />} />
                 <Route path="/invoicing" element={<Invoicing />} />
                 <Route path="/chat" element={<Chat />} />
+                <Route path="/photo-gallery" element={<PhotoGallery />} />
                 
                 {/* Admin Routes */}
                 <Route path="/docs" element={<Documentation />} />
