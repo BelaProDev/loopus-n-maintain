@@ -1,0 +1,27 @@
+{
+  "title": "Herramientas Digitales",
+  "documents": {
+    "title": "Gestor de Documentos",
+    "description": "Crea, edita y gestiona tus documentos con potentes funciones de colaboración. Integración perfecta con Dropbox para almacenamiento y compartición seguros."
+  },
+  "diagrams": {
+    "title": "Diagramas UML",
+    "description": "Diseña y visualiza arquitecturas de sistemas con nuestro creador intuitivo de diagramas UML. Crea diagramas de flujo, secuencia y más."
+  },
+  "analytics": {
+    "title": "Panel de Análisis",
+    "description": "Sigue tendencias y analiza stacks tecnológicos con herramientas completas de visualización de datos. Obtén información de tus datos empresariales."
+  },
+  "audio": {
+    "title": "Estudio de Audio",
+    "description": "Crea y edita audio con sintetizadores modulares y herramientas profesionales de mezcla. Graba, edita y exporta audio de alta calidad."
+  },
+  "invoicing": {
+    "title": "Gestor de Facturas",
+    "description": "Genera, gestiona y realiza seguimiento de facturas con nuestro completo conjunto de herramientas empresariales. Automatiza tu proceso de facturación."
+  },
+  "chat": {
+    "title": "Chat Comunitario",
+    "description": "Conéctate con otros miembros en tiempo real a través de nuestro moderno sistema de chat. Comparte ideas, obtén ayuda y construye relaciones."
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "title": "Outils Numériques",
+  "documents": {
+    "title": "Gestionnaire de Documents",
+    "description": "Créez, éditez et gérez vos documents avec de puissantes fonctionnalités de collaboration. Intégration transparente avec Dropbox pour un stockage et un partage sécurisés."
+  },
+  "diagrams": {
+    "title": "Diagrammes UML",
+    "description": "Concevez et visualisez des architectures système avec notre créateur intuitif de diagrammes UML. Créez des organigrammes, des diagrammes de séquence et plus encore."
+  },
+  "analytics": {
+    "title": "Tableau de Bord Analytique",
+    "description": "Suivez les tendances et analysez les stacks technologiques avec des outils complets de visualisation des données. Obtenez des insights de vos données d'entreprise."
+  },
+  "audio": {
+    "title": "Studio Audio",
+    "description": "Créez et éditez de l'audio avec des synthétiseurs modulaires et des outils de mixage professionnels. Enregistrez, éditez et exportez de l'audio de haute qualité."
+  },
+  "invoicing": {
+    "title": "Gestionnaire de Factures",
+    "description": "Générez, gérez et suivez les factures avec notre boîte à outils complète. Automatisez votre processus de facturation et vos rapports financiers."
+  },
+  "chat": {
+    "title": "Chat Communautaire",
+    "description": "Connectez-vous avec d'autres membres en temps réel via notre système de chat moderne. Partagez des idées, obtenez de l'aide et créez des relations."
+  }
+}
