@@ -31,7 +31,7 @@ export const dropboxAuth = {
 
   async handleCallback(code: string): Promise<string> {
     if (!code || !CLIENT_ID || !CLIENT_SECRET) {
-      throw new Error('Missing required auth parameters');
+      throw new Error('Missing required authentication parameters');
     }
     
     try {
@@ -40,7 +40,7 @@ export const dropboxAuth = {
       return tokens.access_token;
     } catch (error) {
       console.error('Token exchange error:', error);
-      throw error;
+      throw new Error('Failed to complete authentication. Please try again.');
     }
   },
 
@@ -108,7 +108,13 @@ export const dropboxAuth = {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to store tokens');
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to store tokens');
+    }
+
+    const result = await response.json();
+    if (!result.success) {
+      throw new Error(result.error || 'Failed to store tokens');
     }
   },
 

@@ -12,13 +12,20 @@ const handler: Handler = async (event) => {
     if (!access_token || !refresh_token) {
       return { 
         statusCode: 400, 
-        body: JSON.stringify({ error: 'Missing required tokens' }) 
+        body: JSON.stringify({ error: 'Missing required tokens. Please try reconnecting to Dropbox.' }) 
       };
     }
 
     const client = new Client({
       secret: process.env.VITE_FAUNA_SECRET_KEY || ''
     });
+
+    if (!client) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: 'Database connection failed. Please try again later.' })
+      };
+    }
 
     const query = fql`
       let tokenDoc = dropbox_tokens.firstWhere(.type == "default")
@@ -45,13 +52,19 @@ const handler: Handler = async (event) => {
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ success: true })
+      body: JSON.stringify({ 
+        success: true,
+        message: 'Dropbox tokens stored successfully'
+      })
     };
   } catch (error) {
     console.error('Token storage error:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Failed to store tokens' })
+      body: JSON.stringify({ 
+        error: 'Failed to store Dropbox tokens. Please try reconnecting to Dropbox.',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      })
     };
   }
 };
