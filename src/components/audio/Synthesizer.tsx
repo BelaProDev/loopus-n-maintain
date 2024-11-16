@@ -59,8 +59,10 @@ const Synthesizer = () => {
       const updateVisualizer = () => {
         if (analyserRef.current) {
           const data = analyserRef.current.getValue();
-          // Convert Float32Array to regular array
-          setAudioData(Array.from(data));
+          // Ensure we're working with a Float32Array and convert it to a regular array
+          if (data instanceof Float32Array) {
+            setAudioData(Array.from(data));
+          }
         }
         requestAnimationFrame(updateVisualizer);
       };
