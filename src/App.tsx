@@ -51,7 +51,7 @@ const App = () => {
                 <Route path="/woodwork" element={<Woodwork />} />
                 <Route path="/architecture" element={<Architecture />} />
                 <Route path="/docs" element={<Documentation />} />
-                <Route path="/dropbox-explorer" element={<DropboxExplorer />} />
+                <Route path="/dropbox-explorer/*" element={<DropboxExplorer />} />
                 <Route path="/koalax" element={<Koalax />}>
                   <Route index element={<EmailManagement />} />
                   <Route path="emails" element={<EmailManagement />} />

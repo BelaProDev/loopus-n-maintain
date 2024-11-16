@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import { dropboxClient } from '@/lib/api/dropboxClient';
-import { setFiles, setCurrentPath, toggleFileSelection, setViewMode } from '@/store/slices/explorerSlice';
+import { setFiles, setCurrentPath, setViewMode } from '@/store/slices/explorerSlice';
 import { FileGrid } from './components/FileGrid';
 import { FileList } from './components/FileList';
 import { ExplorerToolbar } from './components/ExplorerToolbar';
@@ -19,8 +19,7 @@ const DropboxExplorer = () => {
 
   const { data: files, isLoading } = useQuery({
     queryKey: ['files', currentPath],
-    queryFn: () => dropboxClient.listFolder(currentPath),
-    onSuccess: (data) => dispatch(setFiles(data))
+    queryFn: () => dropboxClient.listFolder(currentPath)
   });
 
   const uploadMutation = useMutation({
