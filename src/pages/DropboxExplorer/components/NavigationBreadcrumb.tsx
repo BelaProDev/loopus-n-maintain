@@ -1,5 +1,5 @@
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from "@/components/ui/breadcrumb";
-import { Folder } from "lucide-react";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { Folder, ChevronRight } from "lucide-react";
 
 interface NavigationBreadcrumbProps {
   currentPath: string;
@@ -10,9 +10,9 @@ export const NavigationBreadcrumb = ({ currentPath, onNavigate }: NavigationBrea
   const pathParts = currentPath.split('/').filter(Boolean);
   
   return (
-    <Breadcrumb>
+    <Breadcrumb className="py-4">
       <BreadcrumbItem>
-        <BreadcrumbLink onClick={() => onNavigate('/')} className="flex items-center">
+        <BreadcrumbLink onClick={() => onNavigate('/')} className="flex items-center hover:text-primary transition-colors">
           <Folder className="w-4 h-4 mr-2" />
           Root
         </BreadcrumbLink>
@@ -20,9 +20,19 @@ export const NavigationBreadcrumb = ({ currentPath, onNavigate }: NavigationBrea
       {pathParts.map((part, index) => {
         const path = '/' + pathParts.slice(0, index + 1).join('/');
         return (
-          <BreadcrumbItem key={path}>
-            <BreadcrumbLink onClick={() => onNavigate(path)}>{part}</BreadcrumbLink>
-          </BreadcrumbItem>
+          <>
+            <BreadcrumbSeparator>
+              <ChevronRight className="h-4 w-4" />
+            </BreadcrumbSeparator>
+            <BreadcrumbItem key={path}>
+              <BreadcrumbLink 
+                onClick={() => onNavigate(path)}
+                className="hover:text-primary transition-colors"
+              >
+                {part}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+          </>
         );
       })}
     </Breadcrumb>

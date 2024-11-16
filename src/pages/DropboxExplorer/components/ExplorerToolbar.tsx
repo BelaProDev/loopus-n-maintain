@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { Upload, LayoutGrid, List, RefreshCw, LogOut } from 'lucide-react';
-import { useDropboxAuth } from '@/hooks/useDropboxAuth';
-import { motion } from 'framer-motion';
+import { Upload, LayoutGrid, List, RefreshCw, LogOut, FolderPlus } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { toast } from 'sonner';
 
 interface ExplorerToolbarProps {
   onFileSelect: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -12,6 +12,8 @@ interface ExplorerToolbarProps {
   onViewModeChange: (mode: 'grid' | 'list') => void;
   viewMode: 'grid' | 'list';
   onRefresh: () => void;
+  onCreateFolder: (name: string) => void;
+  currentPath: string;
 }
 
 export const ExplorerToolbar = ({
@@ -20,45 +22,74 @@ export const ExplorerToolbar = ({
   onViewModeChange,
   viewMode,
   onRefresh,
+  onCreateFolder,
+  currentPath,
 }: ExplorerToolbarProps) => {
-  const { logout } = useDropboxAuth();
+  const [newFolderName, setNewFolderName] = useState('');
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleCreateFolder = () => {
+    if (!newFolderName.trim()) {
+      toast.error('Please enter a folder name');
+      return;
+    }
+    onCreateFolder(newFolderName);
+    setNewFolderName('');
+  };
 
   const handleUploadClick = () => {
     fileInputRef.current?.click();
   };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="flex flex-wrap gap-4 p-6 bg-white/50 backdrop-blur-sm rounded-xl shadow-lg"
-    >
+    <div className="flex flex-wrap gap-4 p-4 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10 border-b">
       <div className="flex items-center gap-4 flex-1">
         <Input
           type="file"
           onChange={onFileSelect}
           className="hidden"
           ref={fileInputRef}
+          multiple
           disabled={isUploading}
         />
         <Button 
           variant="outline"
           disabled={isUploading}
-          className="bg-white/70 hover:bg-purple-50"
           onClick={handleUploadClick}
         >
           <Upload className="w-4 h-4 mr-2" />
           {isUploading ? 'Uploading...' : 'Upload'}
         </Button>
+
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="outline">
+              <FolderPlus className="w-4 h-4 mr-2" />
+              New Folder
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Create New Folder</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 pt-4">
+              <Input
+                placeholder="Folder name"
+                value={newFolderName}
+                onChange={(e) => setNewFolderName(e.target.value)}
+              />
+              <Button onClick={handleCreateFolder}>Create</Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
       
       <div className="flex items-center gap-4">
         <ToggleGroup type="single" value={viewMode} onValueChange={(v) => onViewModeChange(v as 'grid' | 'list')}>
-          <ToggleGroupItem value="grid" className="data-[state=on]:bg-purple-100">
+          <ToggleGroupItem value="grid">
             <LayoutGrid className="w-4 h-4" />
           </ToggleGroupItem>
-          <ToggleGroupItem value="list" className="data-[state=on]:bg-purple-100">
+          <ToggleGroupItem value="list">
             <List className="w-4 h-4" />
           </ToggleGroupItem>
         </ToggleGroup>
@@ -66,21 +97,11 @@ export const ExplorerToolbar = ({
         <Button 
           variant="ghost" 
           size="icon"
-          className="hover:bg-purple-50"
           onClick={onRefresh}
         >
           <RefreshCw className="w-4 h-4" />
         </Button>
-
-        <Button 
-          variant="ghost"
-          onClick={logout}
-          className="hover:bg-pink-50 hover:text-pink-600"
-        >
-          <LogOut className="w-4 h-4 mr-2" />
-          Disconnect
-        </Button>
       </div>
-    </motion.div>
+    </div>
   );
 };

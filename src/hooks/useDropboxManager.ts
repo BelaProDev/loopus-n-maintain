@@ -16,8 +16,8 @@ export const useDropboxManager = (currentPath: string) => {
   });
 
   const uploadMutation = useMutation({
-    mutationFn: async (file: File) => {
-      await dropboxClient.uploadFile(file, currentPath);
+    mutationFn: async ({ file, path }: { file: File; path: string }) => {
+      await dropboxClient.uploadFile(file, path);
     },
     onSuccess: () => {
       toast({
@@ -30,6 +30,20 @@ export const useDropboxManager = (currentPath: string) => {
       toast({
         title: "Error",
         description: "Failed to upload file",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const createFolderMutation = useMutation({
+    mutationFn: dropboxClient.createFolder,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['files'] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to create folder",
         variant: "destructive",
       });
     },
@@ -80,6 +94,7 @@ export const useDropboxManager = (currentPath: string) => {
     isAuthenticated,
     setIsAuthenticated,
     uploadMutation,
+    createFolderMutation,
     deleteMutation,
     handleDownload,
     refetch,
