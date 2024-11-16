@@ -1,9 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useToast } from "@/components/ui/use-toast";
+import { uploadFile, downloadFile, listFiles, createFolder, deleteFile } from "@/lib/dropbox";
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { uploadFile, listFiles, createFolder, deleteFile, downloadFile } from '@/lib/dropbox';
 import { useAppDispatch, useAppSelector } from './useAppStore';
-import { setFiles, setLoading, setError } from '@/store/slices/documentsSlice';
+import { setFiles } from '@/store/slices/documentsSlice';
 import { DropboxFile } from '@/types/dropbox';
 import { dropboxAuth } from '@/lib/auth/dropbox';
 
@@ -90,7 +90,8 @@ export const useDropboxManager = (currentPath: string) => {
     },
   });
 
-  const handleDownload = async (path: string, fileName: string) => {
+  const handleDownload = async (path: string | undefined, fileName: string) => {
+    if (!path) return;
     try {
       const blob = await downloadFile(path);
       const url = URL.createObjectURL(blob);
@@ -111,7 +112,7 @@ export const useDropboxManager = (currentPath: string) => {
   };
 
   const handleLogin = () => {
-    dropboxAuth.authenticate();
+    dropboxAuth.initiateAuth();
   };
 
   return {

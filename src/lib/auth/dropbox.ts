@@ -69,7 +69,7 @@ export const dropboxAuth = {
     return response.json();
   },
 
-  private async exchangeCodeForTokens(code: string): Promise<TokenResponse> {
+  async exchangeCodeForTokens(code: string): Promise<TokenResponse> {
     const response = await fetch(DROPBOX_TOKEN_URL, {
       method: 'POST',
       headers: {
@@ -91,7 +91,7 @@ export const dropboxAuth = {
     return response.json();
   },
 
-  private async storeTokens(tokens: TokenResponse) {
+  async storeTokens(tokens: TokenResponse) {
     const expiry = Date.now() + (tokens.expires_in * 1000);
     
     await fetch('/.netlify/functions/store-dropbox-token', {
@@ -104,7 +104,7 @@ export const dropboxAuth = {
     });
   },
 
-  private getRedirectUri(): string {
+  getRedirectUri(): string {
     return `${window.location.origin}/koalax/dropbox-callback`;
   },
 
@@ -116,7 +116,6 @@ export const dropboxAuth = {
       const data = await response.json();
       if (!data.token) return null;
 
-      // Check if token is expired or about to expire (within 5 minutes)
       if (Date.now() + 300000 > data.expiry) {
         const newTokens = await this.refreshAccessToken(data.refresh_token);
         await this.storeTokens(newTokens);
@@ -134,5 +133,13 @@ export const dropboxAuth = {
     const accessToken = await this.getValidAccessToken();
     if (!accessToken) return null;
     return new Dropbox({ accessToken });
+  },
+
+  async authenticate() {
+    return this.initiateAuth();
+  },
+
+  async logout() {
+    localStorage.removeItem('dropbox_state');
   }
 };

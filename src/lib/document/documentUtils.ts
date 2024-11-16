@@ -13,7 +13,7 @@ export interface FileMetadata {
 }
 
 export const listFiles = async (path: string): Promise<FileMetadata[]> => {
-  const client = dropboxAuth.getClient();
+  const client = await dropboxAuth.getClient();
   if (!client) throw new Error('Not authenticated with Dropbox');
 
   const response = await client.filesListFolder({ path });
@@ -30,7 +30,7 @@ export const listFiles = async (path: string): Promise<FileMetadata[]> => {
 };
 
 export const uploadFile = async (file: File, path: string): Promise<FileMetadata> => {
-  const client = dropboxAuth.getClient();
+  const client = await dropboxAuth.getClient();
   if (!client) throw new Error('Not authenticated with Dropbox');
 
   const response = await client.filesUpload({
@@ -53,7 +53,7 @@ export const uploadFile = async (file: File, path: string): Promise<FileMetadata
 };
 
 export const downloadFile = async (path: string): Promise<Blob> => {
-  const client = dropboxAuth.getClient();
+  const client = await dropboxAuth.getClient();
   if (!client) throw new Error('Not authenticated with Dropbox');
 
   type DropboxDownloadResponse = {
@@ -67,7 +67,7 @@ export const downloadFile = async (path: string): Promise<Blob> => {
 };
 
 export const createFolder = async (path: string): Promise<FileMetadata> => {
-  const client = dropboxAuth.getClient();
+  const client = await dropboxAuth.getClient();
   if (!client) throw new Error('Not authenticated with Dropbox');
 
   const response = await client.filesCreateFolderV2({ path });
@@ -86,7 +86,7 @@ export const createFolder = async (path: string): Promise<FileMetadata> => {
 };
 
 export const deleteFile = async (path: string): Promise<void> => {
-  const client = dropboxAuth.getClient();
+  const client = await dropboxAuth.getClient();
   if (!client) throw new Error('Not authenticated with Dropbox');
 
   await client.filesDeleteV2({ path });

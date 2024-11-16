@@ -1,15 +1,9 @@
 import { Dropbox, DropboxResponse, files } from 'dropbox';
 import { dropboxAuth } from './auth/dropbox';
 
-const getDropboxClient = () => {
+const getDropboxClient = async () => {
   if (typeof window === 'undefined') return null;
-  
-  const accessToken = dropboxAuth.getAccessToken();
-  if (!accessToken) {
-    throw new Error('No Dropbox access token found');
-  }
-  
-  return new Dropbox({ accessToken });
+  return dropboxAuth.getClient();
 };
 
 const sanitizePath = (path: string) => {
@@ -18,7 +12,7 @@ const sanitizePath = (path: string) => {
 };
 
 export const uploadFile = async (file: File | Blob, path: string, fileName?: string) => {
-  const dbx = getDropboxClient();
+  const dbx = await getDropboxClient();
   if (!dbx) throw new Error('Dropbox client not initialized');
 
   try {
@@ -48,7 +42,7 @@ export const uploadFile = async (file: File | Blob, path: string, fileName?: str
 };
 
 export const listFiles = async (path: string = '') => {
-  const dbx = getDropboxClient();
+  const dbx = await getDropboxClient();
   if (!dbx) throw new Error('Dropbox client not initialized');
 
   const sanitizedPath = sanitizePath(path);
@@ -77,7 +71,7 @@ export const listFiles = async (path: string = '') => {
 };
 
 export const searchFiles = async (query: string) => {
-  const dbx = getDropboxClient();
+  const dbx = await getDropboxClient();
   if (!dbx) throw new Error('Dropbox client not initialized');
 
   const response = await dbx.filesSearchV2({
@@ -93,7 +87,7 @@ export const searchFiles = async (query: string) => {
 };
 
 export const getFileMetadata = async (path: string) => {
-  const dbx = getDropboxClient();
+  const dbx = await getDropboxClient();
   if (!dbx) throw new Error('Dropbox client not initialized');
 
   const response = await dbx.filesGetMetadata({
@@ -106,7 +100,7 @@ export const getFileMetadata = async (path: string) => {
 };
 
 export const createSharedLink = async (path: string) => {
-  const dbx = getDropboxClient();
+  const dbx = await getDropboxClient();
   if (!dbx) throw new Error('Dropbox client not initialized');
 
   const response = await dbx.sharingCreateSharedLinkWithSettings({
@@ -121,7 +115,7 @@ export const createSharedLink = async (path: string) => {
 };
 
 export const moveFile = async (fromPath: string, toPath: string) => {
-  const dbx = getDropboxClient();
+  const dbx = await getDropboxClient();
   if (!dbx) throw new Error('Dropbox client not initialized');
 
   const response = await dbx.filesMoveV2({
@@ -134,7 +128,7 @@ export const moveFile = async (fromPath: string, toPath: string) => {
 };
 
 export const copyFile = async (fromPath: string, toPath: string) => {
-  const dbx = getDropboxClient();
+  const dbx = await getDropboxClient();
   if (!dbx) throw new Error('Dropbox client not initialized');
 
   const response = await dbx.filesCopyV2({
@@ -146,7 +140,7 @@ export const copyFile = async (fromPath: string, toPath: string) => {
 };
 
 export const deleteFile = async (path: string) => {
-  const dbx = getDropboxClient();
+  const dbx = await getDropboxClient();
   if (!dbx) throw new Error('Dropbox client not initialized');
 
   const response = await dbx.filesDeleteV2({
@@ -156,7 +150,7 @@ export const deleteFile = async (path: string) => {
 };
 
 export const downloadFile = async (path: string): Promise<Blob> => {
-  const dbx = getDropboxClient();
+  const dbx = await getDropboxClient();
   if (!dbx) throw new Error('Dropbox client not initialized');
 
   const response = await dbx.filesDownload({
@@ -166,7 +160,7 @@ export const downloadFile = async (path: string): Promise<Blob> => {
 };
 
 export const createFolder = async (path: string) => {
-  const dbx = getDropboxClient();
+  const dbx = await getDropboxClient();
   if (!dbx) throw new Error('Dropbox client not initialized');
 
   const sanitizedPath = `/${sanitizePath(path)}`;
