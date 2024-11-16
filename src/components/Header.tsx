@@ -49,9 +49,13 @@ const Header = () => {
         <nav className="flex flex-wrap items-center justify-between gap-4">
           <Link 
             to="/" 
-            className="text-xl md:text-2xl font-bold text-gradient flex items-center gap-2 hover:opacity-80 transition-opacity"
+            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
           >
-            {t("common:app.name")}
+            <img 
+              src="/forest-lidar.png" 
+              alt="Forest Lidar Logo" 
+              className="h-8 w-auto"
+            />
           </Link>
 
           <div className="flex items-center gap-4">
