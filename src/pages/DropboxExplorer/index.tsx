@@ -9,7 +9,7 @@ import { FileList } from './components/FileList';
 import { ExplorerToolbar } from './components/ExplorerToolbar';
 import { NavigationBreadcrumb } from './components/NavigationBreadcrumb';
 import { useToast } from '@/components/ui/use-toast';
-import { Loader2, CloudRain } from 'lucide-react';
+import { Loader2, CloudRain, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useDropboxAuth } from '@/hooks/useDropboxAuth';
 import { motion } from 'framer-motion';
@@ -21,18 +21,11 @@ const DropboxExplorer = () => {
   const { currentPath, viewMode } = useSelector((state: RootState) => state.explorer);
   const { isAuthenticated, login, isLoading: isAuthLoading } = useDropboxAuth();
 
-  const { data: files, isLoading, error } = useQuery({
+  const { data: files, isLoading, refetch } = useQuery({
     queryKey: ['dropbox-files', currentPath],
     queryFn: () => dropboxClient.listFolder(currentPath),
     enabled: isAuthenticated,
     retry: 1,
-    onError: (error) => {
-      toast({
-        title: 'Error',
-        description: 'Failed to load files. Please try again.',
-        variant: 'destructive',
-      });
-    }
   });
 
   const uploadMutation = useMutation({
@@ -47,7 +40,7 @@ const DropboxExplorer = () => {
         description: 'File uploaded successfully',
       });
     },
-    onError: (error) => {
+    onError: () => {
       toast({
         title: 'Error',
         description: 'Failed to upload file. Please try again.',
@@ -77,6 +70,7 @@ const DropboxExplorer = () => {
             transition={{ duration: 0.8 }}
             className="max-w-2xl mx-auto text-center space-y-12"
           >
+            <Award className="w-16 h-16 mx-auto text-purple-600 mb-8" />
             <h1 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600 leading-relaxed">
               Digital Garden Explorer
             </h1>
@@ -106,15 +100,19 @@ const DropboxExplorer = () => {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-8"
         >
-          <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
-            Digital Garden
-          </h1>
+          <div className="flex items-center gap-4">
+            <Award className="w-8 h-8 text-purple-600" />
+            <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
+              Digital Garden
+            </h1>
+          </div>
           
           <ExplorerToolbar
             onFileSelect={handleFileSelect}
             isUploading={uploadMutation.isPending}
             onViewModeChange={(mode) => dispatch(setViewMode(mode))}
             viewMode={viewMode}
+            onRefresh={refetch}
           />
 
           <NavigationBreadcrumb
