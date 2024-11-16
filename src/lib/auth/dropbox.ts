@@ -40,7 +40,6 @@ export const dropboxAuth = {
 
       const data = await response.json();
       
-      // Store tokens in Service Worker
       if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
         navigator.serviceWorker.controller.postMessage({
           type: 'STORE_DROPBOX_TOKENS',
@@ -55,7 +54,7 @@ export const dropboxAuth = {
       return data.access_token;
     } catch (error) {
       console.error('Auth callback error:', error);
-      throw new Error('Authentication failed. Please try again.');
+      throw error;
     }
   },
 
@@ -78,11 +77,10 @@ export const dropboxAuth = {
     });
   },
 
-  async getClient(): Promise<any> {
+  async getClient() {
     const accessToken = await this.getValidAccessToken();
     if (!accessToken) return null;
     
-    // Using the Dropbox SDK with the token
     const { Dropbox } = await import('dropbox');
     return new Dropbox({ accessToken });
   },

@@ -2,29 +2,11 @@ const CACHE_NAME = 'loopus-maintain-v1';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/manifest.json',
-  '/forest-lidar.png',
-  '/masked-icon.svg',
-  '/vite.svg',
-  '/electrics',
-  '/plumbing',
-  '/ironwork',
-  '/woodwork',
-  '/architecture',
-  '/login',
-  '/documents',
-  '/diagrams',
-  '/analytics',
-  '/audio',
-  '/invoicing',
-  '/chat',
-  '/photo-gallery'
+  '/manifest.json'
 ];
 
-// Enhanced token management
 let dropboxTokens = null;
 
-// Token refresh function
 const refreshDropboxToken = async (refresh_token) => {
   try {
     const response = await fetch('/.netlify/functions/get-dropbox-token', {
@@ -36,29 +18,27 @@ const refreshDropboxToken = async (refresh_token) => {
     });
 
     if (!response.ok) throw new Error('Token refresh failed');
-    const data = await response.json();
-    return data;
+    return await response.json();
   } catch (error) {
     console.error('Token refresh error:', error);
     return null;
   }
 };
 
-// Enhanced message handling for token management
 self.addEventListener('message', (event) => {
   if (event.data.type === 'STORE_DROPBOX_TOKENS') {
     dropboxTokens = event.data.tokens;
-    // Store tokens in cache for persistence
-    caches.open(CACHE_NAME).then(cache => {
-      cache.put('/_dropbox_tokens', new Response(JSON.stringify(dropboxTokens)));
-    });
+    if (dropboxTokens) {
+      caches.open(CACHE_NAME).then(cache => {
+        cache.put('/_dropbox_tokens', new Response(JSON.stringify(dropboxTokens)));
+      });
+    }
   } else if (event.data.type === 'GET_DROPBOX_TOKENS') {
     event.ports[0].postMessage({ tokens: dropboxTokens });
   }
 });
 
-// Token validation middleware
-const validateToken = async (request) => {
+const validateToken = async () => {
   if (!dropboxTokens) {
     const cache = await caches.open(CACHE_NAME);
     const tokenResponse = await cache.match('/_dropbox_tokens');
@@ -75,16 +55,16 @@ const validateToken = async (request) => {
         cache.put('/_dropbox_tokens', new Response(JSON.stringify(dropboxTokens)));
       });
     }
+    return newTokens?.access_token;
   }
 
   return dropboxTokens?.access_token;
 };
 
-// Enhanced fetch handling with token validation
 self.addEventListener('fetch', (event) => {
   if (event.request.url.includes('api.dropboxapi.com')) {
     event.respondWith((async () => {
-      const token = await validateToken(event.request);
+      const token = await validateToken();
       if (!token) {
         return new Response('Unauthorized', { status: 401 });
       }
@@ -103,23 +83,14 @@ self.addEventListener('fetch', (event) => {
       }
     })());
   } else {
-    event.respondWith((async () => {
-      try {
-        const response = await fetch(event.request);
-        if (response.ok && response.type === 'basic') {
-          const cache = await caches.open(CACHE_NAME);
-          cache.put(event.request, response.clone());
-        }
-        return response;
-      } catch (error) {
-        const cachedResponse = await caches.match(event.request);
-        return cachedResponse || new Response('Network error', { status: 408 });
-      }
-    })());
+    event.respondWith(
+      caches.match(event.request).then(response => {
+        return response || fetch(event.request);
+      })
+    );
   }
 });
 
-// Keep other service worker event handlers
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     Promise.all([
@@ -130,25 +101,5 @@ self.addEventListener('activate', (event) => {
       ),
       self.clients.claim()
     ])
-  );
-});
-
-// Handle sync events for offline operations
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'sync-documents') {
-    event.waitUntil(syncDocuments());
-  }
-});
-
-// Handle push notifications
-self.addEventListener('push', (event) => {
-  const options = {
-    body: event.data.text(),
-    icon: '/forest-lidar.png',
-    badge: '/masked-icon.svg'
-  };
-
-  event.waitUntil(
-    self.registration.showNotification('Loopus & Maintain', options)
   );
 });
