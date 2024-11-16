@@ -1,4 +1,4 @@
-import { Home, Settings, Mail, Phone, Github, BookOpen } from "lucide-react";
+import { Home, Settings, Mail, Phone, Github, BookOpen, FolderOpen } from "lucide-react";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -58,6 +58,17 @@ const Footer = () => {
               <Link to="/docs" className="flex items-center justify-center">
                 <BookOpen className="h-4 w-4 mr-2" />
                 {t("common:nav.docs")}
+              </Link>
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              asChild 
+              className="w-full sm:w-auto hover:bg-[#D946EF] hover:text-white transition-colors"
+            >
+              <Link to="/dropbox-explorer" className="flex items-center justify-center">
+                <FolderOpen className="h-4 w-4 mr-2" />
+                Dropbox Explorer
               </Link>
             </Button>
           </div>
