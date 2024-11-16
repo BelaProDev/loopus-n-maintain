@@ -8,11 +8,11 @@ const Footer = () => {
 
   return (
     <footer className="bg-[#2E5984] backdrop-blur-lg text-white mt-auto border-t border-white/10">
-      <div className="container mx-auto px-6 py-12">
-        <div className="flex flex-col space-y-12 md:space-y-0 md:flex-row md:justify-between md:items-start">
+      <div className="container mx-auto px-4 py-8 md:py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {/* Contact Section */}
           <div className="flex flex-col items-center md:items-start bg-white/5 p-6 rounded-lg backdrop-blur-md">
-            <h3 className="text-2xl font-semibold mb-6">{t("common:nav.contact")}</h3>
+            <h3 className="text-xl md:text-2xl font-semibold mb-6">{t("common:nav.contact")}</h3>
             <div className="flex flex-col space-y-4">
               <a 
                 href="tel:+32489127067" 
@@ -32,7 +32,7 @@ const Footer = () => {
                 <div className="p-2 rounded-full bg-white/10 group-hover:bg-white/20 mr-3">
                   <Mail className="h-4 w-4" />
                 </div>
-                pro.belalawson@gmail.com
+                <span className="break-all">pro.belalawson@gmail.com</span>
               </a>
               <a 
                 href="https://github.com/BelaProDev/" 
@@ -50,41 +50,41 @@ const Footer = () => {
           </div>
           
           {/* Navigation Links */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 bg-white/5 p-6 rounded-lg backdrop-blur-md">
-            <Button variant="ghost" size="lg" asChild className="hover:bg-white/20">
+          <div className="grid grid-cols-2 gap-2 bg-white/5 p-6 rounded-lg backdrop-blur-md">
+            <Button variant="ghost" size="sm" asChild className="hover:bg-white/20">
               <Link to="/" className="flex items-center justify-start w-full">
-                <Home className="h-5 w-5 mr-3" />
-                {t("common:nav.home")}
+                <Home className="h-4 w-4 mr-2" />
+                <span className="text-sm">{t("common:nav.home")}</span>
               </Link>
             </Button>
-            <Button variant="ghost" size="lg" asChild className="hover:bg-white/20">
+            <Button variant="ghost" size="sm" asChild className="hover:bg-white/20">
               <Link to="/koalax" className="flex items-center justify-start w-full">
-                <Settings className="h-5 w-5 mr-3" />
-                {t("common:nav.admin")}
+                <Settings className="h-4 w-4 mr-2" />
+                <span className="text-sm">{t("common:nav.admin")}</span>
               </Link>
             </Button>
-            <Button variant="ghost" size="lg" asChild className="hover:bg-white/20">
+            <Button variant="ghost" size="sm" asChild className="hover:bg-white/20">
               <Link to="/docs" className="flex items-center justify-start w-full">
-                <BookOpen className="h-5 w-5 mr-3" />
-                {t("common:nav.docs")}
+                <BookOpen className="h-4 w-4 mr-2" />
+                <span className="text-sm">{t("common:nav.docs")}</span>
               </Link>
             </Button>
-            <Button variant="ghost" size="lg" asChild className="hover:bg-white/20">
+            <Button variant="ghost" size="sm" asChild className="hover:bg-white/20">
               <Link to="/dropbox-explorer" className="flex items-center justify-start w-full">
-                <FolderOpen className="h-5 w-5 mr-3" />
-                {t("common:nav.dropbox")}
+                <FolderOpen className="h-4 w-4 mr-2" />
+                <span className="text-sm">{t("common:nav.dropbox")}</span>
               </Link>
             </Button>
-            <Button variant="ghost" size="lg" asChild className="hover:bg-white/20">
+            <Button variant="ghost" size="sm" asChild className="hover:bg-white/20">
               <Link to="/chat" className="flex items-center justify-start w-full">
-                <MessageCircle className="h-5 w-5 mr-3" />
-                {t("common:nav.chat")}
+                <MessageCircle className="h-4 w-4 mr-2" />
+                <span className="text-sm">{t("common:nav.chat")}</span>
               </Link>
             </Button>
-            <Button variant="ghost" size="lg" asChild className="hover:bg-white/20">
+            <Button variant="ghost" size="sm" asChild className="hover:bg-white/20">
               <Link to="/photo-gallery" className="flex items-center justify-start w-full">
-                <Image className="h-5 w-5 mr-3" />
-                {t("common:nav.gallery")}
+                <Image className="h-4 w-4 mr-2" />
+                <span className="text-sm">{t("common:nav.gallery")}</span>
               </Link>
             </Button>
           </div>

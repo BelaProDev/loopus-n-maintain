@@ -36,7 +36,7 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="relative bg-background/80 border-b border-muted/20 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-sm border-b">
       {isOffline && (
         <Badge 
           variant="destructive" 
@@ -90,13 +90,13 @@ const Header = () => {
                 <Menu className="h-6 w-6" />
               </Button>
             </SheetTrigger>
-            <SheetContent>
+            <SheetContent side="right" className="w-[300px]">
               <div className="flex flex-col space-y-4 mt-8">
                 {tools.map((tool) => (
                   <Link
                     key={tool.name}
                     to={tool.path}
-                    className="nav-link text-lg flex items-center gap-2"
+                    className="flex items-center gap-2 p-2 hover:bg-accent/10 rounded-md transition-colors"
                   >
                     <span>{tool.icon}</span>
                     {t(`tools:${tool.name}.title`)}

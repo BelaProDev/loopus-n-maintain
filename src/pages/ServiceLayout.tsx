@@ -63,7 +63,7 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
   return (
     <div className={styles.container}>
       <Header />
-      <main className="flex-1 container mx-auto px-4 py-8 md:py-12">
+      <main className="flex-1 container mx-auto px-4 py-6 md:py-8 lg:py-12">
         {!isAuthenticated && (
           <Alert variant="destructive" className="mb-6">
             <AlertDescription className="flex flex-wrap items-center justify-between gap-4">
@@ -75,16 +75,16 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
           </Alert>
         )}
 
-        <div className="glass-effect rounded-lg p-6 md:p-8 mb-8">
-          <h1 className="text-3xl md:text-4xl font-serif text-[#2E5984] mb-4">
+        <div className="glass-effect rounded-lg p-4 md:p-6 lg:p-8 mb-6 md:mb-8">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-serif text-[#2E5984] mb-4">
             {t(`services:${serviceType}.title`)}
           </h1>
           <p className="text-base md:text-lg text-gray-700">{description}</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <Card className="p-6 wood-texture">
-            <h2 className="text-2xl font-serif text-[#2E5984] mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+          <Card className="p-4 md:p-6 wood-texture">
+            <h2 className="text-xl md:text-2xl font-serif text-[#2E5984] mb-4 md:mb-6">
               {t("services:quickHelp")}
             </h2>
             <div className="space-y-4">
@@ -100,7 +100,7 @@ const ServiceLayout = ({ title, description, commonIssues, faqs }: ServiceLayout
                       );
                     }}
                   />
-                  <Label htmlFor={issue.id}>{issue.label}</Label>
+                  <Label htmlFor={issue.id} className="text-sm md:text-base">{issue.label}</Label>
                 </div>
               ))}
               <Button
