@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { LogIn } from "lucide-react";
 import { dropboxAuth } from "@/lib/auth/dropbox";
 import DocumentToolbar from "./document/DocumentToolbar";
@@ -46,7 +45,7 @@ const DocumentManager = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h2 className="text-2xl font-bold">Document Manager</h2>
         {!isAuthenticated && (
-          <Button onClick={() => dropboxAuth.login()} className="w-full sm:w-auto">
+          <Button onClick={() => dropboxAuth.initiateAuth()} className="w-full sm:w-auto">
             <LogIn className="w-4 h-4 mr-2" />
             Connect Dropbox
           </Button>
