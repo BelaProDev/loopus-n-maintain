@@ -39,44 +39,55 @@ const Synthesizer = () => {
 
   useEffect(() => {
     const setupAudio = async () => {
-      await initializeAudio();
-      const newSynth = new Tone.PolySynth(Tone.Synth, {
-        envelope: {
-          attack: 0.02,
-          decay: 0.1,
-          sustain: 0.3,
-          release: 1
-        }
-      });
-      
-      const analyser = new Tone.Analyser('waveform', 128);
-      newSynth.connect(analyser);
-      
-      setSynth(newSynth);
-      analyserRef.current = analyser;
-
-      // Start animation frame for visualizer
-      const updateVisualizer = () => {
-        if (analyserRef.current) {
-          const data = analyserRef.current.getValue();
-          // Ensure we're working with a Float32Array and convert it to a regular array
-          if (data instanceof Float32Array) {
-            const normalizedData = Array.from(data).map(value => 
-              // Normalize values to be between -1 and 1
-              Math.max(-1, Math.min(1, value))
-            );
-            setAudioData(normalizedData);
+      try {
+        await initializeAudio();
+        const newSynth = new Tone.PolySynth(Tone.Synth, {
+          envelope: {
+            attack: 0.02,
+            decay: 0.1,
+            sustain: 0.3,
+            release: 1
           }
-        }
-        requestAnimationFrame(updateVisualizer);
-      };
-      updateVisualizer();
+        });
+        
+        // Create analyzer after context is initialized
+        const analyser = new Tone.Analyser('waveform', 128);
+        
+        // Connect synth to analyzer first, then to destination
+        newSynth.connect(analyser);
+        analyser.toDestination();
+        
+        setSynth(newSynth);
+        analyserRef.current = analyser;
+
+        // Start animation frame for visualizer
+        const updateVisualizer = () => {
+          if (analyserRef.current) {
+            const data = analyserRef.current.getValue();
+            if (data instanceof Float32Array) {
+              const normalizedData = Array.from(data).map(value => 
+                Math.max(-1, Math.min(1, value))
+              );
+              setAudioData(normalizedData);
+            }
+          }
+          requestAnimationFrame(updateVisualizer);
+        };
+        updateVisualizer();
+
+      } catch (error) {
+        console.error('Audio setup failed:', error);
+        toast.error("Failed to initialize audio");
+      }
     };
 
     setupAudio();
     return () => {
       synth?.dispose();
       analyserRef.current?.dispose();
+      if (sequencerRef.current) {
+        sequencerRef.current.dispose();
+      }
     };
   }, []);
 
@@ -112,9 +123,9 @@ const Synthesizer = () => {
   const handlePlayStop = async () => {
     try {
       if (!isPlaying) {
-        await initializeAudio();
+        await Tone.start();
         if (sequencerRef.current) {
-          sequencerRef.current.start();
+          sequencerRef.current.start(0);
           Tone.Transport.start();
         }
       } else {
@@ -127,18 +138,6 @@ const Synthesizer = () => {
     } catch (error) {
       toast.error("Failed to start audio");
     }
-  };
-
-  const handleStepToggle = (stepIndex: number, rowIndex: number) => {
-    const newSteps = [...steps];
-    newSteps[stepIndex][rowIndex].active = !newSteps[stepIndex][rowIndex].active;
-    setSteps(newSteps);
-  };
-
-  const handleNoteChange = (stepIndex: number, rowIndex: number, note: string) => {
-    const newSteps = [...steps];
-    newSteps[stepIndex][rowIndex].note = note;
-    setSteps(newSteps);
   };
 
   const startRecording = () => {
@@ -162,8 +161,16 @@ const Synthesizer = () => {
         onBPMChange={setBpm}
         steps={steps}
         currentStep={currentStep}
-        onStepToggle={handleStepToggle}
-        onNoteChange={handleNoteChange}
+        onStepToggle={(stepIndex, rowIndex) => {
+          const newSteps = [...steps];
+          newSteps[stepIndex][rowIndex].active = !newSteps[stepIndex][rowIndex].active;
+          setSteps(newSteps);
+        }}
+        onNoteChange={(stepIndex, rowIndex, note) => {
+          const newSteps = [...steps];
+          newSteps[stepIndex][rowIndex].note = note;
+          setSteps(newSteps);
+        }}
         effectParams={effectParams}
         updateEffects={setEffectParams}
         onStartRecording={startRecording}
