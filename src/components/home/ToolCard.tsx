@@ -12,10 +12,10 @@ interface ToolCardProps {
 }
 
 const ToolCard = ({ icon: Icon, title, path, gradient, bgClass }: ToolCardProps) => {
-  const { t } = useTranslation(["tools", "common"]);
+  const { t } = useTranslation("tools");
   
   return (
-    <Link to={path} className="block">
+    <Link to={path} className="block h-full">
       <Card className={`group hover:shadow-xl transition-all duration-300 border-none overflow-hidden relative animate-scale-up ${bgClass} bg-opacity-5 h-full`}>
         <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-10 group-hover:opacity-20 transition-opacity`} />
         <CardHeader>
@@ -23,16 +23,14 @@ const ToolCard = ({ icon: Icon, title, path, gradient, bgClass }: ToolCardProps)
             <div className="p-3 rounded-lg bg-gradient-to-br from-primary/20 to-secondary/20 backdrop-blur-sm">
               <Icon className="h-6 w-6 text-primary" />
             </div>
-            <CardTitle className="flex-1">{t(`tools:${title}.title`)}</CardTitle>
+            <CardTitle className="flex-1 font-serif">{t(`${title}.title`)}</CardTitle>
           </div>
         </CardHeader>
         <CardContent className="flex flex-col flex-1">
           <p className="text-gray-600 dark:text-gray-300 mb-6 flex-1">
-            {t(`tools:${title}.description`)}
+            {t(`${title}.description`)}
           </p>
-          <div 
-            className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full group-hover:border-primary/50"
-          >
+          <div className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full group-hover:border-primary/50">
             {t("common:actions.explore")}
           </div>
         </CardContent>

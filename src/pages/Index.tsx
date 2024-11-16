@@ -102,11 +102,11 @@ const Index = () => {
         <div className="bg-gradient-primary text-white py-16 md:py-24">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl flex flex-col gap-6 animate-fade-in">
-              <h1 className="text-4xl md:text-6xl font-bold">
-                {t("common:app.name")}
+              <h1 className="text-4xl md:text-6xl font-bold font-serif">
+                {t("app.name")}
               </h1>
               <p className="text-xl md:text-2xl opacity-90">
-                {t("common:app.description")}
+                {t("app.description")}
               </p>
               {!isAuthenticated && (
                 <Link to="/login">
@@ -122,10 +122,9 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Services Section */}
         <div className="container mx-auto px-4 py-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gradient animate-fade-in">
-            {t("common:nav.services")}
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gradient animate-fade-in font-serif">
+            {t("services:title")}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
             {services.map((service) => (
@@ -133,9 +132,8 @@ const Index = () => {
             ))}
           </div>
 
-          {/* Tools Section */}
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gradient animate-fade-in">
-            {t("common:nav.tools")}
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gradient animate-fade-in font-serif">
+            {t("tools:title")}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {tools.map((tool) => (
