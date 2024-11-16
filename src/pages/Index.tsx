@@ -40,7 +40,7 @@ const Index = () => {
               <img 
                 src="/forest-lidar.png" 
                 alt="Forest Lidar Logo" 
-                className="h-16 w-auto border-3 border-white rounded-lg mb-4"
+                className="h-16 w-auto border-[3px] border-primary rounded-lg mb-4"
               />
               {!isAuthenticated && (
                 <Link to="/login">

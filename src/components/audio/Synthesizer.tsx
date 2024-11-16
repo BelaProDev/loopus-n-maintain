@@ -21,7 +21,7 @@ const Synthesizer = () => {
       Array(4).fill(null).map(() => ({ active: false, note: 'C4', velocity: 0.7 }))
     )
   );
-  
+
   const [effectParams, setEffectParams] = useState({
     filterFreq: 1000,
     filterRes: 1,
@@ -61,7 +61,11 @@ const Synthesizer = () => {
           const data = analyserRef.current.getValue();
           // Ensure we're working with a Float32Array and convert it to a regular array
           if (data instanceof Float32Array) {
-            setAudioData(Array.from(data));
+            const normalizedData = Array.from(data).map(value => 
+              // Normalize values to be between -1 and 1
+              Math.max(-1, Math.min(1, value))
+            );
+            setAudioData(normalizedData);
           }
         }
         requestAnimationFrame(updateVisualizer);
