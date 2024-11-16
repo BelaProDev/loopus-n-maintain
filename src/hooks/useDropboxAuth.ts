@@ -1,7 +1,8 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { useAppDispatch } from './useAppStore';
 import { setAuthenticated } from '@/store/slices/documentsSlice';
+import { dropboxAuth } from '@/lib/auth/dropbox';
 
 export function useDropboxAuth() {
   const [isLoading, setIsLoading] = useState(false);
@@ -9,20 +10,26 @@ export function useDropboxAuth() {
   const { toast } = useToast();
   const dispatch = useAppDispatch();
 
+  useEffect(() => {
+    checkAuthStatus();
+  }, []);
+
+  const checkAuthStatus = async () => {
+    try {
+      const token = await dropboxAuth.getValidAccessToken();
+      if (token) {
+        dispatch(setAuthenticated(true));
+        setIsAuthenticatedState(true);
+      }
+    } catch (error) {
+      console.error('Auth check error:', error);
+    }
+  };
+
   const login = useCallback(async () => {
     setIsLoading(true);
     try {
-      const token = import.meta.env.VITE_DROPBOX_ACCESS_TOKEN;
-      if (!token) {
-        throw new Error('Dropbox access token not configured');
-      }
-      localStorage.setItem('dropbox_access_token', token);
-      dispatch(setAuthenticated(true));
-      setIsAuthenticatedState(true);
-      toast({
-        title: 'Success',
-        description: 'Successfully connected to Dropbox',
-      });
+      await dropboxAuth.initiateAuth();
     } catch (error) {
       toast({
         title: 'Authentication Error',
@@ -32,10 +39,10 @@ export function useDropboxAuth() {
     } finally {
       setIsLoading(false);
     }
-  }, [toast, dispatch]);
+  }, [toast]);
 
   const logout = useCallback(() => {
-    localStorage.removeItem('dropbox_access_token');
+    localStorage.removeItem('dropbox_state');
     dispatch(setAuthenticated(false));
     setIsAuthenticatedState(false);
     toast({
