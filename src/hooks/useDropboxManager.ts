@@ -21,8 +21,9 @@ export const useDropboxManager = (currentPath: string) => {
         ...file,
         path: file.path_display || '',
         isFolder: file['.tag'] === 'folder',
-        lastModified: file.server_modified || new Date().toISOString(),
-      }));
+        lastModified: file['.tag'] === 'file' ? file.server_modified || new Date().toISOString() : new Date().toISOString(),
+        size: file['.tag'] === 'file' ? file.size : undefined,
+      })) as DropboxFile[];
     },
     enabled: isAuthenticated,
   });

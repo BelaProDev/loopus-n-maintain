@@ -1,8 +1,8 @@
 export interface DropboxFile {
   id: string;
   name: string;
-  path_display: string;
-  '.tag': 'file' | 'folder';
+  path_display?: string;
+  '.tag': 'file' | 'folder' | 'deleted';
   size?: number;
   client_modified?: string;
   server_modified?: string;
