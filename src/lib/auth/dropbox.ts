@@ -85,7 +85,8 @@ export const dropboxAuth = {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to exchange code for tokens');
+      const errorData = await response.json();
+      throw new Error(`Token exchange failed: ${errorData.error_description || 'Unknown error'}`);
     }
 
     return response.json();
@@ -94,18 +95,25 @@ export const dropboxAuth = {
   async storeTokens(tokens: TokenResponse) {
     const expiry = Date.now() + (tokens.expires_in * 1000);
     
-    await fetch('/.netlify/functions/store-dropbox-token', {
+    const response = await fetch('/.netlify/functions/store-dropbox-token', {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
         access_token: tokens.access_token,
         refresh_token: tokens.refresh_token,
         expiry
       })
     });
+
+    if (!response.ok) {
+      throw new Error('Failed to store tokens');
+    }
   },
 
   getRedirectUri(): string {
-    return `${window.location.origin}/koalax/dropbox-callback`;
+    return `${window.location.origin}/dropbox-explorer/callback`;
   },
 
   async getValidAccessToken(): Promise<string | null> {
@@ -116,6 +124,7 @@ export const dropboxAuth = {
       const data = await response.json();
       if (!data.token) return null;
 
+      // If token expires in less than 5 minutes, refresh it
       if (Date.now() + 300000 > data.expiry) {
         const newTokens = await this.refreshAccessToken(data.refresh_token);
         await this.storeTokens(newTokens);
@@ -135,11 +144,19 @@ export const dropboxAuth = {
     return new Dropbox({ accessToken });
   },
 
-  async authenticate() {
-    return this.initiateAuth();
-  },
-
   async logout() {
     localStorage.removeItem('dropbox_state');
+    // Clear tokens from backend storage
+    await fetch('/.netlify/functions/store-dropbox-token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        access_token: null,
+        refresh_token: null,
+        expiry: 0
+      })
+    });
   }
 };
