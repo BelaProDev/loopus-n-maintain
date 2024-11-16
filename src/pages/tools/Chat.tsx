@@ -3,12 +3,12 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
-import { Send, Hash, Users, Settings } from "lucide-react";
+import { Send, Hash, Users } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ChatMessage, ChatRoom, ChatUser } from '@/types/chat';
+import { ChatMessage, ChatRoom } from '@/types/chat';
 import { motion } from 'framer-motion';
+import RoomsList from './chat/RoomsList';
 
 const fetchMessages = async (roomId: string): Promise<ChatMessage[]> => {
   const response = await fetch('/.netlify/functions/chat-messages', {
@@ -49,6 +49,27 @@ const Chat = () => {
     queryFn: () => fetchMessages(activeRoom),
     refetchInterval: 3000,
     enabled: !!activeRoom
+  });
+
+  const createRoomMutation = useMutation({
+    mutationFn: async (data: { name: string; topic: string }) => {
+      const response = await fetch('/.netlify/functions/chat-rooms', {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'create',
+          data
+        })
+      });
+      if (!response.ok) throw new Error('Failed to create room');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['chat-rooms'] });
+      toast({
+        title: "Room created",
+        description: "New room has been created successfully"
+      });
+    }
   });
 
   const sendMessageMutation = useMutation({
@@ -98,6 +119,10 @@ const Chat = () => {
     });
   };
 
+  const handleCreateRoom = async (name: string, topic: string) => {
+    await createRoomMutation.mutateAsync({ name, topic });
+  };
+
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newMessage.trim() || !activeRoom) return;
@@ -142,33 +167,16 @@ const Chat = () => {
     <div className="container mx-auto px-4 py-8">
       <Card className="max-w-6xl mx-auto">
         <div className="grid grid-cols-12 h-[80vh]">
-          {/* Rooms List */}
-          <div className="col-span-3 border-r border-gray-200 p-4">
-            <div className="flex items-center gap-2 mb-4">
-              <Hash className="h-5 w-5 text-primary" />
-              <h2 className="font-mono text-lg">Rooms</h2>
-            </div>
-            <ScrollArea className="h-[calc(100%-2rem)]">
-              {rooms.map((room) => (
-                <motion.button
-                  key={room.id}
-                  whileHover={{ x: 4 }}
-                  onClick={() => setActiveRoom(room.id)}
-                  className={`w-full text-left p-2 rounded font-mono ${
-                    activeRoom === room.id ? 'bg-primary/10 text-primary' : 'hover:bg-gray-100'
-                  }`}
-                >
-                  #{room.name}
-                </motion.button>
-              ))}
-            </ScrollArea>
-          </div>
+          <RoomsList
+            rooms={rooms}
+            activeRoom={activeRoom}
+            onRoomSelect={setActiveRoom}
+            onRoomCreate={handleCreateRoom}
+          />
 
-          {/* Chat Area */}
           <div className="col-span-9 flex flex-col">
             {activeRoom ? (
               <>
-                {/* Room Header */}
                 <div className="p-4 border-b border-gray-200">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -189,7 +197,6 @@ const Chat = () => {
                   </p>
                 </div>
 
-                {/* Messages */}
                 <ScrollArea className="flex-1 p-4" ref={scrollRef}>
                   <div className="space-y-2">
                     {messages.map((message) => (
@@ -213,7 +220,6 @@ const Chat = () => {
                   </div>
                 </ScrollArea>
 
-                {/* Message Input */}
                 <form onSubmit={handleSendMessage} className="p-4 border-t border-gray-200">
                   <div className="flex gap-2">
                     <Input
