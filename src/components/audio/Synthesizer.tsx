@@ -9,6 +9,7 @@ import ShaderVisualizer from './ShaderVisualizer';
 import StepSequencer from './StepSequencer';
 import EffectChain from './EffectChain';
 import Looper from './Looper';
+import BPMControl from './BPMControl';
 
 interface Step {
   active: boolean;
@@ -48,6 +49,11 @@ const Synthesizer = () => {
   const analyserRef = useRef<Tone.Analyser | null>(null);
   const recorderRef = useRef<Tone.Recorder | null>(null);
   const sequencerRef = useRef<Tone.Sequence | null>(null);
+
+  const handleBPMChange = (newBpm: number) => {
+    setBpm(newBpm);
+    Tone.Transport.bpm.value = newBpm;
+  };
 
   useEffect(() => {
     const newSynth = new Tone.PolySynth().toDestination();
@@ -216,11 +222,10 @@ const Synthesizer = () => {
           }} variant={isPlaying ? "default" : "outline"}>
             {isPlaying ? "Stop" : "Play"}
           </Button>
-          <Button onClick={() => setBpm(bpm + 5)} variant="outline">
-            BPM: {bpm}
-          </Button>
         </div>
       </div>
+
+      <BPMControl bpm={bpm} onBPMChange={handleBPMChange} />
 
       <ShaderVisualizer audioData={audioData} />
 
