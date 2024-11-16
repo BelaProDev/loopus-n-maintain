@@ -19,6 +19,8 @@ import ErrorBoundary from "./lib/monitoring/ErrorBoundary";
 import AsyncComponent from "./components/AsyncComponent";
 import { useEffect } from "react";
 import "./i18n";
+import { DropboxProvider } from "./contexts/DropboxContext";
+import { ThemeProvider } from "./components/ThemeProvider";
 
 // Import pages
 import Index from "./pages/Index";
@@ -74,94 +76,98 @@ const App = () => {
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <ErrorBoundary>
-          <AuthProvider>
-            <TooltipProvider>
-              <Toaster />
-              <div className="flex flex-col min-h-screen">
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/login" element={<Login />} />
-                  
-                  {/* Service Routes */}
-                  <Route path="/electrics" element={
-                    <AsyncComponent>
-                      <Electrics />
-                    </AsyncComponent>
-                  } />
-                  <Route path="/plumbing" element={
-                    <AsyncComponent>
-                      <Plumbing />
-                    </AsyncComponent>
-                  } />
-                  <Route path="/ironwork" element={
-                    <AsyncComponent>
-                      <Ironwork />
-                    </AsyncComponent>
-                  } />
-                  <Route path="/woodwork" element={
-                    <AsyncComponent>
-                      <Woodwork />
-                    </AsyncComponent>
-                  } />
-                  <Route path="/architecture" element={
-                    <AsyncComponent>
-                      <Architecture />
-                    </AsyncComponent>
-                  } />
-                  
-                  {/* Tool Routes */}
-                  <Route path="/documents" element={
-                    <AsyncComponent>
-                      <Documents />
-                    </AsyncComponent>
-                  } />
-                  <Route path="/diagrams" element={
-                    <AsyncComponent>
-                      <Diagrams />
-                    </AsyncComponent>
-                  } />
-                  <Route path="/analytics" element={
-                    <AsyncComponent>
-                      <Analytics />
-                    </AsyncComponent>
-                  } />
-                  <Route path="/audio" element={
-                    <AsyncComponent>
-                      <Audio />
-                    </AsyncComponent>
-                  } />
-                  <Route path="/invoicing" element={
-                    <AsyncComponent>
-                      <Invoicing />
-                    </AsyncComponent>
-                  } />
-                  <Route path="/chat" element={
-                    <AsyncComponent>
-                      <Chat />
-                    </AsyncComponent>
-                  } />
-                  <Route path="/photo-gallery" element={
-                    <AsyncComponent>
-                      <PhotoGallery />
-                    </AsyncComponent>
-                  } />
-                  
-                  {/* Admin Routes */}
-                  <Route path="/docs" element={<Documentation />} />
-                  <Route path="/dropbox-explorer" element={<DropboxExplorer />} />
-                  <Route path="/dropbox-explorer/callback" element={<DropboxCallback />} />
-                  <Route path="/koalax" element={<Koalax />}>
-                    <Route index element={<EmailManagement />} />
-                    <Route path="emails" element={<EmailManagement />} />
-                    <Route path="settings" element={<SiteSettings />} />
-                    <Route path="business" element={<BusinessManagement />} />
-                    <Route path="messages" element={<MessageManagement />} />
-                  </Route>
-                </Routes>
-              </div>
-              <ReactQueryDevtools />
-            </TooltipProvider>
-          </AuthProvider>
+          <ThemeProvider>
+            <AuthProvider>
+              <DropboxProvider>
+                <TooltipProvider>
+                  <Toaster />
+                  <div className="flex flex-col min-h-screen">
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/login" element={<Login />} />
+                      
+                      {/* Service Routes */}
+                      <Route path="/electrics" element={
+                        <AsyncComponent>
+                          <Electrics />
+                        </AsyncComponent>
+                      } />
+                      <Route path="/plumbing" element={
+                        <AsyncComponent>
+                          <Plumbing />
+                        </AsyncComponent>
+                      } />
+                      <Route path="/ironwork" element={
+                        <AsyncComponent>
+                          <Ironwork />
+                        </AsyncComponent>
+                      } />
+                      <Route path="/woodwork" element={
+                        <AsyncComponent>
+                          <Woodwork />
+                        </AsyncComponent>
+                      } />
+                      <Route path="/architecture" element={
+                        <AsyncComponent>
+                          <Architecture />
+                        </AsyncComponent>
+                      } />
+                      
+                      {/* Tool Routes */}
+                      <Route path="/documents" element={
+                        <AsyncComponent>
+                          <Documents />
+                        </AsyncComponent>
+                      } />
+                      <Route path="/diagrams" element={
+                        <AsyncComponent>
+                          <Diagrams />
+                        </AsyncComponent>
+                      } />
+                      <Route path="/analytics" element={
+                        <AsyncComponent>
+                          <Analytics />
+                        </AsyncComponent>
+                      } />
+                      <Route path="/audio" element={
+                        <AsyncComponent>
+                          <Audio />
+                        </AsyncComponent>
+                      } />
+                      <Route path="/invoicing" element={
+                        <AsyncComponent>
+                          <Invoicing />
+                        </AsyncComponent>
+                      } />
+                      <Route path="/chat" element={
+                        <AsyncComponent>
+                          <Chat />
+                        </AsyncComponent>
+                      } />
+                      <Route path="/photo-gallery" element={
+                        <AsyncComponent>
+                          <PhotoGallery />
+                        </AsyncComponent>
+                      } />
+                      
+                      {/* Admin Routes */}
+                      <Route path="/docs" element={<Documentation />} />
+                      <Route path="/dropbox-explorer" element={<DropboxExplorer />} />
+                      <Route path="/dropbox-explorer/callback" element={<DropboxCallback />} />
+                      <Route path="/koalax" element={<Koalax />}>
+                        <Route index element={<EmailManagement />} />
+                        <Route path="emails" element={<EmailManagement />} />
+                        <Route path="settings" element={<SiteSettings />} />
+                        <Route path="business" element={<BusinessManagement />} />
+                        <Route path="messages" element={<MessageManagement />} />
+                      </Route>
+                    </Routes>
+                  </div>
+                  <ReactQueryDevtools />
+                </TooltipProvider>
+              </DropboxProvider>
+            </AuthProvider>
+          </ThemeProvider>
         </ErrorBoundary>
       </QueryClientProvider>
     </Provider>
