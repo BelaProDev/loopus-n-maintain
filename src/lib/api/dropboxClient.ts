@@ -23,7 +23,13 @@ export const dropboxClient = {
     }
     
     const data: DropboxResponse = await response.json();
-    return data.entries;
+    return data.entries.map(entry => ({
+      ...entry,
+      path: entry.path_display || '',
+      isFolder: entry['.tag'] === 'folder',
+      lastModified: entry.server_modified || new Date().toISOString(),
+      size: entry.size || 0,
+    }));
   },
 
   async uploadFile(file: File, path: string): Promise<DropboxFile> {

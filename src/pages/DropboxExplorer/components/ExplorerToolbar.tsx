@@ -10,6 +10,7 @@ interface ExplorerToolbarProps {
   isUploading: boolean;
   onViewModeChange: (mode: 'grid' | 'list') => void;
   viewMode: 'grid' | 'list';
+  onRefresh: () => void;
 }
 
 export const ExplorerToolbar = ({
@@ -17,8 +18,14 @@ export const ExplorerToolbar = ({
   isUploading,
   onViewModeChange,
   viewMode,
+  onRefresh,
 }: ExplorerToolbarProps) => {
   const { logout } = useDropboxAuth();
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
 
   return (
     <motion.div 
@@ -30,16 +37,18 @@ export const ExplorerToolbar = ({
         <Input
           type="file"
           onChange={onFileSelect}
-          className="max-w-[200px] bg-white/70"
+          className="hidden"
+          ref={fileInputRef}
           disabled={isUploading}
         />
         <Button 
           variant="outline"
           disabled={isUploading}
           className="bg-white/70 hover:bg-purple-50"
+          onClick={handleUploadClick}
         >
           <Upload className="w-4 h-4 mr-2" />
-          Upload
+          {isUploading ? 'Uploading...' : 'Upload'}
         </Button>
       </div>
       
@@ -57,6 +66,7 @@ export const ExplorerToolbar = ({
           variant="ghost" 
           size="icon"
           className="hover:bg-purple-50"
+          onClick={onRefresh}
         >
           <RefreshCw className="w-4 h-4" />
         </Button>

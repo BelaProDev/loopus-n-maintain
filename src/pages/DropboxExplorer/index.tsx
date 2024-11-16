@@ -21,19 +21,30 @@ const DropboxExplorer = () => {
   const { currentPath, viewMode } = useSelector((state: RootState) => state.explorer);
   const { isAuthenticated, login, isLoading: isAuthLoading } = useDropboxAuth();
 
-  const { data: files, isLoading } = useQuery({
+  const { data: files, isLoading, refetch } = useQuery({
     queryKey: ['files', currentPath],
     queryFn: () => dropboxClient.listFolder(currentPath),
-    enabled: isAuthenticated
+    enabled: isAuthenticated,
+    staleTime: 30000, // Consider data fresh for 30 seconds
   });
 
   const uploadMutation = useMutation({
-    mutationFn: (file: File) => dropboxClient.uploadFile(file, currentPath),
+    mutationFn: async (file: File) => {
+      const path = currentPath === '/' ? `/${file.name}` : `${currentPath}/${file.name}`;
+      return dropboxClient.uploadFile(file, path);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['files'] });
       toast({
         title: 'Success',
         description: 'File uploaded successfully',
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: 'Error',
+        description: 'Failed to upload file. Please try again.',
+        variant: 'destructive',
       });
     }
   });
@@ -47,6 +58,10 @@ const DropboxExplorer = () => {
 
   const handleNavigate = (path: string) => {
     dispatch(setCurrentPath(path));
+  };
+
+  const handleRefresh = () => {
+    refetch();
   };
 
   if (!isAuthenticated) {
@@ -99,6 +114,7 @@ const DropboxExplorer = () => {
             isUploading={uploadMutation.isPending}
             onViewModeChange={(mode) => dispatch(setViewMode(mode))}
             viewMode={viewMode}
+            onRefresh={handleRefresh}
           />
 
           <NavigationBreadcrumb
