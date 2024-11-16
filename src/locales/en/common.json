@@ -31,5 +31,10 @@
     "success": "Success",
     "error": "Error",
     "offline": "Offline"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "required": "Authentication required"
   }
 }

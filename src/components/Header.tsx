@@ -19,7 +19,7 @@ const tools = [
 const Header = () => {
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
   const { isAuthenticated, logout } = useAuth();
-  const { t } = useTranslation(["common"]);
+  const { t } = useTranslation(["common", "tools"]);
 
   useEffect(() => {
     const handleStatusChange = () => {
@@ -42,7 +42,7 @@ const Header = () => {
           variant="destructive" 
           className="absolute top-2 right-2 md:right-4 flex items-center gap-1 z-50 animate-pulse"
         >
-          Offline
+          {t("common:status.offline")}
         </Badge>
       )}
       <div className="container mx-auto px-4 py-4">
@@ -51,7 +51,7 @@ const Header = () => {
             to="/" 
             className="text-xl md:text-2xl font-bold text-gradient flex items-center gap-2 hover:opacity-80 transition-opacity"
           >
-            Digital Toolbox
+            {t("common:app.name")}
           </Link>
 
           <div className="flex items-center gap-4">
@@ -74,7 +74,7 @@ const Header = () => {
                   variant="outline"
                   className="ml-4 gradient-border"
                 >
-                  {t("auth:signOut")}
+                  {t("common:auth.signOut")}
                 </Button>
               )}
             </div>
@@ -104,7 +104,7 @@ const Header = () => {
                     variant="outline"
                     className="mt-4"
                   >
-                    {t("auth:signOut")}
+                    {t("common:auth.signOut")}
                   </Button>
                 )}
               </div>
