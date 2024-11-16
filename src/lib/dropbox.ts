@@ -85,7 +85,7 @@ export const searchFiles = async (query: string) => {
     options: {
       path: '',
       max_results: 20,
-      file_status: 'active',
+      file_status: { '.tag': 'active' } as files.SearchOptions['file_status'],
       filename_only: false
     }
   });

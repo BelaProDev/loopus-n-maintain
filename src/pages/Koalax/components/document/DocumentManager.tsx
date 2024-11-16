@@ -5,21 +5,21 @@ import { useDropboxManager } from "@/hooks/useDropboxManager";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Cube, Database, Cloud, Folder, File, ArrowRight, Award } from "lucide-react";
+import { Box, Database, Cloud, Folder, File, ArrowRight, Award } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { useDropboxAuth } from "@/hooks/useDropboxAuth";
 
 const DocumentManager = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPath, setCurrentPath] = useState("");
   const { toast } = useToast();
   const { t } = useTranslation(["admin"]);
+  const { login } = useDropboxAuth();
   
   const {
     files,
     isLoading,
     isAuthenticated,
-    handleLogin,
-    handleDownload,
     uploadMutation,
     deleteMutation,
     createFolderMutation,
@@ -61,12 +61,12 @@ const DocumentManager = () => {
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <Cube className="w-10 h-10 text-blue-400" />
+            <Box className="w-10 h-10 text-blue-400" />
             <h1 className="text-4xl font-bold text-white">Document Hub</h1>
           </div>
           {!isAuthenticated && (
             <Button
-              onClick={handleLogin}
+              onClick={login}
               className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg flex items-center space-x-2 transform hover:scale-105 transition-all shadow-lg"
             >
               <Cloud className="w-5 h-5" />
@@ -101,7 +101,7 @@ const DocumentManager = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {files?.map((file) => (
                 <motion.div
-                  key={file.id}
+                  key={file.path_display}
                   whileHover={{ scale: 1.02 }}
                   className="group"
                 >
@@ -127,14 +127,6 @@ const DocumentManager = () => {
                         className="text-white hover:text-blue-400"
                       >
                         Share
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handleDownload(file.path_display, file.name)}
-                        className="text-white hover:text-blue-400"
-                      >
-                        Download
                       </Button>
                     </div>
                   </Card>

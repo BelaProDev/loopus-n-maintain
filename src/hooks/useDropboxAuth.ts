@@ -1,11 +1,9 @@
 import { useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
 
 export function useDropboxAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('dropbox_access_token'));
   const { toast } = useToast();
-  const navigate = useNavigate();
 
   const login = useCallback(async () => {
     try {
@@ -15,6 +13,10 @@ export function useDropboxAuth() {
       }
       localStorage.setItem('dropbox_access_token', token);
       setIsAuthenticated(true);
+      toast({
+        title: 'Success',
+        description: 'Successfully connected to Dropbox',
+      });
     } catch (error) {
       toast({
         title: 'Authentication Error',
