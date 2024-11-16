@@ -23,22 +23,17 @@ export function useDropboxAuth() {
   const checkAuthStatus = () => {
     const tokens = localStorage.getItem('dropbox_tokens');
     if (tokens) {
-      const parsedTokens = JSON.parse(tokens);
-      const expiryTime = localStorage.getItem('dropbox_token_expiry');
-      
-      if (expiryTime && Number(expiryTime) > Date.now()) {
-        dispatch(setAuthenticated(true));
-        setIsAuthenticatedState(true);
+      try {
+        const parsedTokens = JSON.parse(tokens);
+        const expiryTime = localStorage.getItem('dropbox_token_expiry');
         
-        // Store tokens in service worker for API requests
-        if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-          navigator.serviceWorker.controller.postMessage({
-            type: 'STORE_DROPBOX_TOKENS',
-            tokens: parsedTokens
-          });
+        if (expiryTime && Number(expiryTime) > Date.now()) {
+          dispatch(setAuthenticated(true));
+          setIsAuthenticatedState(true);
+          return true;
         }
-        
-        return true;
+      } catch (error) {
+        localStorage.removeItem('dropbox_tokens');
       }
     }
     return false;
@@ -75,14 +70,6 @@ export function useDropboxAuth() {
           localStorage.setItem('dropbox_tokens', JSON.stringify(tokens));
           localStorage.setItem('dropbox_token_expiry', String(Date.now() + (tokens.expires_in * 1000)));
           
-          // Store tokens in service worker for API requests
-          if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-            navigator.serviceWorker.controller.postMessage({
-              type: 'STORE_DROPBOX_TOKENS',
-              tokens
-            });
-          }
-          
           dispatch(setAuthenticated(true));
           setIsAuthenticatedState(true);
           
@@ -114,14 +101,6 @@ export function useDropboxAuth() {
     localStorage.removeItem('dropbox_tokens');
     localStorage.removeItem('dropbox_token_expiry');
     localStorage.removeItem('dropbox_state');
-    
-    // Clear tokens from service worker
-    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-      navigator.serviceWorker.controller.postMessage({
-        type: 'STORE_DROPBOX_TOKENS',
-        tokens: null
-      });
-    }
     
     dispatch(setAuthenticated(false));
     setIsAuthenticatedState(false);

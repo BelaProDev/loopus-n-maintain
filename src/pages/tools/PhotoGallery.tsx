@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Image, Upload, Settings2, Video } from 'lucide-react';
+import { Image, Upload, Settings2 } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { ImageGrid } from './photo-gallery/ImageGrid';
@@ -12,17 +12,17 @@ import { ImageEditor } from './photo-gallery/ImageEditor';
 import { NavigationBreadcrumb } from '../DropboxExplorer/components/NavigationBreadcrumb';
 import { useToast } from '@/components/ui/use-toast';
 import { getMediaType } from '@/lib/utils/fileUtils';
+import { useDropboxAuth } from '@/hooks/useDropboxAuth';
 
 const PhotoGallery = () => {
   const [currentPath, setCurrentPath] = useState('/');
   const [selectedMedia, setSelectedMedia] = useState<string | null>(null);
   const { toast } = useToast();
+  const { login, isAuthenticated } = useDropboxAuth();
   const {
     files,
     isLoading,
-    isAuthenticated,
     uploadMutation,
-    handleLogin,
   } = useDropboxManager(currentPath);
 
   const mediaFiles = files?.filter(file => {
@@ -60,7 +60,7 @@ const PhotoGallery = () => {
           <div className="text-center space-y-4">
             <h1 className="text-4xl font-bold">Media Gallery</h1>
             <p className="text-lg text-gray-600">Connect to Dropbox to manage your photos and videos</p>
-            <Button onClick={handleLogin} className="mt-4">
+            <Button onClick={login} className="mt-4">
               <Image className="w-4 h-4 mr-2" />
               Connect to Dropbox
             </Button>
