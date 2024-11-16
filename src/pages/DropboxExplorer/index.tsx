@@ -6,44 +6,105 @@ import { ExplorerToolbar } from './components/ExplorerToolbar';
 import { NavigationBreadcrumb } from './components/NavigationBreadcrumb';
 import { toast } from 'sonner';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
-import { useDropboxManager } from '@/hooks/useDropboxManager';
+import { DropboxEntry } from '@/types/dropbox';
 
 const DropboxExplorer = () => {
-  const { isAuthenticated, connect } = useDropbox();
+  const { isAuthenticated, connect, client } = useDropbox();
   const [currentPath, setCurrentPath] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
+  const [files, setFiles] = useState<DropboxEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   
-  const {
-    files,
-    isLoading,
-    uploadMutation,
-    createFolderMutation,
-    refetch
-  } = useDropboxManager(currentPath);
-
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files) {
-      Array.from(files).forEach(file => {
-        uploadMutation.mutate({ file, path: currentPath });
+  const fetchFiles = async () => {
+    if (!client) return;
+    
+    setIsLoading(true);
+    try {
+      const response = await client.filesListFolder({
+        path: currentPath || '',
+        include_mounted_folders: true,
+        include_non_downloadable_files: true
       });
+      setFiles(response.result.entries);
+    } catch (error) {
+      console.error('Error fetching files:', error);
+      toast.error('Failed to fetch files');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleDrop = (files: FileList, path: string) => {
-    Array.from(files).forEach(file => {
-      uploadMutation.mutate({ file, path });
-    });
+  useEffect(() => {
+    if (client) {
+      fetchFiles();
+    }
+  }, [client, currentPath]);
+
+  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files || !client) return;
+
+    for (const file of Array.from(files)) {
+      try {
+        const reader = new FileReader();
+        reader.onload = async () => {
+          const arrayBuffer = reader.result as ArrayBuffer;
+          await client.filesUpload({
+            path: `${currentPath}/${file.name}`,
+            contents: arrayBuffer,
+            mode: { '.tag': 'add' },
+            autorename: true
+          });
+        };
+        reader.readAsArrayBuffer(file);
+        toast.success(`Uploading ${file.name}`);
+      } catch (error) {
+        console.error('Upload error:', error);
+        toast.error(`Failed to upload ${file.name}`);
+      }
+    }
+    fetchFiles();
   };
 
-  const handleCreateFolder = (name: string) => {
-    const path = `${currentPath}/${name}`.replace(/\/+/g, '/');
-    createFolderMutation.mutate(path, {
-      onSuccess: () => {
-        toast.success('Folder created successfully');
-        refetch();
+  const handleDrop = async (files: FileList, path: string) => {
+    if (!client) return;
+    
+    for (const file of Array.from(files)) {
+      try {
+        const reader = new FileReader();
+        reader.onload = async () => {
+          const arrayBuffer = reader.result as ArrayBuffer;
+          await client.filesUpload({
+            path: `${path}/${file.name}`,
+            contents: arrayBuffer,
+            mode: { '.tag': 'add' },
+            autorename: true
+          });
+          fetchFiles();
+        };
+        reader.readAsArrayBuffer(file);
+        toast.success(`Uploading ${file.name}`);
+      } catch (error) {
+        console.error('Upload error:', error);
+        toast.error(`Failed to upload ${file.name}`);
       }
-    });
+    }
+  };
+
+  const handleCreateFolder = async (name: string) => {
+    if (!client) return;
+    
+    try {
+      await client.filesCreateFolderV2({
+        path: `${currentPath}/${name}`.replace(/\/+/g, '/'),
+        autorename: true
+      });
+      toast.success('Folder created successfully');
+      fetchFiles();
+    } catch (error) {
+      console.error('Create folder error:', error);
+      toast.error('Failed to create folder');
+    }
   };
 
   if (!isAuthenticated) {
@@ -80,10 +141,10 @@ const DropboxExplorer = () => {
           
           <ExplorerToolbar
             onFileSelect={handleFileSelect}
-            isUploading={uploadMutation.isPending}
+            isUploading={false}
             onViewModeChange={setViewMode}
             viewMode={viewMode}
-            onRefresh={refetch}
+            onRefresh={fetchFiles}
             onCreateFolder={handleCreateFolder}
             currentPath={currentPath}
           />
@@ -94,7 +155,7 @@ const DropboxExplorer = () => {
             </div>
           ) : (
             <FileList 
-              files={files || []} 
+              files={files} 
               onNavigate={setCurrentPath}
               onDrop={handleDrop}
               currentPath={currentPath}
