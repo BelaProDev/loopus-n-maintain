@@ -9,11 +9,12 @@ import {
   searchFiles,
   moveFile,
   copyFile,
-  createSharedLink
+  createSharedLink,
+  downloadFile
 } from '@/lib/dropbox';
 
 export const useDropboxManager = (currentPath: string) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('dropbox_access_token'));
   const { toast } = useToast();
 
   const { data: files, isLoading, refetch } = useQuery({
@@ -35,47 +36,25 @@ export const useDropboxManager = (currentPath: string) => {
     },
   });
 
-  const searchMutation = useMutation({
-    mutationFn: searchFiles,
-    onSuccess: () => {
+  const handleDownload = async (path: string, fileName: string) => {
+    try {
+      const blob = await downloadFile(path);
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (error) {
       toast({
-        title: "Success",
-        description: "Search completed",
+        title: "Error",
+        description: "Failed to download file",
+        variant: "destructive",
       });
-    },
-  });
-
-  const moveMutation = useMutation({
-    mutationFn: ({ from, to }: { from: string; to: string }) => moveFile(from, to),
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "File moved successfully",
-      });
-      refetch();
-    },
-  });
-
-  const copyMutation = useMutation({
-    mutationFn: ({ from, to }: { from: string; to: string }) => copyFile(from, to),
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "File copied successfully",
-      });
-      refetch();
-    },
-  });
-
-  const createLinkMutation = useMutation({
-    mutationFn: createSharedLink,
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Shared link created successfully",
-      });
-    },
-  });
+    }
+  };
 
   const deleteMutation = useMutation({
     mutationFn: deleteFile,
@@ -107,10 +86,7 @@ export const useDropboxManager = (currentPath: string) => {
     uploadMutation,
     deleteMutation,
     createFolderMutation,
-    searchMutation,
-    moveMutation,
-    copyMutation,
-    createLinkMutation,
+    handleDownload,
     refetch,
   };
 };
