@@ -1,9 +1,7 @@
 import { Dropbox } from 'dropbox';
 import { dropboxAuth } from './auth/dropbox';
 
-const ROOT_FOLDER = '';
-
-export const getDropboxClient = () => {
+const getDropboxClient = () => {
   if (typeof window === 'undefined') return null;
   
   const accessToken = dropboxAuth.getAccessToken();
@@ -15,6 +13,7 @@ export const getDropboxClient = () => {
 };
 
 const sanitizePath = (path: string) => {
+  if (path === '/') return '';
   return path.replace(/\/+/g, '/').replace(/^\/|\/$/g, '');
 };
 
@@ -51,50 +50,51 @@ export const createFolder = async (path: string) => {
   const dbx = getDropboxClient();
   if (!dbx) throw new Error('Dropbox client not initialized');
 
-  try {
-    const sanitizedPath = `/${sanitizePath(path)}`;
-    const response = await dbx.filesCreateFolderV2({
-      path: sanitizedPath,
-      autorename: true
-    });
-    return response.result;
-  } catch (error) {
-    console.error('Dropbox create folder error:', error);
-    throw error;
-  }
+  const sanitizedPath = `/${sanitizePath(path)}`;
+  const response = await dbx.filesCreateFolderV2({
+    path: sanitizedPath,
+    autorename: true
+  });
+  return response.result;
 };
 
 export const deleteFile = async (path: string) => {
   const dbx = getDropboxClient();
   if (!dbx) throw new Error('Dropbox client not initialized');
 
-  try {
-    const response = await dbx.filesDeleteV2({
-      path: path,
-    });
-    return response.result;
-  } catch (error) {
-    console.error('Dropbox delete error:', error);
-    throw error;
-  }
+  const response = await dbx.filesDeleteV2({
+    path: path,
+  });
+  return response.result;
 };
 
 export const deleteFolder = async (path: string) => {
-  return deleteFile(path); // Dropbox API uses same endpoint for both files and folders
+  return deleteFile(path);
 };
 
 export const listFiles = async (path: string = '') => {
   const dbx = getDropboxClient();
   if (!dbx) throw new Error('Dropbox client not initialized');
 
+  const sanitizedPath = sanitizePath(path);
   try {
-    const listPath = path === '/' ? '' : `/${sanitizePath(path)}`;
     const response = await dbx.filesListFolder({
-      path: listPath,
+      path: sanitizedPath,
+      recursive: false,
+      include_mounted_folders: true,
+      include_non_downloadable_files: true
     });
-    return response.result.entries;
+    
+    return response.result.entries.map(entry => ({
+      ...entry,
+      path_display: entry.path_display || entry.path_lower || '',
+      name: entry.name || entry.path_display?.split('/').pop() || 'Unnamed'
+    }));
   } catch (error) {
-    console.error('Dropbox list error:', error);
+    if ((error as any)?.status === 409) {
+      // If path not found, return empty array instead of throwing
+      return [];
+    }
     throw error;
   }
 };
@@ -103,28 +103,18 @@ export const downloadFile = async (path: string): Promise<Blob> => {
   const dbx = getDropboxClient();
   if (!dbx) throw new Error('Dropbox client not initialized');
 
-  try {
-    const response = await dbx.filesDownload({
-      path: path,
-    }) as any;
-    return response.result.fileBlob;
-  } catch (error) {
-    console.error('Dropbox download error:', error);
-    throw error;
-  }
+  const response = await dbx.filesDownload({
+    path: path,
+  }) as any;
+  return response.result.fileBlob;
 };
 
 export const downloadFolder = async (path: string): Promise<Blob> => {
   const dbx = getDropboxClient();
   if (!dbx) throw new Error('Dropbox client not initialized');
 
-  try {
-    const response = await dbx.filesDownloadZip({
-      path: path,
-    }) as any;
-    return response.result.fileBlob;
-  } catch (error) {
-    console.error('Dropbox folder download error:', error);
-    throw error;
-  }
+  const response = await dbx.filesDownloadZip({
+    path: path,
+  }) as any;
+  return response.result.fileBlob;
 };
