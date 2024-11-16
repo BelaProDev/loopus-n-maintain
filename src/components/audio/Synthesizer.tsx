@@ -54,6 +54,15 @@ const Synthesizer = () => {
       
       setSynth(newSynth);
       analyserRef.current = analyser;
+
+      // Start animation frame for visualizer
+      const updateVisualizer = () => {
+        if (analyserRef.current) {
+          setAudioData(analyserRef.current.getValue());
+        }
+        requestAnimationFrame(updateVisualizer);
+      };
+      updateVisualizer();
     };
 
     setupAudio();
