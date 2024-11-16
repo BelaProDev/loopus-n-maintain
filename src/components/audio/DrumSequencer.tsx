@@ -2,9 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import * as Tone from 'tone';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Drum, AudioWaveform } from "lucide-react";
+import { Drum } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
-import { toast } from "sonner";
 import { initializeAudio } from '@/lib/audio/audioContext';
 
 interface DrumStep {
@@ -14,54 +13,76 @@ interface DrumStep {
 
 interface DrumTrack {
   name: string;
-  sound: string;
-  buffer: AudioBuffer | null;
+  synth: Tone.MembraneSynth | Tone.MetalSynth | Tone.NoiseSynth;
   steps: DrumStep[];
 }
 
 const DrumSequencer = ({ bpm, isPlaying }: { bpm: number; isPlaying: boolean }) => {
-  const [tracks, setTracks] = useState<DrumTrack[]>([
-    { name: 'Kick', sound: '/drums/kick.wav', buffer: null, steps: Array(16).fill({ active: false, velocity: 0.7 }) },
-    { name: 'Snare', sound: '/drums/snare.wav', buffer: null, steps: Array(16).fill({ active: false, velocity: 0.7 }) },
-    { name: 'HiHat', sound: '/drums/hihat.wav', buffer: null, steps: Array(16).fill({ active: false, velocity: 0.7 }) },
-    { name: 'Clap', sound: '/drums/clap.wav', buffer: null, steps: Array(16).fill({ active: false, velocity: 0.7 }) }
-  ]);
-  
+  const [tracks, setTracks] = useState<DrumTrack[]>([]);
   const [currentStep, setCurrentStep] = useState(0);
-  const playerRefs = useRef<Map<string, Tone.Player>>(new Map());
   const sequencerRef = useRef<Tone.Sequence | null>(null);
 
   useEffect(() => {
-    const loadSamples = async () => {
-      try {
-        await initializeAudio();
-        
-        const newTracks = [...tracks];
-        for (let track of newTracks) {
-          const player = new Tone.Player({
-            url: track.sound,
-            onload: () => {
-              console.log(`Loaded ${track.name}`);
-            },
-            onerror: (error) => {
-              console.error(`Error loading ${track.name}:`, error);
-            }
-          }).toDestination();
-          
-          playerRefs.current.set(track.name, player);
+    const setupDrumSynths = async () => {
+      await initializeAudio();
+      
+      const kick = new Tone.MembraneSynth({
+        pitchDecay: 0.05,
+        octaves: 5,
+        oscillator: { type: 'sine' },
+        envelope: {
+          attack: 0.001,
+          decay: 0.4,
+          sustain: 0.01,
+          release: 1.4,
         }
-        
-        setTracks(newTracks);
-      } catch (error) {
-        toast.error("Failed to load drum samples");
-      }
+      }).toDestination();
+
+      const snare = new Tone.NoiseSynth({
+        noise: { type: 'white' },
+        envelope: {
+          attack: 0.001,
+          decay: 0.2,
+          sustain: 0,
+          release: 0.2
+        }
+      }).toDestination();
+
+      const hihat = new Tone.MetalSynth({
+        frequency: 200,
+        envelope: {
+          attack: 0.001,
+          decay: 0.1,
+          release: 0.01
+        },
+        harmonicity: 5.1,
+        modulationIndex: 32,
+        resonance: 4000,
+        octaves: 1.5
+      }).toDestination();
+
+      const clap = new Tone.NoiseSynth({
+        noise: { type: 'pink' },
+        envelope: {
+          attack: 0.001,
+          decay: 0.3,
+          sustain: 0,
+          release: 0.1
+        }
+      }).toDestination();
+
+      setTracks([
+        { name: 'Kick', synth: kick, steps: Array(16).fill({ active: false, velocity: 0.7 }) },
+        { name: 'Snare', synth: snare, steps: Array(16).fill({ active: false, velocity: 0.7 }) },
+        { name: 'HiHat', synth: hihat, steps: Array(16).fill({ active: false, velocity: 0.7 }) },
+        { name: 'Clap', synth: clap, steps: Array(16).fill({ active: false, velocity: 0.7 }) }
+      ]);
     };
 
-    loadSamples();
+    setupDrumSynths();
 
     return () => {
-      playerRefs.current.forEach(player => player.dispose());
-      playerRefs.current.clear();
+      tracks.forEach(track => track.synth.dispose());
     };
   }, []);
 
@@ -70,10 +91,15 @@ const DrumSequencer = ({ bpm, isPlaying }: { bpm: number; isPlaying: boolean }) 
       (time, step) => {
         setCurrentStep(step);
         tracks.forEach(track => {
-          const player = playerRefs.current.get(track.name);
-          if (player && track.steps[step].active) {
-            player.volume.value = Tone.gainToDb(track.steps[step].velocity);
-            player.start(time);
+          if (track.steps[step].active) {
+            const velocity = track.steps[step].velocity;
+            if (track.name === 'Kick') {
+              (track.synth as Tone.MembraneSynth).triggerAttackRelease('C1', '8n', time, velocity);
+            } else if (track.name === 'HiHat') {
+              (track.synth as Tone.MetalSynth).triggerAttackRelease('32n', time, velocity);
+            } else {
+              (track.synth as Tone.NoiseSynth).triggerAttackRelease('16n', time, velocity);
+            }
           }
         });
       },

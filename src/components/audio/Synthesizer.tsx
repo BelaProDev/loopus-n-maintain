@@ -7,7 +7,6 @@ import { toast } from "sonner";
 import ShaderVisualizer from './ShaderVisualizer';
 import SynthControls from './SynthControls';
 import EffectProcessor from './EffectProcessor';
-import ImprovedSequencer from './ImprovedSequencer';
 import { initializeAudio } from '@/lib/audio/audioContext';
 
 interface Step {
@@ -27,6 +26,7 @@ const Synthesizer = () => {
     )
   );
   const [currentStep, setCurrentStep] = useState(0);
+  const [isRecording, setIsRecording] = useState(false);
   
   // Effect parameters
   const [effectParams, setEffectParams] = useState({
@@ -42,6 +42,7 @@ const Synthesizer = () => {
 
   const analyserRef = useRef<Tone.Analyser | null>(null);
   const sequencerRef = useRef<Tone.Sequence | null>(null);
+  const recorderRef = useRef<MediaRecorder | null>(null);
 
   useEffect(() => {
     const setupAudio = async () => {
@@ -134,6 +135,28 @@ const Synthesizer = () => {
     }
   };
 
+  const handleStepToggle = (stepIndex: number, rowIndex: number) => {
+    const newSteps = [...steps];
+    newSteps[stepIndex][rowIndex].active = !newSteps[stepIndex][rowIndex].active;
+    setSteps(newSteps);
+  };
+
+  const handleNoteChange = (stepIndex: number, rowIndex: number, note: string) => {
+    const newSteps = [...steps];
+    newSteps[stepIndex][rowIndex].note = note;
+    setSteps(newSteps);
+  };
+
+  const startRecording = () => {
+    setIsRecording(true);
+    // Recording logic here
+  };
+
+  const stopRecording = async () => {
+    setIsRecording(false);
+    return "recording-stopped";
+  };
+
   return (
     <Card className="p-6 space-y-6">
       <div className="flex items-center justify-between">
@@ -148,37 +171,24 @@ const Synthesizer = () => {
 
       <ShaderVisualizer audioData={audioData} />
 
-      <ImprovedSequencer
+      <SynthControls
+        bpm={bpm}
+        isPlaying={isPlaying}
+        onBPMChange={setBpm}
         steps={steps}
         currentStep={currentStep}
-        onStepToggle={(stepIndex, rowIndex) => {
-          const newSteps = [...steps];
-          newSteps[stepIndex][rowIndex].active = !newSteps[stepIndex][rowIndex].active;
-          setSteps(newSteps);
-        }}
-        onVelocityChange={(stepIndex, rowIndex, velocity) => {
-          const newSteps = [...steps];
-          newSteps[stepIndex][rowIndex].velocity = velocity;
-          setSteps(newSteps);
-        }}
-        onNoteChange={(stepIndex, rowIndex, note) => {
-          const newSteps = [...steps];
-          newSteps[stepIndex][rowIndex].note = note;
-          setSteps(newSteps);
-        }}
+        onStepToggle={handleStepToggle}
+        onNoteChange={handleNoteChange}
+        effectParams={effectParams}
+        updateEffects={setEffectParams}
+        onStartRecording={startRecording}
+        onStopRecording={stopRecording}
+        isRecording={isRecording}
       />
 
       <EffectProcessor
         synth={synth}
         effectParams={effectParams}
-      />
-
-      <SynthControls
-        bpm={bpm}
-        isPlaying={isPlaying}
-        onBPMChange={setBpm}
-        effectParams={effectParams}
-        updateEffects={setEffectParams}
       />
 
       <div className="flex justify-center">
