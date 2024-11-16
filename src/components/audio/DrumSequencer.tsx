@@ -49,16 +49,15 @@ const DrumSequencer = ({ bpm, isPlaying }: { bpm: number; isPlaying: boolean }) 
       }).toDestination();
 
       const hihat = new Tone.MetalSynth({
-        frequency: 200,
+        harmonicity: 5.1,
+        modulationIndex: 32,
+        resonance: 4000,
+        octaves: 1.5,
         envelope: {
           attack: 0.001,
           decay: 0.1,
           release: 0.01
-        },
-        harmonicity: 5.1,
-        modulationIndex: 32,
-        resonance: 4000,
-        octaves: 1.5
+        }
       }).toDestination();
 
       const clap = new Tone.NoiseSynth({
