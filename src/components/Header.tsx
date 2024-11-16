@@ -54,7 +54,7 @@ const Header = () => {
             <img 
               src="/forest-lidar.png" 
               alt="Forest Lidar Logo" 
-              className="h-8 w-auto border-3 border-primary rounded-lg"
+              className="h-8 w-auto border-[3px] border-primary rounded-lg"
             />
           </Link>
 
