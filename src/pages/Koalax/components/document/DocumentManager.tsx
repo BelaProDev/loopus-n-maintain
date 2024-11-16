@@ -25,6 +25,13 @@ const DocumentManager = () => {
     setIsAuthenticated
   } = useDropboxManager(currentPath);
 
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      uploadMutation.mutate(file);
+    }
+  };
+
   const handleCreateFolder = () => {
     if (newFolderName.trim()) {
       const fullPath = `${currentPath}${currentPath.endsWith('/') ? '' : '/'}${newFolderName.trim()}`;
@@ -57,18 +64,19 @@ const DocumentManager = () => {
 
       {isAuthenticated && (
         <div className="space-y-4">
-          <DocumentToolbar
-            onFileSelect={(event) => {
-              const file = event.target.files?.[0];
-              if (file) {
-                uploadMutation.mutate(file);
-              }
-            }}
-            isUploading={uploadMutation.isPending}
-            onRefresh={refetch}
-            onLogout={() => setIsAuthenticated(false)}
-            currentPath={currentPath}
-          />
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="w-full sm:flex-1">
+              <DocumentToolbar
+                onFileSelect={handleFileSelect}
+                isUploading={uploadMutation.isPending}
+                onRefresh={refetch}
+                onLogout={() => {
+                  setIsAuthenticated(false);
+                }}
+                currentPath={currentPath}
+              />
+            </div>
+          </div>
 
           <BreadcrumbNav currentPath={currentPath} onNavigate={handleNavigate} />
 
