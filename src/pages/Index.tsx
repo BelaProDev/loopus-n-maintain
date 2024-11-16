@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, GitBranch, BarChart, Music, FileCheck, MessageCircle } from "lucide-react";
+import { FileText, GitBranch, BarChart, Music, FileCheck, MessageCircle, Activity, Database, Server, Cog, Settings, List } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -52,10 +52,48 @@ const tools = [
   }
 ];
 
+const services = [
+  {
+    icon: Activity,
+    title: "electrical",
+    path: "/electrics",
+    gradient: "from-yellow-500 to-amber-500",
+    bgClass: "bg-gradient-warning"
+  },
+  {
+    icon: Database,
+    title: "plumbing",
+    path: "/plumbing",
+    gradient: "from-blue-500 to-cyan-500",
+    bgClass: "bg-gradient-info"
+  },
+  {
+    icon: Server,
+    title: "ironwork",
+    path: "/ironwork",
+    gradient: "from-red-500 to-rose-500",
+    bgClass: "bg-gradient-danger"
+  },
+  {
+    icon: Cog,
+    title: "woodwork",
+    path: "/woodwork",
+    gradient: "from-orange-500 to-amber-500",
+    bgClass: "bg-gradient-warning"
+  },
+  {
+    icon: Settings,
+    title: "architecture",
+    path: "/architecture",
+    gradient: "from-purple-500 to-violet-500",
+    bgClass: "bg-gradient-purple"
+  }
+];
+
 const Index = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
-  const { t } = useTranslation(["common", "tools", "auth"]);
+  const { t } = useTranslation(["common", "tools", "auth", "services"]);
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
@@ -83,7 +121,43 @@ const Index = () => {
           </div>
         </div>
 
-        <div className="container mx-auto px-4 py-16 md:py-24">
+        {/* Services Section */}
+        <div className="container mx-auto px-4 py-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gradient animate-fade-in">
+            {t("common:nav.services")}
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            {services.map((service) => (
+              <Card 
+                key={service.title} 
+                className={`group hover:shadow-xl transition-all duration-300 border-none overflow-hidden relative animate-scale-up ${service.bgClass} bg-opacity-5`}
+              >
+                <div className={`absolute inset-0 bg-gradient-to-br ${service.gradient} opacity-10 group-hover:opacity-20 transition-opacity`} />
+                <CardHeader>
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 rounded-lg bg-gradient-to-br from-primary/20 to-secondary/20 backdrop-blur-sm">
+                      <service.icon className="h-6 w-6 text-primary" />
+                    </div>
+                    <CardTitle className="flex-1">{t(`services:${service.title}.title`)}</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="flex flex-col flex-1">
+                  <p className="text-gray-600 dark:text-gray-300 mb-6 flex-1">
+                    {t(`services:${service.title}.description`)}
+                  </p>
+                  <Button 
+                    onClick={() => navigate(service.path)}
+                    variant="outline" 
+                    className="w-full group-hover:border-primary/50 transition-colors"
+                  >
+                    {t("common:actions.explore")}
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Tools Section */}
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gradient animate-fade-in">
             {t("common:nav.tools")}
           </h2>

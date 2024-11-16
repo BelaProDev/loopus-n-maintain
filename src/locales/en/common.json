@@ -6,6 +6,7 @@
   "nav": {
     "home": "Home",
     "tools": "Tools",
+    "services": "Services",
     "contact": "Contact",
     "admin": "Admin",
     "docs": "Documentation",
@@ -24,7 +25,8 @@
     "delete": "Delete",
     "edit": "Edit",
     "create": "Create",
-    "update": "Update"
+    "update": "Update",
+    "explore": "Explore Service"
   },
   "status": {
     "loading": "Loading...",
