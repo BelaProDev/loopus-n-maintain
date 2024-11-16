@@ -3,12 +3,6 @@ const DROPBOX_TOKEN_URL = "https://api.dropboxapi.com/oauth2/token";
 const CLIENT_ID = import.meta.env.VITE_DROPBOX_APP_KEY;
 const CLIENT_SECRET = import.meta.env.VITE_DROPBOX_APP_SECRET;
 
-interface DropboxTokens {
-  access_token: string;
-  refresh_token: string;
-  expiry: number;
-}
-
 export const dropboxAuth = {
   async initiateAuth() {
     if (!CLIENT_ID) throw new Error('Dropbox client ID not configured');
@@ -50,31 +44,18 @@ export const dropboxAuth = {
       }
 
       const data = await response.json();
-      const tokens: DropboxTokens = {
-        access_token: data.access_token,
-        refresh_token: data.refresh_token,
-        expiry: Date.now() + (data.expires_in * 1000)
-      };
-
-      // Store tokens in localStorage
-      localStorage.setItem('dropbox_tokens', JSON.stringify(tokens));
+      localStorage.setItem('dropbox_access_token', data.access_token);
+      localStorage.setItem('dropbox_refresh_token', data.refresh_token);
+      localStorage.setItem('dropbox_token_expiry', String(Date.now() + (data.expires_in * 1000)));
       
-      // Also store in service worker for background operations
-      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-        navigator.serviceWorker.controller.postMessage({
-          type: 'STORE_DROPBOX_TOKENS',
-          tokens
-        });
-      }
-
-      return tokens.access_token;
+      return data.access_token;
     } catch (error) {
       console.error('Auth callback error:', error);
       throw error;
     }
   },
 
-  async refreshToken(refresh_token: string): Promise<DropboxTokens> {
+  async refreshToken(refresh_token: string): Promise<string> {
     const response = await fetch(DROPBOX_TOKEN_URL, {
       method: 'POST',
       headers: {
@@ -93,42 +74,29 @@ export const dropboxAuth = {
     }
 
     const data = await response.json();
-    const tokens: DropboxTokens = {
-      access_token: data.access_token,
-      refresh_token: data.refresh_token || refresh_token,
-      expiry: Date.now() + (data.expires_in * 1000)
-    };
-
-    localStorage.setItem('dropbox_tokens', JSON.stringify(tokens));
-    return tokens;
+    localStorage.setItem('dropbox_access_token', data.access_token);
+    localStorage.setItem('dropbox_token_expiry', String(Date.now() + (data.expires_in * 1000)));
+    
+    return data.access_token;
   },
 
   async getValidAccessToken(): Promise<string | null> {
-    const tokensStr = localStorage.getItem('dropbox_tokens');
-    if (!tokensStr) return null;
+    const accessToken = localStorage.getItem('dropbox_access_token');
+    const refreshToken = localStorage.getItem('dropbox_refresh_token');
+    const expiry = localStorage.getItem('dropbox_token_expiry');
 
-    try {
-      const tokens: DropboxTokens = JSON.parse(tokensStr);
-      
-      // If token is expired or about to expire, refresh it
-      if (tokens.expiry <= Date.now() + 60000) { // 1 minute buffer
-        const newTokens = await this.refreshToken(tokens.refresh_token);
-        return newTokens.access_token;
+    if (!accessToken || !refreshToken) return null;
+
+    if (expiry && Number(expiry) <= Date.now() + 60000) {
+      try {
+        return await this.refreshToken(refreshToken);
+      } catch (error) {
+        console.error('Token refresh error:', error);
+        return null;
       }
-      
-      return tokens.access_token;
-    } catch (error) {
-      console.error('Token validation error:', error);
-      return null;
     }
-  },
 
-  async getClient() {
-    const accessToken = await this.getValidAccessToken();
-    if (!accessToken) return null;
-    
-    const { Dropbox } = await import('dropbox');
-    return new Dropbox({ accessToken });
+    return accessToken;
   },
 
   getRedirectUri(): string {
@@ -136,15 +104,9 @@ export const dropboxAuth = {
   },
 
   logout() {
-    localStorage.removeItem('dropbox_tokens');
+    localStorage.removeItem('dropbox_access_token');
+    localStorage.removeItem('dropbox_refresh_token');
+    localStorage.removeItem('dropbox_token_expiry');
     localStorage.removeItem('dropbox_state');
-    
-    // Clear service worker tokens
-    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-      navigator.serviceWorker.controller.postMessage({
-        type: 'STORE_DROPBOX_TOKENS',
-        tokens: null
-      });
-    }
   }
 };
