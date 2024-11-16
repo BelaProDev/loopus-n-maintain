@@ -16,8 +16,7 @@ export const listFiles = async (path: string): Promise<FileMetadata[]> => {
   const client = dropboxAuth.getClient();
   if (!client) throw new Error('Not authenticated with Dropbox');
 
-  const listPath = path === '/' ? '' : path;
-  const response = await client.filesListFolder({ path: listPath });
+  const response = await client.filesListFolder({ path });
   return response.result.entries.map(entry => ({
     id: entry.path_lower || entry.path_display || '',
     name: entry.name,
