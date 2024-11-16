@@ -2,29 +2,29 @@ import { files } from 'dropbox';
 
 export type DropboxFileTag = 'file' | 'folder' | 'deleted';
 
-export interface DropboxMetadata extends files.FileMetadataReference {
+export interface DropboxBaseMetadata {
   '.tag': DropboxFileTag;
   id: string;
   name: string;
-  path_lower: string;
+  path_lower: string | null;
   path_display?: string;
-  size?: number;
-  is_downloadable?: boolean;
-  client_modified?: string;
-  server_modified?: string;
-  rev?: string;
+}
+
+export interface DropboxFile extends DropboxBaseMetadata {
+  '.tag': 'file';
+  size: number;
+  is_downloadable: boolean;
+  client_modified: string;
+  server_modified: string;
+  rev: string;
   content_hash?: string;
 }
 
-export interface DropboxFile extends DropboxMetadata {
-  '.tag': 'file';
-}
-
-export interface DropboxFolder extends DropboxMetadata {
+export interface DropboxFolder extends DropboxBaseMetadata {
   '.tag': 'folder';
 }
 
-export interface DropboxDeletedFile extends DropboxMetadata {
+export interface DropboxDeletedFile extends DropboxBaseMetadata {
   '.tag': 'deleted';
 }
 
@@ -48,5 +48,3 @@ export interface DropboxSearchResponse {
   more: boolean;
   start: number;
 }
-
-export type MediaType = 'image' | 'video' | 'audio' | 'document' | 'other';

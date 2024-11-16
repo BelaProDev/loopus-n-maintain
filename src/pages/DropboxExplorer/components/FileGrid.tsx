@@ -1,9 +1,9 @@
-import { DropboxFile } from '@/types/dropbox';
+import { DropboxEntry } from '@/types/dropbox';
 import { Card } from '@/components/ui/card';
 import { File, Folder } from 'lucide-react';
 
 interface FileGridProps {
-  files: DropboxFile[];
+  files: DropboxEntry[];
   onNavigate: (path: string) => void;
 }
 
@@ -14,7 +14,7 @@ export const FileGrid = ({ files, onNavigate }: FileGridProps) => {
         <Card
           key={file.id}
           className="p-4 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer transition-colors"
-          onClick={() => file['.tag'] === 'folder' && onNavigate(file.path_display)}
+          onClick={() => file['.tag'] === 'folder' && file.path_display && onNavigate(file.path_display)}
         >
           <div className="flex flex-col items-center space-y-2">
             {file['.tag'] === 'folder' ? (

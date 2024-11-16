@@ -1,10 +1,10 @@
-import { DropboxFile } from '@/types/dropbox';
+import { DropboxEntry } from '@/types/dropbox';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { File, Folder } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
 interface FileListProps {
-  files: DropboxFile[];
+  files: DropboxEntry[];
   onNavigate: (path: string) => void;
 }
 
@@ -23,7 +23,7 @@ export const FileList = ({ files, onNavigate }: FileListProps) => {
           <TableRow
             key={file.id}
             className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
-            onClick={() => file['.tag'] === 'folder' && onNavigate(file.path_display)}
+            onClick={() => file['.tag'] === 'folder' && file.path_display && onNavigate(file.path_display)}
           >
             <TableCell className="flex items-center space-x-2">
               {file['.tag'] === 'folder' ? (
@@ -33,9 +33,11 @@ export const FileList = ({ files, onNavigate }: FileListProps) => {
               )}
               <span>{file.name}</span>
             </TableCell>
-            <TableCell>{file.size ? `${Math.round(file.size / 1024)} KB` : '-'}</TableCell>
             <TableCell>
-              {file.server_modified
+              {file['.tag'] === 'file' ? `${Math.round(file.size / 1024)} KB` : '-'}
+            </TableCell>
+            <TableCell>
+              {file['.tag'] === 'file'
                 ? formatDistanceToNow(new Date(file.server_modified), { addSuffix: true })
                 : '-'}
             </TableCell>

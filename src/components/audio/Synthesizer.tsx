@@ -63,7 +63,8 @@ const Synthesizer = () => {
       const updateVisualizer = () => {
         if (analyserRef.current) {
           const data = analyserRef.current.getValue();
-          setAudioData(Array.from(data));
+          // Convert Float32Array to regular number array
+          setAudioData(Array.from(data instanceof Float32Array ? data : []));
         }
         requestAnimationFrame(updateVisualizer);
       };
@@ -77,6 +78,10 @@ const Synthesizer = () => {
 
   const handleInitAudio = async () => {
     await setupAudio();
+  };
+
+  const handlePlayStop = () => {
+    setIsPlaying(!isPlaying);
   };
 
   if (!isAudioInitialized) {
