@@ -33,6 +33,13 @@ import MessageManagement from "./pages/Koalax/components/messages/MessageManagem
 import DropboxExplorer from "./pages/DropboxExplorer";
 import DropboxCallback from "./pages/DropboxExplorer/components/DropboxCallback";
 
+// Import new tool pages
+import Documents from "./pages/tools/Documents";
+import Diagrams from "./pages/tools/Diagrams";
+import Analytics from "./pages/tools/Analytics";
+import Audio from "./pages/tools/Audio";
+import Invoicing from "./pages/tools/Invoicing";
+
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -46,11 +53,22 @@ const App = () => {
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/login" element={<Login />} />
+                
+                {/* Service Routes */}
                 <Route path="/electrics" element={<Electrics />} />
                 <Route path="/plumbing" element={<Plumbing />} />
                 <Route path="/ironwork" element={<Ironwork />} />
                 <Route path="/woodwork" element={<Woodwork />} />
                 <Route path="/architecture" element={<Architecture />} />
+                
+                {/* Tool Routes */}
+                <Route path="/documents" element={<Documents />} />
+                <Route path="/diagrams" element={<Diagrams />} />
+                <Route path="/analytics" element={<Analytics />} />
+                <Route path="/audio" element={<Audio />} />
+                <Route path="/invoicing" element={<Invoicing />} />
+                
+                {/* Admin Routes */}
                 <Route path="/docs" element={<Documentation />} />
                 <Route path="/dropbox-explorer" element={<DropboxExplorer />} />
                 <Route path="/dropbox-explorer/callback" element={<DropboxCallback />} />
