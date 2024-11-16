@@ -1,6 +1,5 @@
 import { files } from 'dropbox';
 
-// Re-export files type properly with 'export type'
 export type { files };
 
 export type DropboxFileTag = 'file' | 'folder' | 'deleted';
@@ -18,7 +17,7 @@ export interface DropboxBaseMetadata {
 export interface DropboxFile extends DropboxBaseMetadata {
   '.tag': 'file';
   size: number;
-  is_downloadable: boolean;
+  is_downloadable?: boolean; // Made optional to match Dropbox API
   client_modified: string;
   server_modified: string;
   rev: string;
