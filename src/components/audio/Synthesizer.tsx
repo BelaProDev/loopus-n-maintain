@@ -41,6 +41,7 @@ const Synthesizer = () => {
 
   const setupAudio = async () => {
     try {
+      await Tone.start();
       await initializeAudio();
       
       const newSynth = new Tone.PolySynth(Tone.Synth, {
@@ -58,12 +59,12 @@ const Synthesizer = () => {
       setSynth(newSynth);
       analyserRef.current = analyser;
       setIsAudioInitialized(true);
+      toast.success("Audio initialized successfully");
 
       // Start animation frame for visualizer
       const updateVisualizer = () => {
         if (analyserRef.current) {
           const data = analyserRef.current.getValue();
-          // Convert Float32Array to regular number array
           setAudioData(Array.from(data instanceof Float32Array ? data : []));
         }
         requestAnimationFrame(updateVisualizer);
@@ -81,7 +82,16 @@ const Synthesizer = () => {
   };
 
   const handlePlayStop = () => {
+    if (!isAudioInitialized) {
+      toast.error("Please initialize audio first");
+      return;
+    }
     setIsPlaying(!isPlaying);
+    if (!isPlaying) {
+      Tone.Transport.start();
+    } else {
+      Tone.Transport.stop();
+    }
   };
 
   if (!isAudioInitialized) {

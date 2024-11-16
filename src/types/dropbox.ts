@@ -10,14 +10,14 @@ export interface DropboxBaseMetadata {
   '.tag': DropboxFileTag;
   id: string;
   name: string;
-  path_lower: string | null;
+  path_lower?: string;
   path_display?: string;
 }
 
 export interface DropboxFile extends DropboxBaseMetadata {
   '.tag': 'file';
   size: number;
-  is_downloadable?: boolean; // Made optional to match Dropbox API
+  is_downloadable?: boolean;
   client_modified: string;
   server_modified: string;
   rev: string;
