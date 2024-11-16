@@ -1,17 +1,18 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { dropboxAuth } from "@/lib/auth/dropbox";
-import DocumentToolbar from "./DocumentToolbar";
-import FileList from "./FileList";
-import BreadcrumbNav from "./BreadcrumbNav";
+import { motion } from "framer-motion";
 import { useDropboxManager } from "@/hooks/useDropboxManager";
-import DocumentHeader from "./DocumentHeader";
-import FolderCreator from "./FolderCreator";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
+import { Cube, Database, Cloud, Folder, File, ArrowRight, Award } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 const DocumentManager = () => {
-  const [newFolderName, setNewFolderName] = useState("");
-  const [currentPath, setCurrentPath] = useState("/");
-  const { t } = useTranslation(["common"]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPath, setCurrentPath] = useState("");
+  const { toast } = useToast();
+  const { t } = useTranslation(["admin"]);
   
   const {
     files,
@@ -22,80 +23,127 @@ const DocumentManager = () => {
     uploadMutation,
     deleteMutation,
     createFolderMutation,
-    refetch,
-    setIsAuthenticated
+    searchMutation,
+    moveMutation,
+    copyMutation,
+    createLinkMutation,
+    refetch
   } = useDropboxManager(currentPath);
 
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      uploadMutation.mutate(file);
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      searchMutation.mutate(searchQuery);
     }
   };
 
-  const handleCreateFolder = () => {
-    if (newFolderName.trim()) {
-      const fullPath = `${currentPath}${currentPath.endsWith('/') ? '' : '/'}${newFolderName.trim()}`;
-      createFolderMutation.mutate(fullPath);
-      setNewFolderName("");
+  const handleCreateLink = async (path: string) => {
+    try {
+      await createLinkMutation.mutateAsync(path);
+      toast({
+        title: "Success",
+        description: "Shared link created successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to create shared link",
+        variant: "destructive",
+      });
     }
-  };
-
-  const handleCreateInvoiceFolder = () => {
-    createFolderMutation.mutate('/invoices');
-  };
-
-  const handleDelete = (path: string | undefined) => {
-    if (path) {
-      deleteMutation.mutate(path);
-    }
-  };
-
-  const handleNavigate = (path: string) => {
-    setCurrentPath(path);
   };
 
   return (
-    <div className="space-y-6">
-      <DocumentHeader 
-        isAuthenticated={isAuthenticated}
-        onLogin={handleLogin}
-      />
-
-      {isAuthenticated && (
-        <div className="space-y-4">
-          <DocumentToolbar
-            onCreateInvoiceFolder={handleCreateInvoiceFolder}
-            onFileSelect={handleFileSelect}
-            isUploading={uploadMutation.isPending}
-            onRefresh={refetch}
-            onLogout={() => {
-              dropboxAuth.logout();
-              setIsAuthenticated(false);
-            }}
-            currentPath={currentPath}
-          />
-
-          <BreadcrumbNav currentPath={currentPath} onNavigate={handleNavigate} />
-
-          <FolderCreator
-            newFolderName={newFolderName}
-            onNewFolderNameChange={setNewFolderName}
-            onCreateFolder={handleCreateFolder}
-          />
-
-          {isLoading ? (
-            <div>{t("common.loading")}</div>
-          ) : (
-            <FileList
-              files={files}
-              onDownload={handleDownload}
-              onDelete={handleDelete}
-              onNavigate={handleNavigate}
-            />
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-6">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-7xl mx-auto space-y-8"
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <Cube className="w-10 h-10 text-blue-400" />
+            <h1 className="text-4xl font-bold text-white">Document Hub</h1>
+          </div>
+          {!isAuthenticated && (
+            <Button
+              onClick={handleLogin}
+              className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg flex items-center space-x-2 transform hover:scale-105 transition-all shadow-lg"
+            >
+              <Cloud className="w-5 h-5" />
+              <span>Connect Dropbox</span>
+            </Button>
           )}
         </div>
-      )}
+
+        {isAuthenticated && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="space-y-6"
+          >
+            <Card className="p-6 bg-white/10 backdrop-blur-lg border-none shadow-xl rounded-xl">
+              <div className="flex flex-col md:flex-row gap-4">
+                <Input
+                  placeholder="Search files..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="bg-white/20 border-none text-white placeholder-white/60"
+                />
+                <Button
+                  onClick={handleSearch}
+                  className="bg-blue-500 hover:bg-blue-600"
+                >
+                  Search
+                </Button>
+              </div>
+            </Card>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {files?.map((file) => (
+                <motion.div
+                  key={file.id}
+                  whileHover={{ scale: 1.02 }}
+                  className="group"
+                >
+                  <Card className="p-4 bg-white/10 backdrop-blur-lg border-none shadow-xl rounded-xl hover:bg-white/20 transition-all">
+                    <div className="flex items-start space-x-4">
+                      {file['.tag'] === 'folder' ? (
+                        <Folder className="w-8 h-8 text-yellow-400" />
+                      ) : (
+                        <File className="w-8 h-8 text-blue-400" />
+                      )}
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold text-white">{file.name}</h3>
+                        <p className="text-sm text-white/60 truncate">
+                          {file.path_display}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="mt-4 flex justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleCreateLink(file.path_display || '')}
+                        className="text-white hover:text-blue-400"
+                      >
+                        Share
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleDownload(file.path_display, file.name)}
+                        className="text-white hover:text-blue-400"
+                      >
+                        Download
+                      </Button>
+                    </div>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </motion.div>
     </div>
   );
 };
