@@ -3,7 +3,7 @@ import * as Tone from 'tone';
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Card } from "@/components/ui/card";
-import { Volume2, Music2, Waves, Wave } from "lucide-react";
+import { Volume2, Music2, Waves } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ShaderVisualizer from './ShaderVisualizer';
@@ -210,7 +210,7 @@ const Synthesizer = () => {
                     onClick={() => setOscillatorType(type)}
                     className="flex-1"
                   >
-                    <Wave className="h-4 w-4 mr-2" />
+                    <Waves className="h-4 w-4 mr-2" />
                     {type}
                   </Button>
                 ))}
