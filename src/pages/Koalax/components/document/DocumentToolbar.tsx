@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { RefreshCw, LogOut, FolderPlus, Upload } from "lucide-react";
+import { RefreshCw, LogOut, Upload } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-interface DocumentToolbarProps {
+export interface DocumentToolbarProps {
   onFileSelect: (event: React.ChangeEvent<HTMLInputElement>) => void;
   isUploading: boolean;
   onRefresh: () => void;
