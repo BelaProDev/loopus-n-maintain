@@ -1,40 +1,68 @@
-import { sanitizePath } from './pathUtils';
-import { DropboxEntry, MediaType } from '@/types/dropbox';
+import { DropboxEntry } from '@/types/dropbox';
 
-export const getMediaType = (filename: string): MediaType => {
-  const extension = getFileExtension(filename).toLowerCase();
-  if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(extension)) {
-    return 'image';
+export const getFileIcon = (fileName: string) => {
+  const extension = fileName.split('.').pop()?.toLowerCase();
+  switch (extension) {
+    case 'pdf':
+      return 'file-pdf';
+    case 'doc':
+    case 'docx':
+      return 'file-text';
+    case 'xls':
+    case 'xlsx':
+      return 'file-spreadsheet';
+    case 'jpg':
+    case 'jpeg':
+    case 'png':
+    case 'gif':
+      return 'image';
+    case 'mp4':
+    case 'mov':
+      return 'video';
+    case 'mp3':
+    case 'wav':
+      return 'audio';
+    default:
+      return 'file';
   }
-  if (['mp4', 'webm', 'mov', 'avi'].includes(extension)) {
-    return 'video';
-  }
-  if (['mp3', 'wav', 'ogg', 'm4a'].includes(extension)) {
-    return 'audio';
-  }
-  if (['pdf', 'doc', 'docx', 'txt', 'md'].includes(extension)) {
-    return 'document';
-  }
-  return 'other';
-};
-
-export const getFileExtension = (filename: string): string => {
-  const parts = filename.split('.');
-  return parts.length > 1 ? parts.pop()?.toLowerCase() || '' : '';
 };
 
 export const formatFileSize = (bytes: number): string => {
   if (bytes === 0) return '0 Bytes';
   const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };
 
-export const sortFiles = (files: DropboxEntry[]): DropboxEntry[] => {
+export const sortFiles = (files: DropboxEntry[], sortBy: 'name' | 'size' | 'date' = 'name'): DropboxEntry[] => {
   return [...files].sort((a, b) => {
-    if (a['.tag'] === 'folder' && b['.tag'] !== 'folder') return -1;
-    if (a['.tag'] !== 'folder' && b['.tag'] === 'folder') return 1;
-    return a.name.localeCompare(b.name);
+    if (a['.tag'] === 'folder' && b['.tag'] === 'file') return -1;
+    if (a['.tag'] === 'file' && b['.tag'] === 'folder') return 1;
+
+    switch (sortBy) {
+      case 'size':
+        if (a['.tag'] === 'file' && b['.tag'] === 'file') {
+          return a.size - b.size;
+        }
+        return 0;
+      case 'date':
+        if (a['.tag'] === 'file' && b['.tag'] === 'file') {
+          return new Date(b.server_modified).getTime() - new Date(a.server_modified).getTime();
+        }
+        return 0;
+      default:
+        return a.name.localeCompare(b.name);
+    }
   });
+};
+
+export const isImage = (fileName: string): boolean => {
+  const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+  const extension = fileName.split('.').pop()?.toLowerCase();
+  return extension ? imageExtensions.includes(extension) : false;
+};
+
+export const generateThumbnailUrl = (path: string): string => {
+  return `https://api.dropboxapi.com/2/files/get_thumbnail?path=${encodeURIComponent(path)}`;
 };

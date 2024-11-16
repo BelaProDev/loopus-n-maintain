@@ -29,7 +29,7 @@ export const DropboxProvider = ({ children }: { children: React.ReactNode }) => 
         clientId: import.meta.env.VITE_DROPBOX_APP_KEY,
       });
 
-      const authUrl = dbx.auth.getAuthenticationUrl(
+      const authUrl = await dbx.getAuthenticationUrl(
         `${window.location.origin}/dropbox-explorer/callback`
       );
 
