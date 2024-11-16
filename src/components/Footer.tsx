@@ -7,7 +7,7 @@ const Footer = () => {
   const { t } = useTranslation(["common"]);
 
   return (
-    <footer className="bg-[#2E5984] text-white mt-auto">
+    <footer className="bg-gradient-primary text-white mt-auto">
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col space-y-8 md:space-y-0 md:flex-row md:justify-between md:items-start">
           {/* Contact Section */}
@@ -42,19 +42,19 @@ const Footer = () => {
           
           {/* Navigation Links */}
           <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2 items-center">
-            <Button variant="ghost" size="sm" asChild className="w-full sm:w-auto">
+            <Button variant="ghost" size="sm" asChild className="w-full sm:w-auto hover:bg-white/20">
               <Link to="/" className="flex items-center justify-center">
                 <Home className="h-4 w-4 mr-2" />
                 {t("common:nav.home")}
               </Link>
             </Button>
-            <Button variant="ghost" size="sm" asChild className="w-full sm:w-auto">
+            <Button variant="ghost" size="sm" asChild className="w-full sm:w-auto hover:bg-white/20">
               <Link to="/koalax" className="flex items-center justify-center">
                 <Settings className="h-4 w-4 mr-2" />
                 {t("common:nav.admin")}
               </Link>
             </Button>
-            <Button variant="ghost" size="sm" asChild className="w-full sm:w-auto">
+            <Button variant="ghost" size="sm" asChild className="w-full sm:w-auto hover:bg-white/20">
               <Link to="/docs" className="flex items-center justify-center">
                 <BookOpen className="h-4 w-4 mr-2" />
                 {t("common:nav.docs")}
@@ -64,7 +64,7 @@ const Footer = () => {
               variant="ghost" 
               size="sm" 
               asChild 
-              className="w-full sm:w-auto hover:bg-[#D946EF] hover:text-white transition-colors"
+              className="w-full sm:w-auto hover:bg-white/20"
             >
               <Link to="/dropbox-explorer" className="flex items-center justify-center">
                 <FolderOpen className="h-4 w-4 mr-2" />
@@ -74,10 +74,10 @@ const Footer = () => {
           </div>
 
           {/* Copyright */}
-          <div className="text-sm text-gray-300 text-center md:text-right">
+          <div className="text-sm text-white/80 text-center md:text-right hover:text-white transition-colors">
             <Link 
               to="https://github.com/BelaProDev/loopus-n-maintain#readme"
-              className="hover:text-white transition-colors"
+              className="hover:underline"
             >
               © 2024 {t("common:app.name")}. {t("common:nav.docs")}
             </Link>

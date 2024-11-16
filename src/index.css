@@ -50,4 +50,37 @@
   .btn-secondary {
     @apply bg-secondary text-white hover:bg-secondary/90 rounded-md px-4 py-2;
   }
+
+  .gradient-border {
+    @apply relative rounded-lg p-[1px] bg-gradient-to-r from-primary via-secondary to-accent overflow-hidden;
+  }
+
+  .gradient-border > * {
+    @apply bg-white rounded-lg;
+  }
+
+  .animated-gradient {
+    @apply relative overflow-hidden;
+    &::before {
+      content: '';
+      @apply absolute inset-0 bg-gradient-primary opacity-0 transition-opacity duration-300;
+    }
+    &:hover::before {
+      @apply opacity-10;
+    }
+  }
+
+  .floating-element {
+    @apply animate-float;
+  }
+
+  .glass-morphism {
+    @apply bg-white/40 backdrop-blur-md border border-white/20 shadow-lg;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent;
+  }
 }

@@ -36,19 +36,22 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="border-b shadow-lg relative bg-background">
+    <header className="relative bg-background border-b border-muted/20 backdrop-blur-sm">
       {isOffline && (
         <Badge 
           variant="destructive" 
-          className="absolute top-2 right-2 md:right-4 flex items-center gap-1 z-50"
+          className="absolute top-2 right-2 md:right-4 flex items-center gap-1 z-50 animate-pulse"
         >
           Offline
         </Badge>
       )}
       <div className="container mx-auto px-4 py-4">
         <nav className="flex flex-wrap items-center justify-between gap-4">
-          <Link to="/" className="text-xl md:text-2xl font-bold text-primary flex items-center gap-2">
-            <span>Digital Toolbox</span>
+          <Link 
+            to="/" 
+            className="text-xl md:text-2xl font-bold text-gradient flex items-center gap-2 hover:opacity-80 transition-opacity"
+          >
+            Digital Toolbox
           </Link>
 
           <div className="flex items-center gap-4">
@@ -58,16 +61,17 @@ const Header = () => {
                 <Link
                   key={tool.name}
                   to={tool.path}
-                  className="nav-link"
+                  className="nav-link relative group overflow-hidden"
                 >
-                  {t(`tools:${tool.name}.title`)}
+                  <span className="relative z-10">{t(`tools:${tool.name}.title`)}</span>
+                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary transform origin-left scale-x-0 transition-transform group-hover:scale-x-100" />
                 </Link>
               ))}
               {isAuthenticated && (
                 <Button
                   onClick={logout}
                   variant="outline"
-                  className="ml-4"
+                  className="ml-4 gradient-border"
                 >
                   {t("auth:signOut")}
                 </Button>
