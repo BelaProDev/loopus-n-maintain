@@ -29,6 +29,15 @@ export function useDropboxAuth() {
       if (expiryTime && Number(expiryTime) > Date.now()) {
         dispatch(setAuthenticated(true));
         setIsAuthenticatedState(true);
+        
+        // Store tokens in service worker for API requests
+        if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+          navigator.serviceWorker.controller.postMessage({
+            type: 'STORE_DROPBOX_TOKENS',
+            tokens: parsedTokens
+          });
+        }
+        
         return true;
       }
     }
@@ -38,30 +47,24 @@ export function useDropboxAuth() {
   const login = useCallback(async () => {
     setIsLoading(true);
     try {
-      // Get auth URL from our Netlify function
       const response = await fetch('/.netlify/functions/dropbox-auth');
       const { authUrl, state } = await response.json();
       
-      // Store state for verification
       localStorage.setItem('dropbox_state', state);
       
-      // Open popup
       const popup = window.open(authUrl, 'Dropbox Auth', 'width=800,height=600');
       
-      // Handle popup callback
       const handleCallback = async (event: MessageEvent) => {
         if (event.origin !== window.location.origin) return;
         
         if (event.data.type === 'DROPBOX_AUTH_CALLBACK') {
           const { code, state: returnedState } = event.data;
           
-          // Verify state
           const savedState = localStorage.getItem('dropbox_state');
           if (returnedState !== savedState) {
             throw new Error('Invalid state parameter');
           }
           
-          // Exchange code for tokens
           const tokenResponse = await fetch('/.netlify/functions/dropbox-auth', {
             method: 'POST',
             body: JSON.stringify({ code }),
@@ -69,15 +72,20 @@ export function useDropboxAuth() {
           
           const tokens: DropboxTokens = await tokenResponse.json();
           
-          // Store tokens
           localStorage.setItem('dropbox_tokens', JSON.stringify(tokens));
           localStorage.setItem('dropbox_token_expiry', String(Date.now() + (tokens.expires_in * 1000)));
           
-          // Update state
+          // Store tokens in service worker for API requests
+          if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage({
+              type: 'STORE_DROPBOX_TOKENS',
+              tokens
+            });
+          }
+          
           dispatch(setAuthenticated(true));
           setIsAuthenticatedState(true);
           
-          // Close popup
           if (popup) popup.close();
           
           toast({
@@ -106,6 +114,15 @@ export function useDropboxAuth() {
     localStorage.removeItem('dropbox_tokens');
     localStorage.removeItem('dropbox_token_expiry');
     localStorage.removeItem('dropbox_state');
+    
+    // Clear tokens from service worker
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage({
+        type: 'STORE_DROPBOX_TOKENS',
+        tokens: null
+      });
+    }
+    
     dispatch(setAuthenticated(false));
     setIsAuthenticatedState(false);
     toast({

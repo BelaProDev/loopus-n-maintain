@@ -21,11 +21,18 @@ const DropboxExplorer = () => {
   const { currentPath, viewMode } = useSelector((state: RootState) => state.explorer);
   const { isAuthenticated, login, isLoading: isAuthLoading } = useDropboxAuth();
 
-  const { data: files, isLoading, refetch } = useQuery({
-    queryKey: ['files', currentPath],
+  const { data: files, isLoading, error } = useQuery({
+    queryKey: ['dropbox-files', currentPath],
     queryFn: () => dropboxClient.listFolder(currentPath),
     enabled: isAuthenticated,
-    staleTime: 30000, // Consider data fresh for 30 seconds
+    retry: 1,
+    onError: (error) => {
+      toast({
+        title: 'Error',
+        description: 'Failed to load files. Please try again.',
+        variant: 'destructive',
+      });
+    }
   });
 
   const uploadMutation = useMutation({
@@ -34,7 +41,7 @@ const DropboxExplorer = () => {
       return dropboxClient.uploadFile(file, path);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['files'] });
+      queryClient.invalidateQueries({ queryKey: ['dropbox-files'] });
       toast({
         title: 'Success',
         description: 'File uploaded successfully',
@@ -60,10 +67,6 @@ const DropboxExplorer = () => {
     dispatch(setCurrentPath(path));
   };
 
-  const handleRefresh = () => {
-    refetch();
-  };
-
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-orange-500/10">
@@ -78,10 +81,8 @@ const DropboxExplorer = () => {
               Digital Garden Explorer
             </h1>
             <p className="text-xl text-gray-600 leading-relaxed px-6">
-              Welcome to your digital sanctuary. Like a garden that blooms with every season,
-              your files await to flourish in this space. Connect with Dropbox to tend to your digital flora.
+              Welcome to your digital sanctuary. Connect with Dropbox to manage your files.
             </p>
-            <div className="h-px bg-gradient-to-r from-transparent via-purple-200 to-transparent my-16" />
             <Button 
               onClick={login}
               disabled={isAuthLoading}
@@ -114,7 +115,6 @@ const DropboxExplorer = () => {
             isUploading={uploadMutation.isPending}
             onViewModeChange={(mode) => dispatch(setViewMode(mode))}
             viewMode={viewMode}
-            onRefresh={handleRefresh}
           />
 
           <NavigationBreadcrumb
