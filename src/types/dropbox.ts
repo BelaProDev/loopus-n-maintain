@@ -1,6 +1,8 @@
 import { files } from 'dropbox';
 
 export type DropboxFileTag = 'file' | 'folder' | 'deleted';
+export type MediaType = 'image' | 'video' | 'audio' | 'document' | 'other';
+export type FileStatus = files.FileStatus;
 
 export interface DropboxBaseMetadata {
   '.tag': DropboxFileTag;

@@ -1,11 +1,11 @@
-import { DropboxFile } from '@/types/dropbox';
+import { DropboxEntry } from '@/types/dropbox';
 import { Card } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
-import { getMediaType } from '@/lib/utils/fileUtils';
 import { Play, Image } from 'lucide-react';
+import { getMediaType } from '@/lib/utils/fileUtils';
+import { cn } from '@/lib/utils';
 
 interface ImageGridProps {
-  images: DropboxFile[];
+  images: DropboxEntry[];
   onSelect: (path: string | null) => void;
   selectedImage: string | null;
 }
@@ -14,6 +14,7 @@ export const ImageGrid = ({ images, onSelect, selectedImage }: ImageGridProps) =
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {images.map((file) => {
+        if (file['.tag'] !== 'file') return null;
         const mediaType = getMediaType(file.name);
         if (mediaType === 'other') return null;
 

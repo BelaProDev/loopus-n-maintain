@@ -5,7 +5,8 @@ import {
   DropboxFile,
   DropboxFolder,
   DropboxSearchResponse,
-  DropboxListFolderResult
+  DropboxListFolderResult,
+  files
 } from '@/types/dropbox';
 
 class DropboxClient {
@@ -142,7 +143,7 @@ class DropboxClient {
         options: {
           path: path || '',
           max_results: 100,
-          file_status: 'active'
+          file_status: { '.tag': 'active' } as files.FileStatus
         }
       });
       

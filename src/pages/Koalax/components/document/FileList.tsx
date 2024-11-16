@@ -1,10 +1,10 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Download, Trash2, Folder, File } from "lucide-react";
-import { DropboxFile } from "@/types/dropbox";
+import { DropboxEntry } from "@/types/dropbox";
 
 interface FileListProps {
-  files: DropboxFile[] | undefined;
+  files: DropboxEntry[];
   onDownload: (path: string, fileName: string) => void;
   onDelete: (path: string) => void;
   onNavigate: (path: string) => void;
@@ -31,7 +31,7 @@ const FileList = ({ files, onDownload, onDelete, onNavigate }: FileListProps) =>
                 <Button
                   variant="ghost"
                   className="flex items-center gap-2"
-                  onClick={() => onNavigate(file.path_display)}
+                  onClick={() => file.path_display && onNavigate(file.path_display)}
                 >
                   <Folder className="w-4 h-4" />
                   {file.name}
@@ -43,30 +43,34 @@ const FileList = ({ files, onDownload, onDelete, onNavigate }: FileListProps) =>
                 </span>
               )}
             </TableCell>
-            <TableCell>{file.size ? `${Math.round(file.size / 1024)} KB` : '-'}</TableCell>
             <TableCell>
-              {file.server_modified
+              {file['.tag'] === 'file' ? `${Math.round(file.size / 1024)} KB` : '-'}
+            </TableCell>
+            <TableCell>
+              {file['.tag'] === 'file'
                 ? new Date(file.server_modified).toLocaleDateString()
                 : '-'}
             </TableCell>
             <TableCell>
               <div className="flex gap-2">
-                {file['.tag'] === 'file' && (
+                {file['.tag'] === 'file' && file.path_display && (
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => onDownload(file.path_display, file.name)}
+                    onClick={() => onDownload(file.path_display!, file.name)}
                   >
                     <Download className="w-4 h-4" />
                   </Button>
                 )}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onDelete(file.path_display)}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
+                {file.path_display && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onDelete(file.path_display!)}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                )}
               </div>
             </TableCell>
           </TableRow>
