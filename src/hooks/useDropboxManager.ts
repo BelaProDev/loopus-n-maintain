@@ -4,6 +4,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { uploadFile, listFiles, createFolder, deleteFile, downloadFile } from '@/lib/dropbox';
 import { useAppDispatch, useAppSelector } from './useAppStore';
 import { setFiles, setLoading, setError } from '@/store/slices/documentsSlice';
+import { DropboxFile } from '@/types/dropbox';
+import { dropboxAuth } from '@/lib/auth/dropbox';
 
 export const useDropboxManager = (currentPath: string) => {
   const { toast } = useToast();
@@ -13,7 +15,15 @@ export const useDropboxManager = (currentPath: string) => {
 
   const { data: files, isLoading, refetch } = useQuery({
     queryKey: ['files', currentPath],
-    queryFn: () => listFiles(currentPath),
+    queryFn: async () => {
+      const response = await listFiles(currentPath);
+      return response.map(file => ({
+        ...file,
+        path: file.path_display || '',
+        isFolder: file['.tag'] === 'folder',
+        lastModified: file.server_modified || new Date().toISOString(),
+      }));
+    },
     enabled: isAuthenticated,
   });
 
@@ -99,6 +109,10 @@ export const useDropboxManager = (currentPath: string) => {
     }
   };
 
+  const handleLogin = () => {
+    dropboxAuth.authenticate();
+  };
+
   return {
     files,
     isLoading,
@@ -107,6 +121,7 @@ export const useDropboxManager = (currentPath: string) => {
     deleteMutation,
     createFolderMutation,
     handleDownload,
+    handleLogin,
     refetch,
   };
 };

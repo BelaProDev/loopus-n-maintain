@@ -7,6 +7,9 @@ export interface DropboxFile {
   client_modified?: string;
   server_modified?: string;
   rev?: string;
+  path: string;
+  isFolder: boolean;
+  lastModified: string;
 }
 
 export interface DropboxResponse {

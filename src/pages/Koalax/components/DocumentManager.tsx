@@ -22,7 +22,6 @@ const DocumentManager = () => {
     deleteMutation,
     createFolderMutation,
     refetch,
-    setIsAuthenticated
   } = useDropboxManager(currentPath);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,10 +43,8 @@ const DocumentManager = () => {
     createFolderMutation.mutate('/invoices');
   };
 
-  const handleDelete = (path: string | undefined) => {
-    if (path) {
-      deleteMutation.mutate(path);
-    }
+  const handleDelete = (path: string) => {
+    deleteMutation.mutate(path);
   };
 
   const handleNavigate = (path: string) => {
@@ -68,21 +65,16 @@ const DocumentManager = () => {
 
       {isAuthenticated && (
         <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div className="w-full sm:flex-1">
-              <DocumentToolbar
-                onCreateInvoiceFolder={handleCreateInvoiceFolder}
-                onFileSelect={handleFileSelect}
-                isUploading={uploadMutation.isPending}
-                onRefresh={refetch}
-                onLogout={() => {
-                  dropboxAuth.logout();
-                  setIsAuthenticated(false);
-                }}
-                currentPath={currentPath}
-              />
-            </div>
-          </div>
+          <DocumentToolbar
+            onCreateInvoiceFolder={handleCreateInvoiceFolder}
+            onFileSelect={handleFileSelect}
+            isUploading={uploadMutation.isPending}
+            onRefresh={refetch}
+            onLogout={() => {
+              dropboxAuth.logout();
+            }}
+            currentPath={currentPath}
+          />
 
           <BreadcrumbNav currentPath={currentPath} onNavigate={handleNavigate} />
 
@@ -105,7 +97,7 @@ const DocumentManager = () => {
             <div>Loading...</div>
           ) : (
             <FileList
-              files={files}
+              files={files || []}
               onDownload={handleDownload}
               onDelete={handleDelete}
               onNavigate={handleNavigate}
