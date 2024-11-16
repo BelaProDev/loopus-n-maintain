@@ -3,15 +3,13 @@ import { useToast } from "@/components/ui/use-toast";
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { 
   uploadFile, 
-  downloadFile, 
   listFiles, 
   createFolder, 
   deleteFile,
   searchFiles,
   moveFile,
   copyFile,
-  createSharedLink,
-  getFileMetadata
+  createSharedLink
 } from '@/lib/dropbox';
 
 export const useDropboxManager = (currentPath: string) => {
@@ -34,13 +32,6 @@ export const useDropboxManager = (currentPath: string) => {
         description: "File uploaded successfully",
       });
       refetch();
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: "Failed to upload file",
-        variant: "destructive",
-      });
     },
   });
 
@@ -78,12 +69,11 @@ export const useDropboxManager = (currentPath: string) => {
 
   const createLinkMutation = useMutation({
     mutationFn: createSharedLink,
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast({
         title: "Success",
         description: "Shared link created successfully",
       });
-      return data;
     },
   });
 
@@ -109,32 +99,6 @@ export const useDropboxManager = (currentPath: string) => {
     },
   });
 
-  const handleDownload = async (path: string | undefined, fileName: string) => {
-    if (!path) return;
-    try {
-      const blob = await downloadFile(path);
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = fileName;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-      
-      toast({
-        title: "Success",
-        description: "File downloaded successfully",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to download file",
-        variant: "destructive",
-      });
-    }
-  };
-
   return {
     files,
     isLoading,
@@ -147,7 +111,6 @@ export const useDropboxManager = (currentPath: string) => {
     moveMutation,
     copyMutation,
     createLinkMutation,
-    handleDownload,
     refetch,
   };
 };

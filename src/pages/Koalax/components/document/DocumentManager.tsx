@@ -1,25 +1,24 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { useDropboxManager } from "@/hooks/useDropboxManager";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Box, Database, Cloud, Folder, File, ArrowRight, Award } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useDropboxAuth } from "@/hooks/useDropboxAuth";
+import { useDropboxManager } from "@/hooks/useDropboxManager";
 
 const DocumentManager = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPath, setCurrentPath] = useState("");
   const { toast } = useToast();
   const { t } = useTranslation(["admin"]);
-  const { login } = useDropboxAuth();
+  const { login, isAuthenticated } = useDropboxAuth();
   
   const {
     files,
     isLoading,
-    isAuthenticated,
     uploadMutation,
     deleteMutation,
     createFolderMutation,
