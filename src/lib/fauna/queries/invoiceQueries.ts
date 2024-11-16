@@ -59,6 +59,42 @@ export const invoiceQueries = {
     }
   },
 
+  updateInvoice: async (id: string, data: Omit<Invoice, 'id'>): Promise<Invoice | null> => {
+    const client = getFaunaClient();
+    if (!client) return null;
+    try {
+      const query = fql`
+        invoices.byId(${id}).update({
+          number: ${data.number},
+          date: ${data.date},
+          dueDate: ${data.dueDate},
+          clientId: ${data.clientId},
+          providerId: ${data.providerId},
+          items: ${data.items.map(item => ({ ...item, [Symbol.iterator]: undefined }))},
+          status: ${data.status},
+          totalAmount: ${data.totalAmount},
+          tax: ${data.tax},
+          notes: ${data.notes},
+          paymentTerms: ${data.paymentTerms},
+          currency: ${data.currency}
+        })
+      `;
+      const result = await client.query(query);
+      const document = extractFaunaData<Invoice>(result)[0];
+      return document ? {
+        id: document.ref.id,
+        ...document.data,
+        items: (document.data.items || []).map((item: InvoiceItem) => ({
+          ...item,
+          [Symbol.iterator]: undefined
+        }))
+      } : null;
+    } catch (error) {
+      console.error('Error updating invoice:', error);
+      return null;
+    }
+  },
+
   deleteInvoice: async (id: string): Promise<boolean> => {
     const client = getFaunaClient();
     if (!client) return false;

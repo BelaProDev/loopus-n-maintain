@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import * as Tone from 'tone';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Drum, Waveform } from "lucide-react";
+import { Drum, AudioWaveform } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
 
