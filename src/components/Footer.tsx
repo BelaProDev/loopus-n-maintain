@@ -1,4 +1,4 @@
-import { Home, Settings, Mail, Phone, Github, BookOpen, FolderOpen } from "lucide-react";
+import { Home, Settings, Mail, Phone, Github, BookOpen, FolderOpen, MessageCircle, Image } from "lucide-react";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -69,6 +69,28 @@ const Footer = () => {
               <Link to="/dropbox-explorer" className="flex items-center justify-center">
                 <FolderOpen className="h-4 w-4 mr-2" />
                 Dropbox Explorer
+              </Link>
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              asChild 
+              className="w-full sm:w-auto hover:bg-white/20"
+            >
+              <Link to="/chat" className="flex items-center justify-center">
+                <MessageCircle className="h-4 w-4 mr-2" />
+                Chat
+              </Link>
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              asChild 
+              className="w-full sm:w-auto hover:bg-white/20"
+            >
+              <Link to="/photo-gallery" className="flex items-center justify-center">
+                <Image className="h-4 w-4 mr-2" />
+                Photo Gallery
               </Link>
             </Button>
           </div>
