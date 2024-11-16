@@ -3,84 +3,75 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
-import { Send, Users } from "lucide-react";
+import { Send, Hash, Users, Settings } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { ChatMessage, ChatRoom, ChatUser } from '@/types/chat';
+import { motion } from 'framer-motion';
 
-interface Message {
-  id: string;
-  text: string;
-  sender: string;
-  timestamp: Date;
-}
-
-const fetchMessages = async (): Promise<Message[]> => {
+const fetchMessages = async (roomId: string): Promise<ChatMessage[]> => {
   const response = await fetch('/.netlify/functions/chat-messages', {
     method: 'POST',
-    body: JSON.stringify({ action: 'list' })
+    body: JSON.stringify({ action: 'list', roomId })
   });
   if (!response.ok) throw new Error('Failed to fetch messages');
   const data = await response.json();
-  return data.data.data.map((msg: any) => ({
-    id: msg.id,
-    text: msg.text,
-    sender: msg.sender,
-    timestamp: new Date(msg.timestamp)
-  }));
+  return data.data.data;
 };
 
-const createMessage = async (message: Omit<Message, 'id' | 'timestamp'>) => {
-  const response = await fetch('/.netlify/functions/chat-messages', {
+const fetchRooms = async (): Promise<ChatRoom[]> => {
+  const response = await fetch('/.netlify/functions/chat-rooms', {
     method: 'POST',
-    body: JSON.stringify({
-      action: 'create',
-      data: message
-    })
+    body: JSON.stringify({ action: 'list' })
   });
-  if (!response.ok) throw new Error('Failed to send message');
-  return response.json();
+  if (!response.ok) throw new Error('Failed to fetch rooms');
+  const data = await response.json();
+  return data.data.data;
 };
 
 const Chat = () => {
+  const [nickname, setNickname] = useState("");
   const [newMessage, setNewMessage] = useState("");
-  const [username, setUsername] = useState("");
+  const [activeRoom, setActiveRoom] = useState<string>("");
   const scrollRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: messages = [] } = useQuery({
-    queryKey: ['chat-messages'],
-    queryFn: fetchMessages,
-    refetchInterval: 3000, // Poll every 3 seconds
+  const { data: rooms = [] } = useQuery({
+    queryKey: ['chat-rooms'],
+    queryFn: fetchRooms,
+    refetchInterval: 5000
   });
 
-  const mutation = useMutation({
-    mutationFn: createMessage,
+  const { data: messages = [] } = useQuery({
+    queryKey: ['chat-messages', activeRoom],
+    queryFn: () => fetchMessages(activeRoom),
+    refetchInterval: 3000,
+    enabled: !!activeRoom
+  });
+
+  const sendMessageMutation = useMutation({
+    mutationFn: async (message: Omit<ChatMessage, 'id' | 'timestamp'>) => {
+      const response = await fetch('/.netlify/functions/chat-messages', {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'create',
+          data: message
+        })
+      });
+      if (!response.ok) throw new Error('Failed to send message');
+      return response.json();
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['chat-messages'] });
-      toast({
-        title: "Message sent",
-        description: "Your message has been sent successfully",
-      });
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to send message",
-        variant: "destructive",
-      });
-    },
+      queryClient.invalidateQueries({ queryKey: ['chat-messages', activeRoom] });
+    }
   });
 
   useEffect(() => {
-    const storedUsername = localStorage.getItem("chat-username");
-    if (storedUsername) {
-      setUsername(storedUsername);
-    } else {
-      const randomUsername = `User${Math.floor(Math.random() * 1000)}`;
-      localStorage.setItem("chat-username", randomUsername);
-      setUsername(randomUsername);
+    const storedNickname = localStorage.getItem("irc-nickname");
+    if (storedNickname) {
+      setNickname(storedNickname);
     }
   }, []);
 
@@ -90,70 +81,159 @@ const Chat = () => {
     }
   }, [messages]);
 
+  const handleSetNickname = (newNick: string) => {
+    if (newNick.length < 3) {
+      toast({
+        title: "Invalid nickname",
+        description: "Nickname must be at least 3 characters long",
+        variant: "destructive"
+      });
+      return;
+    }
+    localStorage.setItem("irc-nickname", newNick);
+    setNickname(newNick);
+    toast({
+      title: "Nickname set",
+      description: `You are now known as ${newNick}`
+    });
+  };
+
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMessage.trim()) return;
+    if (!newMessage.trim() || !activeRoom) return;
 
-    mutation.mutate({
-      text: newMessage,
-      sender: username
+    sendMessageMutation.mutate({
+      roomId: activeRoom,
+      sender: nickname,
+      content: newMessage,
+      type: 'message'
     });
 
     setNewMessage("");
   };
 
+  if (!nickname) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Card className="max-w-md mx-auto p-6">
+          <h2 className="text-xl font-mono mb-4">Welcome to IRC</h2>
+          <div className="space-y-4">
+            <Input
+              placeholder="Choose your nickname..."
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  handleSetNickname((e.target as HTMLInputElement).value);
+                }
+              }}
+            />
+            <Button 
+              className="w-full font-mono"
+              onClick={(e) => handleSetNickname((e.currentTarget.previousSibling as HTMLInputElement).value)}
+            >
+              Join IRC
+            </Button>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
-      <Card className="max-w-4xl mx-auto">
-        <div className="p-6">
-          <div className="flex items-center gap-2 mb-6">
-            <Users className="h-6 w-6 text-primary" />
-            <h1 className="text-2xl font-bold">Chat Room</h1>
-          </div>
-
-          <ScrollArea className="h-[60vh] rounded-md border p-4" ref={scrollRef}>
-            <div className="space-y-4">
-              {messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={`flex items-start gap-3 ${
-                    message.sender === username ? "flex-row-reverse" : ""
+      <Card className="max-w-6xl mx-auto">
+        <div className="grid grid-cols-12 h-[80vh]">
+          {/* Rooms List */}
+          <div className="col-span-3 border-r border-gray-200 p-4">
+            <div className="flex items-center gap-2 mb-4">
+              <Hash className="h-5 w-5 text-primary" />
+              <h2 className="font-mono text-lg">Rooms</h2>
+            </div>
+            <ScrollArea className="h-[calc(100%-2rem)]">
+              {rooms.map((room) => (
+                <motion.button
+                  key={room.id}
+                  whileHover={{ x: 4 }}
+                  onClick={() => setActiveRoom(room.id)}
+                  className={`w-full text-left p-2 rounded font-mono ${
+                    activeRoom === room.id ? 'bg-primary/10 text-primary' : 'hover:bg-gray-100'
                   }`}
                 >
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback>
-                      {message.sender[0]?.toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div
-                    className={`max-w-[80%] rounded-lg p-3 ${
-                      message.sender === username
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted"
-                    }`}
-                  >
-                    <p className="text-sm font-medium mb-1">{message.sender}</p>
-                    <p>{message.text}</p>
-                    <span className="text-xs opacity-70">
-                      {message.timestamp.toLocaleTimeString()}
-                    </span>
-                  </div>
-                </div>
+                  #{room.name}
+                </motion.button>
               ))}
-            </div>
-          </ScrollArea>
+            </ScrollArea>
+          </div>
 
-          <form onSubmit={handleSendMessage} className="mt-4 flex gap-2">
-            <Input
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Type your message..."
-              className="flex-1"
-            />
-            <Button type="submit" disabled={mutation.isPending}>
-              <Send className="h-4 w-4" />
-            </Button>
-          </form>
+          {/* Chat Area */}
+          <div className="col-span-9 flex flex-col">
+            {activeRoom ? (
+              <>
+                {/* Room Header */}
+                <div className="p-4 border-b border-gray-200">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Hash className="h-5 w-5 text-primary" />
+                      <h2 className="font-mono text-lg">
+                        {rooms.find(r => r.id === activeRoom)?.name}
+                      </h2>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Users className="h-5 w-5 text-gray-500" />
+                      <span className="text-sm text-gray-500">
+                        {rooms.find(r => r.id === activeRoom)?.users.length || 0} users
+                      </span>
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-500 mt-1 font-mono">
+                    {rooms.find(r => r.id === activeRoom)?.topic}
+                  </p>
+                </div>
+
+                {/* Messages */}
+                <ScrollArea className="flex-1 p-4" ref={scrollRef}>
+                  <div className="space-y-2">
+                    {messages.map((message) => (
+                      <motion.div
+                        key={message.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className={`font-mono ${
+                          message.type === 'system' ? 'text-gray-500 italic' :
+                          message.type === 'bot' ? 'text-primary italic' :
+                          message.sender === nickname ? 'text-primary' : ''
+                        }`}
+                      >
+                        <span className="text-gray-400">
+                          [{new Date(message.timestamp).toLocaleTimeString()}]
+                        </span>{' '}
+                        <span className="font-bold">{message.sender}:</span>{' '}
+                        {message.content}
+                      </motion.div>
+                    ))}
+                  </div>
+                </ScrollArea>
+
+                {/* Message Input */}
+                <form onSubmit={handleSendMessage} className="p-4 border-t border-gray-200">
+                  <div className="flex gap-2">
+                    <Input
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      placeholder="Type your message..."
+                      className="font-mono"
+                    />
+                    <Button type="submit" size="icon">
+                      <Send className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </form>
+              </>
+            ) : (
+              <div className="flex items-center justify-center h-full text-gray-500 font-mono">
+                Select a room to start chatting
+              </div>
+            )}
+          </div>
         </div>
       </Card>
     </div>

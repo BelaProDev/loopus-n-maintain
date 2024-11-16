@@ -7,34 +7,30 @@ const client = new Client({
 
 export const handler: Handler = async (event) => {
   try {
-    const { action, data, roomId } = JSON.parse(event.body || '{}');
+    const { action, data } = JSON.parse(event.body || '{}');
 
     switch (action) {
       case 'list':
-        const messages = await client.query(fql`
-          chat_messages.all()
-          .filter(m => m.roomId == ${roomId})
-          .order(-.timestamp)
-          .limit(100)
+        const result = await client.query(fql`
+          chat_rooms.all()
         `);
         return {
           statusCode: 200,
-          body: JSON.stringify({ success: true, data: messages })
+          body: JSON.stringify({ success: true, data: result })
         };
 
       case 'create':
-        const newMessage = await client.query(fql`
-          chat_messages.create({
-            roomId: ${data.roomId},
-            sender: ${data.sender},
-            content: ${data.content},
-            type: ${data.type},
-            timestamp: Time.now()
+        const newRoom = await client.query(fql`
+          chat_rooms.create({
+            name: ${data.name},
+            topic: ${data.topic},
+            users: [],
+            createdAt: Time.now()
           })
         `);
         return {
           statusCode: 200,
-          body: JSON.stringify({ success: true, data: newMessage })
+          body: JSON.stringify({ success: true, data: newRoom })
         };
 
       default:
@@ -44,7 +40,7 @@ export const handler: Handler = async (event) => {
         };
     }
   } catch (error) {
-    console.error('Chat messages error:', error);
+    console.error('Chat rooms error:', error);
     return {
       statusCode: 500,
       body: JSON.stringify({ success: false, error: 'Internal server error' })
