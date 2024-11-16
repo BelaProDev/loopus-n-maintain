@@ -11,18 +11,17 @@ import BreadcrumbNav from "./BreadcrumbNav";
 const DocumentManager = () => {
   const [newFolderName, setNewFolderName] = useState("");
   const [currentPath, setCurrentPath] = useState("/");
-  const { login } = useDropboxAuth();
+  const { login, logout } = useDropboxAuth();
   
   const {
     files,
     isLoading,
     isAuthenticated,
-    handleDownload,
     uploadMutation,
     deleteMutation,
     createFolderMutation,
+    handleDownload,
     refetch,
-    setIsAuthenticated
   } = useDropboxManager(currentPath);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,19 +63,13 @@ const DocumentManager = () => {
 
       {isAuthenticated && (
         <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div className="w-full sm:flex-1">
-              <DocumentToolbar
-                onFileSelect={handleFileSelect}
-                isUploading={uploadMutation.isPending}
-                onRefresh={refetch}
-                onLogout={() => {
-                  setIsAuthenticated(false);
-                }}
-                currentPath={currentPath}
-              />
-            </div>
-          </div>
+          <DocumentToolbar
+            onFileSelect={handleFileSelect}
+            isUploading={uploadMutation.isPending}
+            onRefresh={refetch}
+            onLogout={logout}
+            currentPath={currentPath}
+          />
 
           <BreadcrumbNav currentPath={currentPath} onNavigate={handleNavigate} />
 

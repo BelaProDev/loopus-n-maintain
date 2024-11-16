@@ -1,29 +1,50 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-
-interface Document {
-  id: string;
-  name: string;
-  path: string;
-  type: string;
-}
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { FileMetadata } from '@/lib/document/documentUtils';
 
 interface DocumentsState {
-  items: Document[];
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  files: FileMetadata[];
+  currentPath: string;
+  isAuthenticated: boolean;
+  isLoading: boolean;
   error: string | null;
 }
 
 const initialState: DocumentsState = {
-  items: [],
-  status: 'idle',
-  error: null,
+  files: [],
+  currentPath: '/',
+  isAuthenticated: false,
+  isLoading: false,
+  error: null
 };
 
 const documentsSlice = createSlice({
   name: 'documents',
   initialState,
-  reducers: {},
-  extraReducers: (builder) => {},
+  reducers: {
+    setFiles: (state, action: PayloadAction<FileMetadata[]>) => {
+      state.files = action.payload;
+    },
+    setCurrentPath: (state, action: PayloadAction<string>) => {
+      state.currentPath = action.payload;
+    },
+    setAuthenticated: (state, action: PayloadAction<boolean>) => {
+      state.isAuthenticated = action.payload;
+    },
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.isLoading = action.payload;
+    },
+    setError: (state, action: PayloadAction<string | null>) => {
+      state.error = action.payload;
+    }
+  }
 });
+
+export const { 
+  setFiles, 
+  setCurrentPath, 
+  setAuthenticated, 
+  setLoading, 
+  setError 
+} = documentsSlice.actions;
 
 export default documentsSlice.reducer;
