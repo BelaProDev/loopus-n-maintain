@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, GitBranch, BarChart, Music, FileInvoice } from "lucide-react";
+import { FileText, GitBranch, BarChart, Music, FileCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -33,7 +33,7 @@ const tools = [
     gradient: "from-orange-500 to-red-500"
   },
   {
-    icon: FileInvoice,
+    icon: FileCheck,
     title: "invoicing",
     path: "/invoicing",
     gradient: "from-violet-500 to-purple-500"
