@@ -1,22 +1,45 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import * as Tone from 'tone';
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Card } from "@/components/ui/card";
-import { Waveform, Volume2, Music2 } from "lucide-react";
+import { Volume2, Music2, Waves } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import ShaderVisualizer from './ShaderVisualizer';
 
 const Synthesizer = () => {
   const [synth, setSynth] = useState<Tone.Synth | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [audioData, setAudioData] = useState<number[]>(new Array(128).fill(0));
+  const analyserRef = useRef<Tone.Analyser | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
     const newSynth = new Tone.Synth().toDestination();
+    const analyser = new Tone.Analyser('waveform', 128);
+    newSynth.connect(analyser);
+    
     setSynth(newSynth);
+    analyserRef.current = analyser;
+
     return () => {
       newSynth.dispose();
+      analyser.dispose();
     };
+  }, []);
+
+  useEffect(() => {
+    if (!analyserRef.current) return;
+
+    const updateVisualizer = () => {
+      if (analyserRef.current) {
+        setAudioData([...analyserRef.current.getValue()]);
+      }
+      requestAnimationFrame(updateVisualizer);
+    };
+
+    const frameId = requestAnimationFrame(updateVisualizer);
+    return () => cancelAnimationFrame(frameId);
   }, []);
 
   const handleNotePress = (note: string) => {
@@ -63,6 +86,8 @@ const Synthesizer = () => {
         </Button>
       </div>
 
+      <ShaderVisualizer audioData={audioData} />
+
       <div className="space-y-4">
         <div className="flex items-center gap-4">
           <Volume2 className="h-5 w-5" />
@@ -90,7 +115,7 @@ const Synthesizer = () => {
         </div>
 
         <div className="flex justify-center">
-          <Waveform className={`h-6 w-6 ${isPlaying ? 'text-primary animate-pulse' : ''}`} />
+          <Waves className={`h-6 w-6 ${isPlaying ? 'text-primary animate-pulse' : ''}`} />
         </div>
       </div>
     </Card>
