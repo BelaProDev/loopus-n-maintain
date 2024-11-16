@@ -1,13 +1,5 @@
-import { Dropbox } from 'dropbox';
-
 const DROPBOX_AUTH_URL = "https://www.dropbox.com/oauth2/authorize";
 const CLIENT_ID = import.meta.env.VITE_DROPBOX_APP_KEY;
-
-interface TokenResponse {
-  access_token: string;
-  refresh_token: string;
-  expiry: number;
-}
 
 export const dropboxAuth = {
   async initiateAuth() {
@@ -47,6 +39,19 @@ export const dropboxAuth = {
       }
 
       const data = await response.json();
+      
+      // Store tokens in Service Worker
+      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({
+          type: 'STORE_DROPBOX_TOKENS',
+          tokens: {
+            access_token: data.access_token,
+            refresh_token: data.refresh_token,
+            expiry: data.expiry
+          }
+        });
+      }
+
       return data.access_token;
     } catch (error) {
       console.error('Auth callback error:', error);
@@ -55,27 +60,30 @@ export const dropboxAuth = {
   },
 
   async getValidAccessToken(): Promise<string | null> {
-    try {
-      const response = await fetch('/.netlify/functions/get-dropbox-token');
-      if (!response.ok) {
-        const error = await response.json();
-        if (error.code === 'NO_TOKEN') {
-          return null;
-        }
-        throw new Error(error.message);
-      }
-      
-      const data = await response.json();
-      return data.access_token;
-    } catch (error) {
-      console.error('Token retrieval error:', error);
+    if (!('serviceWorker' in navigator) || !navigator.serviceWorker.controller) {
       return null;
     }
+
+    return new Promise((resolve) => {
+      const channel = new MessageChannel();
+      channel.port1.onmessage = (event) => {
+        const token = event.data.tokens?.access_token;
+        resolve(token || null);
+      };
+
+      navigator.serviceWorker.controller.postMessage(
+        { type: 'GET_DROPBOX_TOKENS' },
+        [channel.port2]
+      );
+    });
   },
 
-  async getClient(): Promise<Dropbox | null> {
+  async getClient(): Promise<any> {
     const accessToken = await this.getValidAccessToken();
     if (!accessToken) return null;
+    
+    // Using the Dropbox SDK with the token
+    const { Dropbox } = await import('dropbox');
     return new Dropbox({ accessToken });
   },
 
@@ -85,20 +93,11 @@ export const dropboxAuth = {
 
   async logout() {
     localStorage.removeItem('dropbox_state');
-    try {
-      await fetch('/.netlify/functions/store-dropbox-token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          access_token: null,
-          refresh_token: null,
-          expiry: 0
-        })
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage({
+        type: 'STORE_DROPBOX_TOKENS',
+        tokens: null
       });
-    } catch (error) {
-      console.error('Logout error:', error);
     }
   }
 };
