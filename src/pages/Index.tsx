@@ -144,7 +144,7 @@ const Index = () => {
 
         <div className="container mx-auto px-4 py-16">
           <div className="mb-16 bg-white/50 dark:bg-gray-800/50 rounded-lg p-8 backdrop-blur-sm">
-            <h2 className="text-3xl font-bold mb-8 text-center">All Available Links</h2>
+            <h2 className="text-3xl font-bold mb-8 text-center">TOOLS AND FEATURES</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {allLinks.map((link) => {
                 const Icon = link.icon;

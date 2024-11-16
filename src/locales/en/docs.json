@@ -5,52 +5,42 @@
     "description": "Welcome to Loopus & Maintain - our professional building maintenance platform. Our PWA helps coordinate maintenance services efficiently and effectively."
   },
   "features": {
-    "title": "Current Features",
-    "corePlatform": {
-      "title": "Core Platform",
-      "multilanguage": "Multi-language Support (EN, ES, FR)",
-      "auth": "Secure Authentication System",
-      "email": "Email Management System",
-      "business": "Business Management Features",
-      "documents": "Document Storage & Management"
-    },
-    "services": {
+    "title": "Tools and Features",
+    "maintenance": {
       "title": "Maintenance Services",
-      "electrical": "Electrical Maintenance Services",
-      "plumbing": "Professional Plumbing Services",
+      "electrical": "Electrical Services",
+      "plumbing": "Plumbing Services",
       "ironwork": "Ironwork Solutions",
-      "woodworking": "Professional Woodworking",
-      "architecture": "Architectural Consulting"
-    }
-  },
-  "admin": {
-    "title": "Admin Features",
-    "business": {
-      "title": "Business Tools",
-      "management": "Client & Provider Management",
-      "tracking": "Service Tracking System",
-      "invoice": "Invoice Generation & Management",
-      "rating": "Rating & Review System",
-      "providers": "Service Provider Directory",
-      "clients": "Client Database Management"
+      "woodworking": "Woodworking Services",
+      "architecture": "Architectural Services"
+    },
+    "tools": {
+      "title": "Digital Tools",
+      "documents": "Document Management",
+      "diagrams": "System Diagrams",
+      "analytics": "Data Analytics",
+      "audio": "Audio Studio",
+      "invoicing": "Invoice Management",
+      "chat": "Community Chat",
+      "gallery": "Photo Gallery"
+    },
+    "admin": {
+      "title": "Admin Features",
+      "docs": "Documentation",
+      "dropbox": "Dropbox Integration",
+      "admin": "Admin Panel",
+      "email": "Email Management"
     }
   },
   "technical": {
     "title": "Technical Details",
-    "pwa": {
-      "title": "PWA Features",
-      "offline": "Offline Functionality",
-      "notifications": "Push Notifications",
-      "workers": "Service Workers",
-      "storage": "IndexedDB Storage",
-      "updates": "Real-time Updates"
-    },
-    "database": {
-      "title": "Database",
-      "fauna": "FaunaDB Integration",
-      "queries": "Optimized Query System",
-      "caching": "Response Caching",
-      "sync": "Data Synchronization"
+    "stack": {
+      "title": "Tech Stack",
+      "frontend": "React + TypeScript",
+      "query": "TanStack Query",
+      "styling": "Tailwind CSS",
+      "ui": "shadcn/ui",
+      "i18n": "i18next"
     }
   }
 }
