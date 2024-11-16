@@ -15,13 +15,13 @@ export const useDropboxManager = (currentPath: string) => {
     queryKey: ['files', currentPath],
     queryFn: () => listFiles(currentPath),
     enabled: isAuthenticated,
-    onSuccess: (data) => {
-      dispatch(setFiles(data));
-    },
-    onError: (error) => {
-      dispatch(setError(error instanceof Error ? error.message : 'Failed to fetch files'));
-    }
   });
+
+  useEffect(() => {
+    if (files) {
+      dispatch(setFiles(files));
+    }
+  }, [files, dispatch]);
 
   const uploadMutation = useMutation({
     mutationFn: async (file: File) => {
@@ -98,10 +98,6 @@ export const useDropboxManager = (currentPath: string) => {
       });
     }
   };
-
-  useEffect(() => {
-    dispatch(setLoading(isLoading));
-  }, [isLoading, dispatch]);
 
   return {
     files,
