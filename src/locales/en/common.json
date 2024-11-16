@@ -8,7 +8,15 @@
     "tools": "Tools",
     "contact": "Contact",
     "admin": "Admin",
-    "docs": "Documentation"
+    "docs": "Documentation",
+    "dropbox": "Dropbox Explorer",
+    "chat": "Chat",
+    "gallery": "Photo Gallery"
+  },
+  "contact": {
+    "phone": "Call us",
+    "email": "Send us an email",
+    "github": "Visit our GitHub"
   },
   "actions": {
     "save": "Save",

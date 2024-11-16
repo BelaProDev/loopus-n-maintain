@@ -1,47 +1,35 @@
 {
   "app": {
-    "name": "Loopus & Maintain",
-    "description": "Services d'entretien professionnels pour votre propriété",
-    "title": "Services Professionnels d'Entretien et de Réparation de Bâtiments"
+    "name": "Boîte à Outils Numérique",
+    "description": "Votre Couteau Suisse pour les Outils Numériques"
   },
   "nav": {
     "home": "Accueil",
-    "services": "Services",
+    "tools": "Outils",
     "contact": "Contact",
-    "admin": "Admin Loopus",
-    "docs": "Documentation"
+    "admin": "Admin",
+    "docs": "Documentation",
+    "dropbox": "Explorateur Dropbox",
+    "chat": "Chat",
+    "gallery": "Galerie Photos"
   },
-  "common": {
+  "contact": {
+    "phone": "Appelez-nous",
+    "email": "Envoyez-nous un email",
+    "github": "Visitez notre GitHub"
+  },
+  "actions": {
     "save": "Enregistrer",
     "cancel": "Annuler",
     "delete": "Supprimer",
     "edit": "Modifier",
-    "submit": "Envoyer",
-    "submitting": "Envoi en cours...",
+    "create": "Créer",
+    "update": "Mettre à jour"
+  },
+  "status": {
     "loading": "Chargement...",
     "success": "Succès",
     "error": "Erreur",
-    "required": "Requis",
-    "optional": "Optionnel",
-    "actions": "Actions",
-    "status": "Statut",
-    "na": "N/D",
-    "offline": "Hors ligne",
-    "language": "Changer de langue",
-    "contact": "Contact",
-    "learnMore": "En savoir plus",
-    "title": "Titre"
-  },
-  "form": {
-    "namePlaceholder": "Votre Nom",
-    "emailPlaceholder": "Votre Email",
-    "messagePlaceholder": "Votre Message",
-    "submitSuccess": "Message envoyé avec succès",
-    "submitError": "Échec de l'envoi du message"
-  },
-  "language": {
-    "en": "Anglais",
-    "es": "Espagnol",
-    "fr": "Français"
+    "offline": "Hors ligne"
   }
 }
