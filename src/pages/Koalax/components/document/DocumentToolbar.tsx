@@ -3,7 +3,6 @@ import { RefreshCw, LogOut, FolderPlus, Upload } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 interface DocumentToolbarProps {
-  onCreateInvoiceFolder: () => void;
   onFileSelect: (event: React.ChangeEvent<HTMLInputElement>) => void;
   isUploading: boolean;
   onRefresh: () => void;
@@ -12,7 +11,6 @@ interface DocumentToolbarProps {
 }
 
 const DocumentToolbar = ({
-  onCreateInvoiceFolder,
   onFileSelect,
   isUploading,
   onRefresh,
@@ -23,11 +21,6 @@ const DocumentToolbar = ({
 
   return (
     <div className="flex flex-wrap gap-2">
-      <Button variant="outline" onClick={onCreateInvoiceFolder}>
-        <FolderPlus className="w-4 h-4 mr-2" />
-        {t("admin:documents.createInvoiceFolder")}
-      </Button>
-      
       <Button variant="outline" asChild>
         <label className="cursor-pointer">
           <Upload className="w-4 h-4 mr-2" />
