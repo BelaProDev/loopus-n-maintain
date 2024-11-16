@@ -7,6 +7,7 @@ import { NavigationBreadcrumb } from './components/NavigationBreadcrumb';
 import { toast } from 'sonner';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { DropboxEntry } from '@/types/dropbox';
+import { files } from 'dropbox';
 
 const DropboxExplorer = () => {
   const { isAuthenticated, connect, client } = useDropbox();
@@ -27,21 +28,45 @@ const DropboxExplorer = () => {
       });
 
       // Map the response entries to our DropboxEntry type
-      const mappedEntries: DropboxEntry[] = response.result.entries.map(entry => ({
-        '.tag': entry['.tag'],
-        id: entry.id || entry.path_lower || entry.path_display || '',
-        name: entry.name,
-        path_lower: entry.path_lower,
-        path_display: entry.path_display,
-        ...(entry['.tag'] === 'file' && {
-          size: entry.size,
-          is_downloadable: entry.is_downloadable,
-          client_modified: entry.client_modified,
-          server_modified: entry.server_modified,
-          rev: entry.rev,
-          content_hash: entry.content_hash
-        })
-      })) as DropboxEntry[];
+      const mappedEntries: DropboxEntry[] = response.result.entries.map(entry => {
+        const baseMetadata = {
+          '.tag': entry['.tag'],
+          name: entry.name,
+          path_lower: entry.path_lower,
+          path_display: entry.path_display,
+        };
+
+        if (entry['.tag'] === 'file') {
+          const fileEntry = entry as files.FileMetadataReference;
+          return {
+            ...baseMetadata,
+            '.tag': 'file' as const,
+            id: fileEntry.id,
+            size: fileEntry.size,
+            is_downloadable: fileEntry.is_downloadable,
+            client_modified: fileEntry.client_modified,
+            server_modified: fileEntry.server_modified,
+            rev: fileEntry.rev,
+            content_hash: fileEntry.content_hash
+          };
+        }
+
+        if (entry['.tag'] === 'folder') {
+          const folderEntry = entry as files.FolderMetadataReference;
+          return {
+            ...baseMetadata,
+            '.tag': 'folder' as const,
+            id: folderEntry.id
+          };
+        }
+
+        // Handle deleted entries
+        return {
+          ...baseMetadata,
+          '.tag': 'deleted' as const,
+          id: entry.path_lower || entry.path_display || ''
+        };
+      });
 
       setFiles(mappedEntries);
     } catch (error) {
