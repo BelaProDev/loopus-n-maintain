@@ -34,27 +34,17 @@ export const invoiceQueries = {
     const client = getFaunaClient();
     if (!client) return null;
     try {
-      // Use JavaScript Date objects for date handling
       const now = new Date().toISOString();
-      const dueDate = new Date();
-      dueDate.setDate(dueDate.getDate() + 30);
-
       const query = fql`
         invoices.create({
-          number: ${data.number || `INV-${Date.now()}`},
-          date: ${now},
-          dueDate: ${dueDate.toISOString()},
+          number: ${data.number},
+          date: ${data.date},
+          dueDate: ${data.dueDate},
           clientId: ${data.clientId},
           providerId: ${data.providerId},
           items: ${data.items.map(item => ({
+            ...item,
             id: item.id || crypto.randomUUID(),
-            sku: item.sku || '',
-            description: item.description,
-            quantity: item.quantity,
-            unitPrice: item.unitPrice,
-            unit: item.unit || 'unit',
-            vatRate: item.vatRate || 21,
-            total: item.quantity * item.unitPrice,
             [Symbol.iterator]: undefined
           }))},
           status: ${data.status || 'draft'},
@@ -87,7 +77,22 @@ export const invoiceQueries = {
       const query = fql`
         let invoice = invoices.byId(${id})
         invoice.update({
-          ...${data},
+          number: ${data.number},
+          date: ${data.date},
+          dueDate: ${data.dueDate},
+          clientId: ${data.clientId},
+          providerId: ${data.providerId},
+          items: ${data.items?.map(item => ({
+            ...item,
+            id: item.id || crypto.randomUUID(),
+            [Symbol.iterator]: undefined
+          })) || []},
+          status: ${data.status || 'draft'},
+          totalAmount: ${data.totalAmount || 0},
+          tax: ${data.tax || 0},
+          notes: ${data.notes || ''},
+          paymentTerms: ${data.paymentTerms || 'net30'},
+          currency: ${data.currency || 'EUR'},
           metadata: {
             ...invoice.metadata,
             updatedAt: ${now},

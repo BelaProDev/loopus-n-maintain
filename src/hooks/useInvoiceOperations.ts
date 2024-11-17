@@ -10,14 +10,7 @@ export const useInvoiceOperations = () => {
   const queryClient = useQueryClient();
 
   const createMutation = useMutation({
-    mutationFn: (dto: CreateInvoiceDTO) => {
-      const formattedDto = {
-        ...dto,
-        date: new Date().toISOString(),
-        dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
-      };
-      return invoiceService.createInvoice(formattedDto);
-    },
+    mutationFn: (dto: CreateInvoiceDTO) => invoiceService.createInvoice(dto),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['invoices'] });
       toast({ 
@@ -75,7 +68,7 @@ export const useInvoiceOperations = () => {
     }
   });
 
-  const handleCreateInvoice = async (formData: FormData): Promise<void> => {
+  const handleCreateInvoice = async (formData: FormData) => {
     const dto: CreateInvoiceDTO = {
       clientId: formData.get("clientId") as string,
       providerId: formData.get("providerId") as string,
@@ -86,7 +79,7 @@ export const useInvoiceOperations = () => {
     await createMutation.mutateAsync(dto);
   };
 
-  const handleUpdateInvoice = async (id: string, formData: FormData): Promise<void> => {
+  const handleUpdateInvoice = async (id: string, formData: FormData) => {
     const dto: CreateInvoiceDTO = {
       clientId: formData.get("clientId") as string,
       providerId: formData.get("providerId") as string,

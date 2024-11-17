@@ -5,25 +5,24 @@ export const invoiceService = {
   generateInvoiceNumber: () => `INV-${Date.now()}`,
 
   calculateTotals: (items: InvoiceItem[]) => {
-    const totalAmount = items.reduce((sum, item) => sum + item.total, 0);
-    const tax = items.reduce((sum, item) => sum + (item.total * item.vatRate / 100), 0);
+    const totalAmount = items.reduce((sum, item) => sum + (item.quantity * item.unitPrice), 0);
+    const tax = items.reduce((sum, item) => sum + ((item.quantity * item.unitPrice) * item.vatRate / 100), 0);
     return { totalAmount, tax };
   },
 
   prepareInvoiceData: (dto: CreateInvoiceDTO): Omit<Invoice, 'id'> => {
     const { totalAmount, tax } = invoiceService.calculateTotals(dto.items);
+    const now = new Date();
+    const dueDate = new Date(now);
+    dueDate.setDate(dueDate.getDate() + 30);
     
     return {
-      ...dto,
       number: invoiceService.generateInvoiceNumber(),
-      date: new Date().toISOString(),
-      dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-      status: 'draft',
-      totalAmount,
-      tax,
-      paymentTerms: dto.paymentTerms || 'net30',
-      currency: dto.currency || 'EUR',
-      items: dto.items.map(item => ({ 
+      date: now.toISOString(),
+      dueDate: dueDate.toISOString(),
+      clientId: dto.clientId,
+      providerId: dto.providerId,
+      items: dto.items.map(item => ({
         ...item,
         id: item.id || crypto.randomUUID(),
         sku: item.sku || '',
@@ -31,29 +30,52 @@ export const invoiceService = {
         vatRate: item.vatRate || 21,
         total: item.quantity * item.unitPrice,
         [Symbol.iterator]: undefined
-      }))
+      })),
+      status: 'draft',
+      totalAmount,
+      tax,
+      notes: dto.notes || '',
+      paymentTerms: dto.paymentTerms || 'net30',
+      currency: dto.currency || 'EUR'
     };
   },
 
   createInvoice: async (dto: CreateInvoiceDTO) => {
     const invoiceData = invoiceService.prepareInvoiceData(dto);
-    return businessQueries.createInvoice(invoiceData);
+    const result = await businessQueries.createInvoice(invoiceData);
+    if (!result) {
+      throw new Error('Failed to create invoice');
+    }
+    return result;
   },
 
   updateInvoice: async (id: string, dto: CreateInvoiceDTO) => {
     const invoiceData = invoiceService.prepareInvoiceData(dto);
-    return businessQueries.updateInvoice(id, invoiceData);
+    const result = await businessQueries.updateInvoice(id, invoiceData);
+    if (!result) {
+      throw new Error('Failed to update invoice');
+    }
+    return result;
   },
 
-  deleteInvoice: (id: string) => {
-    return businessQueries.deleteInvoice(id);
+  deleteInvoice: async (id: string) => {
+    const result = await businessQueries.deleteInvoice(id);
+    if (!result) {
+      throw new Error('Failed to delete invoice');
+    }
+    return result;
   },
 
-  getInvoices: () => {
-    return businessQueries.getInvoices();
+  getInvoices: async () => {
+    const invoices = await businessQueries.getInvoices();
+    return invoices || [];
   },
 
-  getInvoiceById: (id: string) => {
-    return businessQueries.getInvoiceById(id);
+  getInvoiceById: async (id: string) => {
+    const invoice = await businessQueries.getInvoiceById(id);
+    if (!invoice) {
+      throw new Error('Invoice not found');
+    }
+    return invoice;
   }
 };
