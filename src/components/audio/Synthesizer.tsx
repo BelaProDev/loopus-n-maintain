@@ -46,8 +46,7 @@ const Synthesizer = () => {
         
         const synth = new Tone.Synth({
           oscillator: {
-            type: oscillatorType,
-            detune: oscillatorDetune
+            type: oscillatorType
           },
           envelope: {
             attack,
@@ -55,7 +54,7 @@ const Synthesizer = () => {
             sustain,
             release
           }
-        });
+        }).toDestination();
 
         const filter = new Tone.Filter({
           type: filterType,
@@ -99,19 +98,13 @@ const Synthesizer = () => {
     if (synthRef.current) {
       synthRef.current.set({
         oscillator: {
-          type: oscillatorType,
-          frequency: oscillatorFreq,
-          detune: oscillatorDetune
-        },
-        envelope: {
-          attack,
-          decay,
-          sustain,
-          release
+          type: oscillatorType
         }
       });
+      synthRef.current.frequency.value = oscillatorFreq;
+      synthRef.current.detune.value = oscillatorDetune;
     }
-  }, [oscillatorType, oscillatorFreq, oscillatorDetune, attack, decay, sustain, release]);
+  }, [oscillatorType, oscillatorFreq, oscillatorDetune]);
 
   useEffect(() => {
     if (filterRef.current) {
