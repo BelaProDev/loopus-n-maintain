@@ -9,6 +9,7 @@ import InvoiceHeader from "./InvoiceHeader";
 import InvoiceParties from "./InvoiceParties";
 import InvoiceItems from "./InvoiceItems";
 import InvoiceFooter from "./InvoiceFooter";
+import { Card } from "@/components/ui/card";
 
 interface InvoiceFormProps {
   editingInvoice: Invoice | null;
@@ -62,50 +63,54 @@ const InvoiceForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmitForm} className="space-y-6 bg-white dark:bg-gray-900">
-      <div className="space-y-6">
-        <InvoiceHeader
-          formData={formData}
-          onChange={(name, value) => setFormData(prev => ({ ...prev, [name]: value }))}
-        />
-        
-        <InvoiceParties
-          formData={formData}
-          clients={clients}
-          providers={providers}
-          onChange={(name, value) => setFormData(prev => ({ ...prev, [name]: value }))}
-        />
-        
-        <InvoiceItems
-          items={items}
-          onItemsChange={setItems}
-          currency={formData.currency}
-        />
-        
-        <InvoiceFooter
-          formData={formData}
-          totals={calculateTotals()}
-          onChange={(name, value) => setFormData(prev => ({ ...prev, [name]: value }))}
-        />
-      </div>
+    <form onSubmit={handleSubmitForm} className="space-y-8 max-w-5xl mx-auto p-6">
+      <Card className="p-8 space-y-8 shadow-lg">
+        <div className="space-y-8">
+          <InvoiceHeader
+            formData={formData}
+            onChange={(name, value) => setFormData(prev => ({ ...prev, [name]: value }))}
+          />
+          
+          <InvoiceParties
+            formData={formData}
+            clients={clients}
+            providers={providers}
+            onChange={(name, value) => setFormData(prev => ({ ...prev, [name]: value }))}
+          />
+          
+          <InvoiceItems
+            items={items}
+            onItemsChange={setItems}
+            currency={formData.currency}
+          />
+          
+          <InvoiceFooter
+            formData={formData}
+            totals={calculateTotals()}
+            onChange={(name, value) => setFormData(prev => ({ ...prev, [name]: value }))}
+          />
+        </div>
 
-      <div className="flex justify-end gap-3 pt-6 border-t border-gray-200 dark:border-gray-800">
-        <Button 
-          type="button" 
-          variant="outline" 
-          onClick={onCancel}
-          className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800"
-        >
-          {t("common:actions.cancel")}
-        </Button>
-        <Button 
-          type="submit" 
-          disabled={isLoading}
-          className="bg-primary hover:bg-primary/90"
-        >
-          {editingInvoice ? t("common:actions.update") : t("common:actions.create")}
-        </Button>
-      </div>
+        <div className="flex justify-end gap-4 pt-8 border-t">
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={onCancel}
+            size="lg"
+            className="min-w-[120px]"
+          >
+            {t("common:actions.cancel")}
+          </Button>
+          <Button 
+            type="submit" 
+            disabled={isLoading}
+            size="lg"
+            className="min-w-[120px]"
+          >
+            {editingInvoice ? t("common:actions.update") : t("common:actions.create")}
+          </Button>
+        </div>
+      </Card>
     </form>
   );
 };

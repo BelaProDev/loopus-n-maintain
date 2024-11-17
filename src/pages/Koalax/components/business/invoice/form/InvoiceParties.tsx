@@ -17,10 +17,10 @@ const InvoiceParties = ({ formData, clients, providers, onChange }: InvoiceParti
   const { t } = useTranslation(["admin"]);
 
   return (
-    <Card className="p-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">
+    <Card className="p-6 bg-muted/10">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="space-y-3">
+          <label className="text-base font-medium text-foreground">
             {t("admin:business.invoices.client")}
           </label>
           <Select
@@ -28,20 +28,20 @@ const InvoiceParties = ({ formData, clients, providers, onChange }: InvoiceParti
             value={formData.clientId}
             onValueChange={(value) => onChange("clientId", value)}
           >
-            <SelectTrigger>
+            <SelectTrigger className="h-12 text-lg">
               <SelectValue placeholder={t("admin:business.invoices.selectClient")} />
             </SelectTrigger>
             <SelectContent>
               {clients?.map((client) => (
-                <SelectItem key={client.id} value={client.id}>
+                <SelectItem key={client.id} value={client.id} className="text-base">
                   {client.name}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">
+        <div className="space-y-3">
+          <label className="text-base font-medium text-foreground">
             {t("admin:business.invoices.provider")}
           </label>
           <Select
@@ -49,12 +49,12 @@ const InvoiceParties = ({ formData, clients, providers, onChange }: InvoiceParti
             value={formData.providerId}
             onValueChange={(value) => onChange("providerId", value)}
           >
-            <SelectTrigger>
+            <SelectTrigger className="h-12 text-lg">
               <SelectValue placeholder={t("admin:business.invoices.selectProvider")} />
             </SelectTrigger>
             <SelectContent>
               {providers?.map((provider) => (
-                <SelectItem key={provider.id} value={provider.id}>
+                <SelectItem key={provider.id} value={provider.id} className="text-base">
                   {provider.name}
                 </SelectItem>
               ))}
