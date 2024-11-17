@@ -1,10 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { businessQueries } from "@/lib/fauna/business";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
 import { Invoice, InvoiceItem } from "@/types/business";
 import InvoiceHeader from "./InvoiceHeader";
