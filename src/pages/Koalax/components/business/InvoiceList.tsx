@@ -1,20 +1,21 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { businessQueries } from "@/lib/fauna/business";
-import InvoiceDialog from "./invoice/InvoiceDialog";
-import ImportInvoiceDialog from "./invoice/ImportInvoiceDialog";
+import InvoiceDialog from "./InvoiceDialog";
+import ImportInvoiceDialog from "./ImportInvoiceDialog";
 import { useTranslation } from "react-i18next";
 import { useInvoiceOperations } from "@/hooks/useInvoiceOperations";
-import InvoiceTable from "./invoice/InvoiceTable";
-import InvoiceToolbar from "./invoice/InvoiceToolbar";
+import InvoiceTable from "./InvoiceTable";
+import InvoiceToolbar from "./InvoiceToolbar";
 import { useToast } from "@/components/ui/use-toast";
+import type { Invoice } from "@/types/invoice";
 
 const InvoiceList = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
-  const [editingInvoice, setEditingInvoice] = useState(null);
+  const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null);
   const { t } = useTranslation(["admin", "common"]);
-  const { handleCreateInvoice, deleteMutation, isCreating } = useInvoiceOperations();
+  const { handleCreateInvoice, handleUpdateInvoice, deleteMutation, isCreating, isUpdating } = useInvoiceOperations();
   const { toast } = useToast();
 
   const { data: invoices = [], isLoading, error } = useQuery({
@@ -24,11 +25,12 @@ const InvoiceList = () => {
       if (!response) {
         throw new Error('Failed to fetch invoices');
       }
-      return response;
-    },
-    retry: 1,
-    staleTime: 30000, // Cache data for 30 seconds
-    refetchOnWindowFocus: false
+      return response.map(invoice => ({
+        ...invoice,
+        date: new Date(invoice.date).toISOString(),
+        dueDate: new Date(invoice.dueDate).toISOString()
+      }));
+    }
   });
 
   if (error) {
@@ -39,14 +41,27 @@ const InvoiceList = () => {
     });
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
-    const isPending = handleCreateInvoice(formData);
-    if (!isPending) {
+    
+    try {
+      if (editingInvoice) {
+        await handleUpdateInvoice(editingInvoice.id, formData);
+      } else {
+        await handleCreateInvoice(formData);
+      }
       setIsDialogOpen(false);
+      setEditingInvoice(null);
+    } catch (error) {
+      console.error('Error submitting invoice:', error);
     }
+  };
+
+  const handleEdit = (invoice: Invoice) => {
+    setEditingInvoice(invoice);
+    setIsDialogOpen(true);
   };
 
   return (
@@ -60,17 +75,12 @@ const InvoiceList = () => {
       />
 
       {isLoading ? (
-        <div className="flex justify-center items-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
-        </div>
-      ) : error ? (
-        <div className="text-center py-4 text-red-600">
-          {t("admin:business.invoices.fetchError")}
-        </div>
+        <div className="text-center py-4">{t("common:common.loading")}</div>
       ) : (
         <InvoiceTable 
           invoices={invoices}
           onDelete={(id) => deleteMutation.mutate(id)}
+          onEdit={handleEdit}
         />
       )}
 
@@ -79,7 +89,7 @@ const InvoiceList = () => {
         onOpenChange={setIsDialogOpen}
         editingInvoice={editingInvoice}
         onSubmit={handleSubmit}
-        isLoading={isCreating}
+        isLoading={isCreating || isUpdating}
       />
 
       <ImportInvoiceDialog

@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Hash, Plus } from "lucide-react";
 import { useState } from "react";
 import { ChatRoom } from "@/types/chat";
+import { cn } from "@/lib/utils";
 
 interface RoomsListProps {
   rooms: ChatRoom[];
