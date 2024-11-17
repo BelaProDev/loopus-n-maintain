@@ -7,6 +7,32 @@ const getFaunaClient = () => {
   return new Client({ secret });
 };
 
+const setupCollections = async (client: Client) => {
+  // Create chat_rooms collection if it doesn't exist
+  await client.query(fql`
+    if (!Collection.byName("chat_rooms")) {
+      Collection.create({
+        name: "chat_rooms",
+        indexes: {
+          by_name: { terms: [{ field: ["data", "name"] }] }
+        }
+      })
+    }
+  `);
+
+  // Create chat_messages collection if it doesn't exist
+  await client.query(fql`
+    if (!Collection.byName("chat_messages")) {
+      Collection.create({
+        name: "chat_messages",
+        indexes: {
+          by_room: { terms: [{ field: ["data", "roomId"] }] }
+        }
+      })
+    }
+  `);
+};
+
 export const handler: Handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
@@ -15,91 +41,54 @@ export const handler: Handler = async (event) => {
   try {
     const { action, data, roomId } = JSON.parse(event.body || '{}');
     const client = getFaunaClient();
-
-    // Ensure collections exist
-    await client.query(fql`
-      if (!Collection.byName("chat_rooms")) {
-        Collection.create({
-          name: "chat_rooms"
-        })
-      }
-    `);
-
-    await client.query(fql`
-      if (!Collection.byName("chat_messages")) {
-        Collection.create({
-          name: "chat_messages",
-          indexes: {
-            by_room: {
-              terms: [{ field: ["data", "roomId"] }]
-            }
-          }
-        })
-      }
-    `);
+    await setupCollections(client);
 
     switch (action) {
-      case 'list':
+      case 'list': {
         if (!roomId) {
           return { statusCode: 400, body: JSON.stringify({ error: 'Room ID required' }) };
         }
 
-        // First verify room exists
-        const room = await client.query(fql`
-          chat_rooms.firstWhere(.id == ${roomId})
-        `);
-
-        if (!room.data) {
-          return { statusCode: 404, body: JSON.stringify({ error: 'Room not found' }) };
-        }
-
         const messages = await client.query(fql`
           let messages = chat_messages.index("by_room").match(${roomId})
-          messages.order(-.timestamp).limit(100)
+          messages.order(-.timestamp).limit(50)
         `);
 
-        return { 
-          statusCode: 200, 
-          body: JSON.stringify({ 
+        return {
+          statusCode: 200,
+          body: JSON.stringify({
             data: messages.data.map(msg => ({
               id: msg.id,
               ...msg.data
             }))
-          }) 
+          })
         };
+      }
 
-      case 'create':
-        if (!data?.roomId || !data?.content) {
+      case 'create': {
+        if (!data?.roomId || !data?.content?.trim()) {
           return { statusCode: 400, body: JSON.stringify({ error: 'Room ID and content required' }) };
-        }
-
-        // Verify room exists before creating message
-        const roomExists = await client.query(fql`
-          chat_rooms.firstWhere(.id == ${data.roomId})
-        `);
-
-        if (!roomExists.data) {
-          return { statusCode: 404, body: JSON.stringify({ error: 'Room not found' }) };
         }
 
         const newMessage = await client.query(fql`
           chat_messages.create({
             roomId: ${data.roomId},
-            sender: ${data.sender},
-            content: ${data.content},
+            sender: ${data.sender || 'Anonymous'},
+            content: ${data.content.trim()},
             timestamp: Time.now()
           })
         `);
 
-        return { 
-          statusCode: 200, 
-          body: JSON.stringify({ 
+        return {
+          statusCode: 200,
+          body: JSON.stringify({
             data: {
               id: newMessage.data.id,
               ...newMessage.data
             }
-          }) 
+          })
         };
+      }
 
       default:
         return { statusCode: 400, body: JSON.stringify({ error: 'Invalid action' }) };
