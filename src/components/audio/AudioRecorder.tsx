@@ -1,36 +1,69 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Mic, Play, Square, Save } from "lucide-react";
 import { toast } from "sonner";
+import { initializeAudio } from '@/lib/audio/audioContext';
 
 const AudioRecorder = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [audioURL, setAudioURL] = useState<string | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
+  const streamRef = useRef<MediaStream | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+      }
+      if (audioURL) {
+        URL.revokeObjectURL(audioURL);
+      }
+    };
+  }, [audioURL]);
+
+  const initializeRecorder = async () => {
+    try {
+      await initializeAudio();
+      setIsInitialized(true);
+    } catch (err) {
+      toast.error("Could not initialize audio system");
+    }
+  };
 
   const startRecording = async () => {
     try {
+      if (!isInitialized) {
+        await initializeRecorder();
+      }
+
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaRecorderRef.current = new MediaRecorder(stream);
+      streamRef.current = stream;
       
-      mediaRecorderRef.current.ondataavailable = (e) => {
+      const recorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = recorder;
+      chunksRef.current = [];
+      
+      recorder.ondataavailable = (e) => {
         if (e.data.size > 0) {
           chunksRef.current.push(e.data);
         }
       };
 
-      mediaRecorderRef.current.onstop = () => {
+      recorder.onstop = () => {
         const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
+        if (audioURL) {
+          URL.revokeObjectURL(audioURL);
+        }
         const url = URL.createObjectURL(blob);
         setAudioURL(url);
         chunksRef.current = [];
       };
 
-      mediaRecorderRef.current.start();
+      recorder.start();
       setIsRecording(true);
-      
       toast.success("Recording Started");
     } catch (err) {
       toast.error("Could not access microphone");
@@ -41,7 +74,9 @@ const AudioRecorder = () => {
     if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
-      mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+      }
     }
   };
 
