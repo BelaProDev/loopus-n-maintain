@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { businessQueries } from "@/lib/fauna/business";
-import InvoiceDialog from "./InvoiceDialog";
-import ImportInvoiceDialog from "./ImportInvoiceDialog";
+import InvoiceDialog from "./invoice/InvoiceDialog";
+import ImportInvoiceDialog from "@/components/business/invoice/ImportInvoiceDialog";
 import { useTranslation } from "react-i18next";
 import { useInvoiceOperations } from "@/hooks/useInvoiceOperations";
-import InvoiceTable from "./InvoiceTable";
-import InvoiceToolbar from "./InvoiceToolbar";
+import InvoiceTable from "./invoice/InvoiceTable";
+import InvoiceToolbar from "./invoice/InvoiceToolbar";
 import { useToast } from "@/components/ui/use-toast";
 import type { Invoice } from "@/types/invoice";
 
