@@ -51,42 +51,45 @@ const Diagrams = () => {
             </p>
           </div>
 
-          <Tabs value={selectedTool} onValueChange={setSelectedTool}>
-            <TabsList className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <Tabs value={selectedTool} onValueChange={setSelectedTool} className="space-y-6">
+            <TabsList className="w-full h-auto p-4 grid grid-cols-2 lg:grid-cols-4 gap-4 bg-transparent">
               {tools.map((tool) => (
                 <TabsTrigger
                   key={tool.title.toLowerCase().replace(/\s+/g, "-")}
                   value={tool.title.toLowerCase().replace(/\s+/g, "-")}
-                  className="w-full"
+                  className="w-full p-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
                 >
-                  <div className="flex flex-col items-center gap-2 p-4">
-                    <tool.icon className="h-8 w-8" />
-                    <span className="font-medium">{tool.title}</span>
+                  <div className="flex flex-col items-center gap-3">
+                    <tool.icon className="h-10 w-10" />
+                    <span className="font-medium text-lg">{tool.title}</span>
+                    <p className="text-sm text-muted-foreground hidden lg:block">
+                      {tool.description}
+                    </p>
                   </div>
                 </TabsTrigger>
               ))}
             </TabsList>
 
-            <TabsContent value="system-architecture" className="mt-8">
-              <Card className="p-6">
+            <TabsContent value="system-architecture">
+              <Card className="p-0 overflow-hidden">
                 <SystemArchitectureEditor />
               </Card>
             </TabsContent>
 
-            <TabsContent value="network-diagram" className="mt-8">
-              <Card className="p-6">
+            <TabsContent value="network-diagram">
+              <Card className="p-0 overflow-hidden">
                 <NetworkDiagramEditor />
               </Card>
             </TabsContent>
 
-            <TabsContent value="database-schema" className="mt-8">
-              <Card className="p-6">
+            <TabsContent value="database-schema">
+              <Card className="p-0 overflow-hidden">
                 <DatabaseSchemaEditor />
               </Card>
             </TabsContent>
 
-            <TabsContent value="component-diagram" className="mt-8">
-              <Card className="p-6">
+            <TabsContent value="component-diagram">
+              <Card className="p-0 overflow-hidden">
                 <ComponentDiagramEditor />
               </Card>
             </TabsContent>

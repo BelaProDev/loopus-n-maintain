@@ -76,7 +76,6 @@ const SystemArchitectureEditor = () => {
   };
 
   const saveDiagram = () => {
-    // In a real implementation, this would save to a backend
     toast({
       title: "Diagram Saved",
       description: "Your system architecture diagram has been saved successfully.",
@@ -84,22 +83,24 @@ const SystemArchitectureEditor = () => {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex gap-4 mb-4">
-        <Button onClick={addNewNode} variant="outline">
-          <Plus className="w-4 h-4 mr-2" />
-          Add Node
-        </Button>
-        <Button onClick={clearDiagram} variant="outline">
-          <Trash2 className="w-4 h-4 mr-2" />
-          Clear
-        </Button>
-        <Button onClick={saveDiagram}>
+    <div className="flex flex-col h-[800px]">
+      <div className="flex items-center justify-between p-4 border-b">
+        <div className="flex gap-2">
+          <Button onClick={addNewNode} variant="outline" size="sm">
+            <Plus className="w-4 h-4 mr-2" />
+            Add Node
+          </Button>
+          <Button onClick={clearDiagram} variant="outline" size="sm">
+            <Trash2 className="w-4 h-4 mr-2" />
+            Clear
+          </Button>
+        </div>
+        <Button onClick={saveDiagram} size="sm">
           <Save className="w-4 h-4 mr-2" />
           Save
         </Button>
       </div>
-      <div style={{ height: '600px' }} className="rounded-lg border">
+      <div className="flex-1">
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -107,9 +108,10 @@ const SystemArchitectureEditor = () => {
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
           fitView
+          className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
         >
           <Background />
-          <Controls />
+          <Controls className="m-4" />
         </ReactFlow>
       </div>
     </div>
