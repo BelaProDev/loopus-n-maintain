@@ -1,12 +1,29 @@
 import { format } from "date-fns";
-import { cn } from "@/lib/utils";
 import { ChatMessage } from "@/types/chat";
 
 interface MessageListProps {
   messages: ChatMessage[];
+  isLoading: boolean;
 }
 
-const MessageList = ({ messages }: MessageListProps) => {
+const MessageList = ({ messages, isLoading }: MessageListProps) => {
+  if (isLoading) {
+    return (
+      <div className="space-y-4">
+        <div className="animate-pulse space-y-4">
+          <div className="space-y-2">
+            <div className="h-4 bg-muted rounded w-24" />
+            <div className="h-4 bg-muted rounded w-48" />
+          </div>
+          <div className="space-y-2">
+            <div className="h-4 bg-muted rounded w-24" />
+            <div className="h-4 bg-muted rounded w-64" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
       {messages.map((message) => (

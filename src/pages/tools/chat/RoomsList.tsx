@@ -14,9 +14,10 @@ interface RoomsListProps {
   activeRoom: string;
   onRoomSelect: (roomId: string) => void;
   onCreateRoom: (name: string, topic: string) => void;
+  isLoading: boolean;
 }
 
-const RoomsList = ({ rooms, activeRoom, onRoomSelect, onCreateRoom }: RoomsListProps) => {
+const RoomsList = ({ rooms, activeRoom, onRoomSelect, onCreateRoom, isLoading }: RoomsListProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [newRoomName, setNewRoomName] = useState("");
   const [newRoomTopic, setNewRoomTopic] = useState("");
@@ -28,6 +29,21 @@ const RoomsList = ({ rooms, activeRoom, onRoomSelect, onCreateRoom }: RoomsListP
     setNewRoomTopic("");
     setIsOpen(false);
   };
+
+  if (isLoading) {
+    return (
+      <div className="col-span-3 border-r border-border p-4">
+        <div className="animate-pulse space-y-4">
+          <div className="h-6 bg-muted rounded w-24" />
+          <div className="space-y-2">
+            <div className="h-10 bg-muted rounded" />
+            <div className="h-10 bg-muted rounded" />
+            <div className="h-10 bg-muted rounded" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="col-span-3 border-r border-border p-4">
