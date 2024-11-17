@@ -99,7 +99,6 @@ const App = () => {
                         <Route path="diagrams" element={<AsyncComponent><Diagrams /></AsyncComponent>} />
                         <Route path="analytics" element={<AsyncComponent><Analytics /></AsyncComponent>} />
                         <Route path="audio" element={<AsyncComponent><Audio /></AsyncComponent>} />
-                        <Route path="invoicing" element={<AsyncComponent><Invoicing /></AsyncComponent>} />
                         <Route path="chat" element={<AsyncComponent><Chat /></AsyncComponent>} />
                         <Route path="photo-gallery" element={<AsyncComponent><PhotoGallery /></AsyncComponent>} />
                       </Route>
@@ -112,6 +111,9 @@ const App = () => {
                         <Route path="business/*" element={<BusinessManagement />} />
                         <Route path="messages" element={<MessageManagement />} />
                       </Route>
+
+                      {/* Business Routes - Replaces /tools/invoicing */}
+                      <Route path="/business/*" element={<AsyncComponent><BusinessManagement /></AsyncComponent>} />
                       
                       <Route path="/docs" element={<Documentation />} />
                       <Route path="/dropbox-explorer" element={<DropboxExplorer />} />

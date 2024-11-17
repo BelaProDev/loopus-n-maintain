@@ -1,61 +1,100 @@
-import { Button } from "@/components/ui/button";
-import { FileText, GitBranch, BarChart, Music, FileCheck, MessageCircle, Activity, Database, Server, Cog, Settings, Home, Mail, BookOpen, FolderOpen, Image } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { useAuth } from "@/contexts/AuthContext";
-import { useTranslation } from "react-i18next";
-
-const allLinks = [
-  { icon: Home, label: "Home", path: "/" },
-  { icon: Activity, label: "Electrics", path: "/electrics" },
-  { icon: Database, label: "Plumbing", path: "/plumbing" },
-  { icon: Server, label: "Ironwork", path: "/ironwork" },
-  { icon: Cog, label: "Woodwork", path: "/woodwork" },
-  { icon: Settings, label: "Architecture", path: "/architecture" },
-  { icon: FileText, label: "Documents", path: "/tools/documents" },
-  { icon: GitBranch, label: "Diagrams", path: "/tools/diagrams" },
-  { icon: BarChart, label: "Analytics", path: "/tools/analytics" },
-  { icon: Music, label: "Audio", path: "/tools/audio" },
-  { icon: FileCheck, label: "Invoicing", path: "/tools/invoicing" },
-  { icon: MessageCircle, label: "Chat", path: "/tools/chat" },
-  { icon: Image, label: "Photo Gallery", path: "/tools/photo-gallery" },
-  { icon: BookOpen, label: "Documentation", path: "/docs" },
-  { icon: FolderOpen, label: "Dropbox Explorer", path: "/dropbox-explorer" },
-  { icon: Settings, label: "Admin", path: "/admin" },
-  { icon: Mail, label: "Email Management", path: "/admin/emails" }
-];
+import ToolCard from "@/components/ToolCard";
+import { FileText, GitGraph, BarChart, Music, Building2, MessageSquare, Image } from "lucide-react";
+import ServiceCard from "@/components/ServiceCard";
 
 const Index = () => {
-  const { isAuthenticated } = useAuth();
-  const { t } = useTranslation(["common", "tools", "auth", "services"]);
+  const { t } = useTranslation(["common", "services", "tools"]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen">
       <Header />
-      <main className="flex-1">
-        <div className="container mx-auto px-4 py-16">
-          <div className="mb-16 bg-white/50 dark:bg-gray-800/50 rounded-lg p-8 backdrop-blur-sm">
-            <h2 className="text-3xl font-bold mb-8 text-center">TOOLS AND FEATURES</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {allLinks.map((link) => {
-                const Icon = link.icon;
-                return (
-                  <Link
-                    key={link.path}
-                    to={link.path}
-                    className="flex items-center p-4 rounded-lg bg-white/50 dark:bg-gray-700/50 hover:bg-white/80 dark:hover:bg-gray-600/80 transition-all group"
-                  >
-                    <div className="p-2 rounded-full bg-primary/10 group-hover:bg-primary/20 mr-3">
-                      <Icon className="h-5 w-5 text-primary" />
-                    </div>
-                    <span className="font-medium">{link.label}</span>
-                  </Link>
-                );
-              })}
-            </div>
+      <main className="container mx-auto px-4 py-8">
+        <section>
+          <h1 className="text-4xl font-bold mb-8">{t("common:welcome")}</h1>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <ServiceCard
+              title={t("services:electrical.title")}
+              description={t("services:electrical.description")}
+              to="/electrics"
+              image="/images/services/electrical.jpg"
+            />
+            <ServiceCard
+              title={t("services:plumbing.title")}
+              description={t("services:plumbing.description")}
+              to="/plumbing"
+              image="/images/services/plumbing.jpg"
+            />
+            <ServiceCard
+              title={t("services:ironwork.title")}
+              description={t("services:ironwork.description")}
+              to="/ironwork"
+              image="/images/services/ironwork.jpg"
+            />
+            <ServiceCard
+              title={t("services:woodworking.title")}
+              description={t("services:woodworking.description")}
+              to="/woodwork"
+              image="/images/services/woodworking.jpg"
+            />
+            <ServiceCard
+              title={t("services:architecture.title")}
+              description={t("services:architecture.description")}
+              to="/architecture"
+              image="/images/services/architecture.jpg"
+            />
           </div>
-        </div>
+        </section>
+        
+        <section className="mt-16">
+          <h2 className="text-3xl font-bold mb-8">{t("tools.title")}</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <ToolCard
+              title={t("tools.documents.title")}
+              description={t("tools.documents.description")}
+              icon={FileText}
+              to="/tools/documents"
+            />
+            <ToolCard
+              title={t("tools.diagrams.title")}
+              description={t("tools.diagrams.description")}
+              icon={GitGraph}
+              to="/tools/diagrams"
+            />
+            <ToolCard
+              title={t("tools.analytics.title")}
+              description={t("tools.analytics.description")}
+              icon={BarChart}
+              to="/tools/analytics"
+            />
+            <ToolCard
+              title={t("tools.audio.title")}
+              description={t("tools.audio.description")}
+              icon={Music}
+              to="/tools/audio"
+            />
+            <ToolCard
+              title={t("tools.business.title")}
+              description={t("tools.business.description")}
+              icon={Building2}
+              to="/business"
+            />
+            <ToolCard
+              title={t("tools.chat.title")}
+              description={t("tools.chat.description")}
+              icon={MessageSquare}
+              to="/tools/chat"
+            />
+            <ToolCard
+              title={t("tools.photoGallery.title")}
+              description={t("tools.photoGallery.description")}
+              icon={Image}
+              to="/tools/photo-gallery"
+            />
+          </div>
+        </section>
       </main>
       <Footer />
     </div>
