@@ -8,6 +8,7 @@ import SynthControls from './SynthControls';
 import EffectProcessor from './EffectProcessor';
 import TransportControls from './TransportControls';
 import SynthHeader from './SynthHeader';
+import { initializeAudio } from '@/lib/audio/audioContext';
 
 const Synthesizer = () => {
   const [isAudioInitialized, setIsAudioInitialized] = useState(false);
@@ -16,53 +17,72 @@ const Synthesizer = () => {
   const [bpm, setBpm] = useState(120);
   const [currentStep, setCurrentStep] = useState(0);
   const [isRecording, setIsRecording] = useState(false);
+  const [steps, setSteps] = useState(Array(8).fill(Array(4).fill({ active: false, note: 'C4' })));
 
   const synthRef = useRef<Tone.Synth | null>(null);
   const analyserRef = useRef<Tone.Analyser | null>(null);
 
-  const setupAudio = async () => {
-    try {
-      await Tone.start();
-      
-      // Create a basic synth with simple settings
-      const synth = new Tone.Synth({
-        oscillator: {
-          type: 'sine'
-        },
-        envelope: {
-          attack: 0.1,
-          decay: 0.2,
-          sustain: 0.5,
-          release: 1
-        }
-      }).toDestination();
-      
-      const analyser = new Tone.Analyser('waveform', 128);
-      synth.connect(analyser);
-      
-      synthRef.current = synth;
-      analyserRef.current = analyser;
-      setIsAudioInitialized(true);
-      toast.success("Audio initialized successfully");
+  useEffect(() => {
+    const setupAudio = async () => {
+      try {
+        await initializeAudio();
+        
+        const synth = new Tone.Synth({
+          oscillator: {
+            type: 'sine'
+          },
+          envelope: {
+            attack: 0.1,
+            decay: 0.2,
+            sustain: 0.5,
+            release: 1
+          }
+        });
 
-      // Simple animation frame for visualizer
-      const updateVisualizer = () => {
-        if (analyserRef.current) {
-          const data = analyserRef.current.getValue();
-          setAudioData(Array.from(data));
-        }
-        requestAnimationFrame(updateVisualizer);
-      };
+        const analyser = new Tone.Analyser('waveform', 128);
+        synth.connect(analyser);
+        synth.toDestination();
+        
+        synthRef.current = synth;
+        analyserRef.current = analyser;
+        setIsAudioInitialized(true);
+        toast.success("Audio initialized successfully");
+
+      } catch (error) {
+        console.error('Audio setup failed:', error);
+        toast.error("Failed to initialize audio");
+      }
+    };
+
+    setupAudio();
+
+    return () => {
+      if (synthRef.current) {
+        synthRef.current.dispose();
+      }
+      if (analyserRef.current) {
+        analyserRef.current.dispose();
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const updateVisualizer = () => {
+      if (analyserRef.current) {
+        const data = analyserRef.current.getValue();
+        // Convert Float32Array to regular array of numbers
+        setAudioData(Array.from(data as Float32Array));
+      }
+      requestAnimationFrame(updateVisualizer);
+    };
+    
+    if (isAudioInitialized) {
       updateVisualizer();
-
-    } catch (error) {
-      console.error('Audio setup failed:', error);
-      toast.error("Failed to initialize audio");
     }
-  };
+  }, [isAudioInitialized]);
 
   const handleInitAudio = async () => {
-    await setupAudio();
+    await initializeAudio();
   };
 
   const handlePlayStop = () => {
@@ -76,6 +96,18 @@ const Synthesizer = () => {
     } else {
       Tone.Transport.stop();
     }
+  };
+
+  const onStepToggle = (stepIndex: number, rowIndex: number) => {
+    const newSteps = [...steps];
+    newSteps[stepIndex][rowIndex].active = !newSteps[stepIndex][rowIndex].active;
+    setSteps(newSteps);
+  };
+
+  const onNoteChange = (stepIndex: number, rowIndex: number, note: string) => {
+    const newSteps = [...steps];
+    newSteps[stepIndex][rowIndex].note = note;
+    setSteps(newSteps);
   };
 
   if (!isAudioInitialized) {
@@ -104,6 +136,10 @@ const Synthesizer = () => {
         bpm={bpm}
         isPlaying={isPlaying}
         onBPMChange={setBpm}
+        steps={steps}
+        currentStep={currentStep}
+        onStepToggle={onStepToggle}
+        onNoteChange={onNoteChange}
         effectParams={{
           filterFreq: 1000,
           filterRes: 1,
