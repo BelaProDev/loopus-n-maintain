@@ -1,35 +1,24 @@
 import * as Tone from 'tone';
 
-let audioContext: AudioContext | null = null;
-
-export const getAudioContext = async () => {
-  if (!audioContext) {
-    audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-    await Tone.start();
-    Tone.setContext(audioContext);
-  }
-  return audioContext;
-};
-
 export const initializeAudio = async () => {
-  const context = await getAudioContext();
-  if (context.state !== 'running') {
-    await context.resume();
-  }
-  await Tone.loaded();
-  return context;
-};
-
-export const disposeAudioContext = () => {
-  if (audioContext) {
-    audioContext.close();
-    audioContext = null;
+  try {
+    await Tone.start();
+    if (Tone.context.state !== 'running') {
+      await Tone.context.resume();
+    }
+    await Tone.loaded();
+    return Tone.context;
+  } catch (error) {
+    console.error('Failed to initialize audio context:', error);
+    throw error;
   }
 };
 
-export const createBufferLoader = async (url: string) => {
-  const context = await getAudioContext();
-  const response = await fetch(url);
-  const arrayBuffer = await response.arrayBuffer();
-  return await context.decodeAudioData(arrayBuffer);
+export const createAudioBuffer = async (url: string) => {
+  try {
+    return await Tone.Buffer.fromUrl(url);
+  } catch (error) {
+    console.error('Failed to load audio buffer:', error);
+    throw error;
+  }
 };

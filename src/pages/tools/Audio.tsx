@@ -3,7 +3,7 @@ import { Music } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useTranslation } from "react-i18next";
-import Synthesizer from "@/components/audio/Synthesizer";
+import SynthesizerCore from "@/components/audio/synth/SynthesizerCore";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DrumSequencer from "@/components/audio/DrumSequencer";
 import { useState } from "react";
@@ -35,7 +35,7 @@ const AudioStudio = () => {
             </TabsList>
 
             <TabsContent value="synth">
-              <Synthesizer />
+              <SynthesizerCore />
             </TabsContent>
 
             <TabsContent value="drums">
