@@ -15,11 +15,10 @@ const ServiceCard = ({ title, description, to, image }: ServiceCardProps) => {
   const { isAuthenticated } = useAuth();
   const { t } = useTranslation();
   
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!isAuthenticated) {
       e.preventDefault();
       toast({
-        title: t("common:auth.required"),
         description: t("common:auth.signInToAccess")
       });
     }
