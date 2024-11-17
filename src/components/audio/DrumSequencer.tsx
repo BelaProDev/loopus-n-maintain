@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Drum } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { initializeAudio } from '@/lib/audio/audioContext';
+import { toast } from "sonner";
 
 interface DrumStep {
   active: boolean;
@@ -24,58 +25,65 @@ const DrumSequencer = ({ bpm, isPlaying }: { bpm: number; isPlaying: boolean }) 
 
   useEffect(() => {
     const setupDrumSynths = async () => {
-      await initializeAudio();
-      
-      const kick = new Tone.MembraneSynth({
-        pitchDecay: 0.05,
-        octaves: 5,
-        oscillator: { type: 'sine' },
-        envelope: {
-          attack: 0.001,
-          decay: 0.4,
-          sustain: 0.01,
-          release: 1.4,
-        }
-      }).toDestination();
+      try {
+        await initializeAudio();
+        
+        const kick = new Tone.MembraneSynth({
+          pitchDecay: 0.05,
+          octaves: 5,
+          oscillator: { type: 'sine' },
+          envelope: {
+            attack: 0.001,
+            decay: 0.4,
+            sustain: 0.01,
+            release: 1.4,
+          }
+        }).toDestination();
 
-      const snare = new Tone.NoiseSynth({
-        noise: { type: 'white' },
-        envelope: {
-          attack: 0.001,
-          decay: 0.2,
-          sustain: 0,
-          release: 0.2
-        }
-      }).toDestination();
+        const snare = new Tone.NoiseSynth({
+          noise: { type: 'white' },
+          envelope: {
+            attack: 0.001,
+            decay: 0.2,
+            sustain: 0,
+            release: 0.2
+          }
+        }).toDestination();
 
-      const hihat = new Tone.MetalSynth({
-        harmonicity: 5.1,
-        modulationIndex: 32,
-        resonance: 4000,
-        octaves: 1.5,
-        envelope: {
-          attack: 0.001,
-          decay: 0.1,
-          release: 0.01
-        }
-      }).toDestination();
+        const hihat = new Tone.MetalSynth({
+          harmonicity: 5.1,
+          modulationIndex: 32,
+          resonance: 4000,
+          octaves: 1.5,
+          envelope: {
+            attack: 0.001,
+            decay: 0.1,
+            release: 0.01
+          }
+        }).toDestination();
 
-      const clap = new Tone.NoiseSynth({
-        noise: { type: 'pink' },
-        envelope: {
-          attack: 0.001,
-          decay: 0.3,
-          sustain: 0,
-          release: 0.1
-        }
-      }).toDestination();
+        const clap = new Tone.NoiseSynth({
+          noise: { type: 'pink' },
+          envelope: {
+            attack: 0.001,
+            decay: 0.3,
+            sustain: 0,
+            release: 0.1
+          }
+        }).toDestination();
 
-      setTracks([
-        { name: 'Kick', synth: kick, steps: Array(16).fill({ active: false, velocity: 0.7 }) },
-        { name: 'Snare', synth: snare, steps: Array(16).fill({ active: false, velocity: 0.7 }) },
-        { name: 'HiHat', synth: hihat, steps: Array(16).fill({ active: false, velocity: 0.7 }) },
-        { name: 'Clap', synth: clap, steps: Array(16).fill({ active: false, velocity: 0.7 }) }
-      ]);
+        setTracks([
+          { name: 'Kick', synth: kick, steps: Array(16).fill({ active: false, velocity: 0.7 }) },
+          { name: 'Snare', synth: snare, steps: Array(16).fill({ active: false, velocity: 0.7 }) },
+          { name: 'HiHat', synth: hihat, steps: Array(16).fill({ active: false, velocity: 0.7 }) },
+          { name: 'Clap', synth: clap, steps: Array(16).fill({ active: false, velocity: 0.7 }) }
+        ]);
+
+        toast.success("Drum machine initialized");
+      } catch (error) {
+        console.error('Failed to initialize drum synths:', error);
+        toast.error("Failed to initialize drum machine");
+      }
     };
 
     setupDrumSynths();
@@ -86,6 +94,8 @@ const DrumSequencer = ({ bpm, isPlaying }: { bpm: number; isPlaying: boolean }) 
   }, []);
 
   useEffect(() => {
+    if (!tracks.length) return;
+
     const seq = new Tone.Sequence(
       (time, step) => {
         setCurrentStep(step);
@@ -133,7 +143,7 @@ const DrumSequencer = ({ bpm, isPlaying }: { bpm: number; isPlaying: boolean }) 
   };
 
   return (
-    <Card className="p-6 space-y-4">
+    <Card className="p-6 space-y-4 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex items-center justify-between">
         <h3 className="text-xl font-semibold flex items-center gap-2">
           <Drum className="h-5 w-5" />
@@ -152,13 +162,16 @@ const DrumSequencer = ({ bpm, isPlaying }: { bpm: number; isPlaying: boolean }) 
                     <Button
                       variant={step.active ? "default" : "outline"}
                       size="sm"
-                      className={`w-full h-8 p-0 ${currentStep === stepIndex ? 'ring-2 ring-primary' : ''}`}
+                      className={`w-full h-8 p-0 transition-all ${
+                        currentStep === stepIndex ? 'ring-2 ring-primary animate-pulse' : ''
+                      }`}
                       onClick={() => toggleStep(trackIndex, stepIndex)}
                     >
                       <div
-                        className="w-full h-full bg-primary/50"
+                        className="absolute inset-0 bg-primary/50 transition-all"
                         style={{
-                          opacity: step.active ? step.velocity : 0.3
+                          opacity: step.active ? step.velocity : 0.1,
+                          transform: `scaleY(${step.velocity})`
                         }}
                       />
                     </Button>
