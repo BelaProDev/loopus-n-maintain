@@ -22,7 +22,7 @@ const InvoiceDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-6">
+      <DialogContent className="bg-background border shadow-lg max-w-4xl max-h-[90vh] overflow-y-auto p-6">
         <DialogHeader className="space-y-2">
           <DialogTitle className="text-2xl font-semibold">
             {editingInvoice ? t("admin:business.invoices.edit") : t("admin:business.invoices.add")}
