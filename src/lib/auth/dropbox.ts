@@ -9,6 +9,7 @@ const REDIRECT_URI = `${window.location.origin}/dropbox-explorer/callback`;
 class DropboxAuth {
   private static instance: DropboxAuth;
   private tokenRefreshTimeout: NodeJS.Timeout | null = null;
+  private refreshPromise: Promise<string> | null = null;
 
   private constructor() {}
 
@@ -93,34 +94,52 @@ class DropboxAuth {
     // Refresh 5 minutes before expiry
     const refreshTime = (expiresIn - 300) * 1000;
     this.tokenRefreshTimeout = setTimeout(() => {
-      this.refreshToken(localStorage.getItem('dropbox_refresh_token') || '');
+      const refreshToken = localStorage.getItem('dropbox_refresh_token');
+      if (refreshToken) {
+        this.refreshToken(refreshToken).catch(console.error);
+      }
     }, refreshTime);
   }
 
   async refreshToken(refresh_token: string): Promise<string> {
-    const response = await fetch(DROPBOX_TOKEN_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        grant_type: 'refresh_token',
-        refresh_token,
-        client_id: CLIENT_ID || '',
-        client_secret: CLIENT_SECRET || ''
-      })
-    });
-
-    if (!response.ok) {
-      this.logout();
-      throw new Error('Failed to refresh token');
+    // If there's already a refresh in progress, return that promise
+    if (this.refreshPromise) {
+      return this.refreshPromise;
     }
 
-    const data = await response.json();
-    this.saveTokens(data);
-    this.scheduleTokenRefresh(data.expires_in);
-    
-    return data.access_token;
+    this.refreshPromise = (async () => {
+      try {
+        const response = await fetch(DROPBOX_TOKEN_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({
+            grant_type: 'refresh_token',
+            refresh_token,
+            client_id: CLIENT_ID || '',
+            client_secret: CLIENT_SECRET || ''
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to refresh token');
+        }
+
+        const data = await response.json();
+        this.saveTokens(data);
+        this.scheduleTokenRefresh(data.expires_in);
+        
+        return data.access_token;
+      } catch (error) {
+        this.logout();
+        throw error;
+      } finally {
+        this.refreshPromise = null;
+      }
+    })();
+
+    return this.refreshPromise;
   }
 
   async getValidAccessToken(): Promise<string | null> {
@@ -130,11 +149,13 @@ class DropboxAuth {
 
     if (!accessToken || !refreshToken) return null;
 
+    // If token is expired or will expire in the next minute
     if (expiry && Number(expiry) <= Date.now() + 60000) {
       try {
         return await this.refreshToken(refreshToken);
       } catch (error) {
         console.error('Token refresh error:', error);
+        this.logout();
         return null;
       }
     }
@@ -150,6 +171,7 @@ class DropboxAuth {
     localStorage.removeItem('dropbox_refresh_token');
     localStorage.removeItem('dropbox_token_expiry');
     localStorage.removeItem('dropbox_state');
+    this.refreshPromise = null;
   }
 
   isAuthenticated(): boolean {
