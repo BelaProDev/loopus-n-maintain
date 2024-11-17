@@ -2,7 +2,7 @@
   "title": "Documentation",
   "overview": {
     "title": "Overview",
-    "description": "Welcome to Loopus & Maintain - our professional building maintenance platform. Our PWA helps coordinate maintenance services efficiently and effectively."
+    "description": "Welcome to our professional building maintenance and digital tools platform. Our PWA helps coordinate services efficiently while providing powerful digital tools for business management."
   },
   "features": {
     "title": "Features",
@@ -16,17 +16,31 @@
     },
     "tools": {
       "title": "Digital Tools",
-      "documents": "Document Management",
-      "diagrams": "System Diagrams",
-      "analytics": "Data Analytics",
-      "audio": "Audio Studio",
-      "invoicing": "Invoice Management",
-      "chat": "Community Chat",
-      "gallery": "Photo Gallery"
+      "documents": {
+        "title": "Document Management",
+        "dropboxLens": "Advanced document search and organization",
+        "mediaGallery": "Photo and video management"
+      },
+      "diagrams": {
+        "title": "System Designer",
+        "types": ["System Architecture", "Network Infrastructure", "Database Schema", "Component Interaction"]
+      },
+      "audio": {
+        "title": "Audio Studio",
+        "features": ["Modular Synthesis", "Step Sequencer", "Effects Processing", "Recording"]
+      },
+      "invoicing": {
+        "title": "Invoice Management",
+        "features": ["Generation", "Templates", "Tracking", "Reporting"]
+      },
+      "chat": {
+        "title": "Community Hub",
+        "features": ["Chat Rooms", "File Sharing", "Notifications", "Search"]
+      }
     },
     "admin": {
       "title": "Admin Features",
-      "docs": "Documentation",
+      "docs": "Documentation Management",
       "dropbox": "Dropbox Integration",
       "admin": "Admin Panel",
       "email": "Email Management"
@@ -38,9 +52,19 @@
       "title": "Tech Stack",
       "frontend": "React + TypeScript",
       "query": "TanStack Query",
-      "styling": "Tailwind CSS",
-      "ui": "shadcn/ui",
-      "i18n": "i18next"
+      "styling": "Tailwind CSS + shadcn/ui",
+      "storage": "Dropbox API Integration",
+      "database": "FaunaDB",
+      "audio": "Tone.js",
+      "diagrams": "React Flow"
+    },
+    "features": {
+      "title": "Technical Features",
+      "responsive": "Fully responsive design",
+      "offline": "Offline capabilities",
+      "realtime": "Real-time updates",
+      "secure": "Secure authentication",
+      "i18n": "Internationalization"
     }
   }
 }

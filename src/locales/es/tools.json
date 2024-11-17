@@ -2,26 +2,62 @@
   "title": "Herramientas Digitales",
   "documents": {
     "title": "Gestor de Documentos",
-    "description": "Crea, edita y gestiona tus documentos con potentes funciones de colaboración. Integración perfecta con Dropbox para almacenamiento y compartición seguros."
+    "description": "Crea, edita y gestiona tus documentos con potentes funciones de colaboración.",
+    "features": {
+      "dropboxLens": "Búsqueda y organización avanzada de documentos",
+      "mediaGallery": "Gestión de fotos y videos",
+      "sharing": "Compartición segura de archivos",
+      "versioning": "Control de versiones de documentos"
+    }
   },
   "diagrams": {
-    "title": "Diagramas UML",
-    "description": "Diseña y visualiza arquitecturas de sistemas con nuestro creador intuitivo de diagramas UML. Crea diagramas de flujo, secuencia y más."
+    "title": "Diseñador de Sistemas",
+    "description": "Diseña y visualiza arquitecturas de sistemas con nuestras herramientas profesionales.",
+    "features": {
+      "systemArchitecture": "Diagramas de arquitectura",
+      "networkDiagrams": "Mapeo de infraestructura",
+      "databaseSchemas": "Diseño de esquemas de base de datos",
+      "componentDiagrams": "Modelado de interacción de componentes"
+    }
   },
   "analytics": {
     "title": "Panel de Análisis",
-    "description": "Sigue tendencias y analiza stacks tecnológicos con herramientas completas de visualización de datos. Obtén información de tus datos empresariales."
+    "description": "Seguimiento de tendencias y análisis con herramientas completas de visualización.",
+    "features": {
+      "realtime": "Monitoreo en tiempo real",
+      "reports": "Generación de informes",
+      "insights": "Inteligencia empresarial",
+      "export": "Exportación de datos"
+    }
   },
   "audio": {
     "title": "Estudio de Audio",
-    "description": "Crea y edita audio con sintetizadores modulares y herramientas profesionales de mezcla. Graba, edita y exporta audio de alta calidad."
+    "description": "Suite profesional de creación y edición de audio con sintetizadores modulares.",
+    "features": {
+      "synthesizer": "Sintetizador modular",
+      "sequencer": "Secuenciador por pasos",
+      "effects": "Efectos de audio profesionales",
+      "recording": "Grabación multipista"
+    }
   },
   "invoicing": {
     "title": "Gestor de Facturas",
-    "description": "Genera, gestiona y realiza seguimiento de facturas con nuestro completo conjunto de herramientas empresariales. Automatiza tu proceso de facturación."
+    "description": "Conjunto completo de herramientas para gestión de facturas y seguimiento financiero.",
+    "features": {
+      "creation": "Generación de facturas",
+      "templates": "Plantillas personalizadas",
+      "tracking": "Seguimiento de pagos",
+      "reporting": "Informes financieros"
+    }
   },
   "chat": {
-    "title": "Chat Comunitario",
-    "description": "Conéctate con otros miembros en tiempo real a través de nuestro moderno sistema de chat. Comparte ideas, obtén ayuda y construye relaciones."
+    "title": "Centro Comunitario",
+    "description": "Plataforma de comunicación en tiempo real para la comunidad.",
+    "features": {
+      "rooms": "Salas de chat temáticas",
+      "sharing": "Compartición de archivos",
+      "notifications": "Notificaciones en tiempo real",
+      "search": "Búsqueda de mensajes"
+    }
   }
 }

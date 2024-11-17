@@ -2,26 +2,62 @@
   "title": "Digital Tools",
   "documents": {
     "title": "Document Manager",
-    "description": "Create, edit and manage your documents with powerful collaboration features. Seamlessly integrate with Dropbox for secure storage and sharing."
+    "description": "Create, edit and manage your documents with powerful collaboration features. Seamlessly integrate with Dropbox for secure storage and sharing.",
+    "features": {
+      "dropboxLens": "Advanced document search and organization",
+      "mediaGallery": "Photo and video management",
+      "sharing": "Secure file sharing",
+      "versioning": "Document version control"
+    }
   },
   "diagrams": {
-    "title": "UML Diagrams",
-    "description": "Design and visualize system architectures with our intuitive UML diagram creator. Create flowcharts, sequence diagrams, and more."
+    "title": "System Designer",
+    "description": "Design and visualize system architectures with our professional diagram tools.",
+    "features": {
+      "systemArchitecture": "System architecture diagrams",
+      "networkDiagrams": "Network infrastructure mapping",
+      "databaseSchemas": "Database schema design",
+      "componentDiagrams": "Component interaction modeling"
+    }
   },
   "analytics": {
     "title": "Analytics Dashboard",
-    "description": "Track trends and analyze tech stacks with comprehensive data visualization tools. Get insights from your business data."
+    "description": "Track trends and analyze tech stacks with comprehensive data visualization tools.",
+    "features": {
+      "realtime": "Real-time data monitoring",
+      "reports": "Custom report generation",
+      "insights": "Business intelligence",
+      "export": "Data export capabilities"
+    }
   },
   "audio": {
     "title": "Audio Studio",
-    "description": "Create and edit audio with modular synthesizers and professional mixing tools. Record, edit, and export high-quality audio."
+    "description": "Professional audio creation and editing suite with modular synthesizers.",
+    "features": {
+      "synthesizer": "Modular synthesizer",
+      "sequencer": "Step sequencer",
+      "effects": "Professional audio effects",
+      "recording": "Multi-track recording"
+    }
   },
   "invoicing": {
     "title": "Invoice Manager",
-    "description": "Generate, manage and track invoices with our complete business toolkit. Automate your billing process and financial reporting."
+    "description": "Comprehensive business toolkit for invoice management and financial tracking.",
+    "features": {
+      "creation": "Invoice generation",
+      "templates": "Custom templates",
+      "tracking": "Payment tracking",
+      "reporting": "Financial reporting"
+    }
   },
   "chat": {
-    "title": "Community Chat",
-    "description": "Connect with other members in real-time through our modern chat system. Share ideas, get help, and build relationships."
+    "title": "Community Hub",
+    "description": "Real-time communication platform for community engagement.",
+    "features": {
+      "rooms": "Topic-based chat rooms",
+      "sharing": "File sharing",
+      "notifications": "Real-time notifications",
+      "search": "Message search"
+    }
   }
 }
