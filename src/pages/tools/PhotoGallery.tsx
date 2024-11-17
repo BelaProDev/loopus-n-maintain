@@ -12,9 +12,10 @@ import { ImageEditor } from './photo-gallery/ImageEditor';
 import { NavigationBreadcrumb } from '../DropboxExplorer/components/NavigationBreadcrumb';
 import { toast } from 'sonner';
 import { getMediaType } from '@/lib/utils/fileUtils';
+import { sanitizePath } from '@/lib/utils/pathUtils';
 
 const PhotoGallery = () => {
-  const [currentPath, setCurrentPath] = useState('/');
+  const [currentPath, setCurrentPath] = useState('');
   const [selectedMedia, setSelectedMedia] = useState<string | null>(null);
   const { client, isAuthenticated, connect } = useDropbox();
   const [files, setFiles] = useState<any[]>([]);
@@ -57,11 +58,13 @@ const PhotoGallery = () => {
     }
 
     try {
+      const uploadPath = sanitizePath(`${currentPath}/${file.name}`);
+      
       const reader = new FileReader();
       reader.onload = async () => {
         const arrayBuffer = reader.result as ArrayBuffer;
         await client.filesUpload({
-          path: `${currentPath}/${file.name}`,
+          path: uploadPath,
           contents: arrayBuffer,
           mode: { '.tag': 'add' },
           autorename: true

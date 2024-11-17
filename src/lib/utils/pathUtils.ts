@@ -2,8 +2,10 @@
  * Sanitizes a file path for Dropbox API
  */
 export const sanitizePath = (path: string): string => {
-  if (!path || path === '/') return '';
-  return `/${path.replace(/\/+/g, '/').replace(/^\/|\/$/g, '')}`;
+  // Remove multiple consecutive slashes and trim slashes from start/end
+  const cleanPath = path.replace(/\/+/g, '/').replace(/^\/+|\/+$/g, '');
+  // Ensure the path starts with a forward slash for Dropbox API
+  return cleanPath ? `/${cleanPath}` : '';
 };
 
 /**
