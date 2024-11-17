@@ -11,14 +11,23 @@ const InvoiceToolbar = ({ onCreateClick, onImportClick }: InvoiceToolbarProps) =
   const { t } = useTranslation(["admin"]);
 
   return (
-    <div className="flex justify-between items-center">
-      <h2 className="text-2xl font-bold">{t("admin:business.invoices.title")}</h2>
-      <div className="space-x-2">
-        <Button onClick={onImportClick} variant="outline">
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+      <h2 className="text-2xl font-semibold tracking-tight">
+        {t("admin:business.invoices.title")}
+      </h2>
+      <div className="flex flex-wrap gap-3">
+        <Button 
+          onClick={onImportClick} 
+          variant="outline"
+          className="h-9"
+        >
           <Upload className="w-4 h-4 mr-2" />
-          Import CSV
+          {t("admin:business.invoices.import")}
         </Button>
-        <Button onClick={onCreateClick}>
+        <Button 
+          onClick={onCreateClick}
+          className="h-9"
+        >
           <Plus className="w-4 h-4 mr-2" />
           {t("admin:business.invoices.add")}
         </Button>
