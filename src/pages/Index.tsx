@@ -37,11 +37,6 @@ const Index = () => {
         <div className="bg-gradient-primary text-white py-16 md:py-24">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl flex flex-col gap-6 animate-fade-in">
-              <img 
-                src="/forest-lidar.png" 
-                alt="Forest Lidar Logo" 
-                className="h-16 w-auto border-[3px] border-primary rounded-lg mb-4"
-              />
               {!isAuthenticated && (
                 <Link to="/login">
                   <Button 
