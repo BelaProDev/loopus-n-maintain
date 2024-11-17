@@ -8,64 +8,48 @@ import SynthControls from './SynthControls';
 import EffectProcessor from './EffectProcessor';
 import TransportControls from './TransportControls';
 import SynthHeader from './SynthHeader';
-import { initializeAudio } from '@/lib/audio/audioContext';
 
 const Synthesizer = () => {
   const [isAudioInitialized, setIsAudioInitialized] = useState(false);
-  const [synth, setSynth] = useState<Tone.PolySynth | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioData, setAudioData] = useState<number[]>(new Array(128).fill(0));
   const [bpm, setBpm] = useState(120);
   const [currentStep, setCurrentStep] = useState(0);
   const [isRecording, setIsRecording] = useState(false);
-  const [steps, setSteps] = useState(
-    Array(8).fill(null).map(() => 
-      Array(4).fill(null).map(() => ({ active: false, note: 'C4', velocity: 0.7 }))
-    )
-  );
 
-  const [effectParams, setEffectParams] = useState({
-    filterFreq: 1000,
-    filterRes: 1,
-    delayTime: 0.3,
-    delayFeedback: 0.3,
-    reverbMix: 0.3,
-    distortion: 0,
-    phaserFreq: 0.5,
-    flangerDepth: 0.5
-  });
-
+  const synthRef = useRef<Tone.Synth | null>(null);
   const analyserRef = useRef<Tone.Analyser | null>(null);
-  const sequencerRef = useRef<Tone.Sequence | null>(null);
-  const recorderRef = useRef<MediaRecorder | null>(null);
 
   const setupAudio = async () => {
     try {
       await Tone.start();
-      await initializeAudio();
       
-      const newSynth = new Tone.PolySynth(Tone.Synth, {
+      // Create a basic synth with simple settings
+      const synth = new Tone.Synth({
+        oscillator: {
+          type: 'sine'
+        },
         envelope: {
-          attack: 0.02,
-          decay: 0.1,
-          sustain: 0.3,
+          attack: 0.1,
+          decay: 0.2,
+          sustain: 0.5,
           release: 1
         }
       }).toDestination();
       
       const analyser = new Tone.Analyser('waveform', 128);
-      newSynth.connect(analyser);
+      synth.connect(analyser);
       
-      setSynth(newSynth);
+      synthRef.current = synth;
       analyserRef.current = analyser;
       setIsAudioInitialized(true);
       toast.success("Audio initialized successfully");
 
-      // Start animation frame for visualizer
+      // Simple animation frame for visualizer
       const updateVisualizer = () => {
         if (analyserRef.current) {
           const data = analyserRef.current.getValue();
-          setAudioData(Array.from(data instanceof Float32Array ? data : []));
+          setAudioData(Array.from(data));
         }
         requestAnimationFrame(updateVisualizer);
       };
@@ -120,20 +104,17 @@ const Synthesizer = () => {
         bpm={bpm}
         isPlaying={isPlaying}
         onBPMChange={setBpm}
-        steps={steps}
-        currentStep={currentStep}
-        onStepToggle={(stepIndex, rowIndex) => {
-          const newSteps = [...steps];
-          newSteps[stepIndex][rowIndex].active = !newSteps[stepIndex][rowIndex].active;
-          setSteps(newSteps);
+        effectParams={{
+          filterFreq: 1000,
+          filterRes: 1,
+          delayTime: 0.3,
+          delayFeedback: 0.3,
+          reverbMix: 0.3,
+          distortion: 0,
+          phaserFreq: 0.5,
+          flangerDepth: 0.5
         }}
-        onNoteChange={(stepIndex, rowIndex, note) => {
-          const newSteps = [...steps];
-          newSteps[stepIndex][rowIndex].note = note;
-          setSteps(newSteps);
-        }}
-        effectParams={effectParams}
-        updateEffects={setEffectParams}
+        updateEffects={() => {}}
         onStartRecording={() => setIsRecording(true)}
         onStopRecording={async () => {
           setIsRecording(false);
@@ -143,8 +124,17 @@ const Synthesizer = () => {
       />
 
       <EffectProcessor
-        synth={synth}
-        effectParams={effectParams}
+        synth={synthRef.current}
+        effectParams={{
+          filterFreq: 1000,
+          filterRes: 1,
+          delayTime: 0.3,
+          delayFeedback: 0.3,
+          reverbMix: 0.3,
+          distortion: 0,
+          phaserFreq: 0.5,
+          flangerDepth: 0.5
+        }}
       />
     </Card>
   );
