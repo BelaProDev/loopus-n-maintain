@@ -11,27 +11,25 @@ import InvoicingStats from "./invoicing/InvoicingStats";
 import RecentInvoices from "./invoicing/RecentInvoices";
 
 const Invoicing = () => {
-  const { data: invoices = [] } = useQuery<Invoice[]>({
+  const { data: invoices = [], error: invoicesError } = useQuery<Invoice[]>({
     queryKey: ['invoices'],
     queryFn: businessQueries.getInvoices,
     retry: 1,
     staleTime: 30000,
-    refetchOnWindowFocus: false,
-    onError: () => {
-      toast.error("Failed to load invoices");
-    }
+    refetchOnWindowFocus: false
   });
 
-  const { data: clients = [] } = useQuery<Client[]>({
+  const { data: clients = [], error: clientsError } = useQuery<Client[]>({
     queryKey: ['clients'],
     queryFn: businessQueries.getClients,
     retry: 1,
     staleTime: 30000,
-    refetchOnWindowFocus: false,
-    onError: () => {
-      toast.error("Failed to load clients");
-    }
+    refetchOnWindowFocus: false
   });
+
+  // Handle errors with toast notifications
+  if (invoicesError) toast.error("Failed to load invoices");
+  if (clientsError) toast.error("Failed to load clients");
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -40,8 +38,8 @@ const Invoicing = () => {
         <div className="space-y-8">
           <InvoicingHeader />
           <InvoicingActions 
-            invoicesCount={invoices.length} 
-            clientsCount={clients.length} 
+            invoicesCount={invoices?.length || 0} 
+            clientsCount={clients?.length || 0} 
           />
 
           <Tabs defaultValue="overview" className="mt-8">

@@ -18,7 +18,7 @@ const FileList = ({ files, onDownload, onDelete, onNavigate }: FileListProps) =>
         {files.map((file) => (
           <button
             key={file.id}
-            onClick={() => file['.tag'] === 'folder' ? onNavigate(file.path) : undefined}
+            onClick={() => file['.tag'] === 'folder' ? onNavigate(file.path_display || '') : undefined}
             className="w-full flex items-center gap-2 p-2 hover:bg-accent rounded-lg transition-colors"
           >
             {file['.tag'] === 'folder' ? (
@@ -33,7 +33,7 @@ const FileList = ({ files, onDownload, onDelete, onNavigate }: FileListProps) =>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      onDownload(file.path, file.name);
+                      onDownload(file.path_display || '', file.name);
                     }}
                     className="text-sm text-blue-500 hover:text-blue-600"
                   >
@@ -44,7 +44,7 @@ const FileList = ({ files, onDownload, onDelete, onNavigate }: FileListProps) =>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      onDelete(file.path);
+                      onDelete(file.path_display || '');
                     }}
                     className="text-sm text-red-500 hover:text-red-600"
                   >
