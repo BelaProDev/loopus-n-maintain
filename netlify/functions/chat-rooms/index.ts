@@ -16,16 +16,6 @@ export const handler: Handler = async (event) => {
     const { action, data } = JSON.parse(event.body || '{}');
     const client = getFaunaClient();
 
-    // Ensure collection exists
-    await client.query(fql`
-      if (!Collection.byName("chat_rooms")) {
-        Collection.create({
-          name: "chat_rooms",
-          indexes: { by_name: { terms: [{ field: "name" }] } }
-        })
-      }
-    `);
-
     switch (action) {
       case 'list':
         const rooms = await client.query(fql`chat_rooms.all().order(-.createdAt)`);

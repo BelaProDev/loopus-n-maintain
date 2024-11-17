@@ -7,32 +7,6 @@ const getFaunaClient = () => {
   return new Client({ secret });
 };
 
-const setupCollections = async (client: Client) => {
-  // Create chat_rooms collection if it doesn't exist
-  await client.query(fql`
-    if (!Collection.byName("chat_rooms")) {
-      Collection.create({
-        name: "chat_rooms",
-        indexes: {
-          by_name: { terms: [{ field: ["data", "name"] }] }
-        }
-      })
-    }
-  `);
-
-  // Create chat_messages collection if it doesn't exist
-  await client.query(fql`
-    if (!Collection.byName("chat_messages")) {
-      Collection.create({
-        name: "chat_messages",
-        indexes: {
-          by_room: { terms: [{ field: ["data", "roomId"] }] }
-        }
-      })
-    }
-  `);
-};
-
 export const handler: Handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
@@ -41,7 +15,6 @@ export const handler: Handler = async (event) => {
   try {
     const { action, data, roomId } = JSON.parse(event.body || '{}');
     const client = getFaunaClient();
-    await setupCollections(client);
 
     switch (action) {
       case 'list': {
