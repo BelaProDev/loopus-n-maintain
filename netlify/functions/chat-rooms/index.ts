@@ -43,18 +43,6 @@ export const handler: Handler = async (event) => {
           return { statusCode: 400, body: JSON.stringify({ error: 'Room name required' }) };
         }
 
-        // First check if collection exists, if not create it
-        try {
-          await client.query(fql`
-            chat_rooms.all()
-          `);
-        } catch (e) {
-          // Collection doesn't exist, create it
-          await client.query(fql`
-            CreateCollection({ name: "chat_rooms" })
-          `);
-        }
-
         const result = await client.query(fql`
           let newRoom = chat_rooms.create({
             name: ${data.name.trim()},
