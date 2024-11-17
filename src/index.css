@@ -57,3 +57,18 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Global Dialog Styles */
+.dialog-content {
+  @apply bg-background border-2 border-border shadow-lg;
+}
+
+/* Global Card Styles */
+.card-base {
+  @apply bg-card border-2 border-border shadow-md;
+}
+
+/* Global Form Styles */
+.form-base {
+  @apply bg-background border-2 border-border rounded-lg p-6;
+}
