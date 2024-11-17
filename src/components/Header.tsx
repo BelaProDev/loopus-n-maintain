@@ -13,7 +13,7 @@ const tools = [
   { name: "diagrams", path: "/tools/diagrams", icon: "📊" },
   { name: "analytics", path: "/tools/analytics", icon: "📈" },
   { name: "audio", path: "/tools/audio", icon: "🎵" },
-  { name: "invoicing", path: "/tools/invoicing", icon: "📋" }
+  { name: "business", path: "/admin/business", icon: "💼" }
 ];
 
 const Header = () => {

@@ -43,7 +43,7 @@ const Documents = () => {
               <Button 
                 variant="outline" 
                 className="w-full h-32 flex flex-col items-center justify-center gap-2 group"
-                onClick={() => navigate("/photo-gallery")}
+                onClick={() => navigate("/tools/photo-gallery")}
               >
                 <Image className="h-8 w-8 group-hover:text-primary transition-colors" />
                 <span>Photo/Video Gallery</span>
