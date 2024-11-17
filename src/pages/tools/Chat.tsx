@@ -23,6 +23,12 @@ const Chat = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: "list" })
       });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to fetch rooms');
+      }
+      
       const result = await response.json();
       return result.data || [];
     },
@@ -39,6 +45,12 @@ const Chat = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: "list", roomId: activeRoom })
       });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to fetch messages');
+      }
+      
       const result = await response.json();
       return result.data || [];
     },
@@ -57,14 +69,19 @@ const Chat = () => {
           data: { name, topic } 
         })
       });
+      
       const result = await response.json();
-      if (!response.ok) throw new Error(result.error || 'Failed to create room');
+      
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to create room');
+      }
+      
       return result.data;
     },
-    onSuccess: (data) => {
+    onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["chatRooms"] });
       setActiveRoom(data.id);
-      toast.success("Room created successfully");
+      toast.success(`Room "${variables.name}" created successfully`);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -86,8 +103,13 @@ const Chat = () => {
           }
         })
       });
+      
       const result = await response.json();
-      if (!response.ok) throw new Error(result.error || 'Failed to send message');
+      
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to send message');
+      }
+      
       return result.data;
     },
     onSuccess: () => {

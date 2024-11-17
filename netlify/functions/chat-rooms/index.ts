@@ -9,7 +9,10 @@ const getFaunaClient = () => {
 
 export const handler: Handler = async (event) => {
   if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
+    return { 
+      statusCode: 405, 
+      body: JSON.stringify({ error: 'Method not allowed' }) 
+    };
   }
 
   try {
@@ -34,18 +37,55 @@ export const handler: Handler = async (event) => {
         
         return {
           statusCode: 200,
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ data: result.data || [] })
         };
       }
 
       case 'create': {
-        if (!data?.name?.trim()) {
-          return { statusCode: 400, body: JSON.stringify({ error: 'Room name required' }) };
+        // Validate required fields
+        if (!data?.name) {
+          return { 
+            statusCode: 400, 
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              error: 'Room name is required',
+              validationErrors: ['name'] 
+            }) 
+          };
+        }
+
+        const name = data.name.trim();
+        if (name.length < 3) {
+          return {
+            statusCode: 400,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              error: 'Room name must be at least 3 characters long',
+              validationErrors: ['name']
+            })
+          };
+        }
+
+        // Check if room with same name exists
+        const existingRoom = await client.query(fql`
+          chat_rooms.firstWhere(.name == ${name})
+        `);
+
+        if (existingRoom) {
+          return {
+            statusCode: 400,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              error: 'A room with this name already exists',
+              validationErrors: ['name']
+            })
+          };
         }
 
         const result = await client.query(fql`
           let newRoom = chat_rooms.create({
-            name: ${data.name.trim()},
+            name: ${name},
             topic: ${data.topic?.trim() || ''},
             createdAt: Time.now()
           })
@@ -58,19 +98,30 @@ export const handler: Handler = async (event) => {
         `);
 
         return {
-          statusCode: 200,
-          body: JSON.stringify({ data: result })
+          statusCode: 201,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            data: result,
+            message: 'Room created successfully'
+          })
         };
       }
 
       default:
-        return { statusCode: 400, body: JSON.stringify({ error: 'Invalid action' }) };
+        return { 
+          statusCode: 400, 
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ error: 'Invalid action' }) 
+        };
     }
   } catch (error) {
     console.error('Chat rooms error:', error);
-    if (error instanceof Error) {
-      return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
-    }
-    return { statusCode: 500, body: JSON.stringify({ error: 'Internal server error' }) };
+    return { 
+      statusCode: 500, 
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        error: error instanceof Error ? error.message : 'Internal server error' 
+      }) 
+    };
   }
 };
