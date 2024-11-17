@@ -34,23 +34,6 @@ const Index = () => {
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       <Header />
       <main className="flex-1">
-        <div className="bg-gradient-primary text-white py-16 md:py-24">
-          <div className="container mx-auto px-4">
-            <div className="max-w-3xl flex flex-col gap-6 animate-fade-in">
-              {!isAuthenticated && (
-                <Link to="/login">
-                  <Button 
-                    size="lg" 
-                    className="glass-morphism hover:bg-white/30 transition-colors w-full sm:w-auto"
-                  >
-                    {t("auth:signIn")}
-                  </Button>
-                </Link>
-              )}
-            </div>
-          </div>
-        </div>
-
         <div className="container mx-auto px-4 py-16">
           <div className="mb-16 bg-white/50 dark:bg-gray-800/50 rounded-lg p-8 backdrop-blur-sm">
             <h2 className="text-3xl font-bold mb-8 text-center">TOOLS AND FEATURES</h2>
