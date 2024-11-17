@@ -51,8 +51,8 @@ import PhotoGallery from "./pages/tools/PhotoGallery";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
-      gcTime: 1000 * 60 * 30, // 30 minutes
+      staleTime: 1000 * 60 * 5,
+      gcTime: 1000 * 60 * 30,
       retry: 3,
       refetchOnWindowFocus: true,
     },
@@ -87,80 +87,35 @@ const App = () => {
                       <Route path="/login" element={<Login />} />
                       
                       {/* Service Routes */}
-                      <Route path="/electrics" element={
-                        <AsyncComponent>
-                          <Electrics />
-                        </AsyncComponent>
-                      } />
-                      <Route path="/plumbing" element={
-                        <AsyncComponent>
-                          <Plumbing />
-                        </AsyncComponent>
-                      } />
-                      <Route path="/ironwork" element={
-                        <AsyncComponent>
-                          <Ironwork />
-                        </AsyncComponent>
-                      } />
-                      <Route path="/woodwork" element={
-                        <AsyncComponent>
-                          <Woodwork />
-                        </AsyncComponent>
-                      } />
-                      <Route path="/architecture" element={
-                        <AsyncComponent>
-                          <Architecture />
-                        </AsyncComponent>
-                      } />
+                      <Route path="/electrics" element={<AsyncComponent><Electrics /></AsyncComponent>} />
+                      <Route path="/plumbing" element={<AsyncComponent><Plumbing /></AsyncComponent>} />
+                      <Route path="/ironwork" element={<AsyncComponent><Ironwork /></AsyncComponent>} />
+                      <Route path="/woodwork" element={<AsyncComponent><Woodwork /></AsyncComponent>} />
+                      <Route path="/architecture" element={<AsyncComponent><Architecture /></AsyncComponent>} />
                       
                       {/* Tool Routes */}
-                      <Route path="/documents" element={
-                        <AsyncComponent>
-                          <Documents />
-                        </AsyncComponent>
-                      } />
-                      <Route path="/diagrams" element={
-                        <AsyncComponent>
-                          <Diagrams />
-                        </AsyncComponent>
-                      } />
-                      <Route path="/analytics" element={
-                        <AsyncComponent>
-                          <Analytics />
-                        </AsyncComponent>
-                      } />
-                      <Route path="/audio" element={
-                        <AsyncComponent>
-                          <Audio />
-                        </AsyncComponent>
-                      } />
-                      <Route path="/invoicing" element={
-                        <AsyncComponent>
-                          <Invoicing />
-                        </AsyncComponent>
-                      } />
-                      <Route path="/chat" element={
-                        <AsyncComponent>
-                          <Chat />
-                        </AsyncComponent>
-                      } />
-                      <Route path="/photo-gallery" element={
-                        <AsyncComponent>
-                          <PhotoGallery />
-                        </AsyncComponent>
-                      } />
+                      <Route path="/tools">
+                        <Route path="documents" element={<AsyncComponent><Documents /></AsyncComponent>} />
+                        <Route path="diagrams" element={<AsyncComponent><Diagrams /></AsyncComponent>} />
+                        <Route path="analytics" element={<AsyncComponent><Analytics /></AsyncComponent>} />
+                        <Route path="audio" element={<AsyncComponent><Audio /></AsyncComponent>} />
+                        <Route path="invoicing" element={<AsyncComponent><Invoicing /></AsyncComponent>} />
+                        <Route path="chat" element={<AsyncComponent><Chat /></AsyncComponent>} />
+                        <Route path="photo-gallery" element={<AsyncComponent><PhotoGallery /></AsyncComponent>} />
+                      </Route>
                       
                       {/* Admin Routes */}
-                      <Route path="/docs" element={<Documentation />} />
-                      <Route path="/dropbox-explorer" element={<DropboxExplorer />} />
-                      <Route path="/dropbox-explorer/callback" element={<DropboxCallback />} />
-                      <Route path="/koalax" element={<Koalax />}>
+                      <Route path="/admin" element={<Koalax />}>
                         <Route index element={<EmailManagement />} />
                         <Route path="emails" element={<EmailManagement />} />
                         <Route path="settings" element={<SiteSettings />} />
-                        <Route path="business" element={<BusinessManagement />} />
+                        <Route path="business/*" element={<BusinessManagement />} />
                         <Route path="messages" element={<MessageManagement />} />
                       </Route>
+                      
+                      <Route path="/docs" element={<Documentation />} />
+                      <Route path="/dropbox-explorer" element={<DropboxExplorer />} />
+                      <Route path="/dropbox-explorer/callback" element={<DropboxCallback />} />
                     </Routes>
                   </div>
                   <ReactQueryDevtools />

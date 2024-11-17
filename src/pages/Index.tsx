@@ -13,17 +13,17 @@ const allLinks = [
   { icon: Server, label: "Ironwork", path: "/ironwork" },
   { icon: Cog, label: "Woodwork", path: "/woodwork" },
   { icon: Settings, label: "Architecture", path: "/architecture" },
-  { icon: FileText, label: "Documents", path: "/documents" },
-  { icon: GitBranch, label: "Diagrams", path: "/diagrams" },
-  { icon: BarChart, label: "Analytics", path: "/analytics" },
-  { icon: Music, label: "Audio", path: "/audio" },
-  { icon: FileCheck, label: "Invoicing", path: "/invoicing" },
-  { icon: MessageCircle, label: "Chat", path: "/chat" },
-  { icon: Image, label: "Photo Gallery", path: "/photo-gallery" },
+  { icon: FileText, label: "Documents", path: "/tools/documents" },
+  { icon: GitBranch, label: "Diagrams", path: "/tools/diagrams" },
+  { icon: BarChart, label: "Analytics", path: "/tools/analytics" },
+  { icon: Music, label: "Audio", path: "/tools/audio" },
+  { icon: FileCheck, label: "Invoicing", path: "/tools/invoicing" },
+  { icon: MessageCircle, label: "Chat", path: "/tools/chat" },
+  { icon: Image, label: "Photo Gallery", path: "/tools/photo-gallery" },
   { icon: BookOpen, label: "Documentation", path: "/docs" },
   { icon: FolderOpen, label: "Dropbox Explorer", path: "/dropbox-explorer" },
-  { icon: Settings, label: "Admin", path: "/koalax" },
-  { icon: Mail, label: "Email Management", path: "/koalax/emails" }
+  { icon: Settings, label: "Admin", path: "/admin" },
+  { icon: Mail, label: "Email Management", path: "/admin/emails" }
 ];
 
 const Index = () => {

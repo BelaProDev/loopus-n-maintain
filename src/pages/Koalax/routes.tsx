@@ -6,12 +6,12 @@ import MessageManagement from "./components/messages/MessageManagement";
 
 export const koalaxRoutes: RouteObject[] = [
   {
-    path: "/koalax",
+    path: "/admin",
     children: [
-      { index: true, element: <Navigate to="/koalax/emails" replace /> },
+      { index: true, element: <Navigate to="/admin/emails" replace /> },
       { path: "emails", element: <EmailManagement /> },
       { path: "settings", element: <SiteSettings /> },
-      { path: "business", element: <BusinessManagement /> },
+      { path: "business/*", element: <BusinessManagement /> },
       { path: "messages", element: <MessageManagement /> },
     ],
   },
