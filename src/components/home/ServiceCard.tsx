@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
@@ -26,8 +26,8 @@ const ServiceCard = ({ title, description, to, image }: ServiceCardProps) => {
   };
   
   return (
-    <Link to={to} onClick={handleClick} className="block">
-      <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden">
+    <Link to={to} onClick={handleClick} className="block group">
+      <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl">
         <div className="relative h-48">
           <img 
             src={image} 
@@ -37,7 +37,7 @@ const ServiceCard = ({ title, description, to, image }: ServiceCardProps) => {
           <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors" />
         </div>
         <CardHeader>
-          <CardTitle>{title}</CardTitle>
+          <h3 className="text-xl font-semibold">{title}</h3>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">{description}</p>
