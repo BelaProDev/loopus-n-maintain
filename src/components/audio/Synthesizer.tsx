@@ -2,25 +2,38 @@ import { useState, useEffect, useRef } from 'react';
 import * as Tone from 'tone';
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import ShaderVisualizer from './ShaderVisualizer';
-import SynthControls from './SynthControls';
-import EffectProcessor from './EffectProcessor';
 import TransportControls from './TransportControls';
 import SynthHeader from './SynthHeader';
 import { initializeAudio } from '@/lib/audio/audioContext';
+import OscillatorControls from './synth/OscillatorControls';
+import EnvelopeControls from './synth/EnvelopeControls';
+import FilterControls from './synth/FilterControls';
 
 const Synthesizer = () => {
   const [isAudioInitialized, setIsAudioInitialized] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioData, setAudioData] = useState<number[]>(new Array(128).fill(0));
-  const [bpm, setBpm] = useState(120);
-  const [currentStep, setCurrentStep] = useState(0);
-  const [isRecording, setIsRecording] = useState(false);
-  const [steps, setSteps] = useState(Array(8).fill(Array(4).fill({ active: false, note: 'C4' })));
+  
+  // Oscillator state
+  const [oscillatorType, setOscillatorType] = useState('sine');
+  const [oscillatorFreq, setOscillatorFreq] = useState(440);
+  const [oscillatorDetune, setOscillatorDetune] = useState(0);
+  
+  // Envelope state
+  const [attack, setAttack] = useState(0.1);
+  const [decay, setDecay] = useState(0.2);
+  const [sustain, setSustain] = useState(0.5);
+  const [release, setRelease] = useState(1);
+  
+  // Filter state
+  const [filterType, setFilterType] = useState('lowpass');
+  const [filterFreq, setFilterFreq] = useState(1000);
+  const [filterRes, setFilterRes] = useState(1);
 
   const synthRef = useRef<Tone.Synth | null>(null);
   const analyserRef = useRef<Tone.Analyser | null>(null);
+  const filterRef = useRef<Tone.Filter | null>(null);
 
   useEffect(() => {
     const setupAudio = async () => {
@@ -29,21 +42,30 @@ const Synthesizer = () => {
         
         const synth = new Tone.Synth({
           oscillator: {
-            type: 'sine'
+            type: oscillatorType as Tone.ToneOscillatorType,
+            frequency: oscillatorFreq,
+            detune: oscillatorDetune
           },
           envelope: {
-            attack: 0.1,
-            decay: 0.2,
-            sustain: 0.5,
-            release: 1
+            attack,
+            decay,
+            sustain,
+            release
           }
         });
 
+        const filter = new Tone.Filter({
+          type: filterType as Tone.BiquadFilterType,
+          frequency: filterFreq,
+          Q: filterRes
+        });
+
         const analyser = new Tone.Analyser('waveform', 128);
-        synth.connect(analyser);
-        synth.toDestination();
+        
+        synth.chain(filter, analyser, Tone.Destination);
         
         synthRef.current = synth;
+        filterRef.current = filter;
         analyserRef.current = analyser;
         setIsAudioInitialized(true);
         toast.success("Audio initialized successfully");
@@ -60,11 +82,43 @@ const Synthesizer = () => {
       if (synthRef.current) {
         synthRef.current.dispose();
       }
+      if (filterRef.current) {
+        filterRef.current.dispose();
+      }
       if (analyserRef.current) {
         analyserRef.current.dispose();
       }
     };
   }, []);
+
+  // Update synth parameters when controls change
+  useEffect(() => {
+    if (synthRef.current) {
+      synthRef.current.set({
+        oscillator: {
+          type: oscillatorType,
+          frequency: oscillatorFreq,
+          detune: oscillatorDetune
+        },
+        envelope: {
+          attack,
+          decay,
+          sustain,
+          release
+        }
+      });
+    }
+  }, [oscillatorType, oscillatorFreq, oscillatorDetune, attack, decay, sustain, release]);
+
+  useEffect(() => {
+    if (filterRef.current) {
+      filterRef.current.set({
+        type: filterType,
+        frequency: filterFreq,
+        Q: filterRes
+      });
+    }
+  }, [filterType, filterFreq, filterRes]);
 
   useEffect(() => {
     const updateVisualizer = () => {
@@ -91,22 +145,10 @@ const Synthesizer = () => {
     }
     setIsPlaying(!isPlaying);
     if (!isPlaying) {
-      Tone.Transport.start();
+      synthRef.current?.triggerAttack(oscillatorFreq);
     } else {
-      Tone.Transport.stop();
+      synthRef.current?.triggerRelease();
     }
-  };
-
-  const onStepToggle = (stepIndex: number, rowIndex: number) => {
-    const newSteps = [...steps];
-    newSteps[stepIndex][rowIndex].active = !newSteps[stepIndex][rowIndex].active;
-    setSteps(newSteps);
-  };
-
-  const onNoteChange = (stepIndex: number, rowIndex: number, note: string) => {
-    const newSteps = [...steps];
-    newSteps[stepIndex][rowIndex].note = note;
-    setSteps(newSteps);
   };
 
   if (!isAudioInitialized) {
@@ -131,46 +173,36 @@ const Synthesizer = () => {
       <ShaderVisualizer audioData={audioData} />
       <TransportControls isPlaying={isPlaying} onPlayStop={handlePlayStop} />
       
-      <SynthControls
-        bpm={bpm}
-        isPlaying={isPlaying}
-        onBPMChange={setBpm}
-        steps={steps}
-        currentStep={currentStep}
-        onStepToggle={onStepToggle}
-        onNoteChange={onNoteChange}
-        effectParams={{
-          filterFreq: 1000,
-          filterRes: 1,
-          delayTime: 0.3,
-          delayFeedback: 0.3,
-          reverbMix: 0.3,
-          distortion: 0,
-          phaserFreq: 0.5,
-          flangerDepth: 0.5
-        }}
-        updateEffects={() => {}}
-        onStartRecording={() => setIsRecording(true)}
-        onStopRecording={async () => {
-          setIsRecording(false);
-          return "recording-stopped";
-        }}
-        isRecording={isRecording}
-      />
-
-      <EffectProcessor
-        synth={synthRef.current}
-        effectParams={{
-          filterFreq: 1000,
-          filterRes: 1,
-          delayTime: 0.3,
-          delayFeedback: 0.3,
-          reverbMix: 0.3,
-          distortion: 0,
-          phaserFreq: 0.5,
-          flangerDepth: 0.5
-        }}
-      />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <OscillatorControls
+          type={oscillatorType}
+          frequency={oscillatorFreq}
+          detune={oscillatorDetune}
+          onTypeChange={setOscillatorType}
+          onFrequencyChange={setOscillatorFreq}
+          onDetuneChange={setOscillatorDetune}
+        />
+        
+        <EnvelopeControls
+          attack={attack}
+          decay={decay}
+          sustain={sustain}
+          release={release}
+          onAttackChange={setAttack}
+          onDecayChange={setDecay}
+          onSustainChange={setSustain}
+          onReleaseChange={setRelease}
+        />
+        
+        <FilterControls
+          type={filterType}
+          frequency={filterFreq}
+          resonance={filterRes}
+          onTypeChange={setFilterType}
+          onFrequencyChange={setFilterFreq}
+          onResonanceChange={setFilterRes}
+        />
+      </div>
     </Card>
   );
 };
