@@ -40,6 +40,12 @@ const PhotoGallery = () => {
     }
   };
 
+  useEffect(() => {
+    if (client) {
+      fetchFiles();
+    }
+  }, [client, currentPath]);
+
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file || !client) return;
@@ -153,10 +159,7 @@ const PhotoGallery = () => {
                 <ImageEditor
                   imagePath={selectedMedia}
                   onSave={() => {
-                    toast({
-                      title: "Success",
-                      description: "Media saved successfully"
-                    });
+                    toast.success("Media saved successfully");
                   }}
                 />
               </Card>
