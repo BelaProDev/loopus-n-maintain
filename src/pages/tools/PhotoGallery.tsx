@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useDropboxManager } from '@/hooks/useDropboxManager';
+import { useState, useEffect } from 'react';
+import { useDropbox } from '@/contexts/DropboxContext';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,41 +10,64 @@ import Footer from '@/components/Footer';
 import { ImageGrid } from './photo-gallery/ImageGrid';
 import { ImageEditor } from './photo-gallery/ImageEditor';
 import { NavigationBreadcrumb } from '../DropboxExplorer/components/NavigationBreadcrumb';
-import { useToast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 import { getMediaType } from '@/lib/utils/fileUtils';
-import { useDropboxAuth } from '@/hooks/useDropboxAuth';
 
 const PhotoGallery = () => {
   const [currentPath, setCurrentPath] = useState('/');
   const [selectedMedia, setSelectedMedia] = useState<string | null>(null);
-  const { toast } = useToast();
-  const { login, isAuthenticated } = useDropboxAuth();
-  const {
-    files,
-    isLoading,
-    uploadMutation,
-  } = useDropboxManager(currentPath);
+  const { client, isAuthenticated, connect } = useDropbox();
+  const [files, setFiles] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const mediaFiles = files?.filter(file => {
-    const mediaType = getMediaType(file.name);
-    return file['.tag'] === 'file' && (mediaType === 'image' || mediaType === 'video');
-  });
+  const fetchFiles = async () => {
+    if (!client) return;
+    
+    setIsLoading(true);
+    try {
+      const response = await client.filesListFolder({
+        path: currentPath || '',
+        include_mounted_folders: true,
+        include_non_downloadable_files: true
+      });
+      
+      setFiles(response.result.entries);
+    } catch (error) {
+      console.error('Error fetching files:', error);
+      toast.error('Failed to fetch files');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file) return;
+    if (!file || !client) return;
 
     const mediaType = getMediaType(file.name);
     if (mediaType === 'other') {
-      toast({
-        title: "Invalid file type",
-        description: "Please select an image or video file",
-        variant: "destructive"
-      });
+      toast.error("Please select an image or video file");
       return;
     }
 
-    uploadMutation.mutate({ file, path: currentPath });
+    try {
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const arrayBuffer = reader.result as ArrayBuffer;
+        await client.filesUpload({
+          path: `${currentPath}/${file.name}`,
+          contents: arrayBuffer,
+          mode: { '.tag': 'add' },
+          autorename: true
+        });
+        toast.success('File uploaded successfully');
+        fetchFiles();
+      };
+      reader.readAsArrayBuffer(file);
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error('Failed to upload file');
+    }
   };
 
   const handleNavigate = (path: string) => {
@@ -60,7 +83,7 @@ const PhotoGallery = () => {
           <div className="text-center space-y-4">
             <h1 className="text-4xl font-bold">Media Gallery</h1>
             <p className="text-lg text-gray-600">Connect to Dropbox to manage your photos and videos</p>
-            <Button onClick={login} className="mt-4">
+            <Button onClick={connect} className="mt-4">
               <Image className="w-4 h-4 mr-2" />
               Connect to Dropbox
             </Button>
@@ -117,7 +140,7 @@ const PhotoGallery = () => {
                   <div className="flex justify-center p-8">Loading...</div>
                 ) : (
                   <ImageGrid
-                    images={mediaFiles || []}
+                    images={files.filter(file => getMediaType(file.name) !== 'other')}
                     onSelect={setSelectedMedia}
                     selectedImage={selectedMedia}
                   />
