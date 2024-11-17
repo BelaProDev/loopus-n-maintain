@@ -4,7 +4,7 @@ export const styles = {
   mainContent: "flex-1 container mx-auto px-4 py-8",
   
   // Cards and Effects
-  card: "bg-card border-2 border-border shadow-md rounded-lg p-8 mb-8",
+  card: "bg-background border-2 border-border shadow-md rounded-lg p-8 mb-8",
   dialog: "bg-background border-2 border-border shadow-lg rounded-lg",
   
   // Text Styles
@@ -21,7 +21,7 @@ export const styles = {
   label: "text-sm font-medium text-foreground",
   
   // Sections
-  section: "bg-card border-2 border-border rounded-lg p-6 shadow-md",
-  header: "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border",
+  section: "bg-background border-2 border-border rounded-lg p-6 shadow-md",
+  header: "bg-background border-b border-border",
   footer: "bg-background border-t border-border mt-auto",
 };
