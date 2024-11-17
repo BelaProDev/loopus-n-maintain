@@ -9,11 +9,11 @@ import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
 
 const tools = [
-  { name: "documents", path: "/documents", icon: "📄" },
-  { name: "diagrams", path: "/diagrams", icon: "📊" },
-  { name: "analytics", path: "/analytics", icon: "📈" },
-  { name: "audio", path: "/audio", icon: "🎵" },
-  { name: "invoicing", path: "/invoicing", icon: "📋" }
+  { name: "documents", path: "/tools/documents", icon: "📄" },
+  { name: "diagrams", path: "/tools/diagrams", icon: "📊" },
+  { name: "analytics", path: "/tools/analytics", icon: "📈" },
+  { name: "audio", path: "/tools/audio", icon: "🎵" },
+  { name: "invoicing", path: "/tools/invoicing", icon: "📋" }
 ];
 
 const Header = () => {

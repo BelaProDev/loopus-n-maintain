@@ -58,7 +58,7 @@ const Footer = () => {
               </Link>
             </Button>
             <Button variant="ghost" size="sm" asChild className="hover:bg-white/20">
-              <Link to="/koalax" className="flex items-center justify-start w-full">
+              <Link to="/admin" className="flex items-center justify-start w-full">
                 <Settings className="h-4 w-4 mr-2" />
                 <span className="text-sm">{t("common:nav.admin")}</span>
               </Link>
@@ -76,13 +76,13 @@ const Footer = () => {
               </Link>
             </Button>
             <Button variant="ghost" size="sm" asChild className="hover:bg-white/20">
-              <Link to="/chat" className="flex items-center justify-start w-full">
+              <Link to="/tools/chat" className="flex items-center justify-start w-full">
                 <MessageCircle className="h-4 w-4 mr-2" />
                 <span className="text-sm">{t("common:nav.chat")}</span>
               </Link>
             </Button>
             <Button variant="ghost" size="sm" asChild className="hover:bg-white/20">
-              <Link to="/photo-gallery" className="flex items-center justify-start w-full">
+              <Link to="/tools/photo-gallery" className="flex items-center justify-start w-full">
                 <Image className="h-4 w-4 mr-2" />
                 <span className="text-sm">{t("common:nav.gallery")}</span>
               </Link>
