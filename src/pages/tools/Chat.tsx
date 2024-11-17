@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import RoomsList from "./chat/RoomsList";
 import MessageList from "./chat/MessageList";
 import MessageInput from "./chat/MessageInput";
+import type { ChatMessage, ChatRoom } from "@/types/chat";
 
 const Chat = () => {
   const [activeRoom, setActiveRoom] = useState("");
@@ -15,21 +16,23 @@ const Chat = () => {
   const queryClient = useQueryClient();
 
   // Fetch chat rooms
-  const { data: rooms = [] } = useQuery({
+  const { data: rooms = [], isLoading: roomsLoading } = useQuery<ChatRoom[]>({
     queryKey: ["chatRooms"],
     queryFn: async () => {
       const response = await fetch("/.netlify/functions/chat-rooms", {
         method: "POST",
         body: JSON.stringify({ action: "list" })
       });
+      if (!response.ok) {
+        throw new Error('Failed to fetch rooms');
+      }
       const result = await response.json();
-      if (!response.ok) throw new Error(result.error);
       return result.data;
     }
   });
 
   // Fetch messages for active room
-  const { data: messages = [] } = useQuery({
+  const { data: messages = [], isLoading: messagesLoading } = useQuery<ChatMessage[]>({
     queryKey: ["messages", activeRoom],
     queryFn: async () => {
       if (!activeRoom) return [];
@@ -37,8 +40,10 @@ const Chat = () => {
         method: "POST",
         body: JSON.stringify({ action: "list", roomId: activeRoom })
       });
+      if (!response.ok) {
+        throw new Error('Failed to fetch messages');
+      }
       const result = await response.json();
-      if (!response.ok) throw new Error(result.error);
       return result.data;
     },
     enabled: Boolean(activeRoom)
@@ -51,8 +56,10 @@ const Chat = () => {
         method: "POST",
         body: JSON.stringify({ action: "create", data: { name, topic } })
       });
+      if (!response.ok) {
+        throw new Error('Failed to create room');
+      }
       const result = await response.json();
-      if (!response.ok) throw new Error(result.error);
       return result.data;
     },
     onSuccess: () => {
@@ -62,7 +69,7 @@ const Chat = () => {
     onError: (error: Error) => {
       toast({ 
         title: "Error", 
-        description: error.message || "Failed to create room",
+        description: error.message,
         variant: "destructive"
       });
     }
@@ -82,8 +89,10 @@ const Chat = () => {
           }
         })
       });
+      if (!response.ok) {
+        throw new Error('Failed to send message');
+      }
       const result = await response.json();
-      if (!response.ok) throw new Error(result.error);
       return result.data;
     },
     onSuccess: () => {
@@ -92,7 +101,7 @@ const Chat = () => {
     onError: (error: Error) => {
       toast({ 
         title: "Error", 
-        description: error.message || "Failed to send message",
+        description: error.message,
         variant: "destructive"
       });
     }
@@ -108,10 +117,11 @@ const Chat = () => {
             activeRoom={activeRoom}
             onRoomSelect={setActiveRoom}
             onCreateRoom={(name, topic) => createRoom.mutate({ name, topic })}
+            isLoading={roomsLoading}
           />
           <div className="col-span-9 flex flex-col">
             <ScrollArea className="flex-1 p-4">
-              <MessageList messages={messages} />
+              <MessageList messages={messages} isLoading={messagesLoading} />
             </ScrollArea>
             <Separator />
             <div className="p-4">

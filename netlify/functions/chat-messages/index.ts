@@ -16,12 +16,24 @@ export const handler: Handler = async (event) => {
     const { action, data, roomId } = JSON.parse(event.body || '{}');
     const client = getFaunaClient();
 
-    // Ensure collection exists
+    // Ensure collections exist
+    await client.query(fql`
+      if (!Collection.byName("chat_rooms")) {
+        Collection.create({
+          name: "chat_rooms"
+        })
+      }
+    `);
+
     await client.query(fql`
       if (!Collection.byName("chat_messages")) {
         Collection.create({
           name: "chat_messages",
-          indexes: { by_room: { terms: [{ field: "roomId" }] } }
+          indexes: {
+            by_room: {
+              terms: [{ field: ["data", "roomId"] }]
+            }
+          }
         })
       }
     `);
@@ -32,15 +44,42 @@ export const handler: Handler = async (event) => {
           return { statusCode: 400, body: JSON.stringify({ error: 'Room ID required' }) };
         }
 
+        // First verify room exists
+        const room = await client.query(fql`
+          chat_rooms.firstWhere(.id == ${roomId})
+        `);
+
+        if (!room.data) {
+          return { statusCode: 404, body: JSON.stringify({ error: 'Room not found' }) };
+        }
+
         const messages = await client.query(fql`
           let messages = chat_messages.index("by_room").match(${roomId})
           messages.order(-.timestamp).limit(100)
         `);
-        return { statusCode: 200, body: JSON.stringify({ data: messages.data }) };
+
+        return { 
+          statusCode: 200, 
+          body: JSON.stringify({ 
+            data: messages.data.map(msg => ({
+              id: msg.id,
+              ...msg.data
+            }))
+          }) 
+        };
 
       case 'create':
         if (!data?.roomId || !data?.content) {
           return { statusCode: 400, body: JSON.stringify({ error: 'Room ID and content required' }) };
+        }
+
+        // Verify room exists before creating message
+        const roomExists = await client.query(fql`
+          chat_rooms.firstWhere(.id == ${data.roomId})
+        `);
+
+        if (!roomExists.data) {
+          return { statusCode: 404, body: JSON.stringify({ error: 'Room not found' }) };
         }
 
         const newMessage = await client.query(fql`
@@ -51,7 +90,16 @@ export const handler: Handler = async (event) => {
             timestamp: Time.now()
           })
         `);
-        return { statusCode: 200, body: JSON.stringify({ data: newMessage.data }) };
+
+        return { 
+          statusCode: 200, 
+          body: JSON.stringify({ 
+            data: {
+              id: newMessage.data.id,
+              ...newMessage.data
+            }
+          }) 
+        };
 
       default:
         return { statusCode: 400, body: JSON.stringify({ error: 'Invalid action' }) };

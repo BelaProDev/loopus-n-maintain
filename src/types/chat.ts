@@ -3,9 +3,6 @@ export interface ChatRoom {
   name: string;
   topic?: string;
   createdAt: string;
-  metadata: {
-    messageCount: number;
-  };
 }
 
 export interface ChatMessage {
