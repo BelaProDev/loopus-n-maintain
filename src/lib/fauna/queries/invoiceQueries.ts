@@ -34,13 +34,16 @@ export const invoiceQueries = {
     const client = getFaunaClient();
     if (!client) return null;
     try {
+      // Use JavaScript Date objects for date handling
+      const now = new Date().toISOString();
+      const dueDate = new Date();
+      dueDate.setDate(dueDate.getDate() + 30);
+
       const query = fql`
-        let now = Time.now()
-        let thirtyDaysFromNow = Time.add(now, { days: 30 })
         invoices.create({
           number: ${data.number || `INV-${Date.now()}`},
-          date: now,
-          dueDate: thirtyDaysFromNow,
+          date: ${now},
+          dueDate: ${dueDate.toISOString()},
           clientId: ${data.clientId},
           providerId: ${data.providerId},
           items: ${data.items.map(item => ({
@@ -61,8 +64,8 @@ export const invoiceQueries = {
           paymentTerms: ${data.paymentTerms || 'net30'},
           currency: ${data.currency || 'EUR'},
           metadata: {
-            createdAt: now,
-            updatedAt: now,
+            createdAt: ${now},
+            updatedAt: ${now},
             version: 1
           }
         })
@@ -80,35 +83,14 @@ export const invoiceQueries = {
     const client = getFaunaClient();
     if (!client) return null;
     try {
+      const now = new Date().toISOString();
       const query = fql`
         let invoice = invoices.byId(${id})
-        let now = Time.now()
         invoice.update({
-          number: ${data.number},
-          date: ${data.date},
-          dueDate: ${data.dueDate},
-          clientId: ${data.clientId},
-          providerId: ${data.providerId},
-          items: ${data.items?.map(item => ({
-            id: item.id || crypto.randomUUID(),
-            sku: item.sku || '',
-            description: item.description,
-            quantity: item.quantity,
-            unitPrice: item.unitPrice,
-            unit: item.unit || 'unit',
-            vatRate: item.vatRate || 21,
-            total: item.quantity * item.unitPrice,
-            [Symbol.iterator]: undefined
-          }))},
-          status: ${data.status},
-          totalAmount: ${data.totalAmount},
-          tax: ${data.tax},
-          notes: ${data.notes},
-          paymentTerms: ${data.paymentTerms},
-          currency: ${data.currency},
+          ...${data},
           metadata: {
             ...invoice.metadata,
-            updatedAt: now,
+            updatedAt: ${now},
             version: invoice.metadata.version + 1
           }
         })
