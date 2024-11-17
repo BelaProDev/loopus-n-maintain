@@ -44,7 +44,6 @@ import Documents from "./pages/tools/Documents";
 import Diagrams from "./pages/tools/Diagrams";
 import Analytics from "./pages/tools/Analytics";
 import Audio from "./pages/tools/Audio";
-import Invoicing from "./pages/tools/Invoicing";
 import Chat from "./pages/tools/Chat";
 import PhotoGallery from "./pages/tools/PhotoGallery";
 
@@ -112,7 +111,7 @@ const App = () => {
                         <Route path="messages" element={<MessageManagement />} />
                       </Route>
 
-                      {/* Business Routes - Replaces /tools/invoicing */}
+                      {/* Business Routes */}
                       <Route path="/business/*" element={<AsyncComponent><BusinessManagement /></AsyncComponent>} />
                       
                       <Route path="/docs" element={<Documentation />} />
