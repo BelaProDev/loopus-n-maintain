@@ -36,7 +36,7 @@ export const invoiceQueries = {
     try {
       const query = fql`
         let now = Time.now()
-        let thirtyDaysFromNow = Time.now().add({ days: 30 })
+        let thirtyDaysFromNow = Time.add(now, { days: 30 })
         invoices.create({
           number: ${data.number || `INV-${Date.now()}`},
           date: now,
