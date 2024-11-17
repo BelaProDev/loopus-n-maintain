@@ -27,7 +27,6 @@ const Invoicing = () => {
     refetchOnWindowFocus: false
   });
 
-  // Handle errors with toast notifications
   if (invoicesError) toast.error("Failed to load invoices");
   if (clientsError) toast.error("Failed to load clients");
 

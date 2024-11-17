@@ -12,21 +12,21 @@ const InvoicingStats = ({ invoices }: InvoicingStatsProps) => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <Card className="p-6">
+      <Card className="p-6 hover:shadow-lg transition-shadow">
         <div className="flex flex-col gap-2">
           <span className="text-sm font-medium text-muted-foreground">Total Revenue</span>
           <span className="text-2xl font-bold">€{totalRevenue.toFixed(2)}</span>
         </div>
       </Card>
       
-      <Card className="p-6">
+      <Card className="p-6 hover:shadow-lg transition-shadow">
         <div className="flex flex-col gap-2">
           <span className="text-sm font-medium text-muted-foreground">Pending Invoices</span>
           <span className="text-2xl font-bold">{pendingInvoices}</span>
         </div>
       </Card>
       
-      <Card className="p-6">
+      <Card className="p-6 hover:shadow-lg transition-shadow">
         <div className="flex flex-col gap-2">
           <span className="text-sm font-medium text-muted-foreground">Overdue Invoices</span>
           <span className="text-2xl font-bold text-destructive">{overdueInvoices}</span>
