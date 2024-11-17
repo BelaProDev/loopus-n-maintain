@@ -17,24 +17,51 @@ export const handler: Handler = async (event) => {
     const client = getFaunaClient();
 
     switch (action) {
-      case 'list':
-        const rooms = await client.query(fql`chat_rooms.all().order(-.createdAt)`);
-        return { statusCode: 200, body: JSON.stringify({ data: rooms.data }) };
+      case 'list': {
+        const result = await client.query(fql`
+          let rooms = chat_rooms.all()
+          {
+            data: rooms.map(room => {
+              {
+                id: room.id,
+                name: room.name,
+                topic: room.topic,
+                createdAt: room.createdAt
+              }
+            })
+          }
+        `);
+        
+        return {
+          statusCode: 200,
+          body: JSON.stringify(result)
+        };
+      }
 
-      case 'create':
+      case 'create': {
         if (!data?.name) {
           return { statusCode: 400, body: JSON.stringify({ error: 'Room name required' }) };
         }
 
-        const newRoom = await client.query(fql`
-          chat_rooms.create({
+        const result = await client.query(fql`
+          let newRoom = chat_rooms.create({
             name: ${data.name},
             topic: ${data.topic || ''},
-            createdAt: Time.now(),
-            metadata: { messageCount: 0 }
+            createdAt: Time.now()
           })
+          {
+            id: newRoom.id,
+            name: newRoom.name,
+            topic: newRoom.topic,
+            createdAt: newRoom.createdAt
+          }
         `);
-        return { statusCode: 200, body: JSON.stringify({ data: newRoom.data }) };
+
+        return {
+          statusCode: 200,
+          body: JSON.stringify({ data: result })
+        };
+      }
 
       default:
         return { statusCode: 400, body: JSON.stringify({ error: 'Invalid action' }) };

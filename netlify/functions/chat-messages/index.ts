@@ -22,19 +22,24 @@ export const handler: Handler = async (event) => {
           return { statusCode: 400, body: JSON.stringify({ error: 'Room ID required' }) };
         }
 
-        const messages = await client.query(fql`
-          let messages = chat_messages.index("by_room").match(${roomId})
-          messages.order(-.timestamp).limit(50)
+        const result = await client.query(fql`
+          let messages = chat_messages.all().where(.roomId == ${roomId})
+          {
+            data: messages.order(-.timestamp).take(50).map(msg => {
+              {
+                id: msg.id,
+                roomId: msg.roomId,
+                sender: msg.sender,
+                content: msg.content,
+                timestamp: msg.timestamp
+              }
+            })
+          }
         `);
 
         return {
           statusCode: 200,
-          body: JSON.stringify({
-            data: messages.data.map(msg => ({
-              id: msg.id,
-              ...msg.data
-            }))
-          })
+          body: JSON.stringify(result)
         };
       }
 
@@ -43,23 +48,25 @@ export const handler: Handler = async (event) => {
           return { statusCode: 400, body: JSON.stringify({ error: 'Room ID and content required' }) };
         }
 
-        const newMessage = await client.query(fql`
-          chat_messages.create({
+        const result = await client.query(fql`
+          let newMessage = chat_messages.create({
             roomId: ${data.roomId},
             sender: ${data.sender || 'Anonymous'},
             content: ${data.content.trim()},
             timestamp: Time.now()
           })
+          {
+            id: newMessage.id,
+            roomId: newMessage.roomId,
+            sender: newMessage.sender,
+            content: newMessage.content,
+            timestamp: newMessage.timestamp
+          }
         `);
 
         return {
           statusCode: 200,
-          body: JSON.stringify({
-            data: {
-              id: newMessage.data.id,
-              ...newMessage.data
-            }
-          })
+          body: JSON.stringify({ data: result })
         };
       }
 

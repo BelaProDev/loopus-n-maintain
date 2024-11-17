@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import RoomsList from "./chat/RoomsList";
@@ -9,11 +9,8 @@ import MessageList from "./chat/MessageList";
 import MessageInput from "./chat/MessageInput";
 import type { ChatMessage, ChatRoom } from "@/types/chat";
 
-const POLLING_INTERVAL = 3000; // Poll every 3 seconds
-
 const Chat = () => {
   const [activeRoom, setActiveRoom] = useState("");
-  const { toast } = useToast();
   const queryClient = useQueryClient();
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -23,13 +20,13 @@ const Chat = () => {
     queryFn: async () => {
       const response = await fetch("/.netlify/functions/chat-rooms", {
         method: "POST",
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: "list" })
       });
-      if (!response.ok) throw new Error('Failed to fetch rooms');
       const result = await response.json();
-      return result.data;
+      return result.data || [];
     },
-    refetchInterval: POLLING_INTERVAL
+    refetchInterval: 3000
   });
 
   // Fetch messages for active room
@@ -39,14 +36,14 @@ const Chat = () => {
       if (!activeRoom) return [];
       const response = await fetch("/.netlify/functions/chat-messages", {
         method: "POST",
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: "list", roomId: activeRoom })
       });
-      if (!response.ok) throw new Error('Failed to fetch messages');
       const result = await response.json();
-      return result.data;
+      return result.data || [];
     },
     enabled: Boolean(activeRoom),
-    refetchInterval: activeRoom ? POLLING_INTERVAL : false
+    refetchInterval: activeRoom ? 3000 : false
   });
 
   // Create room mutation
@@ -54,23 +51,23 @@ const Chat = () => {
     mutationFn: async ({ name, topic }: { name: string; topic: string }) => {
       const response = await fetch("/.netlify/functions/chat-rooms", {
         method: "POST",
-        body: JSON.stringify({ action: "create", data: { name, topic } })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          action: "create", 
+          data: { name, topic } 
+        })
       });
-      if (!response.ok) throw new Error('Failed to create room');
       const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'Failed to create room');
       return result.data;
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["chatRooms"] });
       setActiveRoom(data.id);
-      toast({ title: "Success", description: "Room created successfully" });
+      toast.success("Room created successfully");
     },
     onError: (error: Error) => {
-      toast({ 
-        title: "Error", 
-        description: error.message,
-        variant: "destructive"
-      });
+      toast.error(error.message);
     }
   });
 
@@ -79,6 +76,7 @@ const Chat = () => {
     mutationFn: async (content: string) => {
       const response = await fetch("/.netlify/functions/chat-messages", {
         method: "POST",
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: "create",
           data: {
@@ -88,19 +86,15 @@ const Chat = () => {
           }
         })
       });
-      if (!response.ok) throw new Error('Failed to send message');
       const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'Failed to send message');
       return result.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["messages", activeRoom] });
     },
     onError: (error: Error) => {
-      toast({ 
-        title: "Error", 
-        description: error.message,
-        variant: "destructive"
-      });
+      toast.error(error.message);
     }
   });
 
