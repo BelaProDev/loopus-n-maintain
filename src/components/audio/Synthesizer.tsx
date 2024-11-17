@@ -70,7 +70,6 @@ const Synthesizer = () => {
     const updateVisualizer = () => {
       if (analyserRef.current) {
         const data = analyserRef.current.getValue();
-        // Convert Float32Array to regular array of numbers
         setAudioData(Array.from(data as Float32Array));
       }
       requestAnimationFrame(updateVisualizer);

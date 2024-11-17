@@ -1,9 +1,9 @@
 import { useTranslation } from "react-i18next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import ToolCard from "@/components/ToolCard";
+import ToolCard from "@/components/home/ToolCard";
 import { FileText, GitGraph, BarChart, Music, Building2, MessageSquare, Image } from "lucide-react";
-import ServiceCard from "@/components/ServiceCard";
+import ServiceCard from "@/components/home/ServiceCard";
 
 const Index = () => {
   const { t } = useTranslation(["common", "services", "tools"]);
@@ -49,47 +49,41 @@ const Index = () => {
         </section>
         
         <section className="mt-16">
-          <h2 className="text-3xl font-bold mb-8">{t("tools.title")}</h2>
+          <h2 className="text-3xl font-bold mb-8">{t("tools:title")}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <ToolCard
-              title={t("tools.documents.title")}
-              description={t("tools.documents.description")}
+              title={t("tools:documents.title")}
+              description={t("tools:documents.description")}
               icon={FileText}
               to="/tools/documents"
             />
             <ToolCard
-              title={t("tools.diagrams.title")}
-              description={t("tools.diagrams.description")}
+              title={t("tools:diagrams.title")}
+              description={t("tools:diagrams.description")}
               icon={GitGraph}
               to="/tools/diagrams"
             />
             <ToolCard
-              title={t("tools.analytics.title")}
-              description={t("tools.analytics.description")}
+              title={t("tools:analytics.title")}
+              description={t("tools:analytics.description")}
               icon={BarChart}
               to="/tools/analytics"
             />
             <ToolCard
-              title={t("tools.audio.title")}
-              description={t("tools.audio.description")}
+              title={t("tools:audio.title")}
+              description={t("tools:audio.description")}
               icon={Music}
               to="/tools/audio"
             />
             <ToolCard
-              title={t("tools.business.title")}
-              description={t("tools.business.description")}
-              icon={Building2}
-              to="/business"
-            />
-            <ToolCard
-              title={t("tools.chat.title")}
-              description={t("tools.chat.description")}
+              title={t("tools:chat.title")}
+              description={t("tools:chat.description")}
               icon={MessageSquare}
               to="/tools/chat"
             />
             <ToolCard
-              title={t("tools.photoGallery.title")}
-              description={t("tools.photoGallery.description")}
+              title={t("tools:photoGallery.title")}
+              description={t("tools:photoGallery.description")}
               icon={Image}
               to="/tools/photo-gallery"
             />

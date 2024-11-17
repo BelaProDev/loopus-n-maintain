@@ -1,53 +1,46 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 
 interface ServiceCardProps {
-  icon: LucideIcon;
   title: string;
-  path: string;
-  gradient: string;
-  bgClass: string;
+  description: string;
+  to: string;
+  image: string;
 }
 
-const ServiceCard = ({ icon: Icon, title, path, gradient, bgClass }: ServiceCardProps) => {
-  const { t } = useTranslation("services");
+const ServiceCard = ({ title, description, to, image }: ServiceCardProps) => {
   const { isAuthenticated } = useAuth();
-  const { toast } = useToast();
+  const { t } = useTranslation();
   
   const handleClick = (e: React.MouseEvent) => {
     if (!isAuthenticated) {
       e.preventDefault();
       toast({
         title: t("common:auth.required"),
-        description: t("common:auth.signInToAccess"),
-        variant: "default"
+        description: t("common:auth.signInToAccess")
       });
     }
   };
   
   return (
-    <Link to={path} className="block h-full" onClick={handleClick}>
-      <Card className={`group hover:shadow-xl transition-all duration-300 border-none overflow-hidden relative animate-scale-up ${bgClass} bg-opacity-5 h-full`}>
-        <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-10 group-hover:opacity-20 transition-opacity`} />
+    <Link to={to} onClick={handleClick} className="block">
+      <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden">
+        <div className="relative h-48">
+          <img 
+            src={image} 
+            alt={title}
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors" />
+        </div>
         <CardHeader>
-          <div className="flex items-center gap-4">
-            <div className="p-3 rounded-lg bg-gradient-to-br from-primary/20 to-secondary/20 backdrop-blur-sm">
-              <Icon className="h-6 w-6 text-primary" />
-            </div>
-            <CardTitle className="flex-1 font-serif">{t(`${title}.title`)}</CardTitle>
-          </div>
+          <CardTitle>{title}</CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-col flex-1">
-          <p className="text-gray-600 dark:text-gray-300 mb-6 flex-1">
-            {t(`${title}.description`)}
-          </p>
-          <div className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full group-hover:border-primary/50">
-            {t("common:actions.explore")}
-          </div>
+        <CardContent>
+          <p className="text-muted-foreground">{description}</p>
         </CardContent>
       </Card>
     </Link>
