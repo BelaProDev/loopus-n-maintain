@@ -19,22 +19,17 @@ export const handler: Handler = async (event) => {
     switch (action) {
       case 'list': {
         const result = await client.query(fql`
-          let rooms = chat_rooms.all()
-          {
-            data: rooms.map(room => {
-              {
-                id: room.id,
-                name: room.name,
-                topic: room.topic,
-                createdAt: room.createdAt
-              }
-            })
+          chat_rooms.all() {
+            id,
+            name,
+            topic,
+            createdAt
           }
         `);
         
         return {
           statusCode: 200,
-          body: JSON.stringify(result)
+          body: JSON.stringify({ data: result.data || [] })
         };
       }
 
@@ -44,22 +39,23 @@ export const handler: Handler = async (event) => {
         }
 
         const result = await client.query(fql`
-          let newRoom = chat_rooms.create({
+          chat_rooms.create({
             name: ${data.name},
             topic: ${data.topic || ''},
             createdAt: Time.now()
           })
-          {
-            id: newRoom.id,
-            name: newRoom.name,
-            topic: newRoom.topic,
-            createdAt: newRoom.createdAt
-          }
         `);
 
         return {
           statusCode: 200,
-          body: JSON.stringify({ data: result })
+          body: JSON.stringify({ 
+            data: {
+              id: result.id,
+              name: result.name,
+              topic: result.topic,
+              createdAt: result.createdAt
+            }
+          })
         };
       }
 
