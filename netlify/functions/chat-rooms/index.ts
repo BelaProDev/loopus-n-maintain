@@ -21,11 +21,24 @@ export const handler: Handler = async (event) => {
     const { action, data } = JSON.parse(event.body || '{}');
     const client = getFaunaClient();
 
+    // Ensure collections exist
+    await client.query(fql`
+      if (!Collection.byName("chat_rooms")) {
+        Collection.create({
+          name: "chat_rooms",
+          indexes: {
+            by_name: {
+              terms: [{ field: "name" }]
+            }
+          }
+        })
+      }
+    `);
+
     switch (action) {
       case 'list':
         const rooms = await client.query(fql`
-          chat_rooms.all()
-          .order(-.createdAt)
+          chat_rooms.all().order(-.createdAt)
         `);
         return {
           statusCode: 200,
@@ -40,6 +53,18 @@ export const handler: Handler = async (event) => {
           };
         }
 
+        // Check if room already exists
+        const existingRoom = await client.query(fql`
+          chat_rooms.index("by_name").match(${data.name}).first()
+        `);
+
+        if (existingRoom.data) {
+          return {
+            statusCode: 400,
+            body: JSON.stringify({ success: false, error: 'Room with this name already exists' })
+          };
+        }
+
         const newRoom = await client.query(fql`
           chat_rooms.create({
             name: ${data.name},
@@ -49,10 +74,12 @@ export const handler: Handler = async (event) => {
             updatedAt: Time.now(),
             metadata: {
               version: 1,
-              isArchived: false
+              isArchived: false,
+              messageCount: 0
             }
           })
         `);
+        
         return {
           statusCode: 200,
           body: JSON.stringify({ success: true, data: newRoom.data })

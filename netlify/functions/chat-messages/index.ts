@@ -21,6 +21,20 @@ export const handler: Handler = async (event) => {
     const { action, data, roomId } = JSON.parse(event.body || '{}');
     const client = getFaunaClient();
 
+    // Ensure collections exist
+    await client.query(fql`
+      if (!Collection.byName("chat_messages")) {
+        Collection.create({
+          name: "chat_messages",
+          indexes: {
+            by_room: {
+              terms: [{ field: "roomId" }]
+            }
+          }
+        })
+      }
+    `);
+
     switch (action) {
       case 'list':
         if (!roomId) {
@@ -31,11 +45,10 @@ export const handler: Handler = async (event) => {
         }
 
         const messages = await client.query(fql`
-          chat_messages.all()
-          .filter(m => m.roomId == ${roomId})
-          .order(-.timestamp)
-          .limit(100)
+          let messages = chat_messages.index("by_room").match(${roomId})
+          messages.order(-.timestamp).limit(100)
         `);
+        
         return {
           statusCode: 200,
           body: JSON.stringify({ success: true, data: messages.data })
@@ -63,6 +76,7 @@ export const handler: Handler = async (event) => {
             }
           })
         `);
+        
         return {
           statusCode: 200,
           body: JSON.stringify({ success: true, data: newMessage.data })
