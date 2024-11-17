@@ -47,17 +47,17 @@ const Chat = () => {
 
   // Create new room mutation
   const createRoomMutation = useMutation({
-    mutationFn: async ({ name, topic }: { name: string; topic: string }) => {
+    mutationFn: async (data: { name: string; topic: string }) => {
       const response = await fetch("/.netlify/functions/chat-rooms", {
         method: "POST",
         body: JSON.stringify({ 
           action: "create",
-          data: { name, topic }
+          data
         })
       });
-      const data = await response.json();
-      if (!data.success) throw new Error(data.error);
-      return data.data;
+      const responseData = await response.json();
+      if (!responseData.success) throw new Error(responseData.error);
+      return responseData.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["chatRooms"] });
@@ -77,22 +77,22 @@ const Chat = () => {
 
   // Send message mutation
   const sendMessageMutation = useMutation({
-    mutationFn: async ({ content }: { content: string }) => {
+    mutationFn: async (data: { content: string }) => {
       const response = await fetch("/.netlify/functions/chat-messages", {
         method: "POST",
         body: JSON.stringify({
           action: "create",
           data: {
             roomId: activeRoom,
-            content,
+            content: data.content,
             sender: "User", // Replace with actual user info when auth is implemented
             type: "text"
           }
         })
       });
-      const data = await response.json();
-      if (!data.success) throw new Error(data.error);
-      return data.data;
+      const responseData = await response.json();
+      if (!responseData.success) throw new Error(responseData.error);
+      return responseData.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["messages", activeRoom] });
@@ -105,6 +105,15 @@ const Chat = () => {
       });
     }
   });
+
+  // Wrapper functions to handle the mutations with the correct parameter types
+  const handleCreateRoom = (name: string, topic: string) => {
+    createRoomMutation.mutateAsync({ name, topic });
+  };
+
+  const handleSendMessage = async (content: string) => {
+    await sendMessageMutation.mutateAsync({ content });
+  };
 
   if (isRoomsError || isMessagesError) {
     toast({
@@ -123,7 +132,7 @@ const Chat = () => {
             rooms={rooms}
             activeRoom={activeRoom}
             onRoomSelect={setActiveRoom}
-            onRoomCreate={createRoomMutation.mutateAsync}
+            onRoomCreate={handleCreateRoom}
           />
           <div className="col-span-9 flex flex-col">
             <ScrollArea className="flex-1 p-4">
@@ -132,7 +141,7 @@ const Chat = () => {
             <Separator />
             <div className="p-4">
               <MessageInput 
-                onSendMessage={sendMessageMutation.mutateAsync}
+                onSendMessage={handleSendMessage}
                 isLoading={sendMessageMutation.isPending}
               />
             </div>
