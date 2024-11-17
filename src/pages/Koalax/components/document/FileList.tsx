@@ -1,18 +1,11 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { File, Folder } from "lucide-react";
-
-interface FileItem {
-  id: string;
-  name: string;
-  type: 'file' | 'folder';
-  size?: number;
-  modified?: string;
-}
+import { DropboxEntry } from "@/types/dropbox";
 
 interface FileListProps {
-  files: FileItem[];
-  onFileClick: (file: FileItem) => void;
-  onFolderClick: (folder: FileItem) => void;
+  files: DropboxEntry[];
+  onFileClick: (file: DropboxEntry) => void;
+  onFolderClick: (folder: DropboxEntry) => void;
 }
 
 const FileList = ({ files, onFileClick, onFolderClick }: FileListProps) => {
@@ -22,16 +15,20 @@ const FileList = ({ files, onFileClick, onFolderClick }: FileListProps) => {
         {files.map((file) => (
           <button
             key={file.id}
-            onClick={() => file.type === 'folder' ? onFolderClick(file) : onFileClick(file)}
+            onClick={() => file['.tag'] === 'folder' ? onFolderClick(file) : onFileClick(file)}
             className="w-full flex items-center gap-2 p-2 hover:bg-accent rounded-lg transition-colors"
           >
-            {file.type === 'folder' ? (
+            {file['.tag'] === 'folder' ? (
               <Folder className="h-4 w-4" />
             ) : (
               <File className="h-4 w-4" />
             )}
             <span className="flex-1 text-left">{file.name}</span>
-            {file.size && <span className="text-sm text-muted-foreground">{file.size} KB</span>}
+            {file['.tag'] === 'file' && 'size' in file && (
+              <span className="text-sm text-muted-foreground">
+                {Math.round(file.size / 1024)} KB
+              </span>
+            )}
           </button>
         ))}
       </div>
