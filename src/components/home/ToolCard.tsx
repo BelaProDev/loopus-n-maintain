@@ -19,9 +19,7 @@ const ToolCard = ({ icon: Icon, title, description, to }: ToolCardProps) => {
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!isAuthenticated) {
       e.preventDefault();
-      toast({
-        description: t("common:auth.signInToAccess")
-      });
+      toast(t("common:auth.signInToAccess"));
     }
   };
   

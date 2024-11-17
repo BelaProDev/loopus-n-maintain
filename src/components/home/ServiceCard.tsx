@@ -18,9 +18,7 @@ const ServiceCard = ({ title, description, to, image }: ServiceCardProps) => {
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!isAuthenticated) {
       e.preventDefault();
-      toast({
-        description: t("common:auth.signInToAccess")
-      });
+      toast(t("common:auth.signInToAccess"));
     }
   };
   
