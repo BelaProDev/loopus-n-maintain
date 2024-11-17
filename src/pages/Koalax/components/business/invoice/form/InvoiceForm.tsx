@@ -62,44 +62,46 @@ const InvoiceForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmitForm} className="space-y-6">
-      <InvoiceHeader
-        formData={formData}
-        onChange={(name, value) => setFormData(prev => ({ ...prev, [name]: value }))}
-      />
-      
-      <InvoiceParties
-        formData={formData}
-        clients={clients}
-        providers={providers}
-        onChange={(name, value) => setFormData(prev => ({ ...prev, [name]: value }))}
-      />
-      
-      <InvoiceItems
-        items={items}
-        onItemsChange={setItems}
-        currency={formData.currency}
-      />
-      
-      <InvoiceFooter
-        formData={formData}
-        totals={calculateTotals()}
-        onChange={(name, value) => setFormData(prev => ({ ...prev, [name]: value }))}
-      />
+    <form onSubmit={handleSubmitForm} className="space-y-6 bg-white dark:bg-gray-900">
+      <div className="space-y-6">
+        <InvoiceHeader
+          formData={formData}
+          onChange={(name, value) => setFormData(prev => ({ ...prev, [name]: value }))}
+        />
+        
+        <InvoiceParties
+          formData={formData}
+          clients={clients}
+          providers={providers}
+          onChange={(name, value) => setFormData(prev => ({ ...prev, [name]: value }))}
+        />
+        
+        <InvoiceItems
+          items={items}
+          onItemsChange={setItems}
+          currency={formData.currency}
+        />
+        
+        <InvoiceFooter
+          formData={formData}
+          totals={calculateTotals()}
+          onChange={(name, value) => setFormData(prev => ({ ...prev, [name]: value }))}
+        />
+      </div>
 
-      <div className="flex justify-end gap-3 pt-4">
+      <div className="flex justify-end gap-3 pt-6 border-t border-gray-200 dark:border-gray-800">
         <Button 
           type="button" 
           variant="outline" 
           onClick={onCancel}
-          className="px-6"
+          className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800"
         >
           {t("common:actions.cancel")}
         </Button>
         <Button 
           type="submit" 
           disabled={isLoading}
-          className="px-6"
+          className="bg-primary hover:bg-primary/90"
         >
           {editingInvoice ? t("common:actions.update") : t("common:actions.create")}
         </Button>

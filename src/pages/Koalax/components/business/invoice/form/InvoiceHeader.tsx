@@ -15,10 +15,10 @@ const InvoiceHeader = ({ formData, onChange }: InvoiceHeaderProps) => {
   const { t } = useTranslation(["admin"]);
 
   return (
-    <Card className="p-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <Card className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
         <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">
+          <label className="text-sm font-medium text-gray-900 dark:text-gray-100">
             {t("admin:business.invoices.number")}
           </label>
           <Input
@@ -26,11 +26,11 @@ const InvoiceHeader = ({ formData, onChange }: InvoiceHeaderProps) => {
             value={formData.number}
             onChange={(e) => onChange("number", e.target.value)}
             readOnly
-            className="bg-gray-50 font-mono"
+            className="bg-gray-50 dark:bg-gray-800 font-mono border-gray-200 dark:border-gray-700"
           />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">
+          <label className="text-sm font-medium text-gray-900 dark:text-gray-100">
             {t("admin:business.invoices.date")}
           </label>
           <Input
@@ -38,11 +38,11 @@ const InvoiceHeader = ({ formData, onChange }: InvoiceHeaderProps) => {
             name="date"
             value={formData.date}
             onChange={(e) => onChange("date", e.target.value)}
-            className="font-mono"
+            className="font-mono border-gray-200 dark:border-gray-700"
           />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">
+          <label className="text-sm font-medium text-gray-900 dark:text-gray-100">
             {t("admin:business.invoices.dueDate")}
           </label>
           <Input
@@ -50,7 +50,7 @@ const InvoiceHeader = ({ formData, onChange }: InvoiceHeaderProps) => {
             name="dueDate"
             value={formData.dueDate}
             onChange={(e) => onChange("dueDate", e.target.value)}
-            className="font-mono"
+            className="font-mono border-gray-200 dark:border-gray-700"
           />
         </div>
       </div>
