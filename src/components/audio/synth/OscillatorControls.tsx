@@ -1,7 +1,7 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
-import { Waveform } from "lucide-react";
+import { WaveformCircle } from "lucide-react";
 
 interface OscillatorControlsProps {
   type: string;
@@ -23,7 +23,7 @@ const OscillatorControls = ({
   return (
     <div className="space-y-4 p-4 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 rounded-lg border">
       <div className="flex items-center gap-2">
-        <Waveform className="h-5 w-5" />
+        <WaveformCircle className="h-5 w-5" />
         <h4 className="font-semibold">Oscillator</h4>
       </div>
 

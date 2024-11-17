@@ -1,6 +1,6 @@
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
-import { WaveformSquare } from "lucide-react";
+import { WaveformCircle } from "lucide-react";
 
 interface EnvelopeControlsProps {
   attack: number;
@@ -26,7 +26,7 @@ const EnvelopeControls = ({
   return (
     <div className="space-y-4 p-4 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 rounded-lg border">
       <div className="flex items-center gap-2">
-        <WaveformSquare className="h-5 w-5" />
+        <WaveformCircle className="h-5 w-5" />
         <h4 className="font-semibold">Envelope</h4>
       </div>
 

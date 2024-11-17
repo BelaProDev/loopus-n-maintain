@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import * as Tone from 'tone';
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import ShaderVisualizer from './ShaderVisualizer';
 import TransportControls from './TransportControls';
@@ -10,13 +11,16 @@ import OscillatorControls from './synth/OscillatorControls';
 import EnvelopeControls from './synth/EnvelopeControls';
 import FilterControls from './synth/FilterControls';
 
+type OscillatorType = 'sine' | 'square' | 'sawtooth' | 'triangle';
+type FilterType = 'lowpass' | 'highpass' | 'bandpass' | 'notch';
+
 const Synthesizer = () => {
   const [isAudioInitialized, setIsAudioInitialized] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioData, setAudioData] = useState<number[]>(new Array(128).fill(0));
   
   // Oscillator state
-  const [oscillatorType, setOscillatorType] = useState('sine');
+  const [oscillatorType, setOscillatorType] = useState<OscillatorType>('sine');
   const [oscillatorFreq, setOscillatorFreq] = useState(440);
   const [oscillatorDetune, setOscillatorDetune] = useState(0);
   
@@ -27,7 +31,7 @@ const Synthesizer = () => {
   const [release, setRelease] = useState(1);
   
   // Filter state
-  const [filterType, setFilterType] = useState('lowpass');
+  const [filterType, setFilterType] = useState<FilterType>('lowpass');
   const [filterFreq, setFilterFreq] = useState(1000);
   const [filterRes, setFilterRes] = useState(1);
 
@@ -42,8 +46,7 @@ const Synthesizer = () => {
         
         const synth = new Tone.Synth({
           oscillator: {
-            type: oscillatorType as Tone.ToneOscillatorType,
-            frequency: oscillatorFreq,
+            type: oscillatorType,
             detune: oscillatorDetune
           },
           envelope: {
@@ -55,7 +58,7 @@ const Synthesizer = () => {
         });
 
         const filter = new Tone.Filter({
-          type: filterType as Tone.BiquadFilterType,
+          type: filterType,
           frequency: filterFreq,
           Q: filterRes
         });
@@ -178,7 +181,7 @@ const Synthesizer = () => {
           type={oscillatorType}
           frequency={oscillatorFreq}
           detune={oscillatorDetune}
-          onTypeChange={setOscillatorType}
+          onTypeChange={(value) => setOscillatorType(value as OscillatorType)}
           onFrequencyChange={setOscillatorFreq}
           onDetuneChange={setOscillatorDetune}
         />
@@ -198,7 +201,7 @@ const Synthesizer = () => {
           type={filterType}
           frequency={filterFreq}
           resonance={filterRes}
-          onTypeChange={setFilterType}
+          onTypeChange={(value) => setFilterType(value as FilterType)}
           onFrequencyChange={setFilterFreq}
           onResonanceChange={setFilterRes}
         />
