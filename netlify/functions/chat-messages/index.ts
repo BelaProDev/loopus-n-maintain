@@ -1,16 +1,35 @@
 import { Handler } from '@netlify/functions';
 import { Client, fql } from 'fauna';
 
-const client = new Client({
-  secret: process.env.FAUNA_SECRET_KEY!
-});
+const getFaunaClient = () => {
+  const secret = process.env.FAUNA_SECRET_KEY;
+  if (!secret) {
+    throw new Error('FAUNA_SECRET_KEY environment variable is not set');
+  }
+  return new Client({ secret });
+};
 
 export const handler: Handler = async (event) => {
+  if (event.httpMethod !== 'POST') {
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ success: false, error: 'Method not allowed' })
+    };
+  }
+
   try {
     const { action, data, roomId } = JSON.parse(event.body || '{}');
+    const client = getFaunaClient();
 
     switch (action) {
       case 'list':
+        if (!roomId) {
+          return {
+            statusCode: 400,
+            body: JSON.stringify({ success: false, error: 'Room ID is required' })
+          };
+        }
+
         const messages = await client.query(fql`
           chat_messages.all()
           .filter(m => m.roomId == ${roomId})
@@ -19,22 +38,34 @@ export const handler: Handler = async (event) => {
         `);
         return {
           statusCode: 200,
-          body: JSON.stringify({ success: true, data: messages })
+          body: JSON.stringify({ success: true, data: messages.data })
         };
 
       case 'create':
+        if (!data?.roomId || !data?.content) {
+          return {
+            statusCode: 400,
+            body: JSON.stringify({ success: false, error: 'Room ID and content are required' })
+          };
+        }
+
         const newMessage = await client.query(fql`
           chat_messages.create({
             roomId: ${data.roomId},
             sender: ${data.sender},
             content: ${data.content},
-            type: ${data.type},
-            timestamp: Time.now()
+            type: ${data.type || 'text'},
+            timestamp: Time.now(),
+            metadata: {
+              version: 1,
+              isEdited: false,
+              reactions: []
+            }
           })
         `);
         return {
           statusCode: 200,
-          body: JSON.stringify({ success: true, data: newMessage })
+          body: JSON.stringify({ success: true, data: newMessage.data })
         };
 
       default:

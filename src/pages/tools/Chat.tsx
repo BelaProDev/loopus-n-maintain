@@ -16,17 +16,21 @@ const Chat = () => {
   const queryClient = useQueryClient();
 
   // Fetch chat rooms
-  const { data: rooms = [] } = useQuery<ChatRoom[]>({
+  const { data: rooms = [], isError: isRoomsError } = useQuery({
     queryKey: ["chatRooms"],
     queryFn: async () => {
-      const response = await fetch("/.netlify/functions/chat-rooms");
+      const response = await fetch("/.netlify/functions/chat-rooms", {
+        method: "POST",
+        body: JSON.stringify({ action: "list" })
+      });
       const data = await response.json();
+      if (!data.success) throw new Error(data.error);
       return data.data || [];
     }
   });
 
   // Fetch messages for active room
-  const { data: messages = [] } = useQuery<ChatMessage[]>({
+  const { data: messages = [], isError: isMessagesError } = useQuery({
     queryKey: ["messages", activeRoom],
     queryFn: async () => {
       if (!activeRoom) return [];
@@ -35,6 +39,7 @@ const Chat = () => {
         body: JSON.stringify({ action: "list", roomId: activeRoom })
       });
       const data = await response.json();
+      if (!data.success) throw new Error(data.error);
       return data.data || [];
     },
     enabled: !!activeRoom
@@ -50,7 +55,9 @@ const Chat = () => {
           data: { name, topic }
         })
       });
-      return response.json();
+      const data = await response.json();
+      if (!data.success) throw new Error(data.error);
+      return data.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["chatRooms"] });
@@ -59,10 +66,10 @@ const Chat = () => {
         description: "New room created successfully",
       });
     },
-    onError: () => {
+    onError: (error: Error) => {
       toast({
         title: "Error",
-        description: "Failed to create room",
+        description: error.message || "Failed to create room",
         variant: "destructive",
       });
     }
@@ -79,39 +86,33 @@ const Chat = () => {
             roomId: activeRoom,
             content,
             sender: "User", // Replace with actual user info when auth is implemented
-            type: "message"
+            type: "text"
           }
         })
       });
-      return response.json();
+      const data = await response.json();
+      if (!data.success) throw new Error(data.error);
+      return data.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["messages", activeRoom] });
     },
-    onError: () => {
+    onError: (error: Error) => {
       toast({
         title: "Error",
-        description: "Failed to send message",
+        description: error.message || "Failed to send message",
         variant: "destructive",
       });
     }
   });
 
-  const handleRoomCreate = async (name: string, topic: string) => {
-    await createRoomMutation.mutateAsync({ name, topic });
-  };
-
-  const handleSendMessage = async (content: string) => {
-    if (!activeRoom) {
-      toast({
-        title: "Error",
-        description: "Please select a room first",
-        variant: "destructive",
-      });
-      return;
-    }
-    await sendMessageMutation.mutateAsync({ content });
-  };
+  if (isRoomsError || isMessagesError) {
+    toast({
+      title: "Error",
+      description: "Failed to load chat data. Please try again later.",
+      variant: "destructive",
+    });
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -122,7 +123,7 @@ const Chat = () => {
             rooms={rooms}
             activeRoom={activeRoom}
             onRoomSelect={setActiveRoom}
-            onRoomCreate={handleRoomCreate}
+            onRoomCreate={createRoomMutation.mutateAsync}
           />
           <div className="col-span-9 flex flex-col">
             <ScrollArea className="flex-1 p-4">
@@ -130,7 +131,10 @@ const Chat = () => {
             </ScrollArea>
             <Separator />
             <div className="p-4">
-              <MessageInput onSendMessage={handleSendMessage} />
+              <MessageInput 
+                onSendMessage={sendMessageMutation.mutateAsync}
+                isLoading={sendMessageMutation.isPending}
+              />
             </div>
           </div>
         </div>

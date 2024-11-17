@@ -1,36 +1,61 @@
 import { Handler } from '@netlify/functions';
 import { Client, fql } from 'fauna';
 
-const client = new Client({
-  secret: process.env.FAUNA_SECRET_KEY!
-});
+const getFaunaClient = () => {
+  const secret = process.env.FAUNA_SECRET_KEY;
+  if (!secret) {
+    throw new Error('FAUNA_SECRET_KEY environment variable is not set');
+  }
+  return new Client({ secret });
+};
 
 export const handler: Handler = async (event) => {
+  if (event.httpMethod !== 'POST') {
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ success: false, error: 'Method not allowed' })
+    };
+  }
+
   try {
     const { action, data } = JSON.parse(event.body || '{}');
+    const client = getFaunaClient();
 
     switch (action) {
       case 'list':
-        const result = await client.query(fql`
+        const rooms = await client.query(fql`
           chat_rooms.all()
+          .order(-.createdAt)
         `);
         return {
           statusCode: 200,
-          body: JSON.stringify({ success: true, data: result })
+          body: JSON.stringify({ success: true, data: rooms.data })
         };
 
       case 'create':
+        if (!data?.name) {
+          return {
+            statusCode: 400,
+            body: JSON.stringify({ success: false, error: 'Room name is required' })
+          };
+        }
+
         const newRoom = await client.query(fql`
           chat_rooms.create({
             name: ${data.name},
-            topic: ${data.topic},
+            topic: ${data.topic || ''},
             users: [],
-            createdAt: Time.now()
+            createdAt: Time.now(),
+            updatedAt: Time.now(),
+            metadata: {
+              version: 1,
+              isArchived: false
+            }
           })
         `);
         return {
           statusCode: 200,
-          body: JSON.stringify({ success: true, data: newRoom })
+          body: JSON.stringify({ success: true, data: newRoom.data })
         };
 
       default:
