@@ -42,11 +42,28 @@ export const invoiceQueries = {
           dueDate: Time.fromUnixTimestamp(Time.toUnixTimestamp(now) + 2592000), // 30 days in seconds
           clientId: ${data.clientId},
           providerId: ${data.providerId},
-          items: ${data.items.map(item => ({ ...item, [Symbol.iterator]: undefined }))},
+          items: ${data.items.map(item => ({
+            id: item.id || crypto.randomUUID(),
+            sku: item.sku || '',
+            description: item.description,
+            quantity: item.quantity,
+            unitPrice: item.unitPrice,
+            unit: item.unit || 'unit',
+            vatRate: item.vatRate || 21,
+            total: item.quantity * item.unitPrice,
+            [Symbol.iterator]: undefined
+          }))},
           status: ${data.status || 'draft'},
           totalAmount: ${data.totalAmount || 0},
           tax: ${data.tax || 0},
-          notes: ${data.notes || ''}
+          notes: ${data.notes || ''},
+          paymentTerms: ${data.paymentTerms || 'net30'},
+          currency: ${data.currency || 'EUR'},
+          metadata: {
+            createdAt: now,
+            updatedAt: now,
+            version: 1
+          }
         })
       `;
       const result = await client.query(query);
@@ -58,22 +75,41 @@ export const invoiceQueries = {
     }
   },
 
-  updateInvoice: async (id: string, data: Omit<Invoice, 'id'>): Promise<Invoice | null> => {
+  updateInvoice: async (id: string, data: Partial<Invoice>): Promise<Invoice | null> => {
     const client = getFaunaClient();
     if (!client) return null;
     try {
       const query = fql`
-        invoices.byId(${id}).update({
+        let invoice = invoices.byId(${id})
+        let now = Time.now()
+        invoice.update({
           number: ${data.number},
           date: ${data.date},
           dueDate: ${data.dueDate},
           clientId: ${data.clientId},
           providerId: ${data.providerId},
-          items: ${data.items.map(item => ({ ...item, [Symbol.iterator]: undefined }))},
+          items: ${data.items?.map(item => ({
+            id: item.id || crypto.randomUUID(),
+            sku: item.sku || '',
+            description: item.description,
+            quantity: item.quantity,
+            unitPrice: item.unitPrice,
+            unit: item.unit || 'unit',
+            vatRate: item.vatRate || 21,
+            total: item.quantity * item.unitPrice,
+            [Symbol.iterator]: undefined
+          }))},
           status: ${data.status},
           totalAmount: ${data.totalAmount},
           tax: ${data.tax},
-          notes: ${data.notes}
+          notes: ${data.notes},
+          paymentTerms: ${data.paymentTerms},
+          currency: ${data.currency},
+          metadata: {
+            ...invoice.metadata,
+            updatedAt: now,
+            version: invoice.metadata.version + 1
+          }
         })
       `;
       const result = await client.query(query);
@@ -95,6 +131,20 @@ export const invoiceQueries = {
     } catch (error) {
       console.error('Error deleting invoice:', error);
       return false;
+    }
+  },
+
+  getInvoiceById: async (id: string): Promise<Invoice | null> => {
+    const client = getFaunaClient();
+    if (!client) return null;
+    try {
+      const query = fql`invoices.byId(${id})`;
+      const result = await client.query(query);
+      const document = extractFaunaData<Invoice>(result)[0];
+      return formatInvoiceDocument(document);
+    } catch (error) {
+      console.error('Error fetching invoice:', error);
+      return null;
     }
   }
 };

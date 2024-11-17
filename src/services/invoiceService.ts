@@ -25,8 +25,12 @@ export const invoiceService = {
       currency: dto.currency || 'EUR',
       items: dto.items.map(item => ({ 
         ...item,
-        [Symbol.iterator]: undefined,
-        total: item.quantity * item.unitPrice
+        id: item.id || crypto.randomUUID(),
+        sku: item.sku || '',
+        unit: item.unit || 'unit',
+        vatRate: item.vatRate || 21,
+        total: item.quantity * item.unitPrice,
+        [Symbol.iterator]: undefined
       }))
     };
   },
@@ -47,5 +51,9 @@ export const invoiceService = {
 
   getInvoices: () => {
     return businessQueries.getInvoices();
+  },
+
+  getInvoiceById: (id: string) => {
+    return businessQueries.getInvoiceById(id);
   }
 };
