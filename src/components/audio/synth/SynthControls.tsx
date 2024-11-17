@@ -8,23 +8,32 @@ interface SynthControlsProps {
   synth: Tone.Synth | null;
 }
 
+type BasicOscillatorType = "sine" | "square" | "triangle" | "sawtooth";
+
 const SynthControls = ({ synth }: SynthControlsProps) => {
-  const [oscillatorType, setOscillatorType] = useState<Tone.ToneOscillatorType>('sine');
+  const [oscillatorType, setOscillatorType] = useState<BasicOscillatorType>("sine");
   const [oscillatorFreq, setOscillatorFreq] = useState(440);
   const [oscillatorDetune, setOscillatorDetune] = useState(0);
   const [attack, setAttack] = useState(0.1);
   const [decay, setDecay] = useState(0.2);
   const [sustain, setSustain] = useState(0.5);
   const [release, setRelease] = useState(1);
-  const [filterType, setFilterType] = useState<BiquadFilterType>('lowpass');
+  const [filterType, setFilterType] = useState<BiquadFilterType>("lowpass");
   const [filterFreq, setFilterFreq] = useState(1000);
   const [filterRes, setFilterRes] = useState(1);
 
   useEffect(() => {
     if (synth) {
       synth.set({
-        oscillator: { type: oscillatorType },
-        envelope: { attack, decay, sustain, release }
+        oscillator: {
+          type: oscillatorType
+        } as Partial<Tone.OmniOscillatorOptions>,
+        envelope: { 
+          attack, 
+          decay, 
+          sustain, 
+          release 
+        }
       });
     }
   }, [synth, oscillatorType, attack, decay, sustain, release]);
@@ -35,7 +44,7 @@ const SynthControls = ({ synth }: SynthControlsProps) => {
         type={oscillatorType}
         frequency={oscillatorFreq}
         detune={oscillatorDetune}
-        onTypeChange={(value) => setOscillatorType(value as Tone.ToneOscillatorType)}
+        onTypeChange={(value) => setOscillatorType(value as BasicOscillatorType)}
         onFrequencyChange={setOscillatorFreq}
         onDetuneChange={setOscillatorDetune}
       />

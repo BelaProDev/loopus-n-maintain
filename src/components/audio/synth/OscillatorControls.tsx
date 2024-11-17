@@ -3,8 +3,10 @@ import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { AudioWaveform } from "lucide-react";
 
+type BasicOscillatorType = "sine" | "square" | "triangle" | "sawtooth";
+
 interface OscillatorControlsProps {
-  type: string;
+  type: BasicOscillatorType;
   frequency: number;
   detune: number;
   onTypeChange: (value: string) => void;
