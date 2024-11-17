@@ -10,30 +10,37 @@ import { businessQueries } from "@/lib/fauna/business";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import type { Invoice, Client } from "@/types/business";
 
 const Invoicing = () => {
   const { t } = useTranslation(["tools"]);
   const navigate = useNavigate();
 
-  const { data: invoices = [], isLoading: isLoadingInvoices } = useQuery({
+  const { data: invoices = [], isLoading: isLoadingInvoices } = useQuery<Invoice[]>({
     queryKey: ['invoices'],
     queryFn: businessQueries.getInvoices,
-    onError: () => {
-      toast.error("Failed to load invoices");
+    retry: 1,
+    staleTime: 30000,
+    refetchOnWindowFocus: false,
+    onSuccess: () => {
+      toast.success("Invoices loaded successfully");
     }
   });
 
-  const { data: clients = [], isLoading: isLoadingClients } = useQuery({
+  const { data: clients = [], isLoading: isLoadingClients } = useQuery<Client[]>({
     queryKey: ['clients'],
     queryFn: businessQueries.getClients,
-    onError: () => {
-      toast.error("Failed to load clients");
+    retry: 1,
+    staleTime: 30000,
+    refetchOnWindowFocus: false,
+    onSuccess: () => {
+      toast.success("Clients loaded successfully");
     }
   });
 
-  const totalRevenue = invoices.reduce((sum: number, inv: any) => sum + inv.totalAmount, 0);
-  const pendingInvoices = invoices.filter((inv: any) => inv.status === 'pending').length;
-  const overdueInvoices = invoices.filter((inv: any) => inv.status === 'overdue').length;
+  const totalRevenue = invoices.reduce((sum: number, inv: Invoice) => sum + inv.totalAmount, 0);
+  const pendingInvoices = invoices.filter((inv: Invoice) => inv.status === 'pending').length;
+  const overdueInvoices = invoices.filter((inv: Invoice) => inv.status === 'overdue').length;
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -154,10 +161,10 @@ const Invoicing = () => {
                   ) : invoices.length === 0 ? (
                     <div className="text-center py-4 text-muted-foreground">No invoices found</div>
                   ) : (
-                    invoices.slice(0, 5).map((invoice: any) => (
+                    invoices.slice(0, 5).map((invoice: Invoice) => (
                       <div key={invoice.id} className="flex justify-between items-center p-2 hover:bg-muted/50 rounded-lg transition-colors">
                         <div className="flex flex-col">
-                          <span className="font-medium">{invoice.number}</span>
+                          <span className="font-medium">#{invoice.number}</span>
                           <span className="text-sm text-muted-foreground">
                             {new Date(invoice.date).toLocaleDateString()}
                           </span>
