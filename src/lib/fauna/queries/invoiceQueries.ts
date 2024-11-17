@@ -36,10 +36,11 @@ export const invoiceQueries = {
     try {
       const query = fql`
         let now = Time.now()
+        let thirtyDaysFromNow = Time.now().add({ days: 30 })
         invoices.create({
           number: ${data.number || `INV-${Date.now()}`},
           date: now,
-          dueDate: Time.fromUnixTimestamp(Time.toUnixTimestamp(now) + 2592000), // 30 days in seconds
+          dueDate: thirtyDaysFromNow,
           clientId: ${data.clientId},
           providerId: ${data.providerId},
           items: ${data.items.map(item => ({
