@@ -19,11 +19,16 @@ export const handler: Handler = async (event) => {
     switch (action) {
       case 'list': {
         const result = await client.query(fql`
-          chat_rooms.all() {
-            id,
-            name,
-            topic,
-            createdAt
+          let rooms = chat_rooms.all()
+          {
+            data: rooms.map(room => {
+              {
+                id: room.id,
+                name: room.name,
+                topic: room.topic || '',
+                createdAt: room.createdAt
+              }
+            })
           }
         `);
         
@@ -34,28 +39,39 @@ export const handler: Handler = async (event) => {
       }
 
       case 'create': {
-        if (!data?.name) {
+        if (!data?.name?.trim()) {
           return { statusCode: 400, body: JSON.stringify({ error: 'Room name required' }) };
         }
 
+        // First check if collection exists, if not create it
+        try {
+          await client.query(fql`
+            chat_rooms.all()
+          `);
+        } catch (e) {
+          // Collection doesn't exist, create it
+          await client.query(fql`
+            CreateCollection({ name: "chat_rooms" })
+          `);
+        }
+
         const result = await client.query(fql`
-          chat_rooms.create({
-            name: ${data.name},
-            topic: ${data.topic || ''},
+          let newRoom = chat_rooms.create({
+            name: ${data.name.trim()},
+            topic: ${data.topic?.trim() || ''},
             createdAt: Time.now()
           })
+          {
+            id: newRoom.id,
+            name: newRoom.name,
+            topic: newRoom.topic,
+            createdAt: newRoom.createdAt
+          }
         `);
 
         return {
           statusCode: 200,
-          body: JSON.stringify({ 
-            data: {
-              id: result.id,
-              name: result.name,
-              topic: result.topic,
-              createdAt: result.createdAt
-            }
-          })
+          body: JSON.stringify({ data: result })
         };
       }
 
@@ -64,6 +80,9 @@ export const handler: Handler = async (event) => {
     }
   } catch (error) {
     console.error('Chat rooms error:', error);
+    if (error instanceof Error) {
+      return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
+    }
     return { statusCode: 500, body: JSON.stringify({ error: 'Internal server error' }) };
   }
 };
