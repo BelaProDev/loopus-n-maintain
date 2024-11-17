@@ -1,11 +1,10 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Hash, Plus } from "lucide-react";
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Hash, Plus } from "lucide-react";
 import { useState } from "react";
 import { ChatRoom } from "@/types/chat";
 
@@ -13,17 +12,17 @@ interface RoomsListProps {
   rooms: ChatRoom[];
   activeRoom: string;
   onRoomSelect: (roomId: string) => void;
-  onRoomCreate: (name: string, topic: string) => void;
+  onCreateRoom: (name: string, topic: string) => void;
 }
 
-const RoomsList = ({ rooms, activeRoom, onRoomSelect, onRoomCreate }: RoomsListProps) => {
+const RoomsList = ({ rooms, activeRoom, onRoomSelect, onCreateRoom }: RoomsListProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [newRoomName, setNewRoomName] = useState("");
   const [newRoomTopic, setNewRoomTopic] = useState("");
 
   const handleCreateRoom = () => {
     if (!newRoomName.trim()) return;
-    onRoomCreate(newRoomName, newRoomTopic);
+    onCreateRoom(newRoomName, newRoomTopic);
     setNewRoomName("");
     setNewRoomTopic("");
     setIsOpen(false);
@@ -65,7 +64,11 @@ const RoomsList = ({ rooms, activeRoom, onRoomSelect, onRoomCreate }: RoomsListP
                   placeholder="Enter room topic..."
                 />
               </div>
-              <Button onClick={handleCreateRoom} className="w-full">
+              <Button 
+                onClick={handleCreateRoom} 
+                className="w-full"
+                disabled={!newRoomName.trim()}
+              >
                 Create Room
               </Button>
             </div>
@@ -75,15 +78,15 @@ const RoomsList = ({ rooms, activeRoom, onRoomSelect, onRoomCreate }: RoomsListP
       <ScrollArea className="h-[calc(100vh-20rem)]">
         <div className="space-y-1">
           {rooms.map((room) => (
-            <motion.button
+            <button
               key={room.id}
-              whileHover={{ x: 4 }}
               onClick={() => onRoomSelect(room.id)}
-              className={`w-full text-left p-2 rounded-md transition-colors ${
+              className={cn(
+                "w-full text-left p-2 rounded-md transition-colors",
                 activeRoom === room.id
                   ? "bg-primary/10 text-primary"
                   : "hover:bg-muted"
-              }`}
+              )}
             >
               <div className="font-medium">#{room.name}</div>
               {room.topic && (
@@ -91,7 +94,7 @@ const RoomsList = ({ rooms, activeRoom, onRoomSelect, onRoomCreate }: RoomsListP
                   {room.topic}
                 </div>
               )}
-            </motion.button>
+            </button>
           ))}
         </div>
       </ScrollArea>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
@@ -7,30 +8,28 @@ import Footer from "@/components/Footer";
 import RoomsList from "./chat/RoomsList";
 import MessageList from "./chat/MessageList";
 import MessageInput from "./chat/MessageInput";
-import { ChatRoom, ChatMessage } from "@/types/chat";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const Chat = () => {
-  const [activeRoom, setActiveRoom] = useState<string>("");
+  const [activeRoom, setActiveRoom] = useState("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   // Fetch chat rooms
-  const { data: rooms = [], isError: isRoomsError } = useQuery({
+  const { data: rooms = [] } = useQuery({
     queryKey: ["chatRooms"],
     queryFn: async () => {
       const response = await fetch("/.netlify/functions/chat-rooms", {
         method: "POST",
         body: JSON.stringify({ action: "list" })
       });
-      const data = await response.json();
-      if (!data.success) throw new Error(data.error);
-      return data.data || [];
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error);
+      return result.data;
     }
   });
 
   // Fetch messages for active room
-  const { data: messages = [], isError: isMessagesError } = useQuery({
+  const { data: messages = [] } = useQuery({
     queryKey: ["messages", activeRoom],
     queryFn: async () => {
       if (!activeRoom) return [];
@@ -38,90 +37,66 @@ const Chat = () => {
         method: "POST",
         body: JSON.stringify({ action: "list", roomId: activeRoom })
       });
-      const data = await response.json();
-      if (!data.success) throw new Error(data.error);
-      return data.data || [];
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error);
+      return result.data;
     },
-    enabled: !!activeRoom
+    enabled: Boolean(activeRoom)
   });
 
-  // Create new room mutation
-  const createRoomMutation = useMutation({
-    mutationFn: async (data: { name: string; topic: string }) => {
+  // Create room mutation
+  const createRoom = useMutation({
+    mutationFn: async ({ name, topic }: { name: string; topic: string }) => {
       const response = await fetch("/.netlify/functions/chat-rooms", {
         method: "POST",
-        body: JSON.stringify({ 
-          action: "create",
-          data
-        })
+        body: JSON.stringify({ action: "create", data: { name, topic } })
       });
-      const responseData = await response.json();
-      if (!responseData.success) throw new Error(responseData.error);
-      return responseData.data;
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error);
+      return result.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["chatRooms"] });
-      toast({
-        title: "Success",
-        description: "New room created successfully",
-      });
+      toast({ title: "Success", description: "Room created successfully" });
     },
     onError: (error: Error) => {
-      toast({
-        title: "Error",
+      toast({ 
+        title: "Error", 
         description: error.message || "Failed to create room",
-        variant: "destructive",
+        variant: "destructive"
       });
     }
   });
 
   // Send message mutation
-  const sendMessageMutation = useMutation({
-    mutationFn: async (data: { content: string }) => {
+  const sendMessage = useMutation({
+    mutationFn: async (content: string) => {
       const response = await fetch("/.netlify/functions/chat-messages", {
         method: "POST",
         body: JSON.stringify({
           action: "create",
           data: {
             roomId: activeRoom,
-            content: data.content,
-            sender: "User", // Replace with actual user info when auth is implemented
-            type: "text"
+            content,
+            sender: "User" // Replace with actual user info when auth is implemented
           }
         })
       });
-      const responseData = await response.json();
-      if (!responseData.success) throw new Error(responseData.error);
-      return responseData.data;
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error);
+      return result.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["messages", activeRoom] });
     },
     onError: (error: Error) => {
-      toast({
-        title: "Error",
+      toast({ 
+        title: "Error", 
         description: error.message || "Failed to send message",
-        variant: "destructive",
+        variant: "destructive"
       });
     }
   });
-
-  // Wrapper functions to handle the mutations with the correct parameter types
-  const handleCreateRoom = (name: string, topic: string) => {
-    createRoomMutation.mutateAsync({ name, topic });
-  };
-
-  const handleSendMessage = async (content: string) => {
-    await sendMessageMutation.mutateAsync({ content });
-  };
-
-  if (isRoomsError || isMessagesError) {
-    toast({
-      title: "Error",
-      description: "Failed to load chat data. Please try again later.",
-      variant: "destructive",
-    });
-  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -132,7 +107,7 @@ const Chat = () => {
             rooms={rooms}
             activeRoom={activeRoom}
             onRoomSelect={setActiveRoom}
-            onRoomCreate={handleCreateRoom}
+            onCreateRoom={(name, topic) => createRoom.mutate({ name, topic })}
           />
           <div className="col-span-9 flex flex-col">
             <ScrollArea className="flex-1 p-4">
@@ -141,8 +116,9 @@ const Chat = () => {
             <Separator />
             <div className="p-4">
               <MessageInput 
-                onSendMessage={handleSendMessage}
-                isLoading={sendMessageMutation.isPending}
+                onSendMessage={(content) => sendMessage.mutate(content)}
+                isLoading={sendMessage.isPending}
+                disabled={!activeRoom}
               />
             </div>
           </div>
