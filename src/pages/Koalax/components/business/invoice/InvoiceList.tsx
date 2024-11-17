@@ -8,13 +8,14 @@ import { useInvoiceOperations } from "@/hooks/useInvoiceOperations";
 import InvoiceTable from "./InvoiceTable";
 import InvoiceToolbar from "./InvoiceToolbar";
 import { useToast } from "@/components/ui/use-toast";
+import type { Invoice } from "@/types/invoice";
 
 const InvoiceList = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
-  const [editingInvoice, setEditingInvoice] = useState(null);
+  const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null);
   const { t } = useTranslation(["admin", "common"]);
-  const { handleCreateInvoice, deleteMutation, isCreating } = useInvoiceOperations();
+  const { handleCreateInvoice, handleUpdateInvoice, deleteMutation, isCreating, isUpdating } = useInvoiceOperations();
   const { toast } = useToast();
 
   const { data: invoices = [], isLoading, error } = useQuery({
@@ -40,14 +41,27 @@ const InvoiceList = () => {
     });
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
-    const isPending = handleCreateInvoice(formData);
-    if (!isPending) {
+    
+    try {
+      if (editingInvoice) {
+        await handleUpdateInvoice(editingInvoice.id, formData);
+      } else {
+        await handleCreateInvoice(formData);
+      }
       setIsDialogOpen(false);
+      setEditingInvoice(null);
+    } catch (error) {
+      console.error('Error submitting invoice:', error);
     }
+  };
+
+  const handleEdit = (invoice: Invoice) => {
+    setEditingInvoice(invoice);
+    setIsDialogOpen(true);
   };
 
   return (
@@ -66,6 +80,7 @@ const InvoiceList = () => {
         <InvoiceTable 
           invoices={invoices}
           onDelete={(id) => deleteMutation.mutate(id)}
+          onEdit={handleEdit}
         />
       )}
 
@@ -74,7 +89,7 @@ const InvoiceList = () => {
         onOpenChange={setIsDialogOpen}
         editingInvoice={editingInvoice}
         onSubmit={handleSubmit}
-        isLoading={isCreating}
+        isLoading={isCreating || isUpdating}
       />
 
       <ImportInvoiceDialog

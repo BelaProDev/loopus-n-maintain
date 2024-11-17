@@ -9,9 +9,10 @@ import { Card } from "@/components/ui/card";
 interface InvoiceTableProps {
   invoices: Invoice[];
   onDelete: (id: string) => void;
+  onEdit: (invoice: Invoice) => void;
 }
 
-const InvoiceTable = ({ invoices, onDelete }: InvoiceTableProps) => {
+const InvoiceTable = ({ invoices, onDelete, onEdit }: InvoiceTableProps) => {
   const { t } = useTranslation(["admin", "common"]);
 
   return (
@@ -41,6 +42,7 @@ const InvoiceTable = ({ invoices, onDelete }: InvoiceTableProps) => {
                 <InvoiceActions
                   invoice={invoice}
                   onDelete={() => onDelete(invoice.id)}
+                  onEdit={() => onEdit(invoice)}
                 />
               </TableCell>
             </TableRow>
