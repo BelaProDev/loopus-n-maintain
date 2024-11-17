@@ -1,30 +1,16 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Upload, Download, FolderPlus } from "lucide-react";
+import { FileSearch, Image } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { useDropboxManager } from "@/hooks/useDropboxManager";
 import { useToast } from "@/components/ui/use-toast";
 
 const Documents = () => {
   const { t } = useTranslation(["tools"]);
   const navigate = useNavigate();
-  const { isAuthenticated } = useDropboxManager("/");
   const { toast } = useToast();
-
-  const handleNavigate = (path: string) => {
-    if (!isAuthenticated && path.includes('dropbox')) {
-      toast({
-        title: "Authentication Required",
-        description: "Please connect to Dropbox first",
-        variant: "destructive"
-      });
-      return;
-    }
-    navigate(path);
-  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -38,17 +24,17 @@ const Documents = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             <Card className="p-6 hover:shadow-lg transition-shadow">
               <Button 
                 variant="outline" 
                 className="w-full h-32 flex flex-col items-center justify-center gap-2 group"
-                onClick={() => handleNavigate("/dropbox-explorer")}
+                onClick={() => navigate("/dropbox-explorer")}
               >
-                <Upload className="h-8 w-8 group-hover:text-primary transition-colors" />
-                <span>Upload Documents</span>
+                <FileSearch className="h-8 w-8 group-hover:text-primary transition-colors" />
+                <span>Dropbox Lens</span>
                 <p className="text-sm text-muted-foreground">
-                  Securely store and manage your files
+                  Advanced document search and management
                 </p>
               </Button>
             </Card>
@@ -57,26 +43,12 @@ const Documents = () => {
               <Button 
                 variant="outline" 
                 className="w-full h-32 flex flex-col items-center justify-center gap-2 group"
-                onClick={() => handleNavigate("/dropbox-explorer")}
+                onClick={() => navigate("/photo-gallery")}
               >
-                <Download className="h-8 w-8 group-hover:text-primary transition-colors" />
-                <span>Access Documents</span>
+                <Image className="h-8 w-8 group-hover:text-primary transition-colors" />
+                <span>Photo/Video Gallery</span>
                 <p className="text-sm text-muted-foreground">
-                  View and download your stored files
-                </p>
-              </Button>
-            </Card>
-
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <Button 
-                variant="outline" 
-                className="w-full h-32 flex flex-col items-center justify-center gap-2 group"
-                onClick={() => handleNavigate("/dropbox-explorer")}
-              >
-                <FolderPlus className="h-8 w-8 group-hover:text-primary transition-colors" />
-                <span>Manage Files</span>
-                <p className="text-sm text-muted-foreground">
-                  Organize and categorize your documents
+                  Manage and view your media files
                 </p>
               </Button>
             </Card>
