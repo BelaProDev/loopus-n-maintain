@@ -1,20 +1,33 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
-import { Users, UserCog, Receipt, GitGraph } from "lucide-react";
-import ClientList from "./ClientList";
-import ProviderList from "./ProviderList";
-import InvoiceList from "./InvoiceList";
-import ClientInvoiceRelationship from "./ClientInvoiceRelationship";
+import { Users, UserCog, Receipt } from "lucide-react";
+import { useNavigate, useLocation, Outlet } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
 
 const BusinessManagement = () => {
-  const { t } = useTranslation(["admin", "common"]);
+  const { t } = useTranslation(["admin"]);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const currentTab = location.pathname.split('/').pop() || 'clients';
+
+  useEffect(() => {
+    if (location.pathname === '/admin/business') {
+      navigate('/admin/business/clients');
+    }
+  }, [location.pathname, navigate]);
+
+  const handleTabChange = (value: string) => {
+    navigate(`/admin/business/${value}`);
+  };
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold">{t("admin:business.title")}</h1>
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold">{t("admin:business.title")}</h1>
+      </div>
       
-      <Tabs defaultValue="clients" className="space-y-4">
+      <Tabs value={currentTab} onValueChange={handleTabChange} className="space-y-4">
         <TabsList>
           <TabsTrigger value="clients">
             <Users className="w-4 h-4 mr-2" />
@@ -22,41 +35,17 @@ const BusinessManagement = () => {
           </TabsTrigger>
           <TabsTrigger value="providers">
             <UserCog className="w-4 h-4 mr-2" />
-            {t("admin:business.providers.title")}
+            {t("admin:providers.title")}
           </TabsTrigger>
           <TabsTrigger value="invoices">
             <Receipt className="w-4 h-4 mr-2" />
             {t("admin:business.invoices.title")}
           </TabsTrigger>
-          <TabsTrigger value="relationships">
-            <GitGraph className="w-4 h-4 mr-2" />
-            {t("admin:business.relationships")}
-          </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="clients">
-          <Card className="p-6">
-            <ClientList />
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="providers">
-          <Card className="p-6">
-            <ProviderList />
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="invoices">
-          <Card className="p-6">
-            <InvoiceList />
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="relationships">
-          <Card className="p-6">
-            <ClientInvoiceRelationship />
-          </Card>
-        </TabsContent>
+        <Card className="p-6">
+          <Outlet />
+        </Card>
       </Tabs>
     </div>
   );
