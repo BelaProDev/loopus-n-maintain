@@ -6,7 +6,11 @@
     "edit": "Editar",
     "submit": "Enviar",
     "submitting": "Enviando...",
-    "learnMore": "Más información"
+    "learnMore": "Más información",
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "apply": "Aplicar",
+    "reset": "Restablecer"
   },
   "status": {
     "loading": "Cargando...",
@@ -15,12 +19,21 @@
     "offline": "Sin conexión",
     "required": "Requerido",
     "optional": "Opcional",
-    "na": "N/D"
+    "na": "N/D",
+    "noResults": "No se encontraron resultados",
+    "loadingMore": "Cargando más...",
+    "endOfList": "Fin de la lista"
   },
   "language": {
     "change": "Cambiar idioma",
     "en": "Inglés",
     "es": "Español",
     "fr": "Francés"
+  },
+  "theme": {
+    "title": "Tema",
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Sistema"
   }
 }

@@ -59,5 +59,15 @@
       "notifications": "Notificaciones en tiempo real",
       "search": "Búsqueda de mensajes"
     }
+  },
+  "photoGallery": {
+    "title": "Galería de Fotos",
+    "description": "Gestión y visualización de imágenes",
+    "features": {
+      "organization": "Organización de imágenes",
+      "editing": "Edición de fotos",
+      "sharing": "Compartir álbumes",
+      "tagging": "Etiquetado de fotos"
+    }
   }
 }
