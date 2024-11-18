@@ -1,5 +1,4 @@
-import { ChatRoom, ChatMessage } from '@/lib/fauna/types/chat';
-import { extractFaunaData } from '@/lib/fauna/utils';
+import { ChatMessage, ChatRoom, FaunaMessageResponse, FaunaRoomResponse } from '@/lib/fauna/types/chat';
 
 export const chatService = {
   async listRooms(): Promise<ChatRoom[]> {
@@ -13,32 +12,13 @@ export const chatService = {
       throw new Error('Failed to fetch rooms');
     }
 
-    const result = await response.json();
-    return extractFaunaData<ChatRoom>(result).map(doc => ({
-      id: doc.ref.id,
-      name: doc.data.name,
-      topic: doc.data.topic || '',
-      createdAt: doc.data.createdAt
+    const result = (await response.json()) as FaunaRoomResponse;
+    return result.data.data.map(room => ({
+      id: room.id,
+      name: room.name,
+      topic: room.topic,
+      createdAt: room.createdAt.isoString
     }));
-  },
-
-  async createRoom(name: string, topic?: string): Promise<ChatRoom> {
-    const response = await fetch('/.netlify/functions/chat-rooms', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action: 'create',
-        data: { name, topic }
-      })
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error || 'Failed to create room');
-    }
-
-    const result = await response.json();
-    return result.data;
   },
 
   async listMessages(roomId: string): Promise<ChatMessage[]> {
@@ -55,8 +35,14 @@ export const chatService = {
       throw new Error('Failed to fetch messages');
     }
 
-    const result = await response.json();
-    return result.data || [];
+    const result = (await response.json()) as FaunaMessageResponse;
+    return result.data.data.map(message => ({
+      id: message.id,
+      content: message.content,
+      sender: message.sender,
+      createdAt: message.createdAt.isoString,
+      room: message.room
+    }));
   },
 
   async sendMessage(roomId: string, content: string, sender: string): Promise<ChatMessage> {
@@ -65,13 +51,13 @@ export const chatService = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         action: 'create',
-        data: { roomId, content, sender }
+        roomId,
+        data: { content, sender }
       })
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error || 'Failed to send message');
+      throw new Error('Failed to send message');
     }
 
     const result = await response.json();
