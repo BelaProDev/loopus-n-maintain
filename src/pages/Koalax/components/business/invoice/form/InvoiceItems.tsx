@@ -26,12 +26,12 @@ const InvoiceItems = ({ items, onItemsChange, currency }: InvoiceItemsProps) => 
   });
 
   const units = [
-    { value: 'unit', label: 'Unit' },
-    { value: 'hour', label: 'Hour' },
-    { value: 'day', label: 'Day' },
-    { value: 'month', label: 'Month' },
-    { value: 'piece', label: 'Piece' },
-    { value: 'service', label: 'Service' }
+    { value: 'unit', label: t('admin:business.invoices.units.unit') },
+    { value: 'hour', label: t('admin:business.invoices.units.hour') },
+    { value: 'day', label: t('admin:business.invoices.units.day') },
+    { value: 'month', label: t('admin:business.invoices.units.month') },
+    { value: 'piece', label: t('admin:business.invoices.units.piece') },
+    { value: 'service', label: t('admin:business.invoices.units.service') }
   ];
 
   const handleAddItem = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -78,25 +78,25 @@ const InvoiceItems = ({ items, onItemsChange, currency }: InvoiceItemsProps) => 
           </Button>
         </div>
 
-        <div className="rounded-lg border">
+        <div className="rounded-lg border overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>SKU</TableHead>
-                <TableHead className="w-[300px]">Description</TableHead>
-                <TableHead>Unit</TableHead>
-                <TableHead>Qty</TableHead>
-                <TableHead>Price</TableHead>
-                <TableHead>VAT</TableHead>
-                <TableHead>Total</TableHead>
-                <TableHead></TableHead>
+                <TableHead className="w-[120px]">{t("admin:business.invoices.sku")}</TableHead>
+                <TableHead className="min-w-[300px]">{t("admin:business.invoices.description")}</TableHead>
+                <TableHead className="w-[120px]">{t("admin:business.invoices.unit")}</TableHead>
+                <TableHead className="w-[100px]">{t("admin:business.invoices.quantity")}</TableHead>
+                <TableHead className="w-[120px]">{t("admin:business.invoices.price")}</TableHead>
+                <TableHead className="w-[100px]">{t("admin:business.invoices.vat")}</TableHead>
+                <TableHead className="w-[120px]">{t("admin:business.invoices.total")}</TableHead>
+                <TableHead className="w-[60px]"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {items.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell>{item.sku}</TableCell>
-                  <TableCell>{item.description}</TableCell>
+                  <TableCell className="max-w-[300px] truncate">{item.description}</TableCell>
                   <TableCell>{item.unit}</TableCell>
                   <TableCell>{item.quantity}</TableCell>
                   <TableCell>
@@ -120,7 +120,7 @@ const InvoiceItems = ({ items, onItemsChange, currency }: InvoiceItemsProps) => 
               <TableRow>
                 <TableCell>
                   <Input
-                    placeholder="SKU"
+                    placeholder={t("admin:business.invoices.skuPlaceholder")}
                     value={newItem.sku}
                     onChange={(e) => setNewItem({ ...newItem, sku: e.target.value })}
                     className="h-8"
@@ -128,7 +128,7 @@ const InvoiceItems = ({ items, onItemsChange, currency }: InvoiceItemsProps) => 
                 </TableCell>
                 <TableCell>
                   <Input
-                    placeholder={t("admin:business.invoices.itemDescription")}
+                    placeholder={t("admin:business.invoices.descriptionPlaceholder")}
                     value={newItem.description}
                     onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
                     className="h-8"
@@ -140,7 +140,7 @@ const InvoiceItems = ({ items, onItemsChange, currency }: InvoiceItemsProps) => 
                     onValueChange={(value) => setNewItem({ ...newItem, unit: value })}
                   >
                     <SelectTrigger className="h-8">
-                      <SelectValue placeholder="Unit" />
+                      <SelectValue placeholder={t("admin:business.invoices.selectUnit")} />
                     </SelectTrigger>
                     <SelectContent>
                       {units.map(unit => (
@@ -155,7 +155,7 @@ const InvoiceItems = ({ items, onItemsChange, currency }: InvoiceItemsProps) => 
                   <Input
                     type="number"
                     min="0"
-                    placeholder="Qty"
+                    placeholder={t("admin:business.invoices.qtyPlaceholder")}
                     value={newItem.quantity}
                     onChange={(e) => setNewItem({ ...newItem, quantity: Number(e.target.value) })}
                     className="h-8"
@@ -166,7 +166,7 @@ const InvoiceItems = ({ items, onItemsChange, currency }: InvoiceItemsProps) => 
                     type="number"
                     min="0"
                     step="0.01"
-                    placeholder="Price"
+                    placeholder={t("admin:business.invoices.pricePlaceholder")}
                     value={newItem.unitPrice}
                     onChange={(e) => setNewItem({ ...newItem, unitPrice: Number(e.target.value) })}
                     className="h-8"

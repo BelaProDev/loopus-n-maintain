@@ -1,73 +1,65 @@
 {
   "title": "Outils Numériques",
-  "documents": {
-    "title": "Gestionnaire de Documents",
-    "description": "Créez, éditez et gérez vos documents avec de puissantes fonctionnalités de collaboration.",
-    "features": {
-      "dropboxLens": "Recherche et organisation avancées de documents",
-      "mediaGallery": "Gestion des photos et vidéos",
-      "sharing": "Partage sécurisé de fichiers",
-      "versioning": "Contrôle de version des documents"
-    }
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "add": "Ajouter",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "sort": "Trier",
+    "export": "Exporter",
+    "import": "Importer",
+    "preview": "Aperçu",
+    "download": "Télécharger",
+    "upload": "Téléverser",
+    "close": "Fermer"
   },
-  "diagrams": {
-    "title": "Concepteur de Systèmes",
-    "description": "Concevez et visualisez des architectures système avec nos outils professionnels.",
-    "features": {
-      "systemArchitecture": "Diagrammes d'architecture",
-      "networkDiagrams": "Cartographie d'infrastructure",
-      "databaseSchemas": "Conception de schémas de base de données",
-      "componentDiagrams": "Modélisation d'interaction des composants"
-    }
-  },
-  "analytics": {
-    "title": "Tableau de Bord Analytique",
-    "description": "Suivez les tendances et analysez avec des outils complets de visualisation.",
-    "features": {
-      "realtime": "Surveillance en temps réel",
-      "reports": "Génération de rapports",
-      "insights": "Intelligence d'affaires",
-      "export": "Exportation de données"
-    }
-  },
-  "audio": {
-    "title": "Studio Audio",
-    "description": "Suite professionnelle de création et d'édition audio avec synthétiseurs modulaires.",
-    "features": {
-      "synthesizer": "Synthétiseur modulaire",
-      "sequencer": "Séquenceur pas à pas",
-      "effects": "Effets audio professionnels",
-      "recording": "Enregistrement multipiste"
-    }
-  },
-  "invoicing": {
+  "invoices": {
     "title": "Gestionnaire de Factures",
-    "description": "Suite complète d'outils pour la gestion des factures et le suivi financier.",
-    "features": {
-      "creation": "Génération de factures",
-      "templates": "Modèles personnalisés",
-      "tracking": "Suivi des paiements",
-      "reporting": "Rapports financiers"
-    }
-  },
-  "chat": {
-    "title": "Centre Communautaire",
-    "description": "Plateforme de communication en temps réel pour la communauté.",
-    "features": {
-      "rooms": "Salles de chat thématiques",
-      "sharing": "Partage de fichiers",
-      "notifications": "Notifications en temps réel",
-      "search": "Recherche de messages"
-    }
-  },
-  "photoGallery": {
-    "title": "Galerie Photos",
-    "description": "Gestion et visualisation d'images",
-    "features": {
-      "organization": "Organisation d'images",
-      "editing": "Édition de photos",
-      "sharing": "Partage d'albums",
-      "tagging": "Étiquetage de photos"
+    "description": "Créer et gérer des factures professionnelles",
+    "new": "Nouvelle Facture",
+    "edit": "Modifier Facture",
+    "delete": "Supprimer Facture",
+    "preview": "Aperçu",
+    "download": "Télécharger Facture",
+    "send": "Envoyer Facture",
+    "items": "Éléments de Facture",
+    "addItem": "Ajouter Élément",
+    "sku": "SKU",
+    "description": "Description",
+    "unit": "Unité",
+    "quantity": "Qté",
+    "price": "Prix",
+    "vat": "TVA",
+    "total": "Total",
+    "subtotal": "Sous-total",
+    "tax": "Taxe",
+    "notes": "Notes",
+    "status": {
+      "draft": "Brouillon",
+      "sent": "Envoyée",
+      "paid": "Payée",
+      "overdue": "En retard"
+    },
+    "units": {
+      "unit": "Unité",
+      "hour": "Heure",
+      "day": "Jour",
+      "month": "Mois",
+      "piece": "Pièce",
+      "service": "Service"
+    },
+    "placeholders": {
+      "sku": "Saisir SKU",
+      "description": "Saisir description",
+      "quantity": "Saisir quantité",
+      "price": "Saisir prix",
+      "notes": "Saisir notes"
     }
   }
 }

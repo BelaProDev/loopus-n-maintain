@@ -25,11 +25,7 @@ const InvoiceList = () => {
       if (!response) {
         throw new Error('Failed to fetch invoices');
       }
-      return response.map(invoice => ({
-        ...invoice,
-        date: new Date(invoice.date).toISOString(),
-        dueDate: new Date(invoice.dueDate).toISOString()
-      }));
+      return response;
     }
   });
 
@@ -41,11 +37,7 @@ const InvoiceList = () => {
     });
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
-    
+  const handleSubmit = async (formData: FormData) => {
     try {
       if (editingInvoice) {
         await handleUpdateInvoice(editingInvoice.id, formData);
@@ -56,6 +48,11 @@ const InvoiceList = () => {
       setEditingInvoice(null);
     } catch (error) {
       console.error('Error submitting invoice:', error);
+      toast({
+        title: t("common:common.error"),
+        description: t("admin:business.invoices.submitError"),
+        variant: "destructive"
+      });
     }
   };
 

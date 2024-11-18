@@ -1,73 +1,65 @@
 {
   "title": "Herramientas Digitales",
-  "documents": {
-    "title": "Gestor de Documentos",
-    "description": "Crea, edita y gestiona tus documentos con potentes funciones de colaboración.",
-    "features": {
-      "dropboxLens": "Búsqueda y organización avanzada de documentos",
-      "mediaGallery": "Gestión de fotos y videos",
-      "sharing": "Compartición segura de archivos",
-      "versioning": "Control de versiones de documentos"
-    }
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "add": "Añadir",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "sort": "Ordenar",
+    "export": "Exportar",
+    "import": "Importar",
+    "preview": "Vista previa",
+    "download": "Descargar",
+    "upload": "Subir",
+    "close": "Cerrar"
   },
-  "diagrams": {
-    "title": "Diseñador de Sistemas",
-    "description": "Diseña y visualiza arquitecturas de sistemas con nuestras herramientas profesionales.",
-    "features": {
-      "systemArchitecture": "Diagramas de arquitectura",
-      "networkDiagrams": "Mapeo de infraestructura",
-      "databaseSchemas": "Diseño de esquemas de base de datos",
-      "componentDiagrams": "Modelado de interacción de componentes"
-    }
-  },
-  "analytics": {
-    "title": "Panel de Análisis",
-    "description": "Seguimiento de tendencias y análisis con herramientas completas de visualización.",
-    "features": {
-      "realtime": "Monitoreo en tiempo real",
-      "reports": "Generación de informes",
-      "insights": "Inteligencia empresarial",
-      "export": "Exportación de datos"
-    }
-  },
-  "audio": {
-    "title": "Estudio de Audio",
-    "description": "Suite profesional de creación y edición de audio con sintetizadores modulares.",
-    "features": {
-      "synthesizer": "Sintetizador modular",
-      "sequencer": "Secuenciador por pasos",
-      "effects": "Efectos de audio profesionales",
-      "recording": "Grabación multipista"
-    }
-  },
-  "invoicing": {
+  "invoices": {
     "title": "Gestor de Facturas",
-    "description": "Conjunto completo de herramientas para gestión de facturas y seguimiento financiero.",
-    "features": {
-      "creation": "Generación de facturas",
-      "templates": "Plantillas personalizadas",
-      "tracking": "Seguimiento de pagos",
-      "reporting": "Informes financieros"
-    }
-  },
-  "chat": {
-    "title": "Centro Comunitario",
-    "description": "Plataforma de comunicación en tiempo real para la comunidad.",
-    "features": {
-      "rooms": "Salas de chat temáticas",
-      "sharing": "Compartición de archivos",
-      "notifications": "Notificaciones en tiempo real",
-      "search": "Búsqueda de mensajes"
-    }
-  },
-  "photoGallery": {
-    "title": "Galería de Fotos",
-    "description": "Gestión y visualización de imágenes",
-    "features": {
-      "organization": "Organización de imágenes",
-      "editing": "Edición de fotos",
-      "sharing": "Compartir álbumes",
-      "tagging": "Etiquetado de fotos"
+    "description": "Crear y gestionar facturas profesionales",
+    "new": "Nueva Factura",
+    "edit": "Editar Factura",
+    "delete": "Eliminar Factura",
+    "preview": "Vista Previa",
+    "download": "Descargar Factura",
+    "send": "Enviar Factura",
+    "items": "Elementos de Factura",
+    "addItem": "Añadir Elemento",
+    "sku": "SKU",
+    "description": "Descripción",
+    "unit": "Unidad",
+    "quantity": "Cant.",
+    "price": "Precio",
+    "vat": "IVA",
+    "total": "Total",
+    "subtotal": "Subtotal",
+    "tax": "Impuesto",
+    "notes": "Notas",
+    "status": {
+      "draft": "Borrador",
+      "sent": "Enviada",
+      "paid": "Pagada",
+      "overdue": "Vencida"
+    },
+    "units": {
+      "unit": "Unidad",
+      "hour": "Hora",
+      "day": "Día",
+      "month": "Mes",
+      "piece": "Pieza",
+      "service": "Servicio"
+    },
+    "placeholders": {
+      "sku": "Introducir SKU",
+      "description": "Introducir descripción",
+      "quantity": "Introducir cantidad",
+      "price": "Introducir precio",
+      "notes": "Introducir notas"
     }
   }
 }
