@@ -82,32 +82,18 @@ const InvoiceForm = ({
     const totals = calculateTotals();
     
     // Ensure items are properly serialized with their complete data
-    const serializedItems = items.map(item => ({
-      id: item.id,
-      sku: item.sku || '',
-      description: item.description || '',
-      quantity: Number(item.quantity),
-      unitPrice: Number(item.unitPrice),
-      unit: item.unit || 'unit',
-      vatRate: Number(item.vatRate),
-      total: Number(item.quantity) * Number(item.unitPrice)
-    }));
-
-    formDataObj.append('items', JSON.stringify(serializedItems));
+    formDataObj.append('items', JSON.stringify(items));
     formDataObj.append('totalAmount', totals.total.toString());
     formDataObj.append('tax', totals.tax.toString());
     formDataObj.append('status', formData.status);
     formDataObj.append('currency', formData.currency);
     formDataObj.append('paymentTerms', formData.paymentTerms);
+    formDataObj.append('clientId', formData.clientId);
+    formDataObj.append('providerId', formData.providerId);
+    formDataObj.append('notes', formData.notes);
     
     try {
       await onSubmit(e);
-      toast({
-        title: t("common:common.success"),
-        description: editingInvoice 
-          ? t("admin:business.invoices.updateSuccess")
-          : t("admin:business.invoices.createSuccess")
-      });
     } catch (error) {
       console.error('Error submitting invoice:', error);
       toast({
