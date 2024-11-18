@@ -23,7 +23,7 @@ const InvoicingActions = ({ invoicesCount, clientsCount }: InvoicingActionsProps
           <Button 
             variant="outline" 
             className="w-full h-32 flex flex-col items-center justify-center gap-2 group"
-            onClick={() => navigate("/koalax/business")}
+            onClick={() => navigate("/admin/business/invoices")}
           >
             <FileCheck className="h-8 w-8 group-hover:text-primary transition-colors" />
             <span className="font-semibold">Create Invoice</span>
@@ -43,13 +43,12 @@ const InvoicingActions = ({ invoicesCount, clientsCount }: InvoicingActionsProps
           <Button 
             variant="outline" 
             className="w-full h-32 flex flex-col items-center justify-center gap-2 group"
-            onClick={() => navigate("/koalax/business")}
+            onClick={() => navigate("/admin/business/clients")}
           >
             <FileText className="h-8 w-8 group-hover:text-primary transition-colors" />
-            <span className="font-semibold">Manage Invoices</span>
+            <span className="font-semibold">Manage Clients</span>
             <div className="text-sm text-muted-foreground text-center">
-              <p>{invoicesCount} Active Invoices</p>
-              <p>{clientsCount} Clients</p>
+              <p>{clientsCount} Active Clients</p>
             </div>
           </Button>
         </Card>
@@ -64,12 +63,12 @@ const InvoicingActions = ({ invoicesCount, clientsCount }: InvoicingActionsProps
           <Button 
             variant="outline" 
             className="w-full h-32 flex flex-col items-center justify-center gap-2 group"
-            onClick={() => navigate("/koalax/business")}
+            onClick={() => navigate("/admin/business/providers")}
           >
             <Download className="h-8 w-8 group-hover:text-primary transition-colors" />
-            <span className="font-semibold">Download Reports</span>
+            <span className="font-semibold">Manage Providers</span>
             <p className="text-sm text-muted-foreground">
-              Export financial reports
+              View and edit providers
             </p>
           </Button>
         </Card>
