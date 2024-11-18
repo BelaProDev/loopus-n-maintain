@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { businessQueries } from '@/lib/db/businessDb';
 import type { Client, Provider, Invoice } from '@/types/business';
 
@@ -18,30 +18,44 @@ const initialState: BusinessState = {
   error: null,
 };
 
-export const fetchClients = createAsyncThunk('business/fetchClients', async () => {
-  return await businessQueries.getClients();
-});
+// Async thunks
+export const fetchClients = createAsyncThunk(
+  'business/fetchClients',
+  async () => {
+    const response = await businessQueries.getClients();
+    return response;
+  }
+);
 
-export const fetchProviders = createAsyncThunk('business/fetchProviders', async () => {
-  return await businessQueries.getProviders();
-});
+export const fetchProviders = createAsyncThunk(
+  'business/fetchProviders',
+  async () => {
+    const response = await businessQueries.getProviders();
+    return response;
+  }
+);
 
-export const fetchInvoices = createAsyncThunk('business/fetchInvoices', async () => {
-  return await businessQueries.getInvoices();
-});
+export const fetchInvoices = createAsyncThunk(
+  'business/fetchInvoices',
+  async () => {
+    const response = await businessQueries.getInvoices();
+    return response;
+  }
+);
 
 const businessSlice = createSlice({
   name: 'business',
   initialState,
   reducers: {
-    resetState: () => initialState,
+    resetBusinessState: () => initialState,
   },
   extraReducers: (builder) => {
     builder
+      // Clients
       .addCase(fetchClients.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(fetchClients.fulfilled, (state, action) => {
+      .addCase(fetchClients.fulfilled, (state, action: PayloadAction<Client[]>) => {
         state.status = 'succeeded';
         state.clients = action.payload;
       })
@@ -49,14 +63,16 @@ const businessSlice = createSlice({
         state.status = 'failed';
         state.error = action.error.message || 'Failed to fetch clients';
       })
-      .addCase(fetchProviders.fulfilled, (state, action) => {
+      // Providers
+      .addCase(fetchProviders.fulfilled, (state, action: PayloadAction<Provider[]>) => {
         state.providers = action.payload;
       })
-      .addCase(fetchInvoices.fulfilled, (state, action) => {
+      // Invoices
+      .addCase(fetchInvoices.fulfilled, (state, action: PayloadAction<Invoice[]>) => {
         state.invoices = action.payload;
       });
   },
 });
 
-export const { resetState } = businessSlice.actions;
+export const { resetBusinessState } = businessSlice.actions;
 export default businessSlice.reducer;
