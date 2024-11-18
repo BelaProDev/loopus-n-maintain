@@ -7,7 +7,7 @@ interface InvoicingStatsProps {
 
 const InvoicingStats = ({ invoices }: InvoicingStatsProps) => {
   const totalRevenue = invoices.reduce((sum, inv) => sum + inv.totalAmount, 0);
-  const pendingInvoices = invoices.filter((inv) => inv.status === 'pending').length;
+  const pendingInvoices = invoices.filter((inv) => inv.status === 'draft').length;
   const overdueInvoices = invoices.filter((inv) => inv.status === 'overdue').length;
 
   return (
@@ -21,7 +21,7 @@ const InvoicingStats = ({ invoices }: InvoicingStatsProps) => {
       
       <Card className="p-6 hover:shadow-lg transition-shadow">
         <div className="flex flex-col gap-2">
-          <span className="text-sm font-medium text-muted-foreground">Pending Invoices</span>
+          <span className="text-sm font-medium text-muted-foreground">Draft Invoices</span>
           <span className="text-2xl font-bold">{pendingInvoices}</span>
         </div>
       </Card>

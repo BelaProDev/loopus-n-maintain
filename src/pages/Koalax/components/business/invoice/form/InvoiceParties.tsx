@@ -33,7 +33,7 @@ const InvoiceParties = ({ formData, clients, providers, onChange }: InvoiceParti
             onValueChange={(value) => onChange("providerId", value)}
           >
             <SelectTrigger className="h-12">
-              <SelectValue placeholder={t("admin:business.invoices.selectProvider")} />
+              <SelectValue placeholder={t("admin:business.invoices.selectProvider") as string} />
             </SelectTrigger>
             <SelectContent>
               {providers?.map((provider) => (
@@ -66,7 +66,7 @@ const InvoiceParties = ({ formData, clients, providers, onChange }: InvoiceParti
             onValueChange={(value) => onChange("clientId", value)}
           >
             <SelectTrigger className="h-12">
-              <SelectValue placeholder={t("admin:business.invoices.selectClient")} />
+              <SelectValue placeholder={t("admin:business.invoices.selectClient") as string} />
             </SelectTrigger>
             <SelectContent>
               {clients?.map((client) => (
