@@ -8,7 +8,7 @@ import RoomsList from "./chat/RoomsList";
 import MessageList from "./chat/MessageList";
 import MessageInput from "./chat/MessageInput";
 import { extractFaunaData } from "@/lib/fauna/utils";
-import type { ChatMessage, ChatRoom } from "@/lib/fauna/types/chat";
+import type { ChatMessage, ChatRoom, FaunaMessageResponse, FaunaRoomResponse } from "@/lib/fauna/types/chat";
 
 const Chat = () => {
   const [activeRoom, setActiveRoom] = useState("");
@@ -30,7 +30,8 @@ const Chat = () => {
       }
       
       const result = await response.json();
-      return extractFaunaData(result) as ChatRoom[];
+      const faunaResponse = result as FaunaRoomResponse;
+      return faunaResponse.data.data;
     },
     refetchInterval: 3000
   });
@@ -54,7 +55,8 @@ const Chat = () => {
       }
       
       const result = await response.json();
-      return result.data || [];
+      const faunaResponse = result as FaunaMessageResponse;
+      return faunaResponse.data.data;
     },
     enabled: Boolean(activeRoom),
     refetchInterval: 1000,
@@ -78,7 +80,7 @@ const Chat = () => {
         throw new Error(result.error || 'Failed to create room');
       }
       
-      return result.data;
+      return result.data as ChatRoom;
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["chatRooms"] });
@@ -111,7 +113,7 @@ const Chat = () => {
         throw new Error(result.error || 'Failed to send message');
       }
       
-      return result.data;
+      return result.data as ChatMessage;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["messages", activeRoom] });

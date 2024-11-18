@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { DropboxEntry } from '@/types/dropbox';
 import { Card } from '@/components/ui/card';
 import { Play, Image } from 'lucide-react';
@@ -13,9 +14,12 @@ interface ImageGridProps {
 
 export const ImageGrid = ({ images, onSelect, selectedImage }: ImageGridProps) => {
   const { client } = useDropbox();
+  const [thumbnailUrls, setThumbnailUrls] = useState<Record<string, string>>({});
 
-  const getThumbnailUrl = async (path: string): Promise<string> => {
+  const getThumbnailUrl = async (path: string) => {
     if (!client) return '';
+    if (thumbnailUrls[path]) return thumbnailUrls[path];
+
     try {
       const response = await client.filesGetThumbnail({
         path,
@@ -23,7 +27,10 @@ export const ImageGrid = ({ images, onSelect, selectedImage }: ImageGridProps) =
         size: { '.tag': 'w640h480' },
         mode: { '.tag': 'strict' }
       });
-      return URL.createObjectURL(response.result.fileBlob);
+      const blob = response.result;
+      const url = URL.createObjectURL(blob);
+      setThumbnailUrls(prev => ({ ...prev, [path]: url }));
+      return url;
     } catch (error) {
       console.error('Error fetching thumbnail:', error);
       return '';
@@ -53,14 +60,21 @@ export const ImageGrid = ({ images, onSelect, selectedImage }: ImageGridProps) =
             ) : (
               <Image className="absolute top-2 right-2 w-4 md:w-6 h-4 md:h-6 text-white opacity-75" />
             )}
-            <img
-              src={file.path_display ? getThumbnailUrl(file.path_display) : ''}
-              alt={file.name}
-              className="object-cover w-full h-full"
-              onError={(e) => {
-                e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnptMSAxNWgtMnYtMmgydjJ6bTAtNGgtMlY3aDJ2NnoiIGZpbGw9ImN1cnJlbnRDb2xvciIvPjwvc3ZnPg==';
-              }}
-            />
+            {file.path_display && (
+              <img
+                src={thumbnailUrls[file.path_display] || ''}
+                alt={file.name}
+                className="object-cover w-full h-full"
+                onLoad={() => {
+                  if (file.path_display && !thumbnailUrls[file.path_display]) {
+                    getThumbnailUrl(file.path_display);
+                  }
+                }}
+                onError={(e) => {
+                  e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnptMSAxNWgtMnYtMmgydjJ6bTAtNGgtMlY3aDJ2NnoiIGZpbGw9ImN1cnJlbnRDb2xvciIvPjwvc3ZnPg==';
+                }}
+              />
+            )}
             <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white p-2 text-xs md:text-sm truncate transform translate-y-full group-hover:translate-y-0 transition-transform">
               {file.name}
             </div>
