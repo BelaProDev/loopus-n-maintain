@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Image, Upload, Settings2 } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { ImageGrid } from './photo-gallery/ImageGrid';
+import ImageGrid from './photo-gallery/ImageGrid';
 import { ImageEditor } from './photo-gallery/ImageEditor';
 import { NavigationBreadcrumb } from '../DropboxExplorer/components/NavigationBreadcrumb';
 import { toast } from 'sonner';

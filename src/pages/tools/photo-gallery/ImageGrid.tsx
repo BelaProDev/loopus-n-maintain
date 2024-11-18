@@ -11,23 +11,23 @@ interface ImageGridProps {
 }
 
 const ImageGrid = ({ files, onSelect }: ImageGridProps) => {
-  const { dropbox } = useDropbox();
+  const { client } = useDropbox();
   const [thumbnailUrls, setThumbnailUrls] = useState<Record<string, string>>({});
 
   const getThumbnailUrl = async (path: string) => {
+    if (!client) return null;
+    
     try {
-      const response = await dropbox?.filesGetThumbnail({
+      const response = await client.filesGetThumbnail({
         path,
         format: { '.tag': 'jpeg' },
         size: { '.tag': 'w640h480' },
         mode: { '.tag': 'strict' }
       });
       
-      if (!response?.result) return null;
+      if (!response.result) return null;
       
-      // Convert the response to a Blob
-      const arrayBuffer = await (response.result as any).arrayBuffer();
-      const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
+      const blob = new Blob([response.result], { type: 'image/jpeg' });
       const url = URL.createObjectURL(blob);
       
       setThumbnailUrls(prev => ({ ...prev, [path]: url }));
@@ -63,9 +63,9 @@ const ImageGrid = ({ files, onSelect }: ImageGridProps) => {
             {type === 'video' ? (
               <Play className="w-12 h-12 text-white absolute z-10" />
             ) : null}
-            {thumbnailUrls[file.path_display] ? (
+            {thumbnailUrls[file.path_display || ''] ? (
               <img
-                src={thumbnailUrls[file.path_display]}
+                src={thumbnailUrls[file.path_display || '']}
                 alt={file.name}
                 className="object-cover w-full h-full"
                 loading="lazy"
