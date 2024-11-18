@@ -98,6 +98,7 @@ const InvoiceForm = ({
     formDataObj.append('tax', totals.tax.toString());
     formDataObj.append('status', formData.status);
     formDataObj.append('currency', formData.currency);
+    formDataObj.append('paymentTerms', formData.paymentTerms);
     
     try {
       await onSubmit(e);
@@ -107,8 +108,10 @@ const InvoiceForm = ({
           ? t("admin:business.invoices.updateSuccess")
           : t("admin:business.invoices.createSuccess")
       });
-      onCancel(); // Close the form after successful submission
+      // Only close the form after successful submission
+      onCancel();
     } catch (error) {
+      console.error('Error submitting invoice:', error);
       toast({
         title: t("common:common.error"),
         description: t("admin:business.invoices.submitError"),

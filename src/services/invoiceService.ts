@@ -28,8 +28,7 @@ export const invoiceService = {
         sku: item.sku || '',
         unit: item.unit || 'unit',
         vatRate: item.vatRate || 21,
-        total: item.quantity * item.unitPrice,
-        [Symbol.iterator]: undefined
+        total: Number(item.quantity) * Number(item.unitPrice)
       })),
       status: 'draft',
       totalAmount,
@@ -41,41 +40,66 @@ export const invoiceService = {
   },
 
   createInvoice: async (dto: CreateInvoiceDTO) => {
-    const invoiceData = invoiceService.prepareInvoiceData(dto);
-    const result = await businessQueries.createInvoice(invoiceData);
-    if (!result) {
-      throw new Error('Failed to create invoice');
+    try {
+      const invoiceData = invoiceService.prepareInvoiceData(dto);
+      const result = await businessQueries.createInvoice(invoiceData);
+      if (!result) {
+        throw new Error('Failed to create invoice');
+      }
+      return result;
+    } catch (error) {
+      console.error('Create invoice error:', error);
+      throw error;
     }
-    return result;
   },
 
   updateInvoice: async (id: string, dto: CreateInvoiceDTO) => {
-    const invoiceData = invoiceService.prepareInvoiceData(dto);
-    const result = await businessQueries.updateInvoice(id, invoiceData);
-    if (!result) {
-      throw new Error('Failed to update invoice');
+    try {
+      const invoiceData = invoiceService.prepareInvoiceData(dto);
+      const result = await businessQueries.updateInvoice(id, invoiceData);
+      if (!result) {
+        throw new Error('Failed to update invoice');
+      }
+      return result;
+    } catch (error) {
+      console.error('Update invoice error:', error);
+      throw error;
     }
-    return result;
   },
 
   deleteInvoice: async (id: string) => {
-    const result = await businessQueries.deleteInvoice(id);
-    if (!result) {
-      throw new Error('Failed to delete invoice');
+    try {
+      const result = await businessQueries.deleteInvoice(id);
+      if (!result) {
+        throw new Error('Failed to delete invoice');
+      }
+      return result;
+    } catch (error) {
+      console.error('Delete invoice error:', error);
+      throw error;
     }
-    return result;
   },
 
   getInvoices: async () => {
-    const invoices = await businessQueries.getInvoices();
-    return invoices || [];
+    try {
+      const invoices = await businessQueries.getInvoices();
+      return invoices || [];
+    } catch (error) {
+      console.error('Get invoices error:', error);
+      throw error;
+    }
   },
 
   getInvoiceById: async (id: string) => {
-    const invoice = await businessQueries.getInvoiceById(id);
-    if (!invoice) {
-      throw new Error('Invoice not found');
+    try {
+      const invoice = await businessQueries.getInvoiceById(id);
+      if (!invoice) {
+        throw new Error('Invoice not found');
+      }
+      return invoice;
+    } catch (error) {
+      console.error('Get invoice by id error:', error);
+      throw error;
     }
-    return invoice;
   }
 };
