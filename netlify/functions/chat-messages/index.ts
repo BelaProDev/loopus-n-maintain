@@ -56,8 +56,8 @@ export const handler: Handler = async (event) => {
         `);
         console.log('Messages retrieved:', messages);
 
-        // Ensure we always return an array
-        const messageArray = Array.isArray(messages.data) ? messages.data : [];
+        // Extract the messages array from the Fauna response
+        const messageArray = messages.data?.data || [];
 
         return {
           statusCode: 200,
