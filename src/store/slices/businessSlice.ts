@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { businessQueries } from '@/lib/fauna/business';
+import { businessQueries } from '@/lib/db/businessDb';
 import type { Client, Provider, Invoice } from '@/types/business';
 
 interface BusinessState {
