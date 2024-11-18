@@ -17,7 +17,9 @@ export interface ChatMessage {
 
 export interface FaunaMessageResponse {
   data: {
-    data: ChatMessage[];
+    data: {
+      data: ChatMessage[];
+    };
   };
 }
 

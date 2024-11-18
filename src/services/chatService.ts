@@ -56,7 +56,16 @@ export const chatService = {
     }
 
     const result = await response.json();
-    return result.data.data || [];
+    // Handle the triple-nested data structure
+    return result.data.data.data.map((message: any) => ({
+      id: message.id,
+      content: message.content,
+      sender: message.sender,
+      createdAt: message.createdAt.isoString,
+      room: {
+        id: message.room.id
+      }
+    }));
   },
 
   async sendMessage(roomId: string, content: string, sender: string): Promise<ChatMessage> {
