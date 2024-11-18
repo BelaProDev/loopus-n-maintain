@@ -1,4 +1,4 @@
-import { Menu } from "lucide-react";
+import { Menu, Home } from "lucide-react";
 import { Button } from "./ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Link } from "react-router-dom";
@@ -72,13 +72,23 @@ const Header = () => {
                   <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-primary via-secondary to-accent transform origin-left scale-x-0 transition-transform group-hover:scale-x-100" />
                 </Link>
               ))}
-              {isAuthenticated && (
+              {isAuthenticated ? (
                 <Button
                   onClick={logout}
                   variant="outline"
                   className="ml-4 gradient-border"
                 >
                   {t("auth:signOut")}
+                </Button>
+              ) : (
+                <Button
+                  asChild
+                  variant="outline"
+                  className="ml-4 gradient-border"
+                >
+                  <Link to="/login">
+                    {t("auth:signIn")}
+                  </Link>
                 </Button>
               )}
             </div>
@@ -102,13 +112,23 @@ const Header = () => {
                     {t(`tools:${tool.name}.title`)}
                   </Link>
                 ))}
-                {isAuthenticated && (
+                {isAuthenticated ? (
                   <Button
                     onClick={logout}
                     variant="outline"
                     className="mt-4"
                   >
                     {t("auth:signOut")}
+                  </Button>
+                ) : (
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="mt-4"
+                  >
+                    <Link to="/login">
+                      {t("auth:signIn")}
+                    </Link>
                   </Button>
                 )}
               </div>

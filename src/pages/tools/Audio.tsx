@@ -7,6 +7,7 @@ import SynthesizerCore from "@/components/audio/synth/SynthesizerCore";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DrumSequencer from "@/components/audio/DrumSequencer";
 import { useState } from "react";
+import BackToHome from "@/components/BackToHome";
 
 const AudioStudio = () => {
   const { t } = useTranslation(["tools"]);
@@ -17,6 +18,7 @@ const AudioStudio = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1 container mx-auto px-4 py-8">
+        <BackToHome />
         <div className="space-y-8">
           <div className="flex items-center justify-between">
             <div>
