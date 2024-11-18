@@ -13,32 +13,28 @@
     "chat": "Chat",
     "gallery": "Photo Gallery"
   },
-  "languages": {
-    "en": "English",
-    "es": "Spanish",
-    "fr": "French"
-  },
-  "language": "Change Language",
-  "languageChanged": "Language changed to {{lng}}",
-  "languageChangeError": "Failed to change language",
-  "contact": {
-    "phone": "Call us",
-    "email": "Send us an email",
-    "github": "Visit our GitHub"
-  },
-  "actions": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "edit": "Edit",
-    "create": "Create",
-    "update": "Update",
-    "explore": "Explore Service"
-  },
   "status": {
     "loading": "Loading...",
     "success": "Success",
     "error": "Error",
-    "offline": "Offline"
+    "offline": "Offline",
+    "required": "Required",
+    "optional": "Optional",
+    "na": "N/A",
+    "noResults": "No results found",
+    "loadingMore": "Loading more...",
+    "endOfList": "End of list"
+  },
+  "language": {
+    "change": "Change Language",
+    "en": "English",
+    "es": "Spanish",
+    "fr": "French"
+  },
+  "theme": {
+    "title": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
   }
 }

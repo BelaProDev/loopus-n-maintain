@@ -13,23 +13,28 @@
     "chat": "Chat",
     "gallery": "Galería de Fotos"
   },
-  "contact": {
-    "phone": "Llámanos",
-    "email": "Envíanos un correo",
-    "github": "Visita nuestro GitHub"
-  },
-  "actions": {
-    "save": "Guardar",
-    "cancel": "Cancelar",
-    "delete": "Eliminar",
-    "edit": "Editar",
-    "create": "Crear",
-    "update": "Actualizar"
-  },
   "status": {
     "loading": "Cargando...",
     "success": "Éxito",
     "error": "Error",
-    "offline": "Desconectado"
+    "offline": "Desconectado",
+    "required": "Requerido",
+    "optional": "Opcional",
+    "na": "N/D",
+    "noResults": "No se encontraron resultados",
+    "loadingMore": "Cargando más...",
+    "endOfList": "Fin de la lista"
+  },
+  "language": {
+    "change": "Cambiar Idioma",
+    "en": "Inglés",
+    "es": "Español",
+    "fr": "Francés"
+  },
+  "theme": {
+    "title": "Tema",
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Sistema"
   }
 }
