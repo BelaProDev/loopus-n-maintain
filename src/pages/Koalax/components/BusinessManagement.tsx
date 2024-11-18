@@ -1,18 +1,31 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { Users, UserCog, Receipt } from "lucide-react";
-import ClientList from "./business/ClientList";
-import ProviderList from "./business/ProviderList";
-import InvoiceList from "./business/InvoiceList";
+import { useNavigate, useLocation, Outlet } from "react-router-dom";
+import { useEffect } from "react";
 
 const BusinessManagement = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const currentTab = location.pathname.split('/').pop() || 'clients';
+
+  useEffect(() => {
+    if (location.pathname === '/admin/business') {
+      navigate('/admin/business/clients');
+    }
+  }, [location.pathname, navigate]);
+
+  const handleTabChange = (value: string) => {
+    navigate(`/admin/business/${value}`);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Business Management</h1>
       </div>
       
-      <Tabs defaultValue="clients" className="space-y-4">
+      <Tabs value={currentTab} onValueChange={handleTabChange} className="space-y-4">
         <TabsList>
           <TabsTrigger value="clients">
             <Users className="w-4 h-4 mr-2" />
@@ -28,23 +41,9 @@ const BusinessManagement = () => {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="clients">
-          <Card className="p-6">
-            <ClientList />
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="providers">
-          <Card className="p-6">
-            <ProviderList />
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="invoices">
-          <Card className="p-6">
-            <InvoiceList />
-          </Card>
-        </TabsContent>
+        <Card className="p-6">
+          <Outlet />
+        </Card>
       </Tabs>
     </div>
   );

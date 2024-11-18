@@ -46,6 +46,12 @@ import Analytics from "./pages/tools/Analytics";
 import Audio from "./pages/tools/Audio";
 import Chat from "./pages/tools/Chat";
 import PhotoGallery from "./pages/tools/PhotoGallery";
+import Invoicing from "./pages/tools/Invoicing";
+
+// Import business components
+import ClientList from "./pages/Koalax/components/business/ClientList";
+import ProviderList from "./pages/Koalax/components/business/ProviderList";
+import InvoiceList from "./pages/Koalax/components/business/InvoiceList";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -100,6 +106,7 @@ const App = () => {
                         <Route path="audio" element={<AsyncComponent><Audio /></AsyncComponent>} />
                         <Route path="chat" element={<AsyncComponent><Chat /></AsyncComponent>} />
                         <Route path="photo-gallery" element={<AsyncComponent><PhotoGallery /></AsyncComponent>} />
+                        <Route path="invoicing" element={<AsyncComponent><Invoicing /></AsyncComponent>} />
                       </Route>
                       
                       {/* Admin Routes */}
@@ -107,13 +114,15 @@ const App = () => {
                         <Route index element={<EmailManagement />} />
                         <Route path="emails" element={<EmailManagement />} />
                         <Route path="settings" element={<SiteSettings />} />
-                        <Route path="business/*" element={<BusinessManagement />} />
+                        <Route path="business" element={<BusinessManagement />}>
+                          <Route index element={<ClientList />} />
+                          <Route path="clients" element={<ClientList />} />
+                          <Route path="providers" element={<ProviderList />} />
+                          <Route path="invoices" element={<InvoiceList />} />
+                        </Route>
                         <Route path="messages" element={<MessageManagement />} />
                       </Route>
 
-                      {/* Business Routes */}
-                      <Route path="/business/*" element={<AsyncComponent><BusinessManagement /></AsyncComponent>} />
-                      
                       <Route path="/docs" element={<Documentation />} />
                       <Route path="/dropbox-explorer" element={<DropboxExplorer />} />
                       <Route path="/dropbox-explorer/callback" element={<DropboxCallback />} />
