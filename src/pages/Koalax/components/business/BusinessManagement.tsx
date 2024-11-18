@@ -25,7 +25,7 @@ const BusinessManagement = () => {
         </Card>
 
         <Card className="p-6">
-          <h2 className="text-2xl font-semibold mb-6">{t("admin:providers.title")}</h2>
+          <h2 className="text-2xl font-semibold mb-6">{t("admin:business.providers.title")}</h2>
           <ProviderList />
         </Card>
       </div>
