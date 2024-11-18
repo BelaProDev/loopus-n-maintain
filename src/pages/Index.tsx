@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import { Separator } from "@/components/ui/separator";
 import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   const { t } = useTranslation(["tools"]);
@@ -54,11 +55,11 @@ const Index = () => {
   const { data: recentActivities } = useQuery({
     queryKey: ['recentActivities'],
     queryFn: () => Promise.resolve([
-      { id: 1, service: 'Electrical', action: 'Maintenance completed', time: '2h ago' },
-      { id: 2, service: 'Plumbing', action: 'New request', time: '3h ago' },
-      { id: 3, service: 'Woodwork', action: 'Quote provided', time: '5h ago' },
-      { id: 4, service: 'Architecture', action: 'Design review', time: '6h ago' },
-      { id: 5, service: 'Ironwork', action: 'Project started', time: '8h ago' },
+      { id: 1, service: 'Electrical', action: 'Maintenance completed', time: '2h ago', path: '/electrics' },
+      { id: 2, service: 'Plumbing', action: 'New request', time: '3h ago', path: '/plumbing' },
+      { id: 3, service: 'Woodwork', action: 'Quote provided', time: '5h ago', path: '/woodwork' },
+      { id: 4, service: 'Architecture', action: 'Design review', time: '6h ago', path: '/architecture' },
+      { id: 5, service: 'Ironwork', action: 'Project started', time: '8h ago', path: '/ironwork' },
     ]),
     staleTime: 1000 * 60 * 5,
   });
@@ -91,9 +92,10 @@ const Index = () => {
             <h3 className="text-sm font-medium text-muted-foreground mb-4 text-center">Recent Service Activities</h3>
             <div className="space-y-1">
               {recentActivities?.map((activity) => (
-                <div 
-                  key={activity.id} 
-                  className="flex items-center justify-between py-1 text-sm text-muted-foreground hover:bg-accent/5 rounded-sm px-2 transition-colors"
+                <Link 
+                  key={activity.id}
+                  to={activity.path}
+                  className="flex items-center justify-between py-1 text-sm text-muted-foreground hover:bg-accent/5 rounded-sm px-2 transition-colors block"
                 >
                   <div className="flex items-center gap-2">
                     <Badge variant="secondary" className="text-xs">
@@ -102,7 +104,7 @@ const Index = () => {
                     <span>{activity.action}</span>
                   </div>
                   <span className="text-xs">{activity.time}</span>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
