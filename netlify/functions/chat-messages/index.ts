@@ -1,7 +1,7 @@
 import { Handler } from '@netlify/functions';
-import faunadb from 'faunadb';
-const q = faunadb.query;
+import * as faunadb from 'faunadb';
 
+const q = faunadb.query;
 const client = new faunadb.Client({
   secret: process.env.FAUNA_SECRET_KEY || '',
   domain: 'db.fauna.com',
@@ -9,8 +9,7 @@ const client = new faunadb.Client({
 
 export const handler: Handler = async (event) => {
   try {
-    const { action, data, roomId } = JSON.parse(event.body || '{}');
-    console.log('Chat Messages Function - Request:', { action, data, roomId });
+    const { roomId, action, data } = JSON.parse(event.body || '{}');
 
     if (!roomId) {
       return {
@@ -21,10 +20,10 @@ export const handler: Handler = async (event) => {
 
     switch (action) {
       case 'create': {
-        if (!data?.content || !data?.sender) {
+        if (!data?.content) {
           return {
             statusCode: 400,
-            body: JSON.stringify({ error: 'Content and sender are required' })
+            body: JSON.stringify({ error: 'Message content is required' })
           };
         }
 
@@ -33,41 +32,32 @@ export const handler: Handler = async (event) => {
             data: {
               roomId,
               content: data.content,
-              sender: data.sender,
-              timestamp: new Date().toISOString()
+              createdAt: new Date().toISOString()
             }
           })
         );
 
         return {
           statusCode: 200,
-          body: JSON.stringify({ data: message })
+          body: JSON.stringify({ message })
         };
       }
 
       case 'list': {
         console.log('Listing messages for room:', roomId);
         const messages = await client.query(
-          q.Paginate(
-            q.Match(q.Index('messages_by_room'), roomId)
+          q.Map(
+            q.Paginate(
+              q.Match(q.Index('messages_by_room'), roomId)
+            ),
+            q.Lambda('ref', q.Get(q.Var('ref')))
           )
         );
         console.log('Messages retrieved:', messages);
 
-        // Transform the Fauna response to a consistent format
-        const messageArray = messages.data.map((msg: any) => {
-          const timestamp = msg.ts?.isoString || msg.createdAt?.isoString || new Date().toISOString();
-          return {
-            id: msg.id || msg.ref?.id,
-            content: msg.data?.content || msg.content,
-            sender: msg.data?.sender || msg.sender,
-            timestamp
-          };
-        });
-
         return {
           statusCode: 200,
-          body: JSON.stringify({ data: messageArray })
+          body: JSON.stringify({ messages })
         };
       }
 
@@ -78,10 +68,10 @@ export const handler: Handler = async (event) => {
         };
     }
   } catch (error) {
-    console.error('Error in chat messages function:', error);
+    console.error('Error processing chat message:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: error.message || 'Internal server error' })
+      body: JSON.stringify({ error: 'Internal server error' })
     };
   }
 };

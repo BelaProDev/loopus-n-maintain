@@ -42,6 +42,7 @@ status = 200
   directory = "netlify/functions"
   node_bundler = "esbuild"
   external_node_modules = ["nodemailer", "crypto", "fauna", "faunadb"]
+  included_files = ["package.json"]
 
 [[redirects]]
 from = "/*"
