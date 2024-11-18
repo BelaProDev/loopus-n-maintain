@@ -10,17 +10,18 @@ import KoalaxAuth from "./Koalax/KoalaxAuth";
 import { useTranslation } from "react-i18next";
 
 const ADMIN_TABS = [
-  { id: "emails", label: "admin:email.title", icon: Mail, path: "/koalax/emails" },
-  { id: "settings", label: "admin:settings.title", icon: Settings, path: "/koalax/settings" },
-  { id: "business", label: "admin:business.title", icon: Building2, path: "/koalax/business" },
-  { id: "documents", label: "admin:documents.title", icon: Folder, path: "/koalax/documents" },
-  { id: "messages", label: "admin:messages.title", icon: MessageSquare, path: "/koalax/messages" },
+  { id: "emails", label: "admin:email.title", icon: Mail, path: "/admin/emails" },
+  { id: "settings", label: "admin:settings.title", icon: Settings, path: "/admin/settings" },
+  { id: "business", label: "admin:business.title", icon: Building2, path: "/admin/business" },
+  { id: "documents", label: "admin:documents.title", icon: Folder, path: "/admin/documents" },
+  { id: "messages", label: "admin:messages.title", icon: MessageSquare, path: "/admin/messages" },
 ];
 
 const Koalax = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation(["common", "admin"]);
+  const currentPath = location.pathname.split('/').pop() || "emails";
   const currentTab = ADMIN_TABS.find(tab => location.pathname.includes(tab.id))?.id || "emails";
 
   const checkKoalaxAuth = () => {
@@ -41,8 +42,8 @@ const Koalax = () => {
   useEffect(() => {
     if (!isAuthenticated && !location.pathname.includes('dropbox-callback')) {
       const currentPath = location.pathname;
-      if (currentPath !== '/koalax') {
-        navigate('/koalax', { 
+      if (currentPath !== '/admin') {
+        navigate('/admin', { 
           replace: true,
           state: { from: location }
         });
