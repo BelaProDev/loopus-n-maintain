@@ -7,7 +7,7 @@ interface MessageListProps {
   isLoading: boolean;
 }
 
-const MessageList = ({ messages, isLoading }: MessageListProps) => {
+const MessageList = ({ messages = [], isLoading }: MessageListProps) => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-full text-muted-foreground">
@@ -16,7 +16,7 @@ const MessageList = ({ messages, isLoading }: MessageListProps) => {
     );
   }
 
-  if (messages.length === 0) {
+  if (!Array.isArray(messages) || messages.length === 0) {
     return (
       <div className="flex items-center justify-center h-full text-muted-foreground">
         No messages yet

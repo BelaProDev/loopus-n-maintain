@@ -15,7 +15,7 @@ const Chat = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Fetch chat rooms
-  const { data: rooms = [], isLoading: roomsLoading, refetch: refetchRooms } = useQuery({
+  const { data: rooms = [], isLoading: roomsLoading } = useQuery({
     queryKey: ["chatRooms"],
     queryFn: async () => {
       const response = await fetch("/.netlify/functions/chat-rooms", {
@@ -30,7 +30,7 @@ const Chat = () => {
       }
       
       const result = await response.json();
-      return result.data || [];
+      return Array.isArray(result.data) ? result.data : [];
     }
   });
 
@@ -51,7 +51,7 @@ const Chat = () => {
       }
       
       const result = await response.json();
-      return result.data || [];
+      return Array.isArray(result.data) ? result.data : [];
     },
     enabled: Boolean(activeRoom),
     refetchInterval: activeRoom ? 3000 : false
@@ -139,7 +139,7 @@ const Chat = () => {
             rooms={rooms}
             activeRoom={activeRoom}
             onRoomSelect={setActiveRoom}
-            onRefresh={refetchRooms}
+            onRefresh={() => queryClient.invalidateQueries({ queryKey: ["chatRooms"] })}
             onCreateRoom={handleCreateRoom}
             isLoading={roomsLoading}
           />

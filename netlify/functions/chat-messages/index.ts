@@ -41,9 +41,12 @@ export const handler: Handler = async (event) => {
         `);
         console.log('Messages retrieved:', messages);
 
+        // Ensure we always return an array
+        const messageArray = Array.isArray(messages.data) ? messages.data : [];
+
         return {
           statusCode: 200,
-          body: JSON.stringify({ data: messages })
+          body: JSON.stringify({ data: messageArray })
         };
       }
 
