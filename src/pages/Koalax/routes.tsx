@@ -12,7 +12,8 @@ export const koalaxRoutes: RouteObject[] = [
       { path: "emails", element: <EmailManagement /> },
       { path: "settings", element: <SiteSettings /> },
       { path: "business/*", element: <BusinessManagement /> },
-      { path: "messages", element: <MessageManagement /> },
+      { path: "messages", element: <Navigate to="/admin/messages/electrics" replace /> },
+      { path: "messages/:service", element: <MessageManagement /> },
     ],
   },
 ];
