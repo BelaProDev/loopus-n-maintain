@@ -93,12 +93,10 @@ const InvoiceForm = ({
 
     const formDataObj = new FormData();
     
-    // Add all form data fields
     Object.entries(formData).forEach(([key, value]) => {
       formDataObj.append(key, value);
     });
 
-    // Process items with proper number formatting
     const processedItems = items.map(item => ({
       id: item.id,
       sku: item.sku || '',
@@ -110,7 +108,6 @@ const InvoiceForm = ({
       total: Number((Number(item.quantity) * Number(item.unitPrice)).toFixed(2))
     }));
 
-    // Add items as a stringified JSON array
     formDataObj.append('items', JSON.stringify(processedItems));
 
     const totals = calculateTotals();
@@ -119,7 +116,6 @@ const InvoiceForm = ({
     
     try {
       await onSubmit(formDataObj);
-      onCancel(); // Close the form after successful submission
     } catch (error) {
       console.error('Error submitting invoice:', error);
       toast({
@@ -131,8 +127,8 @@ const InvoiceForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-5xl mx-auto">
-      <div className="space-y-8 bg-white dark:bg-gray-950 p-8 rounded-lg shadow-sm border">
+    <form onSubmit={handleSubmit} className="space-y-8">
+      <div className="grid gap-8">
         <InvoiceHeader
           formData={formData}
           onChange={(name, value) => setFormData(prev => ({ ...prev, [name]: value }))}
