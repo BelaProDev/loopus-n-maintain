@@ -13,22 +13,27 @@ const LanguageSwitcher = () => {
   const { t, i18n } = useTranslation();
 
   const languages = [
-    { code: 'en', label: 'English' },
-    { code: 'es', label: 'Español' },
-    { code: 'fr', label: 'Français' }
+    { code: 'en', label: t('common:languages.en') },
+    { code: 'es', label: t('common:languages.es') },
+    { code: 'fr', label: t('common:languages.fr') }
   ];
 
   const handleLanguageChange = async (lng: string) => {
     try {
+      // Change language
       await i18n.changeLanguage(lng);
-      localStorage.setItem('i18nextLng', lng);
-      document.documentElement.lang = lng;
       
-      toast.success(t('common:languageChanged', { lng: t(`common:languages.${lng}`) }));
-      
-      // Force reload translations
-      await i18n.reloadResources(lng, ['common', 'services', 'admin', 'auth', 'docs', 'ui', 'app', 'settings', 'tools']);
+      // Force reload all namespaces
+      await i18n.reloadResources(
+        lng, 
+        ['common', 'services', 'admin', 'auth', 'docs', 'ui', 'app', 'settings', 'tools']
+      );
+
+      toast.success(t('common:languageChanged', { 
+        lng: t(`common:languages.${lng}`)
+      }));
     } catch (error) {
+      console.error('Language change error:', error);
       toast.error(t('common:languageChangeError'));
     }
   };

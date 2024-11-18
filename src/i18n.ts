@@ -79,16 +79,25 @@ i18n
       escapeValue: false
     },
     detection: {
-      order: ['localStorage', 'navigator'],
+      order: ['querystring', 'localStorage', 'navigator', 'htmlTag'],
+      lookupQuerystring: 'lang',
       lookupLocalStorage: 'i18nextLng',
-      caches: ['localStorage']
+      caches: ['localStorage'],
+      excludeCacheFor: ['cimode']
     },
     react: {
       useSuspense: false,
       bindI18n: 'languageChanged loaded',
       bindI18nStore: 'added removed',
-      nsMode: 'default'
+      nsMode: 'default',
+      transSupportBasicHtmlNodes: true,
+      transKeepBasicHtmlNodesFor: ['br', 'strong', 'i', 'p', 'span']
     }
   });
+
+// Update HTML lang attribute when language changes
+i18n.on('languageChanged', (lng) => {
+  document.documentElement.lang = lng;
+});
 
 export default i18n;

@@ -13,6 +13,14 @@
     "chat": "Chat",
     "gallery": "Photo Gallery"
   },
+  "languages": {
+    "en": "English",
+    "es": "Spanish",
+    "fr": "French"
+  },
+  "language": "Change Language",
+  "languageChanged": "Language changed to {{lng}}",
+  "languageChangeError": "Failed to change language",
   "contact": {
     "phone": "Call us",
     "email": "Send us an email",
