@@ -7,20 +7,13 @@ import { useToast } from "@/components/ui/use-toast";
 import { useTranslation } from "react-i18next";
 import { settingsQueries } from "@/lib/fauna/settingsQueries";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
-interface WhatsAppForm {
-  electrics: string;
-  plumbing: string;
-  ironwork: string;
-  woodwork: string;
-  architecture: string;
-}
+import { WhatsAppNumbers } from "@/lib/fauna/types";
 
 const WhatsAppSettings = () => {
   const { t } = useTranslation(["settings"]);
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { register, handleSubmit, reset } = useForm<WhatsAppForm>();
+  const { register, handleSubmit, reset } = useForm<WhatsAppNumbers>();
 
   const { data: numbers } = useQuery({
     queryKey: ['whatsapp-numbers'],
@@ -49,7 +42,7 @@ const WhatsAppSettings = () => {
     }
   });
 
-  const onSubmit = (data: WhatsAppForm) => {
+  const onSubmit = (data: WhatsAppNumbers) => {
     updateMutation.mutate(data);
   };
 
@@ -63,7 +56,7 @@ const WhatsAppSettings = () => {
             </Label>
             <Input
               id={service}
-              {...register(service as keyof WhatsAppForm)}
+              {...register(service as keyof WhatsAppNumbers)}
               placeholder={t("whatsapp.placeholder", { service: t(`services:${service}.title`) })}
             />
           </div>
