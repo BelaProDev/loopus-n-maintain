@@ -1,39 +1,6 @@
 {
-  "buttons": {
-    "save": "Guardar",
-    "cancel": "Cancelar",
-    "delete": "Eliminar",
-    "edit": "Editar",
-    "submit": "Enviar",
-    "submitting": "Enviando...",
-    "learnMore": "Más información",
-    "previous": "Anterior",
-    "next": "Siguiente",
-    "apply": "Aplicar",
-    "reset": "Restablecer"
-  },
-  "status": {
-    "loading": "Cargando...",
-    "success": "Éxito",
-    "error": "Error",
-    "offline": "Sin conexión",
-    "required": "Requerido",
-    "optional": "Opcional",
-    "na": "N/D",
-    "noResults": "No se encontraron resultados",
-    "loadingMore": "Cargando más...",
-    "endOfList": "Fin de la lista"
-  },
-  "language": {
-    "change": "Cambiar idioma",
-    "en": "Inglés",
-    "es": "Español",
-    "fr": "Francés"
-  },
-  "theme": {
-    "title": "Tema",
-    "light": "Claro",
-    "dark": "Oscuro",
-    "system": "Sistema"
+  "documentManager": {
+    "title": "Gestor de Documentos",
+    "description": "Crea, edita y gestiona tus documentos"
   }
 }

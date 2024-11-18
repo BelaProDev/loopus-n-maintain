@@ -20,7 +20,11 @@ export const getAvailableLanguages = () => ['en', 'es', 'fr'];
 
 export const translateWithFallback = (key: string, namespace: string, fallback: string = '') => {
   const translation = i18n.t(key, { ns: namespace });
-  return translation === key ? fallback : translation;
+  if (translation === key) {
+    console.warn(`Missing translation for key: ${key} in namespace: ${namespace}`);
+    return fallback;
+  }
+  return translation;
 };
 
 export const formatTranslatedDate = (date: Date) => {
@@ -32,9 +36,17 @@ export const translateWithVariables = (
   namespace: string,
   variables: Record<string, string | number>
 ) => {
-  return i18n.t(key, { ns: namespace, ...variables });
+  const translation = i18n.t(key, { ns: namespace, ...variables });
+  if (translation === key) {
+    console.warn(`Missing translation for key: ${key} in namespace: ${namespace}`);
+  }
+  return translation;
 };
 
 export const ensureNamespace = (key: string, defaultNs: string = 'common') => {
-  return key.includes(':') ? key : `${defaultNs}:${key}`;
+  if (!key.includes(':')) {
+    console.warn(`Translation key missing namespace: ${key}, using default namespace: ${defaultNs}`);
+    return `${defaultNs}:${key}`;
+  }
+  return key;
 };

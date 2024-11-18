@@ -42,6 +42,7 @@ i18nInstance
 
 i18nInstance.on('languageChanged', (lng) => {
   document.documentElement.lang = lng;
+  console.log(`Language changed to: ${lng}`);
 });
 
 export default i18nInstance;

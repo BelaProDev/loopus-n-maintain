@@ -1,25 +1,6 @@
 {
-  "buttons": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "edit": "Edit",
-    "submit": "Submit"
-  },
-  "forms": {
-    "required": "Required",
-    "optional": "Optional",
-    "validation": {
-      "required": "This field is required",
-      "email": "Please enter a valid email",
-      "minLength": "Must be at least {min} characters",
-      "maxLength": "Must be less than {max} characters"
-    }
-  },
-  "notifications": {
-    "success": "Success!",
-    "error": "An error occurred",
-    "saving": "Saving...",
-    "loading": "Loading..."
+  "documentManager": {
+    "title": "Document Manager",
+    "description": "Create, edit and manage your documents"
   }
 }
