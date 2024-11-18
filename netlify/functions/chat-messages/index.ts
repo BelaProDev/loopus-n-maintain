@@ -41,7 +41,6 @@ export const handler: Handler = async (event) => {
       }
 
       case 'list': {
-        // For list action, check both data.roomId and direct roomId parameter
         const targetRoomId = data?.roomId || roomId;
         
         if (!targetRoomId) {
@@ -54,7 +53,6 @@ export const handler: Handler = async (event) => {
         console.log('Listing messages for room:', targetRoomId);
         const messages = await client.query(fql`
           Messages.where(.room == Room.byId(${targetRoomId})!)
-          .order(-.createdAt)
         `);
         console.log('Messages retrieved:', messages);
 
