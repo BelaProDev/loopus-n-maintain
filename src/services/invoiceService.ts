@@ -1,47 +1,47 @@
 import { businessQueries } from '@/lib/fauna/business';
 import type { CreateInvoiceDTO, Invoice, InvoiceItem } from '@/types/invoice';
 
+const generateInvoiceNumber = () => `INV-${Date.now()}`;
+
+const calculateTotals = (items: InvoiceItem[]) => {
+  const totalAmount = items.reduce((sum, item) => sum + (item.quantity * item.unitPrice), 0);
+  const tax = items.reduce((sum, item) => sum + ((item.quantity * item.unitPrice) * item.vatRate / 100), 0);
+  return { totalAmount, tax };
+};
+
+const prepareInvoiceData = (dto: CreateInvoiceDTO): Omit<Invoice, 'id'> => {
+  const { totalAmount, tax } = calculateTotals(dto.items);
+  const now = new Date();
+  const dueDate = new Date(now);
+  dueDate.setDate(dueDate.getDate() + 30);
+  
+  return {
+    number: generateInvoiceNumber(),
+    date: now.toISOString(),
+    dueDate: dueDate.toISOString(),
+    clientId: dto.clientId,
+    providerId: dto.providerId,
+    items: dto.items.map(item => ({
+      ...item,
+      id: item.id || crypto.randomUUID(),
+      sku: item.sku || '',
+      unit: item.unit || 'unit',
+      vatRate: item.vatRate || 21,
+      total: Number(item.quantity) * Number(item.unitPrice)
+    })),
+    status: 'draft',
+    totalAmount,
+    tax,
+    notes: dto.notes || '',
+    paymentTerms: dto.paymentTerms || 'net30',
+    currency: dto.currency || 'EUR'
+  };
+};
+
 export const invoiceService = {
-  generateInvoiceNumber: () => `INV-${Date.now()}`,
-
-  calculateTotals: (items: InvoiceItem[]) => {
-    const totalAmount = items.reduce((sum, item) => sum + (item.quantity * item.unitPrice), 0);
-    const tax = items.reduce((sum, item) => sum + ((item.quantity * item.unitPrice) * item.vatRate / 100), 0);
-    return { totalAmount, tax };
-  },
-
-  prepareInvoiceData: (dto: CreateInvoiceDTO): Omit<Invoice, 'id'> => {
-    const { totalAmount, tax } = invoiceService.calculateTotals(dto.items);
-    const now = new Date();
-    const dueDate = new Date(now);
-    dueDate.setDate(dueDate.getDate() + 30);
-    
-    return {
-      number: invoiceService.generateInvoiceNumber(),
-      date: now.toISOString(),
-      dueDate: dueDate.toISOString(),
-      clientId: dto.clientId,
-      providerId: dto.providerId,
-      items: dto.items.map(item => ({
-        ...item,
-        id: item.id || crypto.randomUUID(),
-        sku: item.sku || '',
-        unit: item.unit || 'unit',
-        vatRate: item.vatRate || 21,
-        total: Number(item.quantity) * Number(item.unitPrice)
-      })),
-      status: 'draft',
-      totalAmount,
-      tax,
-      notes: dto.notes || '',
-      paymentTerms: dto.paymentTerms || 'net30',
-      currency: dto.currency || 'EUR'
-    };
-  },
-
   createInvoice: async (dto: CreateInvoiceDTO) => {
     try {
-      const invoiceData = invoiceService.prepareInvoiceData(dto);
+      const invoiceData = prepareInvoiceData(dto);
       const result = await businessQueries.createInvoice(invoiceData);
       if (!result) {
         throw new Error('Failed to create invoice');
@@ -55,7 +55,7 @@ export const invoiceService = {
 
   updateInvoice: async (id: string, dto: CreateInvoiceDTO) => {
     try {
-      const invoiceData = invoiceService.prepareInvoiceData(dto);
+      const invoiceData = prepareInvoiceData(dto);
       const result = await businessQueries.updateInvoice(id, invoiceData);
       if (!result) {
         throw new Error('Failed to update invoice');
