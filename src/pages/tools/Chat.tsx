@@ -60,11 +60,9 @@ const Chat = () => {
     },
     enabled: Boolean(activeRoom),
     refetchInterval: 1000,
-    staleTime: 0,
-    cacheTime: 0
+    gcTime: 0
   });
 
-  // Create room mutation
   const createRoom = useMutation({
     mutationFn: async ({ name, topic }: { name: string; topic: string }) => {
       const response = await fetch("/.netlify/functions/chat-rooms", {
@@ -143,7 +141,7 @@ const Chat = () => {
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="grid grid-cols-12 gap-6 h-[calc(100vh-16rem)] bg-background rounded-lg border shadow-sm">
           <RoomsList
-            rooms={rooms}
+            rooms={rooms as ChatRoom[]}
             activeRoom={activeRoom}
             onRoomSelect={setActiveRoom}
             onRefresh={() => queryClient.invalidateQueries({ queryKey: ["chatRooms"] })}

@@ -5,7 +5,6 @@ interface Message {
   data: {
     sender: string;
     content: string;
-    createdAt?: string;
   };
 }
 
@@ -44,11 +43,6 @@ const MessageList = ({ messages = [], isLoading }: MessageListProps) => {
           <div className="mt-1 text-gray-200">
             {message.data.content}
           </div>
-          {message.data.createdAt && (
-            <div className="mt-2 text-xs text-gray-500">
-              {new Date(message.data.createdAt).toLocaleTimeString()}
-            </div>
-          )}
         </Card>
       ))}
     </div>
