@@ -1,4 +1,4 @@
-import { Invoice } from "@/types/business";
+import { Invoice } from "@/types/invoice";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useTranslation } from "react-i18next";
 import InvoiceForm from "./form/InvoiceForm";
@@ -20,6 +20,13 @@ const InvoiceDialog = ({
 }: InvoiceDialogProps) => {
   const { t } = useTranslation(["admin", "common"]);
 
+  // Ensure editingInvoice has all required properties when passed to InvoiceForm
+  const formattedInvoice = editingInvoice ? {
+    ...editingInvoice,
+    paymentTerms: editingInvoice.paymentTerms || 'net30',
+    currency: editingInvoice.currency || 'EUR'
+  } : null;
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-800 shadow-xl max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -35,7 +42,7 @@ const InvoiceDialog = ({
         </DialogHeader>
         <div className="p-6">
           <InvoiceForm
-            editingInvoice={editingInvoice}
+            editingInvoice={formattedInvoice}
             onSubmit={onSubmit}
             isLoading={isLoading}
             onCancel={() => onOpenChange(false)}
