@@ -6,42 +6,29 @@ import MessageInput from "./chat/MessageInput";
 import CreateRoomDialog from "./chat/CreateRoomDialog";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { chatService } from "@/services/chatService";
 import { toast } from "sonner";
 
 const Chat = () => {
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const [isCreateRoomOpen, setIsCreateRoomOpen] = useState(false);
-  const queryClient = useQueryClient();
 
   const { data: rooms = [], isLoading: isLoadingRooms } = useQuery({
     queryKey: ['rooms'],
-    queryFn: chatService.listRooms,
-    retry: false,
-    staleTime: 1000 * 60, // 1 minute
-    onError: () => {
-      toast.error("Failed to load rooms");
-    }
+    queryFn: chatService.listRooms
   });
 
   const { data: messages = [], isLoading: isLoadingMessages } = useQuery({
     queryKey: ['messages', selectedRoomId],
-    queryFn: () => selectedRoomId ? chatService.listMessages(selectedRoomId) : Promise.resolve([]),
-    enabled: !!selectedRoomId,
-    retry: false,
-    staleTime: 1000 * 30, // 30 seconds
-    onError: () => {
-      toast.error("Failed to load messages");
-    }
+    queryFn: () => selectedRoomId ? chatService.listMessages(selectedRoomId) : [],
+    enabled: !!selectedRoomId
   });
 
   const handleSendMessage = async (content: string, sender: string) => {
     if (!selectedRoomId) return;
-    
     try {
       await chatService.sendMessage(selectedRoomId, content, sender);
-      await queryClient.invalidateQueries({ queryKey: ['messages', selectedRoomId] });
       toast.success("Message sent");
     } catch (error) {
       toast.error("Failed to send message");
