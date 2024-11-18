@@ -122,10 +122,14 @@ const Chat = () => {
     }
   });
 
-  // Auto-scroll to bottom when new messages arrive
+  // Enhanced scroll behavior
   useEffect(() => {
     if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      const scrollElement = scrollRef.current;
+      scrollElement.scrollTo({
+        top: scrollElement.scrollHeight,
+        behavior: 'smooth'
+      });
     }
   }, [messages]);
 
@@ -152,7 +156,10 @@ const Chat = () => {
             isLoading={roomsLoading}
           />
           <div className="col-span-9 flex flex-col">
-            <ScrollArea className="flex-1 p-4" ref={scrollRef}>
+            <ScrollArea 
+              className="flex-1 p-4" 
+              ref={scrollRef}
+            >
               <MessageList 
                 messages={messages} 
                 isLoading={messagesLoading} 
