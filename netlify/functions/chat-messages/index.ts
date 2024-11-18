@@ -54,7 +54,11 @@ export const handler: Handler = async (event) => {
 
         return {
           statusCode: 200,
-          body: JSON.stringify({ data: messages.data || [] })
+          body: JSON.stringify({ 
+            data: {
+              data: messages.data
+            }
+          })
         };
       }
 

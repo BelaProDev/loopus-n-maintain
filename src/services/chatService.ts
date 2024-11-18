@@ -56,7 +56,7 @@ export const chatService = {
     }
 
     const result = await response.json();
-    return result.data || [];
+    return result.data.data || [];
   },
 
   async sendMessage(roomId: string, content: string, sender: string): Promise<ChatMessage> {
