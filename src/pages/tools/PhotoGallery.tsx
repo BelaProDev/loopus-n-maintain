@@ -13,8 +13,10 @@ import { NavigationBreadcrumb } from '../DropboxExplorer/components/NavigationBr
 import { toast } from 'sonner';
 import { getMediaType } from '@/lib/utils/fileUtils';
 import { sanitizePath } from '@/lib/utils/pathUtils';
+import { useTranslation } from 'react-i18next';
 
 const PhotoGallery = () => {
+  const { t } = useTranslation(["tools", "common"]);
   const [currentPath, setCurrentPath] = useState('');
   const [selectedMedia, setSelectedMedia] = useState<string | null>(null);
   const { client, isAuthenticated, connect } = useDropbox();
@@ -110,7 +112,7 @@ const PhotoGallery = () => {
         <div className="space-y-6">
           <div className="flex justify-between items-center">
             <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
-              Media Gallery
+              {t("photoGallery.title")}
             </h1>
             <div className="flex gap-2">
               <Input
@@ -121,7 +123,7 @@ const PhotoGallery = () => {
               />
               <Button variant="outline" className="hover:bg-purple-50">
                 <Upload className="w-4 h-4 mr-2" />
-                Upload
+                {t("common:actions.upload")}
               </Button>
             </div>
           </div>

@@ -8,7 +8,7 @@ import ClientInvoiceRelationship from "./ClientInvoiceRelationship";
 import { useTranslation } from "react-i18next";
 
 const BusinessManagement = () => {
-  const { t } = useTranslation(["admin"]);
+  const { t } = useTranslation(["admin", "common"]);
 
   return (
     <div className="space-y-6">

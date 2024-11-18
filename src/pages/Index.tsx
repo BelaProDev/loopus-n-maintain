@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 
 const Index = () => {
-  const { t } = useTranslation(["tools"]);
+  const { t } = useTranslation(["tools", "common"]);
 
   const tools = [
     {
@@ -89,7 +89,9 @@ const Index = () => {
         <section className="mt-8">
           <Separator className="my-4" />
           <div className="max-w-2xl mx-auto">
-            <h3 className="text-sm font-medium text-muted-foreground mb-4 text-center">Recent Service Activities</h3>
+            <h3 className="text-sm font-medium text-muted-foreground mb-4 text-center">
+              {t("common:services.recentActivities")}
+            </h3>
             <div className="space-y-1">
               {recentActivities?.map((activity) => (
                 <Link 
