@@ -9,7 +9,6 @@ export interface ChatMessage {
   id: string;
   content: string;
   sender: string;
-  createdAt: string;
   room?: {
     id: string;
   };
@@ -17,25 +16,12 @@ export interface ChatMessage {
 
 export interface FaunaMessageResponse {
   data: {
-    data: Array<{
-      id: string;
-      content: string;
-      sender: string;
-      createdAt: { isoString: string };
-      room: {
-        id: string;
-      };
-    }>;
+    data: ChatMessage[];
   };
 }
 
 export interface FaunaRoomResponse {
   data: {
-    data: Array<{
-      id: string;
-      name: string;
-      topic?: string;
-      createdAt: { isoString: string };
-    }>;
+    data: ChatRoom[];
   };
 }
