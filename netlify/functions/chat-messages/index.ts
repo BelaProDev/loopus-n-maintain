@@ -16,12 +16,19 @@ export const handler: Handler = async (event) => {
 
     switch (action) {
       case 'create': {
+        if (!roomId) {
+          return {
+            statusCode: 400,
+            body: JSON.stringify({ error: 'roomId is required' })
+          };
+        }
+
         console.log('Creating message:', data);
         const message = await client.query(fql`
           Messages.create({
             content: ${data.content},
             sender: ${data.sender},
-            room: Room.byId(${roomId}),
+            room: Room.byId(${roomId})!,
             createdAt: Time.now()
           })
         `);
@@ -34,9 +41,16 @@ export const handler: Handler = async (event) => {
       }
 
       case 'list': {
+        if (!roomId) {
+          return {
+            statusCode: 400,
+            body: JSON.stringify({ error: 'roomId is required' })
+          };
+        }
+
         console.log('Listing messages for room:', roomId);
         const messages = await client.query(fql`
-          Messages.where(.room == Room.byId(${roomId}))
+          Messages.where(.room == Room.byId(${roomId})!)
           .order(-.createdAt)
         `);
         console.log('Messages retrieved:', messages);
