@@ -9,15 +9,8 @@ const getFaunaClient = () => {
 
 export const handler: Handler = async (event) => {
   try {
-    if (!event.body) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: 'Request body is required' })
-      };
-    }
-
     const client = getFaunaClient();
-    const { action, data } = JSON.parse(event.body);
+    const { action, data } = JSON.parse(event.body || '{}');
     
     console.log('Chat Rooms Function - Request:', { action, data });
 
@@ -30,7 +23,7 @@ export const handler: Handler = async (event) => {
         console.log('Rooms retrieved:', listResult);
         return {
           statusCode: 200,
-          body: JSON.stringify({ data: listResult.data })
+          body: JSON.stringify({ data: listResult })
         };
       }
 
