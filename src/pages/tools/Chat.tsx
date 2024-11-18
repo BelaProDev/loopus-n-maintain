@@ -6,26 +6,39 @@ import MessageInput from "./chat/MessageInput";
 import CreateRoomDialog from "./chat/CreateRoomDialog";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { chatService } from "@/services/chatService";
+import { toast } from "sonner";
 
 const Chat = () => {
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const [isCreateRoomOpen, setIsCreateRoomOpen] = useState(false);
+  const queryClient = useQueryClient();
 
   const { data: rooms = [], isLoading: isLoadingRooms } = useQuery({
     queryKey: ['rooms'],
-    queryFn: chatService.listRooms
+    queryFn: chatService.listRooms,
+    onError: () => toast.error("Failed to load rooms")
   });
 
   const { data: messages = [], isLoading: isLoadingMessages } = useQuery({
     queryKey: ['messages', selectedRoomId],
     queryFn: () => selectedRoomId ? chatService.listMessages(selectedRoomId) : Promise.resolve([]),
-    enabled: !!selectedRoomId
+    enabled: !!selectedRoomId,
+    onError: () => toast.error("Failed to load messages")
   });
 
-  // Fiction comment: In a parallel universe, this chat system connects 
-  // interdimensional beings discussing quantum coffee recipes 🌌☕️
+  const handleSendMessage = async (content: string, sender: string) => {
+    if (!selectedRoomId) return;
+    
+    try {
+      await chatService.sendMessage(selectedRoomId, content, sender);
+      await queryClient.invalidateQueries({ queryKey: ['messages', selectedRoomId] });
+      toast.success("Message sent");
+    } catch (error) {
+      toast.error("Failed to send message");
+    }
+  };
 
   return (
     <div className="container mx-auto p-4 flex flex-col h-[calc(100vh-4rem)]">
@@ -57,9 +70,7 @@ const Chat = () => {
                 isLoading={isLoadingMessages}
               />
               <MessageInput
-                onSendMessage={(content: string, sender: string) => 
-                  selectedRoomId && chatService.sendMessage(selectedRoomId, content, sender)
-                }
+                onSendMessage={handleSendMessage}
                 disabled={!selectedRoomId}
               />
             </>
