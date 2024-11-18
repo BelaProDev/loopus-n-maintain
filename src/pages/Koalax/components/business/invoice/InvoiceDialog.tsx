@@ -7,7 +7,7 @@ interface InvoiceDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   editingInvoice: Invoice | null;
-  onSubmit: (e: React.FormEvent) => void;
+  onSubmit: (formData: FormData) => void;
   isLoading: boolean;
 }
 

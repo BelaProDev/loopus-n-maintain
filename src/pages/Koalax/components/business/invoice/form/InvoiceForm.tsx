@@ -50,9 +50,24 @@ const InvoiceForm = ({
   });
 
   const calculateTotals = () => {
-    const subtotal = items.reduce((sum, item) => sum + (item.quantity * item.unitPrice), 0);
-    const tax = items.reduce((sum, item) => sum + ((item.quantity * item.unitPrice) * item.vatRate / 100), 0);
-    return { subtotal, tax, total: subtotal + tax };
+    const subtotal = items.reduce((sum, item) => {
+      const quantity = Number(item.quantity) || 0;
+      const unitPrice = Number(item.unitPrice) || 0;
+      return sum + (quantity * unitPrice);
+    }, 0);
+    
+    const tax = items.reduce((sum, item) => {
+      const quantity = Number(item.quantity) || 0;
+      const unitPrice = Number(item.unitPrice) || 0;
+      const vatRate = Number(item.vatRate) || 0;
+      return sum + ((quantity * unitPrice) * vatRate / 100);
+    }, 0);
+
+    return {
+      subtotal: Number(subtotal.toFixed(2)),
+      tax: Number(tax.toFixed(2)),
+      total: Number((subtotal + tax).toFixed(2))
+    };
   };
 
   const handleSubmitForm = async (e: React.FormEvent) => {
@@ -83,17 +98,20 @@ const InvoiceForm = ({
       formDataObj.append(key, value);
     });
 
-    // Add items as a stringified JSON array
-    formDataObj.append('items', JSON.stringify(items.map(item => ({
+    // Process items with proper number formatting
+    const processedItems = items.map(item => ({
       id: item.id,
       sku: item.sku || '',
       description: item.description,
-      quantity: Number(item.quantity),
-      unitPrice: Number(item.unitPrice),
-      vatRate: Number(item.vatRate),
+      quantity: Number(item.quantity) || 0,
+      unitPrice: Number(item.unitPrice) || 0,
+      vatRate: Number(item.vatRate) || 0,
       unit: item.unit || 'unit',
-      total: Number(item.quantity) * Number(item.unitPrice)
-    }))));
+      total: Number((Number(item.quantity) * Number(item.unitPrice)).toFixed(2))
+    }));
+
+    // Add items as a stringified JSON array
+    formDataObj.append('items', JSON.stringify(processedItems));
 
     const totals = calculateTotals();
     formDataObj.append('totalAmount', totals.total.toString());
