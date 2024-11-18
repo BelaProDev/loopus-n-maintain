@@ -14,12 +14,7 @@ export const chatService = {
     }
 
     const result = await response.json();
-    return extractFaunaData<ChatRoom>(result).map(doc => ({
-      id: doc.ref.id,
-      name: doc.data.name,
-      topic: doc.data.topic || '',
-      createdAt: doc.data.createdAt
-    }));
+    return result.data.data || [];
   },
 
   async createRoom(name: string, topic?: string): Promise<ChatRoom> {
