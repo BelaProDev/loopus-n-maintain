@@ -6,10 +6,23 @@ import MessageInput from "./chat/MessageInput";
 import CreateRoomDialog from "./chat/CreateRoomDialog";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { chatService } from "@/services/chatService";
 
 const Chat = () => {
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const [isCreateRoomOpen, setIsCreateRoomOpen] = useState(false);
+
+  const { data: rooms = [], isLoading: isLoadingRooms } = useQuery({
+    queryKey: ['rooms'],
+    queryFn: chatService.listRooms
+  });
+
+  const { data: messages = [], isLoading: isLoadingMessages } = useQuery({
+    queryKey: ['messages', selectedRoomId],
+    queryFn: () => selectedRoomId ? chatService.listMessages(selectedRoomId) : Promise.resolve([]),
+    enabled: !!selectedRoomId
+  });
 
   // Fiction comment: In a parallel universe, this chat system connects 
   // interdimensional beings discussing quantum coffee recipes 🌌☕️
@@ -29,16 +42,26 @@ const Chat = () => {
             </Button>
           </div>
           <RoomsList
-            selectedRoomId={selectedRoomId}
+            rooms={rooms}
+            activeRoom={selectedRoomId || ''}
             onRoomSelect={setSelectedRoomId}
+            isLoading={isLoadingRooms}
           />
         </Card>
 
         <Card className="flex-1 p-4 flex flex-col">
           {selectedRoomId ? (
             <>
-              <MessageList roomId={selectedRoomId} />
-              <MessageInput roomId={selectedRoomId} />
+              <MessageList
+                messages={messages}
+                isLoading={isLoadingMessages}
+              />
+              <MessageInput
+                onSendMessage={(content: string, sender: string) => 
+                  selectedRoomId && chatService.sendMessage(selectedRoomId, content, sender)
+                }
+                disabled={!selectedRoomId}
+              />
             </>
           ) : (
             <div className="flex items-center justify-center h-full text-muted-foreground">
@@ -49,8 +72,9 @@ const Chat = () => {
       </div>
 
       <CreateRoomDialog
-        open={isCreateRoomOpen}
+        isOpen={isCreateRoomOpen}
         onOpenChange={setIsCreateRoomOpen}
+        onCreateRoom={chatService.createRoom}
       />
     </div>
   );

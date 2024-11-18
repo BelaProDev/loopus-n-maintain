@@ -5,19 +5,18 @@ import { Input } from "@/components/ui/input";
 import { Send } from "lucide-react";
 
 interface MessageInputProps {
-  onSendMessage: (content: string, nickname: string) => void;
-  isLoading?: boolean;
+  onSendMessage: (content: string, sender: string) => void;
   disabled?: boolean;
 }
 
-const MessageInput = ({ onSendMessage, isLoading, disabled }: MessageInputProps) => {
+const MessageInput = ({ onSendMessage, disabled }: MessageInputProps) => {
   const [message, setMessage] = useState("");
   const [nickname, setNickname] = useState(localStorage.getItem('chat_nickname') || "");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!message.trim() || !nickname.trim() || isLoading || disabled) return;
+    if (!message.trim() || !nickname.trim() || disabled) return;
     onSendMessage(message, nickname);
     setMessage("");
     localStorage.setItem('chat_nickname', nickname);
@@ -44,7 +43,7 @@ const MessageInput = ({ onSendMessage, isLoading, disabled }: MessageInputProps)
           onChange={(e) => setNickname(e.target.value)}
           placeholder="Enter your nickname"
           className="max-w-[200px]"
-          disabled={isLoading}
+          disabled={disabled}
         />
       </div>
       <div className="flex gap-2">
@@ -55,12 +54,12 @@ const MessageInput = ({ onSendMessage, isLoading, disabled }: MessageInputProps)
           onKeyPress={handleKeyPress}
           placeholder={disabled ? "Select a room to start chatting" : "Type your message... (Press Enter to send)"}
           className="min-h-[60px] resize-none"
-          disabled={isLoading || disabled || !nickname.trim()}
+          disabled={disabled || !nickname.trim()}
         />
         <Button 
           type="submit" 
           size="icon" 
-          disabled={isLoading || disabled || !message.trim() || !nickname.trim()}
+          disabled={disabled || !message.trim() || !nickname.trim()}
           className="self-end"
         >
           <Send className="h-4 w-4" />

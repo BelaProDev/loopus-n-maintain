@@ -1,19 +1,18 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus } from "lucide-react";
 import { toast } from "sonner";
 
 interface CreateRoomDialogProps {
-  onRoomCreated: () => void;
-  onCreateRoom: (name: string, topic: string) => void;
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  onCreateRoom: (name: string, topic: string) => Promise<any>;
 }
 
-const CreateRoomDialog = ({ onRoomCreated, onCreateRoom }: CreateRoomDialogProps) => {
-  const [open, setOpen] = useState(false);
+const CreateRoomDialog = ({ isOpen, onOpenChange, onCreateRoom }: CreateRoomDialogProps) => {
   const [name, setName] = useState("");
   const [topic, setTopic] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -28,10 +27,10 @@ const CreateRoomDialog = ({ onRoomCreated, onCreateRoom }: CreateRoomDialogProps
     setIsLoading(true);
     try {
       await onCreateRoom(name.trim(), topic.trim());
-      onRoomCreated();
-      setOpen(false);
+      onOpenChange(false);
       setName("");
       setTopic("");
+      toast.success("Room created successfully!");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Failed to create room");
     } finally {
@@ -40,13 +39,7 @@ const CreateRoomDialog = ({ onRoomCreated, onCreateRoom }: CreateRoomDialogProps
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
-          <Plus className="w-4 h-4 mr-2" />
-          New Room
-        </Button>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create New Chat Room</DialogTitle>
