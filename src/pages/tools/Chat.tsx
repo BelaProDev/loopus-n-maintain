@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import RoomsList from "./chat/RoomsList";
 import MessageList from "./chat/MessageList";
 import MessageInput from "./chat/MessageInput";
+import { extractFaunaData } from "@/lib/fauna/utils";
 import type { ChatMessage, ChatRoom } from "@/lib/fauna/types/chat";
 
 const Chat = () => {
@@ -30,15 +31,9 @@ const Chat = () => {
       }
       
       const result = await response.json();
-      // Transform the nested data structure into a flat array of rooms
-      const roomsData = result.data?.data?.data || [];
-      return roomsData.map((room: any) => ({
-        id: room.id,
-        name: room.name,
-        topic: room.topic || '',
-        createdAt: room.createdAt?.isoString || new Date().toISOString()
-      }));
-    }
+      return extractFaunaData(result.data);
+    },
+    refetchInterval: 3000
   });
 
   // Fetch messages for active room
@@ -49,7 +44,10 @@ const Chat = () => {
       const response = await fetch("/.netlify/functions/chat-messages", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: "list", roomId: activeRoom })
+        body: JSON.stringify({ 
+          action: "list", 
+          roomId: activeRoom 
+        })
       });
       
       if (!response.ok) {
@@ -58,10 +56,12 @@ const Chat = () => {
       }
       
       const result = await response.json();
-      return Array.isArray(result.data) ? result.data : [];
+      return extractFaunaData(result.data);
     },
     enabled: Boolean(activeRoom),
-    refetchInterval: activeRoom ? 3000 : false
+    refetchInterval: 1000,
+    staleTime: 0,
+    cacheTime: 0
   });
 
   // Create room mutation
@@ -82,18 +82,11 @@ const Chat = () => {
         throw new Error(result.error || 'Failed to create room');
       }
       
-      // Transform the response data to match our room structure
-      const roomData = result.data?.data?.data?.[0];
-      return {
-        id: roomData.id,
-        name: roomData.name,
-        topic: roomData.topic || '',
-        createdAt: roomData.createdAt?.isoString || new Date().toISOString()
-      };
+      return extractFaunaData(result.data)[0];
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["chatRooms"] });
-      setActiveRoom(data.id);
+      setActiveRoom(data.ref.id);
       toast.success("Room created successfully");
     },
     onError: (error: Error) => {
@@ -109,8 +102,8 @@ const Chat = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: "create",
+          roomId: activeRoom,
           data: {
-            roomId: activeRoom,
             content,
             sender: nickname
           }
