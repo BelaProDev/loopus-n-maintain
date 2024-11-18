@@ -65,7 +65,8 @@ export const chatService = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         action: 'create',
-        data: { roomId, content, sender }
+        roomId,
+        data: { content, sender }
       })
     });
 

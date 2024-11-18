@@ -5,7 +5,7 @@ import MessageInput from "./chat/MessageInput";
 import CreateRoomDialog from "./chat/CreateRoomDialog";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { chatService } from "@/services/chatService";
 import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "@/hooks/useAppStore";
@@ -13,26 +13,41 @@ import { setNickname, setSelectedRoom, setCreateRoomOpen } from "@/store/slices/
 
 const Chat = () => {
   const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
   const { nickname, selectedRoomId, isCreateRoomOpen } = useAppSelector((state) => state.chat);
 
   const { data: rooms = [], isLoading: isLoadingRooms } = useQuery({
     queryKey: ['rooms'],
-    queryFn: chatService.listRooms
+    queryFn: chatService.listRooms,
+    staleTime: 1000 * 60 // 1 minute
   });
 
   const { data: messages = [], isLoading: isLoadingMessages } = useQuery({
     queryKey: ['messages', selectedRoomId],
-    queryFn: () => selectedRoomId ? chatService.listMessages(selectedRoomId) : [],
-    enabled: !!selectedRoomId
+    queryFn: () => selectedRoomId ? chatService.listMessages(selectedRoomId) : Promise.resolve([]),
+    enabled: !!selectedRoomId,
+    refetchInterval: 3000 // Refresh every 3 seconds
   });
 
   const handleSendMessage = async (content: string, sender: string) => {
     if (!selectedRoomId) return;
     try {
       await chatService.sendMessage(selectedRoomId, content, sender);
+      await queryClient.invalidateQueries({ queryKey: ['messages', selectedRoomId] });
       toast.success("Message sent");
     } catch (error) {
       toast.error("Failed to send message");
+    }
+  };
+
+  const handleCreateRoom = async (name: string, topic?: string) => {
+    try {
+      await chatService.createRoom(name, topic);
+      await queryClient.invalidateQueries({ queryKey: ['rooms'] });
+      toast.success("Room created successfully");
+      dispatch(setCreateRoomOpen(false));
+    } catch (error) {
+      toast.error("Failed to create room");
     }
   };
 
@@ -83,7 +98,7 @@ const Chat = () => {
       <CreateRoomDialog
         isOpen={isCreateRoomOpen}
         onOpenChange={(open) => dispatch(setCreateRoomOpen(open))}
-        onCreateRoom={chatService.createRoom}
+        onCreateRoom={handleCreateRoom}
       />
     </div>
   );
