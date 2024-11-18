@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import RoomsList from "./chat/RoomsList";
 import MessageList from "./chat/MessageList";
@@ -13,6 +13,15 @@ import { toast } from "sonner";
 const Chat = () => {
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const [isCreateRoomOpen, setIsCreateRoomOpen] = useState(false);
+  const [nickname, setNickname] = useState(() => {
+    return localStorage.getItem('chat_nickname') || '';
+  });
+
+  useEffect(() => {
+    if (nickname) {
+      localStorage.setItem('chat_nickname', nickname);
+    }
+  }, [nickname]);
 
   const { data: rooms = [], isLoading: isLoadingRooms } = useQuery({
     queryKey: ['rooms'],
@@ -67,6 +76,8 @@ const Chat = () => {
               <MessageInput
                 onSendMessage={handleSendMessage}
                 disabled={!selectedRoomId}
+                nickname={nickname}
+                onNicknameChange={setNickname}
               />
             </>
           ) : (
