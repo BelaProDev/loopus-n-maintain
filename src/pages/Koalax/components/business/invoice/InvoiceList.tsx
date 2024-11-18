@@ -37,21 +37,22 @@ const InvoiceList = () => {
     });
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
-    
+  const handleSubmit = (formData: FormData) => {
     try {
       if (editingInvoice) {
-        await handleUpdateInvoice(editingInvoice.id, formData);
+        handleUpdateInvoice(editingInvoice.id, formData);
       } else {
-        await handleCreateInvoice(formData);
+        handleCreateInvoice(formData);
       }
       setIsDialogOpen(false);
       setEditingInvoice(null);
     } catch (error) {
       console.error('Error submitting invoice:', error);
+      toast({
+        title: t("common:common.error"),
+        description: t("admin:business.invoices.submitError"),
+        variant: "destructive"
+      });
     }
   };
 

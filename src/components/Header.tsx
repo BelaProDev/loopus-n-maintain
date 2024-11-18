@@ -19,7 +19,7 @@ const tools = [
 const Header = () => {
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
   const { isAuthenticated, logout } = useAuth();
-  const { t } = useTranslation(["common", "tools"]);
+  const { t } = useTranslation(["common", "tools", "auth"]);
 
   useEffect(() => {
     const handleStatusChange = () => {
@@ -78,7 +78,7 @@ const Header = () => {
                   variant="outline"
                   className="ml-4 gradient-border"
                 >
-                  {t("common:auth.signOut")}
+                  {t("auth:signOut")}
                 </Button>
               )}
             </div>
@@ -108,7 +108,7 @@ const Header = () => {
                     variant="outline"
                     className="mt-4"
                   >
-                    {t("common:auth.signOut")}
+                    {t("auth:signOut")}
                   </Button>
                 )}
               </div>
