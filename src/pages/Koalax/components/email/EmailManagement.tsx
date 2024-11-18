@@ -1,4 +1,4 @@
-import { useState, FormEvent } from "react";
+import { useState } from "react";
 import { useEmails, Email } from "@/hooks/useEmails";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
@@ -55,16 +55,19 @@ const EmailManagement = () => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center p-8">
-        <Loader2 className="h-8 w-8 animate-spin" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 bg-[#1A1F2C] p-6 rounded-lg">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">{t("admin:email.title")}</h2>
-        <Button onClick={handleAdd}>
+        <h2 className="text-2xl font-bold text-[#9b87f5]">{t("admin:email.title")}</h2>
+        <Button 
+          onClick={handleAdd}
+          className="bg-[#7E69AB] hover:bg-[#6E59A5] text-white"
+        >
           {t("admin:email.add")}
         </Button>
       </div>

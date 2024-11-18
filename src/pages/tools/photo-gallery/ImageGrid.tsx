@@ -1,85 +1,86 @@
-import { useState } from 'react';
 import { DropboxEntry } from '@/types/dropbox';
 import { Card } from '@/components/ui/card';
-import { Play, Image } from 'lucide-react';
+import { Play, Image as ImageIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useDropbox } from '@/contexts/DropboxContext';
+import { useState } from 'react';
 
 interface ImageGridProps {
-  images: DropboxEntry[];
-  onSelect: (path: string | null) => void;
-  selectedImage: string | null;
+  files: DropboxEntry[];
+  onSelect?: (file: DropboxEntry) => void;
 }
 
-export const ImageGrid = ({ images, onSelect, selectedImage }: ImageGridProps) => {
-  const { client } = useDropbox();
+const ImageGrid = ({ files, onSelect }: ImageGridProps) => {
+  const { dropbox } = useDropbox();
   const [thumbnailUrls, setThumbnailUrls] = useState<Record<string, string>>({});
 
   const getThumbnailUrl = async (path: string) => {
-    if (!client) return '';
-    if (thumbnailUrls[path]) return thumbnailUrls[path];
-
     try {
-      const response = await client.filesGetThumbnail({
+      const response = await dropbox?.filesGetThumbnail({
         path,
         format: { '.tag': 'jpeg' },
         size: { '.tag': 'w640h480' },
         mode: { '.tag': 'strict' }
-      }) as { result: Blob };
+      });
       
-      const url = URL.createObjectURL(response.result);
+      if (!response?.result) return null;
+      
+      // Convert the response to a Blob
+      const arrayBuffer = await (response.result as any).arrayBuffer();
+      const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
+      const url = URL.createObjectURL(blob);
+      
       setThumbnailUrls(prev => ({ ...prev, [path]: url }));
       return url;
     } catch (error) {
-      console.error('Error fetching thumbnail:', error);
-      return '';
+      console.error('Error getting thumbnail:', error);
+      return null;
     }
   };
 
+  const mediaType = (fileName: string): 'image' | 'video' | 'other' => {
+    const extension = fileName.split('.').pop()?.toLowerCase() || '';
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension)) return 'image';
+    if (['mp4', 'mov', 'avi', 'webm'].includes(extension)) return 'video';
+    return 'other';
+  };
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-      {images.map((file) => {
-        if (file['.tag'] !== 'file') return null;
-        const mediaType = getMediaType(file.name);
-        if (mediaType === 'other') return null;
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+      {files.map((file) => {
+        const type = mediaType(file.name);
+        if (type === 'other') return null;
 
         return (
           <Card
-            key={file.id}
+            key={file.path_display}
             className={cn(
-              "group relative aspect-square cursor-pointer overflow-hidden transition-all hover:scale-105",
-              selectedImage === file.path_display && "ring-2 ring-primary"
+              "relative aspect-square overflow-hidden cursor-pointer hover:opacity-90 transition-opacity",
+              "group flex items-center justify-center"
             )}
-            onClick={() => onSelect(file.path_display || null)}
+            onClick={() => onSelect?.(file)}
           >
-            {mediaType === 'video' ? (
-              <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-                <Play className="w-8 md:w-12 h-8 md:h-12 text-white opacity-75 group-hover:opacity-100 transition-opacity" />
-              </div>
-            ) : (
-              <Image className="absolute top-2 right-2 w-4 md:w-6 h-4 md:h-6 text-white opacity-75" />
-            )}
-            {file.path_display && (
+            {type === 'video' ? (
+              <Play className="w-12 h-12 text-white absolute z-10" />
+            ) : null}
+            {thumbnailUrls[file.path_display] ? (
               <img
-                src={thumbnailUrls[file.path_display] || ''}
+                src={thumbnailUrls[file.path_display]}
                 alt={file.name}
                 className="object-cover w-full h-full"
-                onLoad={() => {
-                  if (file.path_display && !thumbnailUrls[file.path_display]) {
-                    getThumbnailUrl(file.path_display);
-                  }
-                }}
-                onError={(e) => {
-                  e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnptMSAxNWgtMnYtMmgydjJ6bTAtNGgtMlY3aDJ2NnoiIGZpbGw9ImN1cnJlbnRDb2xvciIvPjwvc3ZnPg==';
-                }}
+                loading="lazy"
+              />
+            ) : (
+              <ImageIcon 
+                className="w-12 h-12 text-gray-400" 
+                onClick={() => getThumbnailUrl(file.path_display || '')} 
               />
             )}
-            <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white p-2 text-xs md:text-sm truncate transform translate-y-full group-hover:translate-y-0 transition-transform">
-              {file.name}
-            </div>
           </Card>
         );
       })}
     </div>
   );
 };
+
+export default ImageGrid;
