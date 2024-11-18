@@ -81,10 +81,19 @@ const InvoiceForm = ({
     const formDataObj = new FormData(form);
     const totals = calculateTotals();
     
-    formDataObj.append('items', JSON.stringify(items.map(item => ({
-      ...item,
-      total: item.quantity * item.unitPrice
-    }))));
+    // Ensure items are properly serialized with their complete data
+    const serializedItems = items.map(item => ({
+      id: item.id,
+      sku: item.sku || '',
+      description: item.description || '',
+      quantity: Number(item.quantity),
+      unitPrice: Number(item.unitPrice),
+      unit: item.unit || 'unit',
+      vatRate: Number(item.vatRate),
+      total: Number(item.quantity) * Number(item.unitPrice)
+    }));
+
+    formDataObj.append('items', JSON.stringify(serializedItems));
     formDataObj.append('totalAmount', totals.total.toString());
     formDataObj.append('tax', totals.tax.toString());
     formDataObj.append('status', formData.status);
@@ -98,6 +107,7 @@ const InvoiceForm = ({
           ? t("admin:business.invoices.updateSuccess")
           : t("admin:business.invoices.createSuccess")
       });
+      onCancel(); // Close the form after successful submission
     } catch (error) {
       toast({
         title: t("common:common.error"),
