@@ -9,11 +9,8 @@ export const contactQueries = {
     if (!client) throw new Error('Fauna client not initialized');
 
     try {
-      // Convert 'electrical' to 'electrics' for database consistency
-      const dbService = service === 'electrical' ? 'electrics' : service;
-      
       const query = fql`
-        contact_messages.where(.service == ${dbService})
+        contact_messages.where(.service == ${service})
       `;
       const result = await client.query(query);
       return extractFaunaData<ContactMessage>(result);
@@ -28,11 +25,8 @@ export const contactQueries = {
     if (!client) throw new Error('Fauna client not initialized');
 
     try {
-      // Convert 'electrical' to 'electrics' for database consistency
-      const dbService = data.service === 'electrical' ? 'electrics' : data.service;
-      
       const messageData = {
-        service: dbService,
+        service: data.service,
         name: data.name,
         email: data.email,
         message: data.message,

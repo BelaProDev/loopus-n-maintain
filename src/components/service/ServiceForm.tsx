@@ -8,7 +8,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { ContactMessage } from "@/lib/fauna/types";
 
 interface ServiceFormProps {
-  service: ContactMessage['service'];
+  service: 'electrics' | 'plumbing' | 'ironwork' | 'woodwork' | 'architecture';
 }
 
 const ServiceForm = ({ service }: ServiceFormProps) => {

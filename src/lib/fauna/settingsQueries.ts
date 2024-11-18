@@ -1,5 +1,6 @@
 import { getFaunaClient, fql } from "./client";
 import { WhatsAppNumbers, NavigationLink } from "./types";
+import { ToQueryArg } from "./types";
 
 export const settingsQueries = {
   getWhatsAppNumbers: async (): Promise<WhatsAppNumbers> => {
@@ -74,7 +75,7 @@ export const settingsQueries = {
     }
   },
 
-  updateNavigationLink: async (link: NavigationLink) => {
+  updateNavigationLink: async (link: ToQueryArg<NavigationLink>) => {
     try {
       const client = getFaunaClient();
       if (!client) {
