@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { ChatMessage } from "@/lib/fauna/types/chat";
+import { formatDistanceToNow } from "date-fns";
 
 interface MessageListProps {
   messages: ChatMessage[];
@@ -24,18 +25,31 @@ const MessageList = ({ messages = [], isLoading }: MessageListProps) => {
     );
   }
 
+  const formatMessageTime = (timestamp: string) => {
+    try {
+      return formatDistanceToNow(new Date(timestamp), { addSuffix: true });
+    } catch {
+      return "";
+    }
+  };
+
   return (
-    <ScrollArea className="flex-1">
+    <ScrollArea className="flex-1 pr-4">
       <div className="space-y-4 p-4">
         {messages.map((message) => (
           <Card 
             key={message.id} 
-            className="p-4 bg-gradient-to-r from-blue-950/50 to-blue-900/30 border-blue-800/50"
+            className="p-4 bg-card hover:bg-accent/50 transition-colors"
           >
-            <div className="font-medium text-blue-400">
-              {message.sender}
+            <div className="flex justify-between items-start mb-2">
+              <div className="font-medium text-primary">
+                {message.sender}
+              </div>
+              <div className="text-xs text-muted-foreground">
+                {formatMessageTime(message.createdAt)}
+              </div>
             </div>
-            <div className="mt-1 text-gray-200">
+            <div className="text-sm text-card-foreground break-words">
               {message.content}
             </div>
           </Card>

@@ -9,6 +9,7 @@ export interface ChatMessage {
   id: string;
   content: string;
   sender: string;
+  createdAt: string;
   room?: {
     id: string;
   };
