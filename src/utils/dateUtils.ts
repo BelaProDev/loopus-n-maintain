@@ -22,3 +22,13 @@ export const formatChatTimestamp = (timestamp: any): string => {
     return new Date().toISOString();
   }
 };
+
+export const formatSafeDate = (date: string | Date | null): string => {
+  if (!date) return '-';
+  try {
+    return new Date(date).toLocaleDateString();
+  } catch (error) {
+    console.warn('Invalid date format:', date);
+    return '-';
+  }
+};
