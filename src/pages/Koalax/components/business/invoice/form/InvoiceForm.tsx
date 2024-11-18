@@ -4,7 +4,7 @@ import { businessQueries } from "@/lib/fauna/business";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
-import { Invoice, InvoiceItem } from "@/types/business";
+import { Invoice, InvoiceItem } from "@/types/invoice";
 import InvoiceHeader from "./InvoiceHeader";
 import InvoiceParties from "./InvoiceParties";
 import InvoiceItems from "./InvoiceItems";
@@ -108,8 +108,6 @@ const InvoiceForm = ({
           ? t("admin:business.invoices.updateSuccess")
           : t("admin:business.invoices.createSuccess")
       });
-      // Only close the form after successful submission
-      onCancel();
     } catch (error) {
       console.error('Error submitting invoice:', error);
       toast({
