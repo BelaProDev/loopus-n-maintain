@@ -1,12 +1,24 @@
-export const formatSafeDate = (date: string | Date | null | undefined): string => {
-  if (!date) return '-';
-  
+export const formatChatTimestamp = (timestamp: any): string => {
   try {
-    const dateObj = typeof date === 'string' ? new Date(date) : date;
-    if (isNaN(dateObj.getTime())) return '-';
+    // Handle Fauna timestamp object format
+    if (timestamp && typeof timestamp === 'object' && 'isoString' in timestamp) {
+      return new Date(timestamp.isoString).toISOString();
+    }
     
-    return dateObj.toLocaleDateString();
+    // Handle string timestamp
+    if (typeof timestamp === 'string') {
+      return new Date(timestamp).toISOString();
+    }
+    
+    // Handle Date object
+    if (timestamp instanceof Date) {
+      return timestamp.toISOString();
+    }
+    
+    // Default fallback
+    return new Date().toISOString();
   } catch (error) {
-    return '-';
+    console.warn('Invalid timestamp format:', timestamp);
+    return new Date().toISOString();
   }
 };

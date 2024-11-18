@@ -53,13 +53,16 @@ export const handler: Handler = async (event) => {
         );
         console.log('Messages retrieved:', messages);
 
-        // Transform the Fauna response to a simpler format with proper timestamp
-        const messageArray = (messages.data?.data || []).map((msg: any) => ({
-          id: msg.id,
-          content: msg.content,
-          sender: msg.sender,
-          timestamp: msg.ts?.isoString || msg.createdAt?.isoString || new Date().toISOString()
-        }));
+        // Transform the Fauna response to a consistent format
+        const messageArray = messages.data.map((msg: any) => {
+          const timestamp = msg.ts?.isoString || msg.createdAt?.isoString || new Date().toISOString();
+          return {
+            id: msg.id || msg.ref?.id,
+            content: msg.data?.content || msg.content,
+            sender: msg.data?.sender || msg.sender,
+            timestamp
+          };
+        });
 
         return {
           statusCode: 200,

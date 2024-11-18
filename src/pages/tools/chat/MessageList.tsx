@@ -1,6 +1,7 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { ChatMessage } from "@/lib/fauna/types/chat";
 import { format } from "date-fns";
+import { formatChatTimestamp } from "@/utils/dateUtils";
 
 interface MessageListProps {
   messages: ChatMessage[];
@@ -24,21 +25,13 @@ const MessageList = ({ messages = [], isLoading }: MessageListProps) => {
     );
   }
 
-  const formatMessageTime = (timestamp: string | { isoString: string } | Date) => {
+  const formatMessageTime = (timestamp: any) => {
     try {
-      // Handle different timestamp formats
-      const dateStr = typeof timestamp === 'object' && 'isoString' in timestamp 
-        ? timestamp.isoString 
-        : String(timestamp);
-      
-      const date = new Date(dateStr);
-      if (isNaN(date.getTime())) {
-        return "Invalid date";
-      }
-      return format(date, "HH:mm");
+      const isoString = formatChatTimestamp(timestamp);
+      return format(new Date(isoString), "HH:mm");
     } catch (error) {
-      console.error("Error formatting date:", error);
-      return "Invalid date";
+      console.warn("Error formatting message time:", error);
+      return "Invalid time";
     }
   };
 
