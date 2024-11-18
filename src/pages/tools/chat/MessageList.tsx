@@ -5,22 +5,22 @@ import { formatDistanceToNow } from "date-fns";
 
 interface MessageListProps {
   messages: ChatMessage[];
-  isLoading: boolean;
+  isLoading?: boolean;
 }
 
-const MessageList = ({ messages = [], isLoading }: MessageListProps) => {
+export const MessageList = ({ messages, isLoading }: MessageListProps) => {
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-full text-muted-foreground">
-        Loading messages...
+      <div className="flex items-center justify-center h-full">
+        <p className="text-muted-foreground">Loading messages...</p>
       </div>
     );
   }
 
-  if (!Array.isArray(messages) || messages.length === 0) {
+  if (!messages?.length) {
     return (
-      <div className="flex items-center justify-center h-full text-muted-foreground">
-        No messages yet
+      <div className="flex items-center justify-center h-full">
+        <p className="text-muted-foreground">No messages yet</p>
       </div>
     );
   }
