@@ -1,4 +1,5 @@
 import { ChatRoom, ChatMessage } from '@/lib/fauna/types/chat';
+import { extractFaunaData } from '@/lib/fauna/utils';
 
 export const chatService = {
   async listRooms(): Promise<ChatRoom[]> {
@@ -13,12 +14,11 @@ export const chatService = {
     }
 
     const result = await response.json();
-    // Handle the nested data structure from Fauna
-    return result.data.data.data.map((room: any) => ({
-      id: room.id,
-      name: room.name,
-      topic: room.topic || '',
-      createdAt: room.createdAt.isoString
+    return extractFaunaData<ChatRoom>(result).map(doc => ({
+      id: doc.ref.id,
+      name: doc.data.name,
+      topic: doc.data.topic || '',
+      createdAt: doc.data.createdAt
     }));
   },
 
