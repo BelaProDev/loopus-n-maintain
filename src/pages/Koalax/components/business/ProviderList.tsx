@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { businessQueries } from "@/lib/fauna/business";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Pencil, Trash2, Star } from "lucide-react";
+import { Plus, Pencil, Trash2 } from "lucide-react";
 import { Provider } from "@/types/business";
 import ProviderDialog from "./ProviderDialog";
 import { useToast } from "@/components/ui/use-toast";
@@ -19,7 +19,6 @@ const ProviderList = () => {
   const { data: providers = [], isLoading } = useQuery({
     queryKey: ['providers'],
     queryFn: businessQueries.getProviders,
-    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
   const createMutation = useMutation({
@@ -52,7 +51,6 @@ const ProviderList = () => {
       phone: formData.get("phone") as string,
       service: formData.get("service") as Provider["service"],
       availability: true,
-      rating: 0,
       specialties: []
     };
 
@@ -79,7 +77,6 @@ const ProviderList = () => {
           <TableRow>
             <TableHead>{t("admin:providers.name")}</TableHead>
             <TableHead>{t("admin:providers.service")}</TableHead>
-            <TableHead>{t("admin:providers.rating")}</TableHead>
             <TableHead>{t("admin:providers.status")}</TableHead>
             <TableHead className="text-right">{t("common:common.actions")}</TableHead>
           </TableRow>
@@ -89,12 +86,6 @@ const ProviderList = () => {
             <TableRow key={provider.id}>
               <TableCell>{provider.name}</TableCell>
               <TableCell className="capitalize">{t(`services:${provider.service}.title`)}</TableCell>
-              <TableCell>
-                <div className="flex items-center">
-                  <Star className="w-4 h-4 text-yellow-400 mr-1" />
-                  {provider.rating || t("common:common.na")}
-                </div>
-              </TableCell>
               <TableCell>
                 <span className={`px-2 py-1 rounded-full text-xs ${
                   provider.availability ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'

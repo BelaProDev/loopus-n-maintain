@@ -5,7 +5,9 @@ import MessageManagement from "./components/messages/MessageManagement";
 import WhatsAppSettings from "./components/WhatsAppSettings";
 import LogoSettings from "./components/LogoSettings";
 import InvoicePage from "./components/business/invoice/InvoicePage";
-import MessageList from "./components/messages/MessageList";
+import InvoiceList from "./components/business/invoice/InvoiceList";
+import ClientList from "./components/business/ClientList";
+import ProviderList from "./components/business/ProviderList";
 
 export const koalaxRoutes: RouteObject[] = [
   {
@@ -24,18 +26,18 @@ export const koalaxRoutes: RouteObject[] = [
       },
       { 
         path: "business",
+        element: <BusinessManagement />,
         children: [
-          { index: true, element: <BusinessManagement /> },
+          { path: "invoices", element: <InvoiceList /> },
           { path: "invoices/new", element: <InvoicePage /> },
-          { path: "invoices/:invoiceId", element: <InvoicePage /> }
+          { path: "invoices/:invoiceId", element: <InvoicePage /> },
+          { path: "clients", element: <ClientList /> },
+          { path: "providers", element: <ProviderList /> }
         ]
       },
       { 
-        path: "messages", 
-        children: [
-          { index: true, element: <MessageManagement /> },
-          { path: ":roomId", element: <MessageList /> }
-        ]
+        path: "messages",
+        element: <MessageManagement />
       }
     ]
   }

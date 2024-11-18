@@ -7,10 +7,7 @@ export interface Client extends QueryValueObject {
   phone: string;
   company: string;
   vatNumber: string;
-  totalInvoices: number;
-  totalAmount: number;
-  status: string;
-  [key: string]: any;
+  status: 'active' | 'inactive';
 }
 
 export interface Provider extends QueryValueObject {
@@ -20,12 +17,9 @@ export interface Provider extends QueryValueObject {
   phone: string;
   service: 'electrics' | 'plumbing' | 'ironwork' | 'woodwork' | 'architecture';
   availability: boolean;
-  rating: number;
   specialties: string[];
-  [key: string]: any;
 }
 
-// Update InvoiceItem to match the invoice type definition
 export interface InvoiceItem extends QueryValueObject {
   id: string;
   sku: string;
@@ -35,7 +29,6 @@ export interface InvoiceItem extends QueryValueObject {
   total: number;
   vatRate: number;
   unit: string;
-  [key: string]: any;
 }
 
 export interface Invoice extends QueryValueObject {
@@ -46,11 +39,10 @@ export interface Invoice extends QueryValueObject {
   clientId: string;
   providerId: string;
   items: InvoiceItem[];
-  status: string;
+  status: 'draft' | 'sent' | 'paid' | 'overdue';
   totalAmount: number;
   tax: number;
   notes: string;
-  paymentTerms?: string;
-  currency?: string;
-  [key: string]: any;
+  paymentTerms: string;
+  currency: string;
 }
