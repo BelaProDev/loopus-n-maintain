@@ -10,7 +10,8 @@ export const koalaxRoutes: RouteObject[] = [
     children: [
       { index: true, element: <Navigate to="/admin/emails" replace /> },
       { path: "emails", element: <EmailManagement /> },
-      { path: "settings", element: <SiteSettings /> },
+      { path: "settings", element: <Navigate to="/admin/settings/whatsapp" replace /> },
+      { path: "settings/:tab", element: <SiteSettings /> },
       { path: "business/*", element: <BusinessManagement /> },
       { path: "messages", element: <Navigate to="/admin/messages/electrics" replace /> },
       { path: "messages/:service", element: <MessageManagement /> },
