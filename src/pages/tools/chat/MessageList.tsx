@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { ChatMessage } from "@/lib/fauna/types/chat";
 import { formatDistanceToNow } from "date-fns";
+import { useEffect, useRef } from "react";
 
 interface MessageListProps {
   messages: ChatMessage[];
@@ -9,6 +10,16 @@ interface MessageListProps {
 }
 
 const MessageList = ({ messages, isLoading }: MessageListProps) => {
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -54,6 +65,7 @@ const MessageList = ({ messages, isLoading }: MessageListProps) => {
             </div>
           </Card>
         ))}
+        <div ref={messagesEndRef} />
       </div>
     </ScrollArea>
   );
