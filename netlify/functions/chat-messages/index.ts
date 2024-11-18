@@ -34,10 +34,10 @@ export const handler: Handler = async (event) => {
 
         const message = await client.query(fql`
           Messages.create({
-            roomId: ${roomId},
             content: ${data.content},
             sender: ${data.sender},
-            timestamp: Time.now()
+            room: Room.byId(${roomId}),
+            createdAt: Time.now()
           })
         `);
 
@@ -49,7 +49,7 @@ export const handler: Handler = async (event) => {
 
       case 'list': {
         const messages = await client.query(fql`
-          Messages.where(.roomId == ${roomId})
+          Messages.where(.room == Room.byId(${roomId}))
         `);
 
         return {
