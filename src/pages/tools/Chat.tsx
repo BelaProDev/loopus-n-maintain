@@ -30,7 +30,7 @@ const Chat = () => {
       }
       
       const result = await response.json();
-      return extractFaunaData(result) as ChatRoom[];
+      return extractFaunaData(result.data) as FaunaDocument<ChatRoom>[];
     },
     refetchInterval: 3000
   });
@@ -54,7 +54,7 @@ const Chat = () => {
       }
       
       const result = await response.json();
-      return result.data || [];
+      return (result.data?.data || []) as ChatMessage[];
     },
     enabled: Boolean(activeRoom),
     refetchInterval: 1000,
@@ -78,7 +78,7 @@ const Chat = () => {
         throw new Error(result.error || 'Failed to create room');
       }
       
-      return result.data;
+      return extractFaunaData(result.data)[0];
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["chatRooms"] });
@@ -138,10 +138,15 @@ const Chat = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
-      <main className="flex-1 container mx-auto p-4 mb-20">
+      <main className="flex-1 container mx-auto p-4">
         <div className="grid grid-cols-12 gap-6 h-[calc(100vh-12rem)] bg-background rounded-lg border shadow-sm">
           <RoomsList
-            rooms={rooms}
+            rooms={rooms.map(room => ({
+              id: room.ref.id,
+              name: room.data.name,
+              topic: room.data.topic,
+              createdAt: room.data.createdAt
+            }))}
             activeRoom={activeRoom}
             onRoomSelect={setActiveRoom}
             onRefresh={() => queryClient.invalidateQueries({ queryKey: ["chatRooms"] })}
