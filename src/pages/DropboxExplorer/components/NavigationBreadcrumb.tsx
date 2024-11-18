@@ -12,7 +12,7 @@ export const NavigationBreadcrumb = ({ currentPath, onNavigate }: NavigationBrea
   return (
     <Breadcrumb className="py-4">
       <BreadcrumbItem>
-        <BreadcrumbLink onClick={() => onNavigate('/')} className="flex items-center hover:text-primary transition-colors">
+        <BreadcrumbLink onClick={() => onNavigate('')} className="flex items-center hover:text-primary transition-colors">
           <Folder className="w-4 h-4 mr-2" />
           Root
         </BreadcrumbLink>
