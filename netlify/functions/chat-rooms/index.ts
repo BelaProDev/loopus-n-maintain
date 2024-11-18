@@ -1,87 +1,53 @@
-import { Handler } from '@netlify/functions';
+```typescript
 import { Client, fql } from 'fauna';
 
 const getFaunaClient = () => {
-  const secret = process.env.VITE_FAUNA_SECRET_KEY;
-  if (!secret) throw new Error('VITE_FAUNA_SECRET_KEY not set');
+  const secret = process.env.FAUNA_SECRET_KEY;
+  if (!secret) throw new Error('FAUNA_SECRET_KEY not set');
   return new Client({ secret });
 };
 
-export const handler: Handler = async (event) => {
-  if (event.httpMethod !== 'POST') {
-    return { 
-      statusCode: 405, 
-      body: JSON.stringify({ error: 'Method not allowed' }) 
-    };
-  }
-
+export const handler = async (event) => {
   try {
-    const { action, data } = JSON.parse(event.body || '{}');
     const client = getFaunaClient();
+    const { action, data } = JSON.parse(event.body);
 
     switch (action) {
-      case 'list': {
-        const result = await client.query(fql`
-          let rooms = chat_rooms.all()
-          {
-            data: rooms.map(room => {
-              {
-                id: room.id,
-                name: room.name,
-                topic: room.topic || '',
-                createdAt: room.createdAt
-              }
-            })
-          }
+      case 'list':
+        const listResult = await client.query(fql`
+          rooms.all()
         `);
-        
         return {
           statusCode: 200,
-          body: JSON.stringify(result)
+          body: JSON.stringify({ data: listResult.data })
         };
-      }
 
-      case 'create': {
-        if (!data?.name?.trim()) {
-          return { 
-            statusCode: 400, 
-            body: JSON.stringify({ error: 'Room name is required' }) 
-          };
-        }
-
-        const result = await client.query(fql`
-          let newRoom = chat_rooms.create({
-            name: ${data.name.trim()},
-            topic: ${data.topic?.trim() || ''},
+      case 'create':
+        const { name, topic } = data;
+        const createResult = await client.query(fql`
+          rooms.create({
+            name: ${name},
+            topic: ${topic},
             createdAt: Time.now()
           })
-          {
-            id: newRoom.id,
-            name: newRoom.name,
-            topic: newRoom.topic,
-            createdAt: newRoom.createdAt
-          }
         `);
-
         return {
-          statusCode: 201,
-          body: JSON.stringify({ data: result })
+          statusCode: 200,
+          body: JSON.stringify({ data: createResult.data })
         };
-      }
 
       default:
-        return { 
-          statusCode: 400, 
-          body: JSON.stringify({ error: 'Invalid action' }) 
+        return {
+          statusCode: 400,
+          body: JSON.stringify({ error: 'Invalid action' })
         };
     }
   } catch (error) {
-    console.error('Chat rooms error:', error);
-    return { 
-      statusCode: 500, 
-      body: JSON.stringify({ 
-        error: error instanceof Error ? error.message : 'Internal server error' 
-      }) 
+    console.error('Error:', error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: error.message })
     };
   }
 };
+```

@@ -1,80 +1,60 @@
-import { Handler } from '@netlify/functions';
+```typescript
 import { Client, fql } from 'fauna';
 
 const getFaunaClient = () => {
-  const secret = process.env.VITE_FAUNA_SECRET_KEY;
-  if (!secret) throw new Error('VITE_FAUNA_SECRET_KEY not set');
+  const secret = process.env.FAUNA_SECRET_KEY;
+  if (!secret) throw new Error('FAUNA_SECRET_KEY not set');
   return new Client({ secret });
 };
 
-export const handler: Handler = async (event) => {
-  if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
-  }
-
+export const handler = async (event) => {
   try {
-    const { action, data, roomId } = JSON.parse(event.body || '{}');
     const client = getFaunaClient();
+    const { action, data, roomId } = JSON.parse(event.body);
 
     switch (action) {
-      case 'list': {
-        if (!roomId) {
-          return { statusCode: 400, body: JSON.stringify({ error: 'Room ID required' }) };
-        }
-
-        const result = await client.query(fql`
-          let messages = chat_messages.all().where(.roomId == ${roomId})
-          {
-            data: messages.order(-.timestamp).take(50).map(msg => {
-              {
-                id: msg.id,
-                roomId: msg.roomId,
-                sender: msg.sender,
-                content: msg.content,
-                timestamp: msg.timestamp
-              }
-            })
-          }
+      case 'create': {
+        const message = await client.query(fql`
+          let message = Messages.create({
+            content: ${data.content},
+            sender: ${data.sender},
+            room: Room.byId(${roomId}),
+            createdAt: Time.now()
+          })
+          message
         `);
 
         return {
           statusCode: 200,
-          body: JSON.stringify(result)
+          body: JSON.stringify({ data: message })
         };
       }
 
-      case 'create': {
-        if (!data?.roomId || !data?.content?.trim()) {
-          return { statusCode: 400, body: JSON.stringify({ error: 'Room ID and content required' }) };
-        }
-
-        const result = await client.query(fql`
-          let newMessage = chat_messages.create({
-            roomId: ${data.roomId},
-            sender: ${data.sender || 'Anonymous'},
-            content: ${data.content.trim()},
-            timestamp: Time.now()
-          })
-          {
-            id: newMessage.id,
-            roomId: newMessage.roomId,
-            sender: newMessage.sender,
-            content: newMessage.content,
-            timestamp: newMessage.timestamp
-          }
+      case 'list': {
+        const messages = await client.query(fql`
+          let room = Room.byId(${roomId})
+          let messages = Messages.where(.room == room).order(-.createdAt)
+          messages
         `);
 
         return {
           statusCode: 200,
-          body: JSON.stringify({ data: result })
+          body: JSON.stringify({ data: messages })
         };
       }
 
       default:
-        return { statusCode: 400, body: JSON.stringify({ error: 'Invalid action' }) };
+        return {
+          statusCode: 400,
+          body: JSON.stringify({ error: 'Invalid action' })
+        };
     }
   } catch (error) {
-    console.error('Chat messages error:', error);
-    return { statusCode: 500, body: JSON.stringify({ error: 'Internal server error' }) };
+    console.error('Error:', error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: error.message })
+    };
   }
 };
+```
