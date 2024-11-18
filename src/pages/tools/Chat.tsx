@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import RoomsList from "./chat/RoomsList";
 import MessageList from "./chat/MessageList";
 import MessageInput from "./chat/MessageInput";
-import type { ChatMessage, ChatRoom } from "@/types/chat";
+import type { ChatMessage, ChatRoom } from "@/lib/fauna/types/chat";
 
 const Chat = () => {
   const [activeRoom, setActiveRoom] = useState("");
@@ -15,7 +15,7 @@ const Chat = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Fetch chat rooms
-  const { data: rooms = [], isLoading: roomsLoading } = useQuery({
+  const { data: rooms = [], isLoading: roomsLoading, refetch: refetchRooms } = useQuery({
     queryKey: ["chatRooms"],
     queryFn: async () => {
       const response = await fetch("/.netlify/functions/chat-rooms", {
@@ -31,8 +31,7 @@ const Chat = () => {
       
       const result = await response.json();
       return result.data || [];
-    },
-    refetchInterval: 3000
+    }
   });
 
   // Fetch messages for active room
@@ -78,10 +77,10 @@ const Chat = () => {
       
       return result.data;
     },
-    onSuccess: (data, variables) => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["chatRooms"] });
       setActiveRoom(data.id);
-      toast.success(`Room "${variables.name}" created successfully`);
+      toast.success("Room created successfully");
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -127,6 +126,10 @@ const Chat = () => {
     }
   }, [messages]);
 
+  const handleCreateRoom = (name: string, topic: string) => {
+    createRoom.mutate({ name, topic });
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
@@ -136,7 +139,8 @@ const Chat = () => {
             rooms={rooms}
             activeRoom={activeRoom}
             onRoomSelect={setActiveRoom}
-            onCreateRoom={(name, topic) => createRoom.mutate({ name, topic })}
+            onRefresh={refetchRooms}
+            onCreateRoom={handleCreateRoom}
             isLoading={roomsLoading}
           />
           <div className="col-span-9 flex flex-col">

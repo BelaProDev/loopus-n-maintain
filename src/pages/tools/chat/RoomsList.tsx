@@ -10,6 +10,7 @@ interface RoomsListProps {
   activeRoom: string;
   onRoomSelect: (roomId: string) => void;
   onRefresh: () => void;
+  onCreateRoom: (name: string, topic: string) => void;
   isLoading: boolean;
 }
 
@@ -18,6 +19,7 @@ const RoomsList = ({
   activeRoom,
   onRoomSelect,
   onRefresh,
+  onCreateRoom,
   isLoading
 }: RoomsListProps) => {
   return (
@@ -25,7 +27,7 @@ const RoomsList = ({
       <div className="p-4 border-b flex items-center justify-between">
         <h2 className="font-semibold">Chat Rooms</h2>
         <div className="flex items-center gap-2">
-          <CreateRoomDialog onRoomCreated={onRefresh} />
+          <CreateRoomDialog onRoomCreated={onRefresh} onCreateRoom={onCreateRoom} />
         </div>
       </div>
       <ScrollArea className="flex-1">

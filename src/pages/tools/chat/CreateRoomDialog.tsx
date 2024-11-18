@@ -6,13 +6,13 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
-import { chatService } from "@/services/chatService";
 
 interface CreateRoomDialogProps {
   onRoomCreated: () => void;
+  onCreateRoom: (name: string, topic: string) => void;
 }
 
-const CreateRoomDialog = ({ onRoomCreated }: CreateRoomDialogProps) => {
+const CreateRoomDialog = ({ onRoomCreated, onCreateRoom }: CreateRoomDialogProps) => {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [topic, setTopic] = useState("");
@@ -27,10 +27,9 @@ const CreateRoomDialog = ({ onRoomCreated }: CreateRoomDialogProps) => {
 
     setIsLoading(true);
     try {
-      await chatService.createRoom(name, topic);
-      toast.success("Room created successfully");
-      setOpen(false);
+      await onCreateRoom(name.trim(), topic.trim());
       onRoomCreated();
+      setOpen(false);
       setName("");
       setTopic("");
     } catch (error) {
