@@ -1,12 +1,19 @@
 import i18n from 'i18next';
 
 export const getCurrentLanguage = () => {
-  return localStorage.getItem('language') || i18n.language;
+  return localStorage.getItem('i18nextLng') || i18n.language;
 };
 
 export const changeLanguage = async (lang: string) => {
-  localStorage.setItem('language', lang);
-  await i18n.changeLanguage(lang);
+  try {
+    await i18n.changeLanguage(lang);
+    localStorage.setItem('i18nextLng', lang);
+    document.documentElement.lang = lang;
+    return true;
+  } catch (error) {
+    console.error('Error changing language:', error);
+    return false;
+  }
 };
 
 export const getAvailableLanguages = () => ['en', 'es', 'fr'];
