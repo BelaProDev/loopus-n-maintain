@@ -4,6 +4,8 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useTranslation } from "react-i18next";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { useQuery } from "@tanstack/react-query";
+import { fetchTopHNStories } from "@/lib/utils/hackerNewsUtils";
 
 const mockData = [
   { month: 'Jan', visits: 4000, revenue: 2400 },
@@ -16,6 +18,18 @@ const mockData = [
 
 const Analytics = () => {
   const { t } = useTranslation(["tools"]);
+  
+  const { data: hnStories } = useQuery({
+    queryKey: ['hnStories'],
+    queryFn: () => fetchTopHNStories(30),
+    refetchInterval: 300000,
+  });
+
+  const hnScoreData = hnStories?.map(story => ({
+    title: story.title.substring(0, 30) + '...',
+    score: story.score,
+    comments: story.descendants
+  })) || [];
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800">
@@ -32,13 +46,14 @@ const Analytics = () => {
           </div>
 
           <Tabs defaultValue="overview" className="space-y-4">
-            <TabsList className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <TabsTrigger value="overview" className="w-full">Overview</TabsTrigger>
-              <TabsTrigger value="revenue" className="w-full">Revenue</TabsTrigger>
-              <TabsTrigger value="visitors" className="w-full">Visitors</TabsTrigger>
+            <TabsList className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="revenue">Revenue</TabsTrigger>
+              <TabsTrigger value="visitors">Visitors</TabsTrigger>
+              <TabsTrigger value="hn">Hacker News</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="overview" className="space-y-4">
+            <TabsContent value="overview">
               <Card className="p-6">
                 <h3 className="text-xl font-semibold mb-4">Monthly Overview</h3>
                 <div className="h-[400px]">
@@ -58,7 +73,7 @@ const Analytics = () => {
               </Card>
             </TabsContent>
 
-            <TabsContent value="revenue" className="space-y-4">
+            <TabsContent value="revenue">
               <Card className="p-6">
                 <h3 className="text-xl font-semibold mb-4">Revenue Analysis</h3>
                 <div className="h-[400px]">
@@ -76,7 +91,7 @@ const Analytics = () => {
               </Card>
             </TabsContent>
 
-            <TabsContent value="visitors" className="space-y-4">
+            <TabsContent value="visitors">
               <Card className="p-6">
                 <h3 className="text-xl font-semibold mb-4">Visitor Trends</h3>
                 <div className="h-[400px]">
@@ -88,6 +103,25 @@ const Analytics = () => {
                       <Tooltip />
                       <Legend />
                       <Bar dataKey="visits" fill="#6366f1" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="hn">
+              <Card className="p-6">
+                <h3 className="text-xl font-semibold mb-4">Hacker News Trends</h3>
+                <div className="h-[400px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={hnScoreData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="title" angle={-45} textAnchor="end" height={100} />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Bar dataKey="score" fill="#ff6600" name="Points" />
+                      <Bar dataKey="comments" fill="#2563eb" name="Comments" />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>

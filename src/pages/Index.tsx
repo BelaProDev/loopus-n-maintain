@@ -2,7 +2,8 @@ import { useTranslation } from "react-i18next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ToolCard from "@/components/home/ToolCard";
-import { FileText, GitGraph, BarChart, Music, Building2, MessageSquare, Image } from "lucide-react";
+import HackerNewsSection from "@/components/home/HackerNewsSection";
+import { FileText, GitGraph, BarChart, Music, Building2, MessageCircle, Image } from "lucide-react";
 import ServiceCard from "@/components/home/ServiceCard";
 
 const Index = () => {
@@ -14,6 +15,13 @@ const Index = () => {
       <main className="container mx-auto px-4 py-8">
         <section>
           <h1 className="text-4xl font-bold mb-8">{t("common:welcome")}</h1>
+          
+          {/* Hacker News Section */}
+          <div className="mb-12">
+            <h2 className="text-2xl font-bold mb-4">Latest from Hacker News</h2>
+            <HackerNewsSection />
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <ServiceCard
               title={t("services:electrical.title")}
