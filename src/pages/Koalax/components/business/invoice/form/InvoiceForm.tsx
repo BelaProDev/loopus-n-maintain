@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { businessQueries } from "@/lib/fauna/business";
 import { useTranslation } from "react-i18next";
@@ -13,7 +13,7 @@ import { useToast } from "@/components/ui/use-toast";
 
 interface InvoiceFormProps {
   editingInvoice: Invoice | null;
-  onSubmit: (formData: FormData) => void;
+  onSubmit: (formData: FormData) => Promise<void>;
   isLoading: boolean;
   onCancel: () => void;
 }
@@ -70,7 +70,7 @@ const InvoiceForm = ({
     };
   };
 
-  const handleSubmitForm = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!formData.clientId || !formData.providerId) {
@@ -119,6 +119,7 @@ const InvoiceForm = ({
     
     try {
       await onSubmit(formDataObj);
+      onCancel(); // Close the form after successful submission
     } catch (error) {
       console.error('Error submitting invoice:', error);
       toast({
@@ -130,7 +131,7 @@ const InvoiceForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmitForm} className="max-w-5xl mx-auto">
+    <form onSubmit={handleSubmit} className="max-w-5xl mx-auto">
       <div className="space-y-8 bg-white dark:bg-gray-950 p-8 rounded-lg shadow-sm border">
         <InvoiceHeader
           formData={formData}

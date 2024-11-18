@@ -49,7 +49,7 @@ export const invoiceQueries = {
     if (!client) return null;
     try {
       const now = new Date().toISOString();
-      const formattedItems = data.items.map(formatInvoiceItem);
+      const formattedItems = Array.isArray(data.items) ? data.items.map(formatInvoiceItem) : [];
       
       const query = fql`
         invoices.create({
