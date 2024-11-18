@@ -149,7 +149,7 @@ const PhotoGallery = () => {
                   <div className="flex justify-center p-8">Loading...</div>
                 ) : (
                   <ImageGrid
-                    images={files.filter(file => getMediaType(file.name) !== 'other')}
+                    files={files}
                     onSelect={setSelectedMedia}
                     selectedImage={selectedMedia}
                   />
