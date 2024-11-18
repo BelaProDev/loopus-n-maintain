@@ -1,90 +1,66 @@
-import { createSlice, createAsyncThunk, SerializedError } from '@reduxjs/toolkit';
-import { businessQueries } from '@/lib/db/businessDb';
+import { createSlice } from '@reduxjs/toolkit';
 import type { Client, Provider, Invoice } from '@/types/business';
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import { businessQueries } from '@/lib/db/businessDb';
 
-interface BusinessState {
-  clients: Client[];
-  providers: Provider[];
-  invoices: Invoice[];
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
-  error: SerializedError | null;
-}
-
-const initialState: BusinessState = {
-  clients: [],
-  providers: [],
-  invoices: [],
-  status: 'idle',
-  error: null,
-};
-
-// Async thunks
-export const fetchClients = createAsyncThunk(
-  'business/fetchClients',
-  async () => {
-    return await businessQueries.getClients();
-  }
-);
-
-export const fetchProviders = createAsyncThunk(
-  'business/fetchProviders',
-  async () => {
-    return await businessQueries.getProviders();
-  }
-);
-
-export const fetchInvoices = createAsyncThunk(
-  'business/fetchInvoices',
-  async () => {
-    return await businessQueries.getInvoices();
-  }
-);
+// Simple async thunks
+export const fetchClients = createAsyncThunk('business/fetchClients', businessQueries.getClients);
+export const fetchProviders = createAsyncThunk('business/fetchProviders', businessQueries.getProviders);
+export const fetchInvoices = createAsyncThunk('business/fetchInvoices', businessQueries.getInvoices);
 
 const businessSlice = createSlice({
   name: 'business',
-  initialState,
+  initialState: {
+    clients: [] as Client[],
+    providers: [] as Provider[],
+    invoices: [] as Invoice[],
+    loading: false,
+    error: null as string | null,
+  },
   reducers: {
-    resetBusinessState: () => initialState,
+    resetState: (state) => {
+      state.clients = [];
+      state.providers = [];
+      state.invoices = [];
+      state.loading = false;
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
-    // Client cases
-    builder
-      .addCase(fetchClients.pending, (state) => {
-        state.status = 'loading';
-      })
-      .addCase(fetchClients.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.clients = action.payload;
+    // Handle all pending states
+    builder.addMatcher(
+      (action) => action.type.endsWith('/pending'),
+      (state) => {
+        state.loading = true;
         state.error = null;
-      })
-      .addCase(fetchClients.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.error;
-      })
-      // Provider cases
-      .addCase(fetchProviders.pending, (state) => {
-        state.status = 'loading';
-      })
-      .addCase(fetchProviders.fulfilled, (state, action) => {
-        state.providers = action.payload;
-        state.error = null;
-      })
-      .addCase(fetchProviders.rejected, (state, action) => {
-        state.error = action.error;
-      })
-      // Invoice cases  
-      .addCase(fetchInvoices.pending, (state) => {
-        state.status = 'loading';
-      })
-      .addCase(fetchInvoices.fulfilled, (state, action) => {
-        state.invoices = action.payload;
-        state.error = null;
-      })
-      .addCase(fetchInvoices.rejected, (state, action) => {
-        state.error = action.error;
-      });
+      }
+    );
+
+    // Handle all fulfilled states
+    builder.addMatcher(
+      (action) => action.type.endsWith('/fulfilled'),
+      (state, action) => {
+        state.loading = false;
+        if (action.type.startsWith('business/fetchClients')) {
+          state.clients = action.payload;
+        } else if (action.type.startsWith('business/fetchProviders')) {
+          state.providers = action.payload;
+        } else if (action.type.startsWith('business/fetchInvoices')) {
+          state.invoices = action.payload;
+        }
+      }
+    );
+
+    // Handle all rejected states
+    builder.addMatcher(
+      (action) => action.type.endsWith('/rejected'),
+      (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'An error occurred';
+      }
+    );
   },
 });
 
-export const { resetBusinessState } = businessSlice.actions;
+export const { resetState } = businessSlice.actions;
 export default businessSlice.reducer;
