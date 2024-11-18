@@ -1,18 +1,20 @@
-import { Client } from 'fauna';
+import { Client, fql } from 'fauna';
 
 export const getFaunaClient = () => {
-  // For server-side (Netlify functions)
-  const serverSecret = process.env.FAUNA_SECRET_KEY;
-  // For client-side
-  const clientSecret = import.meta.env.VITE_FAUNA_SECRET_KEY;
-  
-  const secret = serverSecret || clientSecret;
+  const secret = import.meta.env.VITE_FAUNA_SECRET_KEY;
   
   if (!secret) {
-    throw new Error('Fauna secret key not found in environment variables');
+    throw new Error('VITE_FAUNA_SECRET_KEY not found in environment variables');
   }
 
   return new Client({ secret });
+};
+
+export { fql };
+
+export const handleFaunaError = (error: unknown, defaultValue: any) => {
+  console.error('Fauna error:', error);
+  return defaultValue;
 };
 
 export const faunaClient = getFaunaClient();

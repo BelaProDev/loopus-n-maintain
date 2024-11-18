@@ -5,7 +5,7 @@ import { SHA256 } from 'crypto-js';
 const getFaunaClient = () => {
   const secret = process.env.VITE_FAUNA_SECRET_KEY;
   if (!secret) {
-    throw new Error('Fauna secret key not found');
+    throw new Error('VITE_FAUNA_SECRET_KEY not found');
   }
   return new Client({ secret });
 };
