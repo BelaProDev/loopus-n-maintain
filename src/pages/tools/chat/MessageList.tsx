@@ -1,6 +1,6 @@
+import { ScrollArea } from "@/components/ui/scroll-area";
+import type { ChatMessage } from "@/lib/fauna/types/chat";
 import { format } from "date-fns";
-import { ChatMessage } from "@/types/chat";
-import { Skeleton } from "@/components/ui/skeleton";
 
 interface MessageListProps {
   messages: ChatMessage[];
@@ -10,16 +10,16 @@ interface MessageListProps {
 const MessageList = ({ messages, isLoading }: MessageListProps) => {
   if (isLoading) {
     return (
-      <div className="space-y-4">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="flex flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-4 w-16" />
-            </div>
-            <Skeleton className="h-4 w-3/4" />
-          </div>
-        ))}
+      <div className="flex items-center justify-center h-full text-muted-foreground">
+        Loading messages...
+      </div>
+    );
+  }
+
+  if (messages.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-full text-muted-foreground">
+        No messages yet
       </div>
     );
   }
@@ -27,25 +27,16 @@ const MessageList = ({ messages, isLoading }: MessageListProps) => {
   return (
     <div className="space-y-4">
       {messages.map((message) => (
-        <div 
-          key={message.id} 
-          className="group flex flex-col hover:bg-muted/50 p-2 rounded-lg transition-colors"
-        >
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span className="font-semibold">{message.sender}</span>
-            <span>•</span>
-            <time className="text-xs">
-              {format(new Date(message.timestamp), "PPp")}
-            </time>
+        <div key={message.id} className="flex flex-col space-y-1">
+          <div className="flex items-center gap-2">
+            <span className="font-medium">{message.sender}</span>
+            <span className="text-xs text-muted-foreground">
+              {format(new Date(message.timestamp), "HH:mm")}
+            </span>
           </div>
-          <p className="mt-1 break-words">{message.content}</p>
+          <p className="text-sm">{message.content}</p>
         </div>
       ))}
-      {messages.length === 0 && (
-        <p className="text-center text-muted-foreground py-8">
-          No messages yet. Start the conversation!
-        </p>
-      )}
     </div>
   );
 };

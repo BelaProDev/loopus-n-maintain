@@ -1,70 +1,81 @@
-import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Plus } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
+import { chatService } from "@/services/chatService";
 
 interface CreateRoomDialogProps {
-  onRoomCreate: (name: string, topic: string) => Promise<void>;
+  onRoomCreated: () => void;
 }
 
-const CreateRoomDialog = ({ onRoomCreate }: CreateRoomDialogProps) => {
+const CreateRoomDialog = ({ onRoomCreated }: CreateRoomDialogProps) => {
+  const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [topic, setTopic] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
-  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !topic.trim()) {
-      toast({
-        title: "Invalid input",
-        description: "Both name and topic are required",
-        variant: "destructive"
-      });
+    if (!name.trim()) {
+      toast.error("Room name is required");
       return;
     }
 
-    await onRoomCreate(name, topic);
-    setName("");
-    setTopic("");
-    setIsOpen(false);
+    setIsLoading(true);
+    try {
+      await chatService.createRoom(name, topic);
+      toast.success("Room created successfully");
+      setOpen(false);
+      onRoomCreated();
+      setName("");
+      setTopic("");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to create room");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-2">
-          <Plus className="h-4 w-4" />
+        <Button variant="outline" size="sm">
+          <Plus className="w-4 h-4 mr-2" />
           New Room
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create New Room</DialogTitle>
+          <DialogTitle>Create New Chat Room</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="room-name">Room Name</Label>
+            <Label htmlFor="name">Room Name</Label>
             <Input
-              id="room-name"
+              id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. general"
+              placeholder="Enter room name"
+              disabled={isLoading}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="room-topic">Topic</Label>
-            <Input
-              id="room-topic"
+            <Label htmlFor="topic">Topic (optional)</Label>
+            <Textarea
+              id="topic"
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
-              placeholder="e.g. General discussion"
+              placeholder="Enter room topic"
+              disabled={isLoading}
             />
           </div>
-          <Button type="submit" className="w-full">Create Room</Button>
+          <Button type="submit" disabled={isLoading}>
+            Create Room
+          </Button>
         </form>
       </DialogContent>
     </Dialog>
