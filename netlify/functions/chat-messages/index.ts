@@ -11,18 +11,21 @@ export const handler: Handler = async (event) => {
   try {
     const client = getFaunaClient();
     const { action, data, roomId } = JSON.parse(event.body || '{}');
+    
+    console.log('Chat Messages Function - Request:', { action, roomId });
 
     switch (action) {
       case 'create': {
+        console.log('Creating message:', data);
         const message = await client.query(fql`
-          let message = Messages.create({
+          Messages.create({
             content: ${data.content},
             sender: ${data.sender},
             room: Room.byId(${roomId}),
             createdAt: Time.now()
           })
-          message
         `);
+        console.log('Message created:', message);
 
         return {
           statusCode: 200,
@@ -31,11 +34,12 @@ export const handler: Handler = async (event) => {
       }
 
       case 'list': {
+        console.log('Listing messages for room:', roomId);
         const messages = await client.query(fql`
-          let room = Room.byId(${roomId})
-          let messages = Messages.where(.room == room).order(-.createdAt)
-          messages
+          Messages.where(.room == Room.byId(${roomId}))
+          .order(-.createdAt)
         `);
+        console.log('Messages retrieved:', messages);
 
         return {
           statusCode: 200,
@@ -44,16 +48,20 @@ export const handler: Handler = async (event) => {
       }
 
       default:
+        console.log('Invalid action:', action);
         return {
           statusCode: 400,
           body: JSON.stringify({ error: 'Invalid action' })
         };
     }
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error details:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Internal server error' })
+      body: JSON.stringify({ 
+        error: error.message || 'Internal server error',
+        details: error.toString()
+      })
     };
   }
 };
