@@ -9,6 +9,15 @@ import MessageList from "./chat/MessageList";
 import MessageInput from "./chat/MessageInput";
 import { extractFaunaData } from "@/lib/fauna/utils";
 import type { ChatMessage, ChatRoom } from "@/lib/fauna/types/chat";
+import type { FaunaDocument } from "@/lib/fauna/utils";
+
+interface Message {
+  ref: { id: string };
+  data: {
+    sender: string;
+    content: string;
+  };
+}
 
 const Chat = () => {
   const [activeRoom, setActiveRoom] = useState("");
@@ -31,7 +40,7 @@ const Chat = () => {
       }
       
       const result = await response.json();
-      return extractFaunaData(result.data);
+      return extractFaunaData(result.data) as FaunaDocument<ChatRoom>[];
     },
     refetchInterval: 3000
   });
@@ -56,7 +65,7 @@ const Chat = () => {
       }
       
       const result = await response.json();
-      return extractFaunaData(result.data);
+      return extractFaunaData(result.data) as Message[];
     },
     enabled: Boolean(activeRoom),
     refetchInterval: 1000,
@@ -141,7 +150,12 @@ const Chat = () => {
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="grid grid-cols-12 gap-6 h-[calc(100vh-16rem)] bg-background rounded-lg border shadow-sm">
           <RoomsList
-            rooms={rooms as ChatRoom[]}
+            rooms={rooms.map(room => ({
+              id: room.ref.id,
+              name: room.data.name,
+              topic: room.data.topic,
+              createdAt: room.data.createdAt
+            }))}
             activeRoom={activeRoom}
             onRoomSelect={setActiveRoom}
             onRefresh={() => queryClient.invalidateQueries({ queryKey: ["chatRooms"] })}

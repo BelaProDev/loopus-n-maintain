@@ -23,6 +23,8 @@ interface FaunaResponse<T> {
   static_type?: string;
 }
 
+export type { FaunaDocument };
+
 export const extractFaunaData = <T>(response: FaunaResponse<T>): FaunaDocument<T>[] => {
   if (!response) return [];
 
