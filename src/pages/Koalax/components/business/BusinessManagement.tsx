@@ -65,9 +65,11 @@ const BusinessManagement = () => {
           </TabsTrigger>
         </TabsList>
 
-        <Card className="p-6">
-          <Outlet />
-        </Card>
+        <TabsContent value={currentTab}>
+          <Card className="p-6">
+            <Outlet />
+          </Card>
+        </TabsContent>
       </Tabs>
     </div>
   );
