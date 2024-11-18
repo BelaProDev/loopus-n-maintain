@@ -73,7 +73,9 @@ export const useInvoiceOperations = () => {
       clientId: formData.get("clientId") as string,
       providerId: formData.get("providerId") as string,
       notes: formData.get("notes") as string,
-      items: JSON.parse(formData.get("items") as string) || []
+      items: JSON.parse(formData.get("items") as string) || [],
+      paymentTerms: formData.get("paymentTerms") as string,
+      currency: formData.get("currency") as string
     };
 
     await createMutation.mutateAsync(dto);
@@ -84,7 +86,9 @@ export const useInvoiceOperations = () => {
       clientId: formData.get("clientId") as string,
       providerId: formData.get("providerId") as string,
       notes: formData.get("notes") as string,
-      items: JSON.parse(formData.get("items") as string) || []
+      items: JSON.parse(formData.get("items") as string) || [],
+      paymentTerms: formData.get("paymentTerms") as string,
+      currency: formData.get("currency") as string
     };
 
     await updateMutation.mutateAsync({ id, dto });

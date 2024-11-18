@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { businessQueries } from "@/lib/fauna/business";
 import InvoiceDialog from "./InvoiceDialog";
-import ImportInvoiceDialog from "./ImportInvoiceDialog";
+import ImportInvoiceDialog from "@/components/business/invoice/ImportInvoiceDialog";
 import { useTranslation } from "react-i18next";
 import { useInvoiceOperations } from "@/hooks/useInvoiceOperations";
 import InvoiceTable from "./InvoiceTable";
@@ -25,11 +25,7 @@ const InvoiceList = () => {
       if (!response) {
         throw new Error('Failed to fetch invoices');
       }
-      return response.map(invoice => ({
-        ...invoice,
-        date: new Date(invoice.date).toISOString(),
-        dueDate: new Date(invoice.dueDate).toISOString()
-      }));
+      return response;
     }
   });
 

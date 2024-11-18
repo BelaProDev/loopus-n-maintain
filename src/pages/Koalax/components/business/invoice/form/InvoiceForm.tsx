@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { businessQueries } from "@/lib/fauna/business";
 import { useTranslation } from "react-i18next";
@@ -10,6 +10,7 @@ import InvoiceParties from "./InvoiceParties";
 import InvoiceItems from "./InvoiceItems";
 import InvoiceFooter from "./InvoiceFooter";
 import { Card } from "@/components/ui/card";
+import { useToast } from "@/components/ui/use-toast";
 
 interface InvoiceFormProps {
   editingInvoice: Invoice | null;
@@ -25,6 +26,7 @@ const InvoiceForm = ({
   onCancel
 }: InvoiceFormProps) => {
   const { t } = useTranslation(["admin", "common"]);
+  const { toast } = useToast();
   const [items, setItems] = useState<InvoiceItem[]>(editingInvoice?.items || []);
   const [formData, setFormData] = useState({
     clientId: editingInvoice?.clientId || "",
@@ -49,21 +51,64 @@ const InvoiceForm = ({
   });
 
   const calculateTotals = () => {
-    const subtotal = items.reduce((sum, item) => sum + item.total, 0);
-    const tax = items.reduce((sum, item) => sum + (item.total * item.vatRate / 100), 0);
+    const subtotal = items.reduce((sum, item) => sum + (item.quantity * item.unitPrice), 0);
+    const tax = items.reduce((sum, item) => sum + ((item.quantity * item.unitPrice) * item.vatRate / 100), 0);
     return { subtotal, tax, total: subtotal + tax };
   };
 
-  const handleSubmitForm = (e: React.FormEvent) => {
+  const handleSubmitForm = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!formData.clientId || !formData.providerId) {
+      toast({
+        title: t("common:common.error"),
+        description: t("admin:business.invoices.missingParties"),
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (items.length === 0) {
+      toast({
+        title: t("common:common.error"),
+        description: t("admin:business.invoices.noItems"),
+        variant: "destructive"
+      });
+      return;
+    }
+
     const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
-    formData.append('items', JSON.stringify(items));
-    onSubmit(e);
+    const formDataObj = new FormData(form);
+    const totals = calculateTotals();
+    
+    formDataObj.append('items', JSON.stringify(items.map(item => ({
+      ...item,
+      total: item.quantity * item.unitPrice
+    }))));
+    formDataObj.append('totalAmount', totals.total.toString());
+    formDataObj.append('tax', totals.tax.toString());
+    formDataObj.append('status', formData.status);
+    formDataObj.append('currency', formData.currency);
+    
+    try {
+      await onSubmit(e);
+      toast({
+        title: t("common:common.success"),
+        description: editingInvoice 
+          ? t("admin:business.invoices.updateSuccess")
+          : t("admin:business.invoices.createSuccess")
+      });
+    } catch (error) {
+      toast({
+        title: t("common:common.error"),
+        description: t("admin:business.invoices.submitError"),
+        variant: "destructive"
+      });
+    }
   };
 
   return (
-    <form onSubmit={handleSubmitForm} className="space-y-8 max-w-5xl mx-auto p-6">
+    <form onSubmit={handleSubmitForm} className="space-y-8 max-w-7xl mx-auto">
       <Card className="p-8 space-y-8 shadow-lg">
         <div className="space-y-8">
           <InvoiceHeader
@@ -107,7 +152,13 @@ const InvoiceForm = ({
             size="lg"
             className="min-w-[120px]"
           >
-            {editingInvoice ? t("common:actions.update") : t("common:actions.create")}
+            {isLoading ? (
+              <span>{t("common:common.loading")}</span>
+            ) : (
+              <span>
+                {editingInvoice ? t("common:actions.update") : t("common:actions.create")}
+              </span>
+            )}
           </Button>
         </div>
       </Card>
