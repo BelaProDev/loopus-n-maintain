@@ -13,7 +13,13 @@ export const chatService = {
     }
 
     const result = await response.json();
-    return result.data || [];
+    // Handle the nested data structure from Fauna
+    return result.data.data.data.map((room: any) => ({
+      id: room.id,
+      name: room.name,
+      topic: room.topic || '',
+      createdAt: room.createdAt.isoString
+    }));
   },
 
   async createRoom(name: string, topic?: string): Promise<ChatRoom> {

@@ -23,7 +23,7 @@ export const handler: Handler = async (event) => {
         console.log('Rooms retrieved:', listResult);
         return {
           statusCode: 200,
-          body: JSON.stringify({ data: listResult })
+          body: JSON.stringify(listResult)
         };
       }
 
@@ -33,7 +33,7 @@ export const handler: Handler = async (event) => {
         const createResult = await client.query(fql`
           Room.create({
             name: ${name},
-            topic: ${topic},
+            topic: ${topic || ''},
             createdAt: Time.now()
           })
         `);
