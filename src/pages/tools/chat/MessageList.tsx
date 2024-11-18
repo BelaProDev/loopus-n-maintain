@@ -1,10 +1,7 @@
-import { ScrollArea } from "@/components/ui/scroll-area";
 import type { ChatMessage } from "@/lib/fauna/types/chat";
-import { format } from "date-fns";
-import { formatChatTimestamp } from "@/utils/dateUtils";
 
 interface MessageListProps {
-  messages: ChatMessage[];
+  messages: any[];
   isLoading: boolean;
 }
 
@@ -17,7 +14,7 @@ const MessageList = ({ messages = [], isLoading }: MessageListProps) => {
     );
   }
 
-  if (!Array.isArray(messages) || messages.length === 0) {
+  if (!Array.isArray(messages?.data?.data) || messages?.data?.data.length === 0) {
     return (
       <div className="flex items-center justify-center h-full text-muted-foreground">
         No messages yet
@@ -25,27 +22,19 @@ const MessageList = ({ messages = [], isLoading }: MessageListProps) => {
     );
   }
 
-  const formatMessageTime = (timestamp: any) => {
-    try {
-      const isoString = formatChatTimestamp(timestamp);
-      return format(new Date(isoString), "HH:mm");
-    } catch (error) {
-      console.warn("Error formatting message time:", error);
-      return "Invalid time";
-    }
-  };
-
   return (
-    <div className="space-y-4">
-      {messages.map((message) => (
-        <div key={message.id} className="flex flex-col space-y-1">
-          <div className="flex items-center gap-2">
-            <span className="font-medium">{message.sender}</span>
-            <span className="text-xs text-muted-foreground">
-              {formatMessageTime(message.timestamp)}
-            </span>
+    <div className="space-y-4 p-4">
+      {messages.data.data.map((message) => (
+        <div 
+          key={message.id} 
+          className="rounded-lg p-4 bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/40 dark:to-pink-900/40 backdrop-blur-sm"
+        >
+          <div className="font-medium text-purple-700 dark:text-purple-300">
+            {message.sender}
           </div>
-          <p className="text-sm">{message.content}</p>
+          <div className="mt-1 text-gray-700 dark:text-gray-300">
+            {message.content}
+          </div>
         </div>
       ))}
     </div>
