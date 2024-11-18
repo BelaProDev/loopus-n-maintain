@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import RoomsList from "./chat/RoomsList";
 import MessageList from "./chat/MessageList";
@@ -9,19 +8,12 @@ import { Plus } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { chatService } from "@/services/chatService";
 import { toast } from "sonner";
+import { useAppDispatch, useAppSelector } from "@/hooks/useAppStore";
+import { setNickname, setSelectedRoom, setCreateRoomOpen } from "@/store/slices/chatSlice";
 
 const Chat = () => {
-  const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
-  const [isCreateRoomOpen, setIsCreateRoomOpen] = useState(false);
-  const [nickname, setNickname] = useState(() => {
-    return localStorage.getItem('chat_nickname') || '';
-  });
-
-  useEffect(() => {
-    if (nickname) {
-      localStorage.setItem('chat_nickname', nickname);
-    }
-  }, [nickname]);
+  const dispatch = useAppDispatch();
+  const { nickname, selectedRoomId, isCreateRoomOpen } = useAppSelector((state) => state.chat);
 
   const { data: rooms = [], isLoading: isLoadingRooms } = useQuery({
     queryKey: ['rooms'],
@@ -52,7 +44,7 @@ const Chat = () => {
             <h2 className="text-xl font-semibold">Chat Rooms</h2>
             <Button
               size="sm"
-              onClick={() => setIsCreateRoomOpen(true)}
+              onClick={() => dispatch(setCreateRoomOpen(true))}
               variant="outline"
             >
               <Plus className="h-4 w-4" />
@@ -61,7 +53,7 @@ const Chat = () => {
           <RoomsList
             rooms={rooms}
             activeRoom={selectedRoomId || ''}
-            onRoomSelect={setSelectedRoomId}
+            onRoomSelect={(roomId) => dispatch(setSelectedRoom(roomId))}
             isLoading={isLoadingRooms}
           />
         </Card>
@@ -77,7 +69,7 @@ const Chat = () => {
                 onSendMessage={handleSendMessage}
                 disabled={!selectedRoomId}
                 nickname={nickname}
-                onNicknameChange={setNickname}
+                onNicknameChange={(newNickname) => dispatch(setNickname(newNickname))}
               />
             </>
           ) : (
@@ -90,7 +82,7 @@ const Chat = () => {
 
       <CreateRoomDialog
         isOpen={isCreateRoomOpen}
-        onOpenChange={setIsCreateRoomOpen}
+        onOpenChange={(open) => dispatch(setCreateRoomOpen(open))}
         onCreateRoom={chatService.createRoom}
       />
     </div>

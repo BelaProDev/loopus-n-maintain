@@ -5,6 +5,7 @@ import servicesReducer from './slices/servicesSlice';
 import explorerReducer from './slices/explorerSlice';
 import documentsReducer from './slices/documentsSlice';
 import settingsReducer from './slices/settingsSlice';
+import chatReducer from './slices/chatSlice';
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     explorer: explorerReducer,
     documents: documentsReducer,
     settings: settingsReducer,
+    chat: chatReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

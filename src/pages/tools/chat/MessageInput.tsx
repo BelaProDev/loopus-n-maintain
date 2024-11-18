@@ -7,11 +7,12 @@ import { Send } from "lucide-react";
 interface MessageInputProps {
   onSendMessage: (content: string, sender: string) => void;
   disabled?: boolean;
+  nickname: string;
+  onNicknameChange: (nickname: string) => void;
 }
 
-const MessageInput = ({ onSendMessage, disabled }: MessageInputProps) => {
+const MessageInput = ({ onSendMessage, disabled, nickname, onNicknameChange }: MessageInputProps) => {
   const [message, setMessage] = useState("");
-  const [nickname, setNickname] = useState(localStorage.getItem('chat_nickname') || "");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -19,7 +20,6 @@ const MessageInput = ({ onSendMessage, disabled }: MessageInputProps) => {
     if (!message.trim() || !nickname.trim() || disabled) return;
     onSendMessage(message, nickname);
     setMessage("");
-    localStorage.setItem('chat_nickname', nickname);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -40,7 +40,7 @@ const MessageInput = ({ onSendMessage, disabled }: MessageInputProps) => {
       <div className="flex gap-2">
         <Input
           value={nickname}
-          onChange={(e) => setNickname(e.target.value)}
+          onChange={(e) => onNicknameChange(e.target.value)}
           placeholder="Enter your nickname"
           className="max-w-[200px]"
           disabled={disabled}
