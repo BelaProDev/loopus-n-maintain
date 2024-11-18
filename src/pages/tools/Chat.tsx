@@ -30,7 +30,14 @@ const Chat = () => {
       }
       
       const result = await response.json();
-      return Array.isArray(result.data) ? result.data : [];
+      // Transform the nested data structure into a flat array of rooms
+      const roomsData = result.data?.data?.data || [];
+      return roomsData.map((room: any) => ({
+        id: room.id,
+        name: room.name,
+        topic: room.topic || '',
+        createdAt: room.createdAt?.isoString || new Date().toISOString()
+      }));
     }
   });
 
@@ -75,7 +82,14 @@ const Chat = () => {
         throw new Error(result.error || 'Failed to create room');
       }
       
-      return result.data;
+      // Transform the response data to match our room structure
+      const roomData = result.data?.data?.data?.[0];
+      return {
+        id: roomData.id,
+        name: roomData.name,
+        topic: roomData.topic || '',
+        createdAt: roomData.createdAt?.isoString || new Date().toISOString()
+      };
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["chatRooms"] });
