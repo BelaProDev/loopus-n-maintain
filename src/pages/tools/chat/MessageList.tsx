@@ -24,10 +24,14 @@ const MessageList = ({ messages = [], isLoading }: MessageListProps) => {
     );
   }
 
-  const formatMessageTime = (timestamp: string | number | Date) => {
+  const formatMessageTime = (timestamp: string | { isoString: string } | Date) => {
     try {
       // Handle different timestamp formats
-      const date = new Date(timestamp);
+      const dateStr = typeof timestamp === 'object' && 'isoString' in timestamp 
+        ? timestamp.isoString 
+        : String(timestamp);
+      
+      const date = new Date(dateStr);
       if (isNaN(date.getTime())) {
         return "Invalid date";
       }

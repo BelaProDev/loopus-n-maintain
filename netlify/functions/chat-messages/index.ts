@@ -53,10 +53,12 @@ export const handler: Handler = async (event) => {
         );
         console.log('Messages retrieved:', messages);
 
-        // Extract the messages array from the Fauna response and ensure timestamps are ISO strings
+        // Transform the Fauna response to a simpler format with proper timestamp
         const messageArray = (messages.data?.data || []).map((msg: any) => ({
-          ...msg,
-          timestamp: msg.timestamp ? new Date(msg.timestamp).toISOString() : new Date().toISOString()
+          id: msg.id,
+          content: msg.content,
+          sender: msg.sender,
+          timestamp: msg.ts?.isoString || msg.createdAt?.isoString || new Date().toISOString()
         }));
 
         return {
