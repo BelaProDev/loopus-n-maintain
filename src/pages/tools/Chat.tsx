@@ -103,7 +103,7 @@ const Chat = () => {
 
   // Send message mutation
   const sendMessage = useMutation({
-    mutationFn: async (content: string) => {
+    mutationFn: async ({ content, nickname }: { content: string; nickname: string }) => {
       const response = await fetch("/.netlify/functions/chat-messages", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
@@ -112,7 +112,7 @@ const Chat = () => {
           data: {
             roomId: activeRoom,
             content,
-            sender: "User" // Replace with actual user info when auth is implemented
+            sender: nickname
           }
         })
       });
@@ -166,7 +166,7 @@ const Chat = () => {
             </ScrollArea>
             <div className="p-4 border-t">
               <MessageInput 
-                onSendMessage={(content) => sendMessage.mutate(content)}
+                onSendMessage={(content, nickname) => sendMessage.mutate({ content, nickname })}
                 isLoading={sendMessage.isPending}
                 disabled={!activeRoom}
               />
