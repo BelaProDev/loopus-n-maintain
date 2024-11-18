@@ -2,8 +2,8 @@ import { Handler } from '@netlify/functions';
 import { Client, fql } from 'fauna';
 
 const getFaunaClient = () => {
-  const secret = process.env.FAUNA_SECRET_KEY;
-  if (!secret) throw new Error('FAUNA_SECRET_KEY not set');
+  const secret = process.env.VITE_FAUNA_SECRET_KEY;
+  if (!secret) throw new Error('VITE_FAUNA_SECRET_KEY not set');
   return new Client({ secret });
 };
 
