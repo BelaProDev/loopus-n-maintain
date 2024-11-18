@@ -3,7 +3,6 @@ import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { getLanguageResources } from './lib/i18n/resources';
 
-// Initialize i18next instance
 const i18nInstance = i18n.createInstance();
 
 i18nInstance
@@ -31,10 +30,16 @@ i18nInstance
       nsMode: 'default',
       transSupportBasicHtmlNodes: true,
       transKeepBasicHtmlNodesFor: ['br', 'strong', 'i', 'p', 'span']
+    },
+    returnNull: false,
+    returnEmptyString: false,
+    returnObjects: true,
+    saveMissing: true,
+    missingKeyHandler: (lng, ns, key) => {
+      console.warn(`Missing translation key: ${key} in namespace: ${ns} for language: ${lng}`);
     }
   });
 
-// Update HTML lang attribute when language changes
 i18nInstance.on('languageChanged', (lng) => {
   document.documentElement.lang = lng;
 });

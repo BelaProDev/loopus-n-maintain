@@ -4,18 +4,27 @@ import {
   changeLanguage, 
   translateWithFallback,
   formatTranslatedDate,
-  translateWithVariables
+  translateWithVariables,
+  ensureNamespace
 } from '@/lib/i18n/translationUtils';
 
-export const useTranslations = () => {
-  const { t } = useTranslation();
+export const useTranslations = (namespaces: string[] = ['common']) => {
+  const { t, i18n } = useTranslation(namespaces);
+
+  const translate = (key: string, variables?: Record<string, string | number>) => {
+    const namespacedKey = ensureNamespace(key);
+    return variables ? t(namespacedKey, variables) : t(namespacedKey);
+  };
 
   return {
-    t,
+    t: translate,
+    i18n,
     currentLanguage: getCurrentLanguage(),
     changeLanguage,
-    translateWithFallback,
+    translateWithFallback: (key: string, fallback: string) => 
+      translateWithFallback(key, namespaces[0], fallback),
     formatTranslatedDate,
-    translateWithVariables
+    translateWithVariables: (key: string, variables: Record<string, string | number>) =>
+      translateWithVariables(key, namespaces[0], variables)
   };
 };

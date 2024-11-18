@@ -20,7 +20,6 @@ const LanguageSwitcher = () => {
 
   const handleLanguageChange = async (lng: string) => {
     try {
-      // Change language and wait for it to complete
       await i18n.changeLanguage(lng);
       
       // Force reload all namespaces to ensure fresh translations
@@ -29,8 +28,8 @@ const LanguageSwitcher = () => {
         ['common', 'services', 'admin', 'auth', 'docs', 'ui', 'app', 'settings', 'tools']
       );
 
-      // Update localStorage manually to ensure persistence
       localStorage.setItem('i18nextLng', lng);
+      document.documentElement.lang = lng;
 
       toast.success(t('common:languageChanged', { 
         lng: t(`common:languages.${lng}`)
