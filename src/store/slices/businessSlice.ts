@@ -39,7 +39,7 @@ const businessSlice = createSlice({
     // Handle all fulfilled states
     builder.addMatcher(
       (action) => action.type.endsWith('/fulfilled'),
-      (state, action) => {
+      (state, action: any) => {
         state.loading = false;
         if (action.type.startsWith('business/fetchClients')) {
           state.clients = action.payload;
@@ -54,9 +54,9 @@ const businessSlice = createSlice({
     // Handle all rejected states
     builder.addMatcher(
       (action) => action.type.endsWith('/rejected'),
-      (state, action) => {
+      (state, action: any) => {
         state.loading = false;
-        state.error = action.error.message || 'An error occurred';
+        state.error = action.error?.message || 'An error occurred';
       }
     );
   },
