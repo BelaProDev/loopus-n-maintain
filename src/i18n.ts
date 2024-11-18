@@ -27,22 +27,15 @@ i18nInstance
       useSuspense: true,
       bindI18n: 'languageChanged loaded',
       bindI18nStore: 'added removed',
-      nsMode: 'default',
-      transSupportBasicHtmlNodes: true,
-      transKeepBasicHtmlNodesFor: ['br', 'strong', 'i', 'p', 'span']
+      nsMode: 'default'
     },
     returnNull: false,
     returnEmptyString: false,
-    returnObjects: true,
-    saveMissing: true,
-    missingKeyHandler: (lng, ns, key) => {
-      console.warn(`Missing translation key: ${key} in namespace: ${ns} for language: ${lng}`);
-    }
+    returnObjects: false
   });
 
 i18nInstance.on('languageChanged', (lng) => {
   document.documentElement.lang = lng;
-  console.log(`Language changed to: ${lng}`);
 });
 
 export default i18nInstance;

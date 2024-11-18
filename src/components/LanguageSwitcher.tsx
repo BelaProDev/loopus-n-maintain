@@ -13,9 +13,9 @@ const LanguageSwitcher = () => {
   const { t, i18n } = useTranslation(['common']);
 
   const languages = [
-    { code: 'en', label: t('common:languages.en') },
-    { code: 'es', label: t('common:languages.es') },
-    { code: 'fr', label: t('common:languages.fr') }
+    { code: 'en', label: 'English' },
+    { code: 'es', label: 'Español' },
+    { code: 'fr', label: 'Français' }
   ];
 
   const handleLanguageChange = async (lng: string) => {
@@ -32,7 +32,7 @@ const LanguageSwitcher = () => {
       document.documentElement.lang = lng;
 
       toast.success(t('common:languageChanged', { 
-        lng: t(`common:languages.${lng}`)
+        lng: languages.find(l => l.code === lng)?.label 
       }));
     } catch (error) {
       console.error('Language change error:', error);
