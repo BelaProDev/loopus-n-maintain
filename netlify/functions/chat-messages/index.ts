@@ -1,16 +1,20 @@
 import { Handler } from '@netlify/functions';
-import faunadb from 'faunadb';
+import { Client, fql } from 'fauna';
 
-const q = faunadb.query;
-const client = new faunadb.Client({
-  secret: process.env.FAUNA_SECRET_KEY || '',
-  domain: 'db.fauna.com',
+const client = new Client({
+  secret: process.env.VITE_FAUNA_SECRET_KEY || '',
 });
 
 export const handler: Handler = async (event) => {
+  if (!event.body) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: 'Missing request body' })
+    };
+  }
+
   try {
-    const { action, data, roomId } = JSON.parse(event.body || '{}');
-    console.log('Chat Messages Function - Request:', { action, data, roomId });
+    const { action, data, roomId } = JSON.parse(event.body);
 
     if (!roomId) {
       return {
@@ -28,16 +32,14 @@ export const handler: Handler = async (event) => {
           };
         }
 
-        const message = await client.query(
-          q.Create(q.Collection('Messages'), {
-            data: {
-              roomId,
-              content: data.content,
-              sender: data.sender,
-              timestamp: new Date().toISOString()
-            }
+        const message = await client.query(fql`
+          Messages.create({
+            roomId: ${roomId},
+            content: ${data.content},
+            sender: ${data.sender},
+            timestamp: Time.now()
           })
-        );
+        `);
 
         return {
           statusCode: 200,
@@ -46,25 +48,13 @@ export const handler: Handler = async (event) => {
       }
 
       case 'list': {
-        console.log('Listing messages for room:', roomId);
-        const messages = await client.query(
-          q.Paginate(
-            q.Match(q.Index('messages_by_room'), roomId)
-          )
-        );
-        console.log('Messages retrieved:', messages);
-
-        // Just pass through the Fauna response without timestamp transformation
-        const messageArray = messages.data.map((msg: any) => ({
-          id: msg.id || msg.ref?.id,
-          content: msg.data?.content || msg.content,
-          sender: msg.data?.sender || msg.sender,
-          timestamp: msg.ts || msg.createdAt || new Date().toISOString()
-        }));
+        const messages = await client.query(fql`
+          Messages.where(.roomId == ${roomId})
+        `);
 
         return {
           statusCode: 200,
-          body: JSON.stringify({ data: messageArray })
+          body: JSON.stringify({ data: messages.data || [] })
         };
       }
 
@@ -78,7 +68,7 @@ export const handler: Handler = async (event) => {
     console.error('Error in chat messages function:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: error.message || 'Internal server error' })
+      body: JSON.stringify({ error: 'Internal server error' })
     };
   }
 };
