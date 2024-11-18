@@ -1,12 +1,7 @@
 import { getFaunaClient } from './client';
 import { ContactMessage } from './types';
 import { fql } from 'fauna';
-import { extractFaunaData } from './utils';
-
-type FaunaDocument = {
-  ref: { id: string };
-  data: ContactMessage;
-};
+import { extractFaunaData, FaunaDocument } from './utils';
 
 export const contactQueries = {
   getAllMessages: async (service: ContactMessage['service']) => {
@@ -17,8 +12,8 @@ export const contactQueries = {
       const query = fql`
         messages.where(.service == ${service})
       `;
-      const result = await client.query<FaunaDocument[]>(query);
-      return extractFaunaData(result);
+      const result = await client.query(query);
+      return extractFaunaData<ContactMessage>(result);
     } catch (error) {
       return [];
     }
@@ -48,8 +43,8 @@ export const contactQueries = {
           createdAt: ${messageData.createdAt}
         })
       `;
-      const result = await client.query<FaunaDocument>(query);
-      const document = extractFaunaData(result)[0];
+      const result = await client.query(query);
+      const document = extractFaunaData<ContactMessage>(result)[0];
       return document ? { id: document.ref.id, ...document.data } : null;
     } catch (error) {
       return null;
@@ -64,8 +59,8 @@ export const contactQueries = {
       const query = fql`
         messages.byId(${JSON.stringify(id)}).update({ status: ${JSON.stringify(status)} })
       `;
-      const result = await client.query<FaunaDocument>(query);
-      const document = extractFaunaData(result)[0];
+      const result = await client.query(query);
+      const document = extractFaunaData<ContactMessage>(result)[0];
       return document ? { id: document.ref.id, ...document.data } : null;
     } catch (error) {
       return null;

@@ -15,7 +15,7 @@ interface FaunaResponse<T> {
   };
 }
 
-export type { FaunaDocument };
+export type { FaunaDocument, FaunaResponse };
 
 export const extractFaunaData = <T>(response: FaunaResponse<T>): FaunaDocument<T>[] => {
   if (!response?.data?.data) return [];
