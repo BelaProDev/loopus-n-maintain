@@ -1,7 +1,8 @@
 import { Handler } from '@netlify/functions';
-import { Client, Collection, Create, Documents, Get, Index, Lambda, Match, Paginate, Var } from 'faunadb';
+import faunadb from 'faunadb';
+const q = faunadb.query;
 
-const client = new Client({
+const client = new faunadb.Client({
   secret: process.env.FAUNA_SECRET_KEY || '',
   domain: 'db.fauna.com',
 });
@@ -28,7 +29,7 @@ export const handler: Handler = async (event) => {
         }
 
         const message = await client.query(
-          Create(Collection('Messages'), {
+          q.Create(q.Collection('Messages'), {
             data: {
               roomId,
               content: data.content,
@@ -47,8 +48,8 @@ export const handler: Handler = async (event) => {
       case 'list': {
         console.log('Listing messages for room:', roomId);
         const messages = await client.query(
-          Paginate(
-            Match(Index('messages_by_room'), roomId)
+          q.Paginate(
+            q.Match(q.Index('messages_by_room'), roomId)
           )
         );
         console.log('Messages retrieved:', messages);
