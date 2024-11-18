@@ -13,7 +13,7 @@ import { useToast } from "@/components/ui/use-toast";
 
 interface InvoiceFormProps {
   editingInvoice: Invoice | null;
-  onSubmit: (e: React.FormEvent) => void;
+  onSubmit: (formData: FormData) => void;
   isLoading: boolean;
   onCancel: () => void;
 }
@@ -76,22 +76,31 @@ const InvoiceForm = ({
       return;
     }
 
-    const form = e.target as HTMLFormElement;
-    const formDataObj = new FormData(form);
-    const totals = calculateTotals();
+    const formDataObj = new FormData();
     
-    formDataObj.append('items', JSON.stringify(items));
+    // Add all form data fields
+    Object.entries(formData).forEach(([key, value]) => {
+      formDataObj.append(key, value);
+    });
+
+    // Add items as a stringified JSON array
+    formDataObj.append('items', JSON.stringify(items.map(item => ({
+      id: item.id,
+      sku: item.sku || '',
+      description: item.description,
+      quantity: Number(item.quantity),
+      unitPrice: Number(item.unitPrice),
+      vatRate: Number(item.vatRate),
+      unit: item.unit || 'unit',
+      total: Number(item.quantity) * Number(item.unitPrice)
+    }))));
+
+    const totals = calculateTotals();
     formDataObj.append('totalAmount', totals.total.toString());
     formDataObj.append('tax', totals.tax.toString());
-    formDataObj.append('status', formData.status);
-    formDataObj.append('currency', formData.currency);
-    formDataObj.append('paymentTerms', formData.paymentTerms);
-    formDataObj.append('clientId', formData.clientId);
-    formDataObj.append('providerId', formData.providerId);
-    formDataObj.append('notes', formData.notes);
     
     try {
-      await onSubmit(e);
+      await onSubmit(formDataObj);
     } catch (error) {
       console.error('Error submitting invoice:', error);
       toast({
