@@ -8,8 +8,7 @@ import RoomsList from "./chat/RoomsList";
 import MessageList from "./chat/MessageList";
 import MessageInput from "./chat/MessageInput";
 import { extractFaunaData } from "@/lib/fauna/utils";
-import type { ChatMessage, ChatRoom, FaunaMessageResponse, FaunaRoomResponse } from "@/lib/fauna/types/chat";
-import type { FaunaDocument } from "@/lib/fauna/utils";
+import type { ChatMessage, ChatRoom } from "@/lib/fauna/types/chat";
 
 const Chat = () => {
   const [activeRoom, setActiveRoom] = useState("");
@@ -140,8 +139,8 @@ const Chat = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="grid grid-cols-12 gap-6 h-[calc(100vh-16rem)] bg-background rounded-lg border shadow-sm">
+      <main className="flex-1 container mx-auto p-4 mb-20">
+        <div className="grid grid-cols-12 gap-6 h-[calc(100vh-12rem)] bg-background rounded-lg border shadow-sm">
           <RoomsList
             rooms={rooms.map(room => ({
               id: room.ref.id,
@@ -165,7 +164,7 @@ const Chat = () => {
                 isLoading={messagesLoading} 
               />
             </ScrollArea>
-            <div className="p-4 border-t">
+            <div className="p-4 border-t bg-background">
               <MessageInput 
                 onSendMessage={(content, nickname) => sendMessage.mutate({ content, nickname })}
                 isLoading={sendMessage.isPending}
