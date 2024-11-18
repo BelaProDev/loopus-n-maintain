@@ -10,13 +10,13 @@ const getFaunaClient = () => {
 export const handler: Handler = async (event) => {
   try {
     const client = getFaunaClient();
-    const { action, data, roomId } = JSON.parse(event.body || '{}');
+    const { action, data } = JSON.parse(event.body || '{}');
     
-    console.log('Chat Messages Function - Request:', { action, roomId });
+    console.log('Chat Messages Function - Request:', { action, data });
 
     switch (action) {
       case 'create': {
-        if (!roomId) {
+        if (!data.roomId) {
           return {
             statusCode: 400,
             body: JSON.stringify({ error: 'roomId is required' })
@@ -28,7 +28,7 @@ export const handler: Handler = async (event) => {
           Messages.create({
             content: ${data.content},
             sender: ${data.sender},
-            room: Room.byId(${roomId})!,
+            room: Room.byId(${data.roomId})!,
             createdAt: Time.now()
           })
         `);
@@ -41,16 +41,16 @@ export const handler: Handler = async (event) => {
       }
 
       case 'list': {
-        if (!roomId) {
+        if (!data.roomId) {
           return {
             statusCode: 400,
             body: JSON.stringify({ error: 'roomId is required' })
           };
         }
 
-        console.log('Listing messages for room:', roomId);
+        console.log('Listing messages for room:', data.roomId);
         const messages = await client.query(fql`
-          Messages.where(.room == Room.byId(${roomId})!)
+          Messages.where(.room == Room.byId(${data.roomId})!)
           .order(-.createdAt)
         `);
         console.log('Messages retrieved:', messages);
