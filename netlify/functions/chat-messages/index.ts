@@ -1,38 +1,42 @@
 import { Handler } from '@netlify/functions';
-import { Client, fql } from 'fauna';
+import { Client, Collection, Create, Documents, Get, Index, Lambda, Match, Paginate, Var } from 'faunadb';
 
-const getFaunaClient = () => {
-  const secret = process.env.VITE_FAUNA_SECRET_KEY;
-  if (!secret) throw new Error('VITE_FAUNA_SECRET_KEY not set');
-  return new Client({ secret });
-};
+const client = new Client({
+  secret: process.env.FAUNA_SECRET_KEY || '',
+  domain: 'db.fauna.com',
+});
 
 export const handler: Handler = async (event) => {
   try {
-    const client = getFaunaClient();
     const { action, data, roomId } = JSON.parse(event.body || '{}');
-    
     console.log('Chat Messages Function - Request:', { action, data, roomId });
+
+    if (!roomId) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: 'Room ID is required' })
+      };
+    }
 
     switch (action) {
       case 'create': {
-        if (!data?.roomId) {
+        if (!data?.content || !data?.sender) {
           return {
             statusCode: 400,
-            body: JSON.stringify({ error: 'roomId is required' })
+            body: JSON.stringify({ error: 'Content and sender are required' })
           };
         }
 
-        console.log('Creating message:', data);
-        const message = await client.query(fql`
-          Messages.create({
-            content: ${data.content},
-            sender: ${data.sender},
-            room: Room.byId(${data.roomId})!,
-            createdAt: Time.now()
+        const message = await client.query(
+          Create(Collection('Messages'), {
+            data: {
+              roomId,
+              content: data.content,
+              sender: data.sender,
+              timestamp: new Date().toISOString()
+            }
           })
-        `);
-        console.log('Message created:', message);
+        );
 
         return {
           statusCode: 200,
@@ -41,23 +45,19 @@ export const handler: Handler = async (event) => {
       }
 
       case 'list': {
-        const targetRoomId = data?.roomId || roomId;
-        
-        if (!targetRoomId) {
-          return {
-            statusCode: 400,
-            body: JSON.stringify({ error: 'roomId is required' })
-          };
-        }
-
-        console.log('Listing messages for room:', targetRoomId);
-        const messages = await client.query(fql`
-          Messages.where(.room == Room.byId(${targetRoomId})!)
-        `);
+        console.log('Listing messages for room:', roomId);
+        const messages = await client.query(
+          Paginate(
+            Match(Index('messages_by_room'), roomId)
+          )
+        );
         console.log('Messages retrieved:', messages);
 
-        // Extract the messages array from the Fauna response
-        const messageArray = messages.data?.data || [];
+        // Extract the messages array from the Fauna response and ensure timestamps are ISO strings
+        const messageArray = (messages.data?.data || []).map((msg: any) => ({
+          ...msg,
+          timestamp: msg.timestamp ? new Date(msg.timestamp).toISOString() : new Date().toISOString()
+        }));
 
         return {
           statusCode: 200,
@@ -66,20 +66,16 @@ export const handler: Handler = async (event) => {
       }
 
       default:
-        console.log('Invalid action:', action);
         return {
           statusCode: 400,
           body: JSON.stringify({ error: 'Invalid action' })
         };
     }
   } catch (error) {
-    console.error('Error details:', error);
+    console.error('Error in chat messages function:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ 
-        error: error.message || 'Internal server error',
-        details: error.toString()
-      })
+      body: JSON.stringify({ error: error.message || 'Internal server error' })
     };
   }
 };

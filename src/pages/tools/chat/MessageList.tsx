@@ -24,6 +24,20 @@ const MessageList = ({ messages = [], isLoading }: MessageListProps) => {
     );
   }
 
+  const formatMessageTime = (timestamp: string | number | Date) => {
+    try {
+      // Handle different timestamp formats
+      const date = new Date(timestamp);
+      if (isNaN(date.getTime())) {
+        return "Invalid date";
+      }
+      return format(date, "HH:mm");
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return "Invalid date";
+    }
+  };
+
   return (
     <div className="space-y-4">
       {messages.map((message) => (
@@ -31,7 +45,7 @@ const MessageList = ({ messages = [], isLoading }: MessageListProps) => {
           <div className="flex items-center gap-2">
             <span className="font-medium">{message.sender}</span>
             <span className="text-xs text-muted-foreground">
-              {format(new Date(message.timestamp), "HH:mm")}
+              {formatMessageTime(message.timestamp)}
             </span>
           </div>
           <p className="text-sm">{message.content}</p>
