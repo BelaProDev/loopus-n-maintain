@@ -10,7 +10,8 @@ const BusinessManagement = () => {
   const { t } = useTranslation(["admin"]);
   const navigate = useNavigate();
   const location = useLocation();
-  const currentTab = location.pathname.split('/').pop() || 'clients';
+  const currentPath = location.pathname.split('/').pop() || 'clients';
+  const currentTab = ['clients', 'providers', 'invoices'].includes(currentPath) ? currentPath : 'clients';
 
   useEffect(() => {
     if (location.pathname === '/admin/business') {
@@ -49,16 +50,16 @@ const BusinessManagement = () => {
       </div>
       
       <Tabs value={currentTab} onValueChange={handleTabChange} className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="clients">
+        <TabsList className="w-full flex justify-start border-b">
+          <TabsTrigger value="clients" className="flex items-center">
             <Users className="w-4 h-4 mr-2" />
             {t("admin:business.clients.title")}
           </TabsTrigger>
-          <TabsTrigger value="providers">
+          <TabsTrigger value="providers" className="flex items-center">
             <UserCog className="w-4 h-4 mr-2" />
             {t("admin:providers.title")}
           </TabsTrigger>
-          <TabsTrigger value="invoices">
+          <TabsTrigger value="invoices" className="flex items-center">
             <Receipt className="w-4 h-4 mr-2" />
             {t("admin:business.invoices.title")}
           </TabsTrigger>
