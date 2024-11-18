@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { DropboxEntry } from '@/types/dropbox';
 import { Card } from '@/components/ui/card';
 import { Play, Image } from 'lucide-react';
@@ -13,22 +14,44 @@ interface ImageGridProps {
 
 export const ImageGrid = ({ images, onSelect, selectedImage }: ImageGridProps) => {
   const { client } = useDropbox();
+  const [thumbnails, setThumbnails] = useState<Record<string, string>>({});
 
-  const getThumbnailUrl = async (path: string): Promise<string> => {
-    if (!client) return '';
-    try {
-      const response = await client.filesGetThumbnail({
-        path,
-        format: { '.tag': 'jpeg' },
-        size: { '.tag': 'w640h480' },
-        mode: { '.tag': 'strict' }
-      });
-      return URL.createObjectURL(response.result.fileBlob);
-    } catch (error) {
-      console.error('Error fetching thumbnail:', error);
-      return '';
-    }
-  };
+  useEffect(() => {
+    const loadThumbnails = async () => {
+      if (!client) return;
+
+      for (const file of images) {
+        if (file['.tag'] === 'file' && file.path_display) {
+          try {
+            const response = await client.filesGetThumbnail({
+              path: file.path_display,
+              format: { '.tag': 'jpeg' },
+              size: { '.tag': 'w640h480' },
+              mode: { '.tag': 'strict' }
+            });
+
+            // Create a blob URL from the response data
+            const blob = await response.result.fileBlob;
+            const url = URL.createObjectURL(blob);
+            
+            setThumbnails(prev => ({
+              ...prev,
+              [file.path_display!]: url
+            }));
+          } catch (error) {
+            console.error('Error loading thumbnail:', error);
+          }
+        }
+      }
+    };
+
+    loadThumbnails();
+
+    // Cleanup blob URLs on unmount
+    return () => {
+      Object.values(thumbnails).forEach(url => URL.revokeObjectURL(url));
+    };
+  }, [client, images]);
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
@@ -36,6 +59,8 @@ export const ImageGrid = ({ images, onSelect, selectedImage }: ImageGridProps) =
         if (file['.tag'] !== 'file') return null;
         const mediaType = getMediaType(file.name);
         if (mediaType === 'other') return null;
+
+        const thumbnailUrl = thumbnails[file.path_display!] || '';
 
         return (
           <Card
@@ -54,7 +79,7 @@ export const ImageGrid = ({ images, onSelect, selectedImage }: ImageGridProps) =
               <Image className="absolute top-2 right-2 w-4 md:w-6 h-4 md:h-6 text-white opacity-75" />
             )}
             <img
-              src={file.path_display ? getThumbnailUrl(file.path_display) : ''}
+              src={thumbnailUrl || '/placeholder-image.png'}
               alt={file.name}
               className="object-cover w-full h-full"
               onError={(e) => {
