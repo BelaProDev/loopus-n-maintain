@@ -1,7 +1,8 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { businessQueries } from '@/lib/db/businessDb';
 import type { Client, Provider, Invoice } from '@/types/business';
 
+// Define the state interface
 interface BusinessState {
   clients: Client[];
   providers: Provider[];
@@ -18,31 +19,32 @@ const initialState: BusinessState = {
   error: null,
 };
 
-// Async thunks
-export const fetchClients = createAsyncThunk(
+// Create async thunks with explicit return types
+export const fetchClients = createAsyncThunk<Client[]>(
   'business/fetchClients',
   async () => {
-    const response = await businessQueries.getClients();
-    return response;
+    const clients = await businessQueries.getClients();
+    return clients;
   }
 );
 
-export const fetchProviders = createAsyncThunk(
+export const fetchProviders = createAsyncThunk<Provider[]>(
   'business/fetchProviders',
   async () => {
-    const response = await businessQueries.getProviders();
-    return response;
+    const providers = await businessQueries.getProviders();
+    return providers;
   }
 );
 
-export const fetchInvoices = createAsyncThunk(
+export const fetchInvoices = createAsyncThunk<Invoice[]>(
   'business/fetchInvoices',
   async () => {
-    const response = await businessQueries.getInvoices();
-    return response;
+    const invoices = await businessQueries.getInvoices();
+    return invoices;
   }
 );
 
+// Create the slice with properly typed reducers
 const businessSlice = createSlice({
   name: 'business',
   initialState,
@@ -51,25 +53,34 @@ const businessSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Clients
+      // Client cases
       .addCase(fetchClients.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(fetchClients.fulfilled, (state, action: PayloadAction<Client[]>) => {
+      .addCase(fetchClients.fulfilled, (state, { payload }) => {
         state.status = 'succeeded';
-        state.clients = action.payload;
+        state.clients = payload;
+        state.error = null;
       })
       .addCase(fetchClients.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message || 'Failed to fetch clients';
+        state.error = action.error.message ?? 'Failed to fetch clients';
       })
-      // Providers
-      .addCase(fetchProviders.fulfilled, (state, action: PayloadAction<Provider[]>) => {
-        state.providers = action.payload;
+      // Provider cases
+      .addCase(fetchProviders.fulfilled, (state, { payload }) => {
+        state.providers = payload;
+        state.error = null;
       })
-      // Invoices
-      .addCase(fetchInvoices.fulfilled, (state, action: PayloadAction<Invoice[]>) => {
-        state.invoices = action.payload;
+      .addCase(fetchProviders.rejected, (state, action) => {
+        state.error = action.error.message ?? 'Failed to fetch providers';
+      })
+      // Invoice cases
+      .addCase(fetchInvoices.fulfilled, (state, { payload }) => {
+        state.invoices = payload;
+        state.error = null;
+      })
+      .addCase(fetchInvoices.rejected, (state, action) => {
+        state.error = action.error.message ?? 'Failed to fetch invoices';
       });
   },
 });
