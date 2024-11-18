@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Mail, Settings, Building2, Folder, MessageSquare } from "lucide-react";
+import { Mail, Settings, Building2, MessageSquare } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -13,7 +13,6 @@ const ADMIN_TABS = [
   { id: "emails", label: "admin:email.title", icon: Mail, path: "/admin/emails" },
   { id: "settings", label: "admin:settings.title", icon: Settings, path: "/admin/settings" },
   { id: "business", label: "admin:business.title", icon: Building2, path: "/admin/business" },
-  { id: "documents", label: "admin:documents.title", icon: Folder, path: "/admin/documents" },
   { id: "messages", label: "admin:messages.title", icon: MessageSquare, path: "/admin/messages" },
 ];
 
