@@ -1,22 +1,20 @@
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { businessQueries } from "@/lib/fauna/business";
-import InvoiceDialog from "./InvoiceDialog";
-import ImportInvoiceDialog from "@/components/business/invoice/ImportInvoiceDialog";
 import { useTranslation } from "react-i18next";
 import { useInvoiceOperations } from "@/hooks/useInvoiceOperations";
 import InvoiceTable from "./InvoiceTable";
 import InvoiceToolbar from "./InvoiceToolbar";
 import { useToast } from "@/components/ui/use-toast";
-import type { Invoice } from "@/types/invoice";
+import { useNavigate } from "react-router-dom";
+import ImportInvoiceDialog from "@/components/business/invoice/ImportInvoiceDialog";
+import { useState } from "react";
 
 const InvoiceList = () => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
-  const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null);
   const { t } = useTranslation(["admin", "common"]);
-  const { handleCreateInvoice, handleUpdateInvoice, deleteMutation, isCreating, isUpdating } = useInvoiceOperations();
+  const { deleteMutation } = useInvoiceOperations();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const { data: invoices = [], isLoading, error } = useQuery({
     queryKey: ['invoices'],
@@ -37,37 +35,10 @@ const InvoiceList = () => {
     });
   }
 
-  const handleSubmit = async (formData: FormData) => {
-    try {
-      if (editingInvoice) {
-        await handleUpdateInvoice(editingInvoice.id, formData);
-      } else {
-        await handleCreateInvoice(formData);
-      }
-      setIsDialogOpen(false);
-      setEditingInvoice(null);
-    } catch (error) {
-      console.error('Error submitting invoice:', error);
-      toast({
-        title: t("common:common.error"),
-        description: t("admin:business.invoices.submitError"),
-        variant: "destructive"
-      });
-    }
-  };
-
-  const handleEdit = (invoice: Invoice) => {
-    setEditingInvoice(invoice);
-    setIsDialogOpen(true);
-  };
-
   return (
     <div className="space-y-4">
       <InvoiceToolbar 
-        onCreateClick={() => {
-          setEditingInvoice(null);
-          setIsDialogOpen(true);
-        }}
+        onCreateClick={() => navigate("/admin/business/invoices/new")}
         onImportClick={() => setIsImportDialogOpen(true)}
       />
 
@@ -77,17 +48,9 @@ const InvoiceList = () => {
         <InvoiceTable 
           invoices={invoices}
           onDelete={(id) => deleteMutation.mutate(id)}
-          onEdit={handleEdit}
+          onEdit={(invoice) => navigate(`/admin/business/invoices/${invoice.id}`)}
         />
       )}
-
-      <InvoiceDialog
-        isOpen={isDialogOpen}
-        onOpenChange={setIsDialogOpen}
-        editingInvoice={editingInvoice}
-        onSubmit={handleSubmit}
-        isLoading={isCreating || isUpdating}
-      />
 
       <ImportInvoiceDialog
         isOpen={isImportDialogOpen}

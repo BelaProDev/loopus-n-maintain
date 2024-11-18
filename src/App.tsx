@@ -41,6 +41,7 @@ import WhatsAppSettings from "./pages/Koalax/components/WhatsAppSettings";
 import LogoSettings from "./pages/Koalax/components/LogoSettings";
 import DropboxExplorer from "./pages/DropboxExplorer";
 import DropboxCallback from "./pages/DropboxExplorer/components/DropboxCallback";
+import InvoicePage from "./pages/Koalax/components/business/invoice/InvoicePage";
 
 // Import tool pages
 import Documents from "./pages/tools/Documents";
@@ -121,11 +122,13 @@ const App = () => {
                           <Route path="whatsapp" element={<WhatsAppSettings />} />
                           <Route path="logo" element={<LogoSettings />} />
                         </Route>
-                        <Route path="business" element={<BusinessManagement />}>
-                          <Route index element={<ClientList />} />
+                        <Route path="business">
+                          <Route index element={<BusinessManagement />} />
+                          <Route path="invoices" element={<InvoiceList />} />
+                          <Route path="invoices/new" element={<InvoicePage />} />
+                          <Route path="invoices/:invoiceId" element={<InvoicePage />} />
                           <Route path="clients" element={<ClientList />} />
                           <Route path="providers" element={<ProviderList />} />
-                          <Route path="invoices" element={<InvoiceList />} />
                         </Route>
                         <Route path="messages" element={<MessageManagement />}>
                           <Route index element={<MessageList service="electrics" />} />
