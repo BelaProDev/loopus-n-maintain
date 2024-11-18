@@ -17,7 +17,9 @@ const InvoicePage = () => {
 
   const { data: invoice } = useQuery({
     queryKey: ['invoices', invoiceId],
-    queryFn: () => invoiceId ? businessQueries.getInvoice(invoiceId) : null,
+    queryFn: () => invoiceId ? businessQueries.getInvoices().then(invoices => 
+      invoices.find(inv => inv.id === invoiceId)
+    ) : null,
     enabled: !!invoiceId
   });
 
@@ -29,7 +31,7 @@ const InvoicePage = () => {
         await handleCreateInvoice(formData);
       }
       toast({
-        title: t("common:success"),
+        title: t("common:status.success"),
         description: invoiceId 
           ? t("admin:business.invoices.updateSuccess")
           : t("admin:business.invoices.createSuccess")
@@ -37,7 +39,7 @@ const InvoicePage = () => {
       navigate("/admin/business/invoices");
     } catch (error) {
       toast({
-        title: t("common:error"),
+        title: t("common:status.error"),
         description: t("admin:business.invoices.submitError"),
         variant: "destructive"
       });
