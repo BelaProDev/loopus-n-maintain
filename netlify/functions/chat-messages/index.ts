@@ -3,13 +3,20 @@ import faunadb from 'faunadb';
 
 const q = faunadb.query;
 const client = new faunadb.Client({
-  secret: process.env.FAUNA_SECRET_KEY || '',
+  secret: process.env.VITE_FAUNA_SECRET_KEY || '',
   domain: 'db.fauna.com',
 });
 
 export const handler: Handler = async (event) => {
   try {
-    const { action, data, roomId } = JSON.parse(event.body || '{}');
+    if (!event.body) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: 'Request body is required' })
+      };
+    }
+
+    const { action, data, roomId } = JSON.parse(event.body);
     console.log('Chat Messages Function - Request:', { action, data, roomId });
 
     if (!roomId) {
@@ -54,17 +61,9 @@ export const handler: Handler = async (event) => {
         );
         console.log('Messages retrieved:', messages);
 
-        // Just pass through the Fauna response without timestamp transformation
-        const messageArray = messages.data.map((msg: any) => ({
-          id: msg.id || msg.ref?.id,
-          content: msg.data?.content || msg.content,
-          sender: msg.data?.sender || msg.sender,
-          timestamp: msg.ts || msg.createdAt || new Date().toISOString()
-        }));
-
         return {
           statusCode: 200,
-          body: JSON.stringify({ data: messageArray })
+          body: JSON.stringify({ data: messages.data })
         };
       }
 
