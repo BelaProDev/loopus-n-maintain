@@ -10,10 +10,24 @@ const formatInvoiceDocument = (document: any): Invoice | null => {
     ...document.data,
     items: (document.data.items || []).map((item: InvoiceItem) => ({
       ...item,
-      [Symbol.iterator]: undefined
+      quantity: Number(item.quantity),
+      unitPrice: Number(item.unitPrice),
+      vatRate: Number(item.vatRate),
+      total: Number(item.total)
     }))
   };
 };
+
+const formatInvoiceItem = (item: InvoiceItem) => ({
+  id: item.id,
+  sku: item.sku || '',
+  description: item.description,
+  quantity: Number(item.quantity),
+  unitPrice: Number(item.unitPrice),
+  vatRate: Number(item.vatRate),
+  unit: item.unit || 'unit',
+  total: Number(item.total)
+});
 
 export const invoiceQueries = {
   getInvoices: async (): Promise<Invoice[]> => {
@@ -35,6 +49,8 @@ export const invoiceQueries = {
     if (!client) return null;
     try {
       const now = new Date().toISOString();
+      const formattedItems = data.items.map(formatInvoiceItem);
+      
       const query = fql`
         invoices.create({
           number: ${data.number},
@@ -42,14 +58,10 @@ export const invoiceQueries = {
           dueDate: ${data.dueDate},
           clientId: ${data.clientId},
           providerId: ${data.providerId},
-          items: ${data.items.map(item => ({
-            ...item,
-            id: item.id || crypto.randomUUID(),
-            [Symbol.iterator]: undefined
-          }))},
+          items: ${formattedItems},
           status: ${data.status || 'draft'},
-          totalAmount: ${data.totalAmount || 0},
-          tax: ${data.tax || 0},
+          totalAmount: ${Number(data.totalAmount) || 0},
+          tax: ${Number(data.tax) || 0},
           notes: ${data.notes || ''},
           paymentTerms: ${data.paymentTerms || 'net30'},
           currency: ${data.currency || 'EUR'},
@@ -74,6 +86,8 @@ export const invoiceQueries = {
     if (!client) return null;
     try {
       const now = new Date().toISOString();
+      const formattedItems = data.items?.map(formatInvoiceItem) || [];
+      
       const query = fql`
         let invoice = invoices.byId(${id})
         invoice.update({
@@ -82,14 +96,10 @@ export const invoiceQueries = {
           dueDate: ${data.dueDate},
           clientId: ${data.clientId},
           providerId: ${data.providerId},
-          items: ${data.items?.map(item => ({
-            ...item,
-            id: item.id || crypto.randomUUID(),
-            [Symbol.iterator]: undefined
-          })) || []},
+          items: ${formattedItems},
           status: ${data.status || 'draft'},
-          totalAmount: ${data.totalAmount || 0},
-          tax: ${data.tax || 0},
+          totalAmount: ${Number(data.totalAmount) || 0},
+          tax: ${Number(data.tax) || 0},
           notes: ${data.notes || ''},
           paymentTerms: ${data.paymentTerms || 'net30'},
           currency: ${data.currency || 'EUR'},
