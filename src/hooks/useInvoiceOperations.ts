@@ -68,12 +68,33 @@ export const useInvoiceOperations = () => {
     }
   });
 
+  const parseInvoiceItems = (itemsString: string) => {
+    try {
+      const items = JSON.parse(itemsString);
+      if (!Array.isArray(items)) {
+        throw new Error('Items must be an array');
+      }
+      return items.map(item => ({
+        ...item,
+        quantity: Number(item.quantity),
+        unitPrice: Number(item.unitPrice),
+        vatRate: Number(item.vatRate),
+        total: Number(item.total)
+      }));
+    } catch (error) {
+      console.error('Error parsing invoice items:', error);
+      return [];
+    }
+  };
+
   const handleCreateInvoice = async (formData: FormData) => {
+    const items = parseInvoiceItems(formData.get("items") as string);
+    
     const dto: CreateInvoiceDTO = {
       clientId: formData.get("clientId") as string,
       providerId: formData.get("providerId") as string,
       notes: formData.get("notes") as string,
-      items: JSON.parse(formData.get("items") as string) || [],
+      items,
       paymentTerms: formData.get("paymentTerms") as string,
       currency: formData.get("currency") as string
     };
@@ -82,11 +103,13 @@ export const useInvoiceOperations = () => {
   };
 
   const handleUpdateInvoice = async (id: string, formData: FormData) => {
+    const items = parseInvoiceItems(formData.get("items") as string);
+    
     const dto: CreateInvoiceDTO = {
       clientId: formData.get("clientId") as string,
       providerId: formData.get("providerId") as string,
       notes: formData.get("notes") as string,
-      items: JSON.parse(formData.get("items") as string) || [],
+      items,
       paymentTerms: formData.get("paymentTerms") as string,
       currency: formData.get("currency") as string
     };

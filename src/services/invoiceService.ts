@@ -4,8 +4,10 @@ import type { CreateInvoiceDTO, Invoice, InvoiceItem } from '@/types/invoice';
 const generateInvoiceNumber = () => `INV-${Date.now()}`;
 
 const calculateTotals = (items: InvoiceItem[]) => {
-  const totalAmount = items.reduce((sum, item) => sum + (Number(item.quantity) * Number(item.unitPrice)), 0);
-  const tax = items.reduce((sum, item) => sum + ((Number(item.quantity) * Number(item.unitPrice)) * Number(item.vatRate) / 100), 0);
+  const totalAmount = items.reduce((sum, item) => 
+    sum + (Number(item.quantity) * Number(item.unitPrice)), 0);
+  const tax = items.reduce((sum, item) => 
+    sum + ((Number(item.quantity) * Number(item.unitPrice)) * Number(item.vatRate) / 100), 0);
   return { 
     totalAmount: Number(totalAmount.toFixed(2)), 
     tax: Number(tax.toFixed(2)) 
@@ -24,7 +26,10 @@ const formatInvoiceItem = (item: InvoiceItem): InvoiceItem => ({
 });
 
 const prepareInvoiceData = (dto: CreateInvoiceDTO): Omit<Invoice, 'id'> => {
-  const formattedItems = dto.items.map(formatInvoiceItem);
+  const formattedItems = Array.isArray(dto.items) 
+    ? dto.items.map(formatInvoiceItem)
+    : [];
+    
   const { totalAmount, tax } = calculateTotals(formattedItems);
   const now = new Date();
   const dueDate = new Date(now);
