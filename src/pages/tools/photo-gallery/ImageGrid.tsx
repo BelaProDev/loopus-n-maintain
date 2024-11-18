@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { DropboxEntry } from '@/types/dropbox';
 import { Card } from '@/components/ui/card';
 import { Play, Image } from 'lucide-react';
-import { getMediaType } from '@/lib/utils/fileUtils';
 import { cn } from '@/lib/utils';
 import { useDropbox } from '@/contexts/DropboxContext';
 
@@ -26,9 +25,9 @@ export const ImageGrid = ({ images, onSelect, selectedImage }: ImageGridProps) =
         format: { '.tag': 'jpeg' },
         size: { '.tag': 'w640h480' },
         mode: { '.tag': 'strict' }
-      });
-      const blob = response.result;
-      const url = URL.createObjectURL(blob);
+      }) as { result: Blob };
+      
+      const url = URL.createObjectURL(response.result);
       setThumbnailUrls(prev => ({ ...prev, [path]: url }));
       return url;
     } catch (error) {
