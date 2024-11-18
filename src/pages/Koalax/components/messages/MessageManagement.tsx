@@ -1,26 +1,14 @@
-import { useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card } from "@/components/ui/card";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
-import MessageList from "./MessageList";
-import { ContactMessage } from "@/lib/fauna/types";
-
-const SERVICES: ContactMessage['service'][] = ['electrics', 'plumbing', 'woodwork', 'ironwork', 'architecture'];
+import { useNavigate, useLocation, Outlet } from "react-router-dom";
+import { MessageSquare } from "lucide-react";
 
 const MessageManagement = () => {
   const { t } = useTranslation(["admin", "services"]);
   const navigate = useNavigate();
   const location = useLocation();
-  const { service } = useParams();
-
-  // Set default service if none is selected
-  useEffect(() => {
-    if (!service) {
-      navigate(`/admin/messages/electrics`, { replace: true });
-    }
-  }, [service, navigate]);
-
-  const currentService = service || 'electrics';
+  const currentTab = location.pathname.split('/').pop() || 'electrics';
 
   const handleTabChange = (value: string) => {
     navigate(`/admin/messages/${value}`);
@@ -28,22 +16,33 @@ const MessageManagement = () => {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold">{t("admin:messages.title")}</h1>
+      <div className="flex items-center gap-2">
+        <MessageSquare className="h-6 w-6" />
+        <h1 className="text-3xl font-bold">{t("admin:messages.title")}</h1>
+      </div>
       
-      <Tabs value={currentService} onValueChange={handleTabChange} className="space-y-4">
+      <Tabs value={currentTab} onValueChange={handleTabChange} className="space-y-4">
         <TabsList>
-          {SERVICES.map((serviceType) => (
-            <TabsTrigger key={serviceType} value={serviceType}>
-              {t(`services:${serviceType}.title`)}
-            </TabsTrigger>
-          ))}
+          <TabsTrigger value="electrics">
+            {t("services:electrical.title")}
+          </TabsTrigger>
+          <TabsTrigger value="plumbing">
+            {t("services:plumbing.title")}
+          </TabsTrigger>
+          <TabsTrigger value="ironwork">
+            {t("services:ironwork.title")}
+          </TabsTrigger>
+          <TabsTrigger value="woodwork">
+            {t("services:woodwork.title")}
+          </TabsTrigger>
+          <TabsTrigger value="architecture">
+            {t("services:architecture.title")}
+          </TabsTrigger>
         </TabsList>
 
-        {SERVICES.map((serviceType) => (
-          <TabsContent key={serviceType} value={serviceType}>
-            <MessageList service={serviceType} />
-          </TabsContent>
-        ))}
+        <Card className="p-6">
+          <Outlet />
+        </Card>
       </Tabs>
     </div>
   );
