@@ -25,13 +25,16 @@ export interface Provider extends QueryValueObject {
   [key: string]: any;
 }
 
+// Update InvoiceItem to match the invoice type definition
 export interface InvoiceItem extends QueryValueObject {
   id: string;
+  sku: string;
   description: string;
   quantity: number;
   unitPrice: number;
   total: number;
   vatRate: number;
+  unit: string;
   [key: string]: any;
 }
 
@@ -47,5 +50,7 @@ export interface Invoice extends QueryValueObject {
   totalAmount: number;
   tax: number;
   notes: string;
+  paymentTerms?: string;
+  currency?: string;
   [key: string]: any;
 }

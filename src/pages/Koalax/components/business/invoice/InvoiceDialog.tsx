@@ -7,7 +7,7 @@ interface InvoiceDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   editingInvoice: Invoice | null;
-  onSubmit: (formData: FormData) => void;
+  onSubmit: (formData: FormData) => Promise<void>;
   isLoading: boolean;
 }
 
@@ -20,7 +20,6 @@ const InvoiceDialog = ({
 }: InvoiceDialogProps) => {
   const { t } = useTranslation(["admin", "common"]);
 
-  // Ensure editingInvoice has all required properties when passed to InvoiceForm
   const formattedInvoice = editingInvoice ? {
     ...editingInvoice,
     paymentTerms: editingInvoice.paymentTerms || 'net30',

@@ -1,4 +1,4 @@
-import { Invoice, InvoiceItem } from "@/types/business";
+import { Invoice, InvoiceItem } from "@/types/invoice";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -18,7 +18,7 @@ interface InvoiceDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   editingInvoice: Invoice | null;
-  onSubmit: (e: React.FormEvent) => void;
+  onSubmit: (e: React.FormEvent) => Promise<void>;
   isLoading: boolean;
 }
 
@@ -56,40 +56,12 @@ const InvoiceDialog = ({
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const addItem = () => {
-    setItems([...items, { 
-      id: crypto.randomUUID(),
-      description: "",
-      quantity: 1,
-      unitPrice: 0,
-      total: 0,
-      vatRate: 21
-    }]);
-  };
-
-  const removeItem = (id: string) => {
-    setItems(items.filter(item => item.id !== id));
-  };
-
-  const updateItem = (id: string, field: keyof InvoiceItem, value: any) => {
-    setItems(items.map(item => {
-      if (item.id === id) {
-        const updatedItem = { ...item, [field]: value };
-        if (field === 'quantity' || field === 'unitPrice') {
-          updatedItem.total = updatedItem.quantity * updatedItem.unitPrice;
-        }
-        return updatedItem;
-      }
-      return item;
-    }));
-  };
-
-  const handleSubmitForm = (e: React.FormEvent) => {
+  const handleSubmitForm = async (e: React.FormEvent) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
     formData.append('items', JSON.stringify(items));
-    onSubmit(e);
+    await onSubmit(e);
   };
 
   return (
@@ -111,9 +83,20 @@ const InvoiceDialog = ({
 
           <InvoiceItemsList
             items={items}
-            onAddItem={addItem}
-            onRemoveItem={removeItem}
-            onUpdateItem={updateItem}
+            onAddItem={() => setItems([...items, {
+              id: crypto.randomUUID(),
+              sku: '',
+              description: '',
+              quantity: 1,
+              unitPrice: 0,
+              total: 0,
+              vatRate: 21,
+              unit: 'unit'
+            }])}
+            onRemoveItem={(id) => setItems(items.filter(item => item.id !== id))}
+            onUpdateItem={(id, field, value) => setItems(items.map(item => 
+              item.id === id ? { ...item, [field]: value } : item
+            ))}
           />
 
           <div className="space-y-2">
