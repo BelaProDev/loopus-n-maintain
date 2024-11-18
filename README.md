@@ -2,74 +2,133 @@
 
 Where building maintenance meets good vibes! Our platform keeps buildings happy and facility managers even happier.
 
-## Features 🚀
+## Core Features 🚀
 
-### Core Features
-- 📱 **Progressive Web App** - Works offline and installable
-- 🌍 **Multi-language Support** - EN, ES, FR
-- 🔐 **Secure Authentication** - Role-based access control
-- 📊 **Data Management** - Efficient data handling with TanStack Query
+### Platform Architecture
+- 📱 **Progressive Web App** - Full offline capabilities & installable
+- 🌍 **Multi-language Support** - EN, ES, FR with i18next
+- 🔐 **Role-based Authentication** - Secure admin and user access levels
+- 📊 **Data Management** - Optimized with TanStack Query & FaunaDB
+- 🎨 **Modern UI/UX** - Responsive design with shadcn/ui & Tailwind CSS
+- 🔄 **Real-time Updates** - Live data synchronization
+- 📱 **Mobile-First Design** - Fully responsive across all devices
 
 ### Maintenance Services
-- ⚡ **Electrical** - Circuit diagnostics and repairs
-- 🔧 **Plumbing** - Leak detection and repairs
-- ⚒️ **Ironwork** - Structural repairs and welding
-- 🪚 **Woodworking** - Custom carpentry and restoration
-- 🏗️ **Architecture** - Design consultation and planning
+- ⚡ **Electrical Systems**
+  - Circuit diagnostics
+  - Maintenance scheduling
+  - Emergency response
+- 🔧 **Plumbing Solutions**
+  - Leak detection
+  - System maintenance
+  - Emergency repairs
+- ⚒️ **Ironwork Services**
+  - Structural repairs
+  - Custom fabrication
+  - Welding services
+- 🪚 **Woodworking**
+  - Custom carpentry
+  - Restoration work
+  - Furniture repair
+- 🏗️ **Architecture**
+  - Design consultation
+  - Project planning
+  - Structural assessment
 
-### Digital Tools
-- 📄 **Documents** - Dropbox-integrated document management
-- 📊 **Diagrams** - Interactive system architecture tools
-- 📈 **Analytics** - Real-time data visualization
-- 🎵 **Audio** - Professional audio processing
-- 📋 **Invoicing** - Smart invoice generation
-- 💬 **Chat** - Real-time communication
-- 🖼️ **Photo Gallery** - Media management system
+### Digital Tools Suite
+- 📄 **Document Management**
+  - Dropbox integration
+  - File organization
+  - Version control
+- 📊 **System Diagrams**
+  - Interactive architecture tools
+  - Network mapping
+  - System visualization
+- 📈 **Business Analytics**
+  - Real-time data visualization
+  - Performance metrics
+  - Custom reports
+- 🎵 **Audio Studio**
+  - Professional processing
+  - Multi-track editing
+  - Effect chains
+- 📋 **Invoice System**
+  - Smart generation
+  - Template management
+  - Payment tracking
+- 💬 **Chat Platform**
+  - Real-time messaging
+  - File sharing
+  - User presence
+- 🖼️ **Media Management**
+  - Photo organization
+  - Gallery creation
+  - Image processing
 
 ### Admin Features
-- 📚 **Documentation** - Comprehensive platform docs
-- 📂 **Dropbox Explorer** - Advanced file management
-- ⚙️ **Admin Panel** - System administration
-- 📧 **Email Management** - Communication tools
+- 📚 **Documentation Center**
+  - Platform guides
+  - API documentation
+  - User manuals
+- 📂 **Dropbox Explorer**
+  - Advanced file management
+  - Folder organization
+  - File sharing
+- ⚙️ **Admin Panel**
+  - User management
+  - System settings
+  - Access control
+- 📧 **Email Management**
+  - Template system
+  - Automated responses
+  - Contact management
 
 ## Tech Stack 🛠️
 
 ### Frontend
 - React 18 with TypeScript
-- TanStack Query for data management
-- Tailwind CSS for styling
-- shadcn/ui component library
-- Framer Motion for animations
+- TanStack Query for data fetching
+- Tailwind CSS & shadcn/ui
+- Framer Motion animations
+- i18next for translations
 
 ### Backend Services
 - Netlify Functions
-- Dropbox API integration
-- FaunaDB for data storage
-- i18next for internationalization
+- FaunaDB
+- Dropbox API
+- Email Services
 
 ### Development Tools
-- Vite for development and building
-- ESLint & Prettier for code quality
-- Jest & Testing Library for testing
-- TypeScript for type safety
+- Vite
+- ESLint & Prettier
+- Jest & Testing Library
+- TypeScript
 
 ## Getting Started 🚀
 
 1. Clone the repository
-2. Install dependencies: `npm install`
-3. Set up environment variables:
+2. Install dependencies:
+   ```bash
+   npm install
    ```
+3. Set up environment variables:
+   ```env
+   VITE_FAUNA_SECRET_KEY=your_key
    VITE_DROPBOX_APP_KEY=your_key
    VITE_DROPBOX_APP_SECRET=your_secret
    ```
-4. Start development server: `npm run dev`
+4. Start development server:
+   ```bash
+   npm run dev
+   ```
 
 ## Environment Setup 🔧
 
 Required environment variables:
-- `VITE_DROPBOX_APP_KEY`: Your Dropbox API key
-- `VITE_DROPBOX_APP_SECRET`: Your Dropbox API secret
-- `URL`: Your deployment URL (set automatically by Netlify)
+- `VITE_FAUNA_SECRET_KEY`: FaunaDB API key
+- `VITE_DROPBOX_APP_KEY`: Dropbox API key
+- `VITE_DROPBOX_APP_SECRET`: Dropbox API secret
+- `URL`: Deployment URL (set by Netlify)
 
 ## Contributing 🤝
 
