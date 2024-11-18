@@ -16,7 +16,6 @@ const Chat = () => {
   const queryClient = useQueryClient();
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Fetch chat rooms
   const { data: rooms = [], isLoading: roomsLoading } = useQuery({
     queryKey: ["chatRooms"],
     queryFn: async () => {
@@ -37,7 +36,6 @@ const Chat = () => {
     refetchInterval: 3000
   });
 
-  // Fetch messages for active room
   const { data: messages = [], isLoading: messagesLoading } = useQuery({
     queryKey: ["messages", activeRoom],
     queryFn: async () => {
@@ -93,7 +91,6 @@ const Chat = () => {
     }
   });
 
-  // Send message mutation
   const sendMessage = useMutation({
     mutationFn: async ({ content, nickname }: { content: string; nickname: string }) => {
       const response = await fetch("/.netlify/functions/chat-messages", {
@@ -132,6 +129,10 @@ const Chat = () => {
     }
   }, [messages]);
 
+  const handleCreateRoom = (name: string, topic: string) => {
+    createRoom.mutate({ name, topic });
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
@@ -147,7 +148,7 @@ const Chat = () => {
             activeRoom={activeRoom}
             onRoomSelect={setActiveRoom}
             onRefresh={() => queryClient.invalidateQueries({ queryKey: ["chatRooms"] })}
-            onCreateRoom={createRoom.mutate}
+            onCreateRoom={handleCreateRoom}
             isLoading={roomsLoading}
           />
           <div className="col-span-9 flex flex-col">
