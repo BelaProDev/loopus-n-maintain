@@ -1,7 +1,7 @@
 import { getFaunaClient } from './client';
 import { ContactMessage } from './types';
 import { fql } from 'fauna';
-import { extractFaunaData, FaunaDocument } from './utils';
+import { extractFaunaData } from './utils';
 
 export const contactQueries = {
   getAllMessages: async (service: ContactMessage['service']) => {
@@ -9,12 +9,16 @@ export const contactQueries = {
     if (!client) throw new Error('Fauna client not initialized');
 
     try {
+      // Convert 'electrical' to 'electrics' for database consistency
+      const dbService = service === 'electrical' ? 'electrics' : service;
+      
       const query = fql`
-        messages.where(.service == ${service})
+        contact_messages.where(.service == ${dbService})
       `;
       const result = await client.query(query);
       return extractFaunaData<ContactMessage>(result);
     } catch (error) {
+      console.error('Error fetching messages:', error);
       return [];
     }
   },
@@ -24,8 +28,11 @@ export const contactQueries = {
     if (!client) throw new Error('Fauna client not initialized');
 
     try {
+      // Convert 'electrical' to 'electrics' for database consistency
+      const dbService = data.service === 'electrical' ? 'electrics' : data.service;
+      
       const messageData = {
-        service: data.service,
+        service: dbService,
         name: data.name,
         email: data.email,
         message: data.message,
@@ -34,7 +41,7 @@ export const contactQueries = {
       };
 
       const query = fql`
-        messages.create({
+        contact_messages.create({
           service: ${messageData.service},
           name: ${messageData.name},
           email: ${messageData.email},
@@ -47,6 +54,7 @@ export const contactQueries = {
       const document = extractFaunaData<ContactMessage>(result)[0];
       return document ? { id: document.ref.id, ...document.data } : null;
     } catch (error) {
+      console.error('Error creating message:', error);
       return null;
     }
   },
@@ -57,12 +65,13 @@ export const contactQueries = {
 
     try {
       const query = fql`
-        messages.byId(${JSON.stringify(id)}).update({ status: ${JSON.stringify(status)} })
+        contact_messages.byId(${JSON.stringify(id)}).update({ status: ${JSON.stringify(status)} })
       `;
       const result = await client.query(query);
       const document = extractFaunaData<ContactMessage>(result)[0];
       return document ? { id: document.ref.id, ...document.data } : null;
     } catch (error) {
+      console.error('Error updating message status:', error);
       return null;
     }
   }
