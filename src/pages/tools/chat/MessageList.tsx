@@ -1,11 +1,21 @@
-import type { ChatMessage } from "@/lib/fauna/types/chat";
+interface Message {
+  id: string;
+  sender: string;
+  content: string;
+}
+
+interface MessageResponse {
+  data: {
+    data: Message[];
+  };
+}
 
 interface MessageListProps {
-  messages: any[];
+  messages: MessageResponse;
   isLoading: boolean;
 }
 
-const MessageList = ({ messages = [], isLoading }: MessageListProps) => {
+const MessageList = ({ messages = { data: { data: [] } }, isLoading }: MessageListProps) => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-full text-muted-foreground">
@@ -14,7 +24,7 @@ const MessageList = ({ messages = [], isLoading }: MessageListProps) => {
     );
   }
 
-  if (!Array.isArray(messages?.data?.data) || messages?.data?.data.length === 0) {
+  if (!messages?.data?.data || messages.data.data.length === 0) {
     return (
       <div className="flex items-center justify-center h-full text-muted-foreground">
         No messages yet
