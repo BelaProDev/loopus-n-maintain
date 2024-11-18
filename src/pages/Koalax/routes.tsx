@@ -1,10 +1,10 @@
 import { Navigate, RouteObject } from "react-router-dom";
 import EmailManagement from "./components/email/EmailManagement";
-import SiteSettings from "./components/settings/SiteSettings";
+import SiteSettings from "./SiteSettings";
 import BusinessManagement from "./components/business/BusinessManagement";
 import MessageManagement from "./components/messages/MessageManagement";
-import WhatsAppSettings from "./components/settings/WhatsAppSettings";
-import LogoSettings from "./components/settings/LogoSettings";
+import WhatsAppSettings from "./components/WhatsAppSettings";
+import LogoSettings from "./components/LogoSettings";
 import ClientList from "./components/business/ClientList";
 import ProviderList from "./components/business/ProviderList";
 import InvoiceList from "./components/business/InvoiceList";

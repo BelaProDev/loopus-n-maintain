@@ -1,16 +1,15 @@
 import { useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
-import WhatsAppSettings from "./components/WhatsAppSettings";
-import LogoSettings from "./components/LogoSettings";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useParams, Outlet } from "react-router-dom";
+import { Settings } from "lucide-react";
 
 const TABS = ['whatsapp', 'logo'] as const;
 type TabType = typeof TABS[number];
 
 const SiteSettings = () => {
-  const { t } = useTranslation(["admin"]);
+  const { t } = useTranslation(["settings"]);
   const navigate = useNavigate();
   const { tab } = useParams<{ tab: TabType }>();
   
@@ -28,29 +27,24 @@ const SiteSettings = () => {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold">{t("admin:settings.title")}</h1>
+      <div className="flex items-center gap-2">
+        <Settings className="h-6 w-6" />
+        <h1 className="text-3xl font-bold">{t("title")}</h1>
+      </div>
       
       <Tabs value={currentTab} onValueChange={handleTabChange} className="space-y-4">
         <TabsList>
           <TabsTrigger value="whatsapp">
-            {t("admin:settings.tabs.whatsapp")}
+            {t("whatsapp.title")}
           </TabsTrigger>
           <TabsTrigger value="logo">
-            {t("admin:settings.tabs.logo")}
+            {t("logo.title")}
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="whatsapp">
-          <Card className="p-6">
-            <WhatsAppSettings />
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="logo">
-          <Card className="p-6">
-            <LogoSettings />
-          </Card>
-        </TabsContent>
+        <Card className="p-6">
+          <Outlet />
+        </Card>
       </Tabs>
     </div>
   );

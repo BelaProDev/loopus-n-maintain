@@ -1,79 +1,78 @@
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { settingsQueries } from "@/lib/fauna/settingsQueries";
 import { useTranslation } from "react-i18next";
+import { settingsQueries } from "@/lib/fauna/settingsQueries";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+interface WhatsAppForm {
+  electrics: string;
+  plumbing: string;
+  ironwork: string;
+  woodwork: string;
+  architecture: string;
+}
 
 const WhatsAppSettings = () => {
+  const { t } = useTranslation(["settings"]);
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { t } = useTranslation(["common", "admin", "services"]);
+  const { register, handleSubmit, reset } = useForm<WhatsAppForm>();
 
-  const { data: numbers, isLoading } = useQuery({
+  const { data: numbers } = useQuery({
     queryKey: ['whatsapp-numbers'],
     queryFn: settingsQueries.getWhatsAppNumbers
   });
+
+  useEffect(() => {
+    if (numbers) {
+      reset(numbers);
+    }
+  }, [numbers, reset]);
 
   const updateMutation = useMutation({
     mutationFn: settingsQueries.updateWhatsAppNumbers,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['whatsapp-numbers'] });
       toast({
-        title: t("common:common.success"),
-        description: t("admin:whatsappUpdateSuccess"),
+        title: t("whatsapp.updateSuccess"),
       });
     },
     onError: () => {
       toast({
-        title: t("common:common.error"),
-        description: t("admin:whatsappUpdateError"),
+        title: t("whatsapp.updateError"),
         variant: "destructive",
       });
     }
   });
 
-  const handleWhatsAppUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const newNumbers = {
-      electrics: formData.get("electrics") as string,
-      plumbing: formData.get("plumbing") as string,
-      ironwork: formData.get("ironwork") as string,
-      woodwork: formData.get("woodwork") as string,
-      architecture: formData.get("architecture") as string,
-    };
-    updateMutation.mutate(newNumbers);
+  const onSubmit = (data: WhatsAppForm) => {
+    updateMutation.mutate(data);
   };
 
-  if (isLoading) return <div>{t("common:common.loading")}</div>;
-
   return (
-    <Card className="p-6">
-      <form onSubmit={handleWhatsAppUpdate} className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {["electrics", "plumbing", "ironwork", "woodwork", "architecture"].map((service) => (
-            <div key={service} className="space-y-2">
-              <Label htmlFor={service}>
-                {t(`services:${service}.title`)} WhatsApp
-              </Label>
-              <Input
-                id={service}
-                name={service}
-                type="tel"
-                placeholder={t("admin:whatsappPlaceholder", { service: t(`services:${service}.title`) })}
-                defaultValue={numbers?.[service as keyof typeof numbers]}
-              />
-            </div>
-          ))}
-        </div>
-        <Button type="submit" disabled={updateMutation.isPending}>
-          {t("admin:whatsappUpdate")}
-        </Button>
-      </form>
-    </Card>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {["electrics", "plumbing", "ironwork", "woodwork", "architecture"].map((service) => (
+          <div key={service} className="space-y-2">
+            <Label htmlFor={service}>
+              {t(`services:${service}.title`)} WhatsApp
+            </Label>
+            <Input
+              id={service}
+              {...register(service as keyof WhatsAppForm)}
+              placeholder={t("whatsapp.placeholder", { service: t(`services:${service}.title`) })}
+            />
+          </div>
+        ))}
+      </div>
+      <Button type="submit" disabled={updateMutation.isPending}>
+        {t("whatsapp.update")}
+      </Button>
+    </form>
   );
 };
 
