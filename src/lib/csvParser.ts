@@ -1,4 +1,4 @@
-import { Invoice, InvoiceItem } from "@/types/business";
+import { Invoice, InvoiceItem } from "@/types/invoice";
 
 export const parseInvoiceCSV = (csvContent: string): Partial<Invoice> => {
   const lines = csvContent.split('\n').map(line => line.trim());
@@ -25,11 +25,13 @@ export const parseInvoiceCSV = (csvContent: string): Partial<Invoice> => {
       
       items.push({
         id: crypto.randomUUID(),
+        sku: '',
         description,
         quantity: qty,
         unitPrice: price,
         vatRate: vat,
-        total: qty * price
+        total: qty * price,
+        unit: 'unit'
       });
     }
   }
@@ -46,6 +48,8 @@ export const parseInvoiceCSV = (csvContent: string): Partial<Invoice> => {
     totalAmount,
     tax,
     status: 'draft',
-    notes: ''
+    notes: '',
+    paymentTerms: 'net30',
+    currency: 'EUR'
   };
 };

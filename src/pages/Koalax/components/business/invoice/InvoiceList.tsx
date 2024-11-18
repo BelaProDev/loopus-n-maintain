@@ -37,12 +37,12 @@ const InvoiceList = () => {
     });
   }
 
-  const handleSubmit = (formData: FormData) => {
+  const handleSubmit = async (formData: FormData) => {
     try {
       if (editingInvoice) {
-        handleUpdateInvoice(editingInvoice.id, formData);
+        await handleUpdateInvoice(editingInvoice.id, formData);
       } else {
-        handleCreateInvoice(formData);
+        await handleCreateInvoice(formData);
       }
       setIsDialogOpen(false);
       setEditingInvoice(null);
