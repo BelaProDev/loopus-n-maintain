@@ -18,14 +18,26 @@ const Chat = () => {
   const { data: rooms = [], isLoading: isLoadingRooms } = useQuery({
     queryKey: ['rooms'],
     queryFn: chatService.listRooms,
-    onError: () => toast.error("Failed to load rooms")
+    retry: false,
+    staleTime: 1000 * 60, // 1 minute
+    onSettled: (data, error) => {
+      if (error) {
+        toast.error("Failed to load rooms");
+      }
+    }
   });
 
   const { data: messages = [], isLoading: isLoadingMessages } = useQuery({
     queryKey: ['messages', selectedRoomId],
     queryFn: () => selectedRoomId ? chatService.listMessages(selectedRoomId) : Promise.resolve([]),
     enabled: !!selectedRoomId,
-    onError: () => toast.error("Failed to load messages")
+    retry: false,
+    staleTime: 1000 * 30, // 30 seconds
+    onSettled: (data, error) => {
+      if (error) {
+        toast.error("Failed to load messages");
+      }
+    }
   });
 
   const handleSendMessage = async (content: string, sender: string) => {
