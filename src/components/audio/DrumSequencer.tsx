@@ -40,7 +40,6 @@ const DrumSequencer = ({ bpm, isPlaying }: { bpm: number; isPlaying: boolean }) 
         }).toDestination();
 
         const hihat = new Tone.MetalSynth({
-          frequency: 200,
           envelope: { attack: 0.001, decay: 0.1, release: 0.01 }
         }).toDestination();
 
@@ -70,25 +69,21 @@ const DrumSequencer = ({ bpm, isPlaying }: { bpm: number; isPlaying: boolean }) 
   useEffect(() => {
     if (!tracks.length) return;
 
-    const seq = new Tone.Sequence(
-      (time, step) => {
-        setCurrentStep(step);
-        tracks.forEach(track => {
-          if (track.steps[step].active) {
-            const velocity = track.steps[step].velocity;
-            if (track.name === 'Kick') {
-              (track.synth as Tone.MembraneSynth).triggerAttackRelease('C1', '8n', time, velocity);
-            } else if (track.name === 'HiHat') {
-              (track.synth as Tone.MetalSynth).triggerAttackRelease('32n', time, velocity);
-            } else {
-              (track.synth as Tone.NoiseSynth).triggerAttackRelease('16n', time, velocity);
-            }
+    const seq = new Tone.Sequence((time, step) => {
+      setCurrentStep(step);
+      tracks.forEach(track => {
+        if (track.steps[step].active) {
+          const velocity = track.steps[step].velocity;
+          if (track.name === 'Kick') {
+            (track.synth as Tone.MembraneSynth).triggerAttackRelease('C1', '8n', time, velocity);
+          } else if (track.name === 'HiHat') {
+            (track.synth as Tone.MetalSynth).triggerAttackRelease('32n', time, velocity);
+          } else {
+            (track.synth as Tone.NoiseSynth).triggerAttackRelease('16n', time, velocity);
           }
-        });
-      },
-      [...Array(16).keys()],
-      "16n"
-    );
+        }
+      });
+    }, [...Array(16).keys()], "16n");
 
     sequencerRef.current = seq;
     Tone.Transport.bpm.value = bpm;
@@ -99,7 +94,9 @@ const DrumSequencer = ({ bpm, isPlaying }: { bpm: number; isPlaying: boolean }) 
       seq.stop();
     }
 
-    return () => seq.dispose();
+    return () => {
+      seq.dispose();
+    };
   }, [isPlaying, tracks, bpm]);
 
   const toggleStep = (trackIndex: number, stepIndex: number) => {

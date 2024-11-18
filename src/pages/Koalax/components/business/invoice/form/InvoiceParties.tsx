@@ -17,6 +17,9 @@ interface InvoicePartiesProps {
 const InvoiceParties = ({ formData, clients, providers, onChange }: InvoicePartiesProps) => {
   const { t } = useTranslation(["admin"]);
 
+  const selectedProvider = providers.find(p => p.id === formData.providerId);
+  const selectedClient = clients.find(c => c.id === formData.clientId);
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
       <Card className="p-6 bg-muted/5 border-primary/20">
@@ -33,7 +36,7 @@ const InvoiceParties = ({ formData, clients, providers, onChange }: InvoiceParti
             onValueChange={(value) => onChange("providerId", value)}
           >
             <SelectTrigger className="h-12">
-              <SelectValue placeholder={t("admin:business.invoices.selectProvider") as string} />
+              <SelectValue placeholder={t("admin:business.invoices.selectProvider")} />
             </SelectTrigger>
             <SelectContent>
               {providers?.map((provider) => (
@@ -43,10 +46,10 @@ const InvoiceParties = ({ formData, clients, providers, onChange }: InvoiceParti
               ))}
             </SelectContent>
           </Select>
-          {providers.find(p => p.id === formData.providerId) && (
+          {selectedProvider && (
             <div className="text-sm text-muted-foreground space-y-1">
-              <p>{providers.find(p => p.id === formData.providerId)?.address}</p>
-              <p>{providers.find(p => p.id === formData.providerId)?.email}</p>
+              <p>{selectedProvider.email}</p>
+              <p>{selectedProvider.phone}</p>
             </div>
           )}
         </div>
@@ -66,7 +69,7 @@ const InvoiceParties = ({ formData, clients, providers, onChange }: InvoiceParti
             onValueChange={(value) => onChange("clientId", value)}
           >
             <SelectTrigger className="h-12">
-              <SelectValue placeholder={t("admin:business.invoices.selectClient") as string} />
+              <SelectValue placeholder={t("admin:business.invoices.selectClient")} />
             </SelectTrigger>
             <SelectContent>
               {clients?.map((client) => (
@@ -76,10 +79,10 @@ const InvoiceParties = ({ formData, clients, providers, onChange }: InvoiceParti
               ))}
             </SelectContent>
           </Select>
-          {clients.find(c => c.id === formData.clientId) && (
+          {selectedClient && (
             <div className="text-sm text-muted-foreground space-y-1">
-              <p>{clients.find(c => c.id === formData.clientId)?.address}</p>
-              <p>{clients.find(c => c.id === formData.clientId)?.email}</p>
+              <p>{selectedClient.email}</p>
+              <p>{selectedClient.phone}</p>
             </div>
           )}
         </div>
