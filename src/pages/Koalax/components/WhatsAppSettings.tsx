@@ -9,6 +9,9 @@ import { settingsQueries } from "@/lib/fauna/settingsQueries";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { WhatsAppNumbers } from "@/lib/fauna/types";
 
+const SERVICES = ["electrics", "plumbing", "ironwork", "woodwork", "architecture"] as const;
+type ServiceType = typeof SERVICES[number];
+
 const WhatsAppSettings = () => {
   const { t } = useTranslation(["settings"]);
   const { toast } = useToast();
@@ -49,14 +52,14 @@ const WhatsAppSettings = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {["electrics", "plumbing", "ironwork", "woodwork", "architecture"].map((service) => (
+        {SERVICES.map((service) => (
           <div key={service} className="space-y-2">
             <Label htmlFor={service}>
               {t(`services:${service}.title`)} WhatsApp
             </Label>
             <Input
               id={service}
-              {...register(service as keyof WhatsAppNumbers)}
+              {...register(service)}
               placeholder={t("whatsapp.placeholder", { service: t(`services:${service}.title`) })}
             />
           </div>
