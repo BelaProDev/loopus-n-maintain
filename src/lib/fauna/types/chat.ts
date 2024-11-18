@@ -2,13 +2,26 @@ export interface ChatRoom {
   id: string;
   name: string;
   topic?: string;
-  createdAt: Date;
+  createdAt: string;
 }
 
 export interface ChatMessage {
   id: string;
-  roomId: string;
-  sender: string;
   content: string;
-  timestamp: Date;
+  sender: string;
+  room?: {
+    id: string;
+  };
+}
+
+export interface FaunaMessageResponse {
+  data: {
+    data: ChatMessage[];
+  };
+}
+
+export interface FaunaRoomResponse {
+  data: {
+    data: ChatRoom[];
+  };
 }

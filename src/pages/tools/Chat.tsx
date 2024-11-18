@@ -8,16 +8,8 @@ import RoomsList from "./chat/RoomsList";
 import MessageList from "./chat/MessageList";
 import MessageInput from "./chat/MessageInput";
 import { extractFaunaData } from "@/lib/fauna/utils";
-import type { ChatMessage, ChatRoom } from "@/lib/fauna/types/chat";
+import type { ChatMessage, ChatRoom, FaunaMessageResponse, FaunaRoomResponse } from "@/lib/fauna/types/chat";
 import type { FaunaDocument } from "@/lib/fauna/utils";
-
-interface Message {
-  ref: { id: string };
-  data: {
-    sender: string;
-    content: string;
-  };
-}
 
 const Chat = () => {
   const [activeRoom, setActiveRoom] = useState("");
@@ -65,7 +57,7 @@ const Chat = () => {
       }
       
       const result = await response.json();
-      return extractFaunaData(result.data) as Message[];
+      return (result.data?.data || []) as ChatMessage[];
     },
     enabled: Boolean(activeRoom),
     refetchInterval: 1000,
@@ -140,10 +132,6 @@ const Chat = () => {
     }
   }, [messages]);
 
-  const handleCreateRoom = (name: string, topic: string) => {
-    createRoom.mutate({ name, topic });
-  };
-
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
@@ -159,7 +147,7 @@ const Chat = () => {
             activeRoom={activeRoom}
             onRoomSelect={setActiveRoom}
             onRefresh={() => queryClient.invalidateQueries({ queryKey: ["chatRooms"] })}
-            onCreateRoom={handleCreateRoom}
+            onCreateRoom={createRoom.mutate}
             isLoading={roomsLoading}
           />
           <div className="col-span-9 flex flex-col">
