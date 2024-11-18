@@ -20,10 +20,8 @@ const Chat = () => {
     queryFn: chatService.listRooms,
     retry: false,
     staleTime: 1000 * 60, // 1 minute
-    onSettled: (data, error) => {
-      if (error) {
-        toast.error("Failed to load rooms");
-      }
+    onError: () => {
+      toast.error("Failed to load rooms");
     }
   });
 
@@ -33,10 +31,8 @@ const Chat = () => {
     enabled: !!selectedRoomId,
     retry: false,
     staleTime: 1000 * 30, // 30 seconds
-    onSettled: (data, error) => {
-      if (error) {
-        toast.error("Failed to load messages");
-      }
+    onError: () => {
+      toast.error("Failed to load messages");
     }
   });
 
