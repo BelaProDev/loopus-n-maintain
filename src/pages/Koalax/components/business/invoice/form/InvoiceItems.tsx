@@ -4,8 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useTranslation } from "react-i18next";
 import { InvoiceItem } from "@/types/invoice";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Package } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 interface InvoiceItemsProps {
   items: InvoiceItem[];
@@ -23,6 +24,15 @@ const InvoiceItems = ({ items, onItemsChange, currency }: InvoiceItemsProps) => 
     sku: "",
     unit: "unit"
   });
+
+  const units = [
+    { value: 'unit', label: 'Unit' },
+    { value: 'hour', label: 'Hour' },
+    { value: 'day', label: 'Day' },
+    { value: 'month', label: 'Month' },
+    { value: 'piece', label: 'Piece' },
+    { value: 'service', label: 'Service' }
+  ];
 
   const handleAddItem = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -47,169 +57,138 @@ const InvoiceItems = ({ items, onItemsChange, currency }: InvoiceItemsProps) => 
     });
   };
 
-  const handleRemoveItem = (id: string) => {
-    onItemsChange(items.filter(item => item.id !== id));
-  };
-
-  const handleItemChange = (id: string, field: keyof InvoiceItem, value: string | number) => {
-    onItemsChange(items.map(item => {
-      if (item.id === id) {
-        const updatedItem = { ...item, [field]: value };
-        if (field === 'quantity' || field === 'unitPrice') {
-          updatedItem.total = Number(updatedItem.quantity) * Number(updatedItem.unitPrice);
-        }
-        return updatedItem;
-      }
-      return item;
-    }));
-  };
-
-  const units = [
-    { value: 'unit', label: 'Unit' },
-    { value: 'hour', label: 'Hour' },
-    { value: 'day', label: 'Day' },
-    { value: 'month', label: 'Month' },
-    { value: 'piece', label: 'Piece' },
-    { value: 'service', label: 'Service' }
-  ];
-
   return (
-    <div className="space-y-4">
-      <h3 className="text-lg font-semibold">{t("admin:business.invoices.items")}</h3>
-      
-      <div className="space-y-4">
-        {items.map((item) => (
-          <Card key={item.id} className="p-4">
-            <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-              <div>
-                <Input
-                  placeholder="SKU"
-                  value={item.sku}
-                  onChange={(e) => handleItemChange(item.id, 'sku', e.target.value)}
-                />
-              </div>
-              <div className="md:col-span-2">
-                <Input
-                  placeholder={t("admin:business.invoices.itemDescription")}
-                  value={item.description}
-                  onChange={(e) => handleItemChange(item.id, 'description', e.target.value)}
-                />
-              </div>
-              <div>
-                <Select
-                  value={item.unit}
-                  onValueChange={(value) => handleItemChange(item.id, 'unit', value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Unit" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {units.map(unit => (
-                      <SelectItem key={unit.value} value={unit.value}>
-                        {unit.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Input
-                  type="number"
-                  min="0"
-                  placeholder={t("admin:business.invoices.quantity")}
-                  value={item.quantity}
-                  onChange={(e) => handleItemChange(item.id, 'quantity', Number(e.target.value))}
-                />
-              </div>
-              <div className="flex items-center gap-2">
-                <Input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  placeholder={t("admin:business.invoices.unitPrice")}
-                  value={item.unitPrice}
-                  onChange={(e) => handleItemChange(item.id, 'unitPrice', Number(e.target.value))}
-                />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  type="button"
-                  onClick={() => handleRemoveItem(item.id)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-            <div className="mt-2 text-right text-sm text-muted-foreground">
-              Total: {new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(item.total)}
-            </div>
-          </Card>
-        ))}
-      </div>
-
-      <Card className="p-4 border-dashed">
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-          <div>
-            <Input
-              placeholder="SKU"
-              value={newItem.sku}
-              onChange={(e) => setNewItem({ ...newItem, sku: e.target.value })}
-            />
+    <Card className="p-6 bg-muted/5">
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <Package className="w-5 h-5 text-primary" />
+            <h3 className="font-semibold text-lg">
+              {t("admin:business.invoices.items")}
+            </h3>
           </div>
-          <div className="md:col-span-2">
-            <Input
-              placeholder={t("admin:business.invoices.itemDescription")}
-              value={newItem.description}
-              onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
-            />
-          </div>
-          <div>
-            <Select
-              value={newItem.unit}
-              onValueChange={(value) => setNewItem({ ...newItem, unit: value })}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Unit" />
-              </SelectTrigger>
-              <SelectContent>
-                {units.map(unit => (
-                  <SelectItem key={unit.value} value={unit.value}>
-                    {unit.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Input
-              type="number"
-              min="0"
-              placeholder={t("admin:business.invoices.quantity")}
-              value={newItem.quantity}
-              onChange={(e) => setNewItem({ ...newItem, quantity: Number(e.target.value) })}
-            />
-          </div>
-          <div className="flex items-center gap-2">
-            <Input
-              type="number"
-              min="0"
-              step="0.01"
-              placeholder={t("admin:business.invoices.unitPrice")}
-              value={newItem.unitPrice}
-              onChange={(e) => setNewItem({ ...newItem, unitPrice: Number(e.target.value) })}
-            />
-            <Button 
-              onClick={handleAddItem}
-              type="button"
-              variant="outline"
-              size="icon"
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
-          </div>
+          <Button
+            onClick={handleAddItem}
+            type="button"
+            size="sm"
+            className="text-xs"
+          >
+            <Plus className="w-4 h-4 mr-1" />
+            {t("admin:business.invoices.addItem")}
+          </Button>
         </div>
-      </Card>
-    </div>
+
+        <div className="rounded-lg border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>SKU</TableHead>
+                <TableHead className="w-[300px]">Description</TableHead>
+                <TableHead>Unit</TableHead>
+                <TableHead>Qty</TableHead>
+                <TableHead>Price</TableHead>
+                <TableHead>VAT</TableHead>
+                <TableHead>Total</TableHead>
+                <TableHead></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {items.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell>{item.sku}</TableCell>
+                  <TableCell>{item.description}</TableCell>
+                  <TableCell>{item.unit}</TableCell>
+                  <TableCell>{item.quantity}</TableCell>
+                  <TableCell>
+                    {item.unitPrice.toFixed(2)} {currency}
+                  </TableCell>
+                  <TableCell>{item.vatRate}%</TableCell>
+                  <TableCell className="font-medium">
+                    {item.total.toFixed(2)} {currency}
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => onItemsChange(items.filter(i => i.id !== item.id))}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+              <TableRow>
+                <TableCell>
+                  <Input
+                    placeholder="SKU"
+                    value={newItem.sku}
+                    onChange={(e) => setNewItem({ ...newItem, sku: e.target.value })}
+                    className="h-8"
+                  />
+                </TableCell>
+                <TableCell>
+                  <Input
+                    placeholder={t("admin:business.invoices.itemDescription")}
+                    value={newItem.description}
+                    onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
+                    className="h-8"
+                  />
+                </TableCell>
+                <TableCell>
+                  <Select
+                    value={newItem.unit}
+                    onValueChange={(value) => setNewItem({ ...newItem, unit: value })}
+                  >
+                    <SelectTrigger className="h-8">
+                      <SelectValue placeholder="Unit" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {units.map(unit => (
+                        <SelectItem key={unit.value} value={unit.value}>
+                          {unit.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </TableCell>
+                <TableCell>
+                  <Input
+                    type="number"
+                    min="0"
+                    placeholder="Qty"
+                    value={newItem.quantity}
+                    onChange={(e) => setNewItem({ ...newItem, quantity: Number(e.target.value) })}
+                    className="h-8"
+                  />
+                </TableCell>
+                <TableCell>
+                  <Input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    placeholder="Price"
+                    value={newItem.unitPrice}
+                    onChange={(e) => setNewItem({ ...newItem, unitPrice: Number(e.target.value) })}
+                    className="h-8"
+                  />
+                </TableCell>
+                <TableCell>
+                  <Input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={newItem.vatRate}
+                    onChange={(e) => setNewItem({ ...newItem, vatRate: Number(e.target.value) })}
+                    className="h-8"
+                  />
+                </TableCell>
+                <TableCell colSpan={2}></TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
+      </div>
+    </Card>
   );
 };
 

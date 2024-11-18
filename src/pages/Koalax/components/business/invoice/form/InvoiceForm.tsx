@@ -9,7 +9,6 @@ import InvoiceHeader from "./InvoiceHeader";
 import InvoiceParties from "./InvoiceParties";
 import InvoiceItems from "./InvoiceItems";
 import InvoiceFooter from "./InvoiceFooter";
-import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 
 interface InvoiceFormProps {
@@ -81,7 +80,6 @@ const InvoiceForm = ({
     const formDataObj = new FormData(form);
     const totals = calculateTotals();
     
-    // Ensure items are properly serialized with their complete data
     formDataObj.append('items', JSON.stringify(items));
     formDataObj.append('totalAmount', totals.total.toString());
     formDataObj.append('tax', totals.tax.toString());
@@ -105,40 +103,37 @@ const InvoiceForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmitForm} className="space-y-8 max-w-7xl mx-auto">
-      <Card className="p-8 space-y-8 shadow-lg">
-        <div className="space-y-8">
-          <InvoiceHeader
-            formData={formData}
-            onChange={(name, value) => setFormData(prev => ({ ...prev, [name]: value }))}
-          />
-          
-          <InvoiceParties
-            formData={formData}
-            clients={clients}
-            providers={providers}
-            onChange={(name, value) => setFormData(prev => ({ ...prev, [name]: value }))}
-          />
-          
-          <InvoiceItems
-            items={items}
-            onItemsChange={setItems}
-            currency={formData.currency}
-          />
-          
-          <InvoiceFooter
-            formData={formData}
-            totals={calculateTotals()}
-            onChange={(name, value) => setFormData(prev => ({ ...prev, [name]: value }))}
-          />
-        </div>
+    <form onSubmit={handleSubmitForm} className="max-w-5xl mx-auto">
+      <div className="space-y-8 bg-white dark:bg-gray-950 p-8 rounded-lg shadow-sm border">
+        <InvoiceHeader
+          formData={formData}
+          onChange={(name, value) => setFormData(prev => ({ ...prev, [name]: value }))}
+        />
+        
+        <InvoiceParties
+          formData={formData}
+          clients={clients}
+          providers={providers}
+          onChange={(name, value) => setFormData(prev => ({ ...prev, [name]: value }))}
+        />
+        
+        <InvoiceItems
+          items={items}
+          onItemsChange={setItems}
+          currency={formData.currency}
+        />
+        
+        <InvoiceFooter
+          formData={formData}
+          totals={calculateTotals()}
+          onChange={(name, value) => setFormData(prev => ({ ...prev, [name]: value }))}
+        />
 
         <div className="flex justify-end gap-4 pt-8 border-t">
           <Button 
             type="button" 
             variant="outline" 
             onClick={onCancel}
-            size="lg"
             className="min-w-[120px]"
           >
             {t("common:actions.cancel")}
@@ -146,7 +141,6 @@ const InvoiceForm = ({
           <Button 
             type="submit" 
             disabled={isLoading}
-            size="lg"
             className="min-w-[120px]"
           >
             {isLoading ? (
@@ -158,7 +152,7 @@ const InvoiceForm = ({
             )}
           </Button>
         </div>
-      </Card>
+      </div>
     </form>
   );
 };
