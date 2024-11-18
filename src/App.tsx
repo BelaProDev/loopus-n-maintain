@@ -36,6 +36,9 @@ import EmailManagement from "./pages/Koalax/components/email/EmailManagement";
 import SiteSettings from "./pages/Koalax/SiteSettings";
 import BusinessManagement from "./pages/Koalax/components/BusinessManagement";
 import MessageManagement from "./pages/Koalax/components/messages/MessageManagement";
+import MessageList from "./pages/Koalax/components/messages/MessageList";
+import WhatsAppSettings from "./pages/Koalax/components/WhatsAppSettings";
+import LogoSettings from "./pages/Koalax/components/LogoSettings";
 import DropboxExplorer from "./pages/DropboxExplorer";
 import DropboxCallback from "./pages/DropboxExplorer/components/DropboxCallback";
 
@@ -113,14 +116,25 @@ const App = () => {
                       <Route path="/admin" element={<Koalax />}>
                         <Route index element={<EmailManagement />} />
                         <Route path="emails" element={<EmailManagement />} />
-                        <Route path="settings" element={<SiteSettings />} />
+                        <Route path="settings" element={<SiteSettings />}>
+                          <Route index element={<WhatsAppSettings />} />
+                          <Route path="whatsapp" element={<WhatsAppSettings />} />
+                          <Route path="logo" element={<LogoSettings />} />
+                        </Route>
                         <Route path="business" element={<BusinessManagement />}>
                           <Route index element={<ClientList />} />
                           <Route path="clients" element={<ClientList />} />
                           <Route path="providers" element={<ProviderList />} />
                           <Route path="invoices" element={<InvoiceList />} />
                         </Route>
-                        <Route path="messages" element={<MessageManagement />} />
+                        <Route path="messages" element={<MessageManagement />}>
+                          <Route index element={<MessageList service="electrics" />} />
+                          <Route path="electrics" element={<MessageList service="electrics" />} />
+                          <Route path="plumbing" element={<MessageList service="plumbing" />} />
+                          <Route path="ironwork" element={<MessageList service="ironwork" />} />
+                          <Route path="woodwork" element={<MessageList service="woodwork" />} />
+                          <Route path="architecture" element={<MessageList service="architecture" />} />
+                        </Route>
                       </Route>
 
                       <Route path="/docs" element={<Documentation />} />
