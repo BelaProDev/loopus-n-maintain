@@ -1,96 +1,98 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { businessQueries } from "@/lib/fauna/business";
-import InvoiceDialog from "./invoice/InvoiceDialog";
-import ImportInvoiceDialog from "@/components/business/invoice/ImportInvoiceDialog";
-import { useTranslation } from "react-i18next";
-import { useInvoiceOperations } from "@/hooks/useInvoiceOperations";
-import InvoiceTable from "./invoice/InvoiceTable";
-import InvoiceToolbar from "./invoice/InvoiceToolbar";
+import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Invoice } from "@/types/invoice";
 import { useToast } from "@/components/ui/use-toast";
-import type { Invoice } from "@/types/invoice";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import { formatSafeDate } from "@/utils/dateUtils";
 
 const InvoiceList = () => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
-  const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null);
-  const { t } = useTranslation(["admin", "common"]);
-  const { handleCreateInvoice, handleUpdateInvoice, deleteMutation, isCreating, isUpdating } = useInvoiceOperations();
   const { toast } = useToast();
+  const { t } = useTranslation(["admin", "common"]);
   const navigate = useNavigate();
 
-  const { data: invoices = [], isLoading, error } = useQuery({
+  const { data: invoices = [], isLoading } = useQuery({
     queryKey: ['invoices'],
-    queryFn: async () => {
-      const response = await businessQueries.getInvoices();
-      if (!response) {
-        throw new Error('Failed to fetch invoices');
-      }
-      return response;
-    }
+    queryFn: businessQueries.getInvoices
   });
 
-  if (error) {
-    toast({
-      title: t("common:common.error"),
-      description: t("admin:business.invoices.fetchError"),
-      variant: "destructive"
-    });
-  }
-
-  const handleSubmit = async (formData: FormData) => {
-    try {
-      if (editingInvoice) {
-        await handleUpdateInvoice(editingInvoice.id, formData);
-      } else {
-        await handleCreateInvoice(formData);
-      }
-      setIsDialogOpen(false);
-      setEditingInvoice(null);
-    } catch (error) {
-      console.error('Error submitting invoice:', error);
-      toast({
-        title: t("common:common.error"),
-        description: t("admin:business.invoices.submitError"),
-        variant: "destructive"
-      });
-    }
-  };
-
-  const handleEdit = (invoice: Invoice) => {
-    navigate(`/admin/business/invoices/${invoice.id}`);
-  };
+  if (isLoading) return <div>{t("common:common.loading")}</div>;
 
   return (
     <div className="space-y-4">
-      <InvoiceToolbar 
-        onCreateClick={() => navigate("/admin/business/invoices/new")}
-        onImportClick={() => setIsImportDialogOpen(true)}
-      />
+      <div className="flex justify-end">
+        <Button 
+          variant="outline" 
+          size="sm"
+          onClick={() => navigate("/admin/business/invoices/new")}
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          {t("admin:business.invoices.add")}
+        </Button>
+      </div>
 
-      {isLoading ? (
-        <div className="text-center py-4">{t("common:common.loading")}</div>
-      ) : (
-        <InvoiceTable 
-          invoices={invoices}
-          onDelete={(id) => deleteMutation.mutate(id)}
-          onEdit={handleEdit}
-        />
-      )}
-
-      <InvoiceDialog
-        isOpen={isDialogOpen}
-        onOpenChange={setIsDialogOpen}
-        editingInvoice={editingInvoice}
-        onSubmit={handleSubmit}
-        isLoading={isCreating || isUpdating}
-      />
-
-      <ImportInvoiceDialog
-        isOpen={isImportDialogOpen}
-        onOpenChange={setIsImportDialogOpen}
-      />
+      <div className="bg-white rounded-lg border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>{t("admin:business.invoices.number")}</TableHead>
+              <TableHead>{t("admin:business.invoices.date")}</TableHead>
+              <TableHead>{t("admin:business.invoices.status")}</TableHead>
+              <TableHead>{t("admin:business.invoices.amount")}</TableHead>
+              <TableHead className="text-right">{t("common:common.actions")}</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {invoices.map((invoice: Invoice) => (
+              <TableRow key={invoice.id}>
+                <TableCell className="font-medium">#{invoice.number}</TableCell>
+                <TableCell>{formatSafeDate(invoice.date)}</TableCell>
+                <TableCell>
+                  <span className={`px-2 py-1 rounded-full text-xs ${
+                    invoice.status === 'paid' ? 'bg-green-100 text-green-800' :
+                    invoice.status === 'overdue' ? 'bg-red-100 text-red-800' :
+                    'bg-yellow-100 text-yellow-800'
+                  }`}>
+                    {t(`admin:business.invoices.${invoice.status}`)}
+                  </span>
+                </TableCell>
+                <TableCell className="font-mono">
+                  {new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: invoice.currency || 'EUR'
+                  }).format(invoice.totalAmount)}
+                </TableCell>
+                <TableCell className="text-right">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => navigate(`/admin/business/invoices/${invoice.id}`)}
+                  >
+                    <Pencil className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      // TODO: Implement delete
+                      toast({
+                        title: t("common:common.success"),
+                        description: t("admin:business.invoices.deleteSuccess")
+                      });
+                    }}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 };

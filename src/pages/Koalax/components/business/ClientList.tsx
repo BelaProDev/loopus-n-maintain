@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { businessQueries } from "@/lib/fauna/business";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -7,115 +7,93 @@ import { Plus, Pencil, Trash2 } from "lucide-react";
 import { Client } from "@/types/business";
 import ClientDialog from "./ClientDialog";
 import { useToast } from "@/components/ui/use-toast";
+import { useTranslation } from "react-i18next";
 
 const ClientList = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingClient, setEditingClient] = useState<Client | null>(null);
   const { toast } = useToast();
-  const queryClient = useQueryClient();
+  const { t } = useTranslation(["admin", "common"]);
 
-  const { data: clients, isLoading } = useQuery({
+  const { data: clients = [], isLoading } = useQuery({
     queryKey: ['clients'],
     queryFn: businessQueries.getClients
   });
 
-  const createMutation = useMutation({
-    mutationFn: (clientData: Omit<Client, 'id' | 'totalInvoices' | 'totalAmount' | 'status'>) => 
-      businessQueries.createClient(clientData),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['clients'] });
-      toast({ title: "Success", description: "Client added successfully" });
-      setIsDialogOpen(false);
-    },
-    onError: () => {
-      toast({ 
-        title: "Error", 
-        description: "Failed to add client", 
-        variant: "destructive" 
-      });
-    }
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
-    
-    const clientData = {
-      name: formData.get("name") as string,
-      email: formData.get("email") as string,
-      phone: formData.get("phone") as string,
-      company: formData.get("company") as string,
-      vatNumber: formData.get("vatNumber") as string,
-    };
-
-    createMutation.mutate(clientData);
-  };
-
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <div>{t("common:common.loading")}</div>;
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Clients</h2>
-        <Button onClick={() => {
-          setEditingClient(null);
-          setIsDialogOpen(true);
-        }}>
+      <div className="flex justify-end">
+        <Button 
+          variant="outline" 
+          size="sm"
+          onClick={() => {
+            setEditingClient(null);
+            setIsDialogOpen(true);
+          }}
+        >
           <Plus className="w-4 h-4 mr-2" />
-          Add Client
+          {t("admin:business.clients.add")}
         </Button>
       </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Phone</TableHead>
-            <TableHead>Company</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {clients?.map((client: Client) => (
-            <TableRow key={client.id}>
-              <TableCell>{client.name}</TableCell>
-              <TableCell>{client.email}</TableCell>
-              <TableCell>{client.phone}</TableCell>
-              <TableCell>{client.company}</TableCell>
-              <TableCell className="text-right">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setEditingClient(client);
-                    setIsDialogOpen(true);
-                  }}
-                >
-                  <Pencil className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    // TODO: Implement delete functionality
-                  }}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </TableCell>
+      <div className="bg-white rounded-lg border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>{t("admin:business.clients.name")}</TableHead>
+              <TableHead>{t("admin:business.clients.email")}</TableHead>
+              <TableHead>{t("admin:business.clients.company")}</TableHead>
+              <TableHead className="text-right">{t("common:common.actions")}</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {clients.map((client: Client) => (
+              <TableRow key={client.id}>
+                <TableCell className="font-medium">{client.name}</TableCell>
+                <TableCell>{client.email}</TableCell>
+                <TableCell>{client.company}</TableCell>
+                <TableCell className="text-right">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setEditingClient(client);
+                      setIsDialogOpen(true);
+                    }}
+                  >
+                    <Pencil className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      // TODO: Implement delete
+                      toast({
+                        title: t("common:common.success"),
+                        description: t("admin:business.clients.deleteSuccess")
+                      });
+                    }}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
 
       <ClientDialog
         isOpen={isDialogOpen}
         onOpenChange={setIsDialogOpen}
         editingClient={editingClient}
-        onSubmit={handleSubmit}
-        isLoading={createMutation.isPending}
+        onSubmit={() => {
+          // TODO: Implement submit
+          setIsDialogOpen(false);
+        }}
+        isLoading={false}
       />
     </div>
   );

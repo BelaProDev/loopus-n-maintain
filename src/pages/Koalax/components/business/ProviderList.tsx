@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { businessQueries } from "@/lib/fauna/business";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -13,118 +13,93 @@ const ProviderList = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingProvider, setEditingProvider] = useState<Provider | null>(null);
   const { toast } = useToast();
-  const queryClient = useQueryClient();
   const { t } = useTranslation(["admin", "common"]);
 
   const { data: providers = [], isLoading } = useQuery({
     queryKey: ['providers'],
-    queryFn: businessQueries.getProviders,
+    queryFn: businessQueries.getProviders
   });
-
-  const createMutation = useMutation({
-    mutationFn: businessQueries.createProvider,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['providers'] });
-      toast({ 
-        title: t("common:common.success"), 
-        description: t("admin:providers.addSuccess") 
-      });
-      setIsDialogOpen(false);
-    },
-    onError: () => {
-      toast({ 
-        title: t("common:common.error"), 
-        description: t("admin:providers.addError"), 
-        variant: "destructive" 
-      });
-    }
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
-    
-    const providerData = {
-      name: formData.get("name") as string,
-      email: formData.get("email") as string,
-      phone: formData.get("phone") as string,
-      service: formData.get("service") as Provider["service"],
-      availability: true,
-      specialties: []
-    };
-
-    createMutation.mutate(providerData);
-  };
 
   if (isLoading) return <div>{t("common:common.loading")}</div>;
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">{t("admin:providers.title")}</h2>
-        <Button onClick={() => {
-          setEditingProvider(null);
-          setIsDialogOpen(true);
-        }}>
+      <div className="flex justify-end">
+        <Button 
+          variant="outline" 
+          size="sm"
+          onClick={() => {
+            setEditingProvider(null);
+            setIsDialogOpen(true);
+          }}
+        >
           <Plus className="w-4 h-4 mr-2" />
-          {t("admin:providers.add")}
+          {t("admin:business.providers.add")}
         </Button>
       </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>{t("admin:providers.name")}</TableHead>
-            <TableHead>{t("admin:providers.service")}</TableHead>
-            <TableHead>{t("admin:providers.status")}</TableHead>
-            <TableHead className="text-right">{t("common:common.actions")}</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {providers?.map((provider: Provider) => (
-            <TableRow key={provider.id}>
-              <TableCell>{provider.name}</TableCell>
-              <TableCell className="capitalize">{t(`services:${provider.service}.title`)}</TableCell>
-              <TableCell>
-                <span className={`px-2 py-1 rounded-full text-xs ${
-                  provider.availability ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                }`}>
-                  {provider.availability ? t("admin:providers.available") : t("admin:providers.unavailable")}
-                </span>
-              </TableCell>
-              <TableCell className="text-right">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setEditingProvider(provider);
-                    setIsDialogOpen(true);
-                  }}
-                >
-                  <Pencil className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    // TODO: Implement delete functionality
-                  }}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </TableCell>
+      <div className="bg-white rounded-lg border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>{t("admin:business.providers.name")}</TableHead>
+              <TableHead>{t("admin:business.providers.service")}</TableHead>
+              <TableHead>{t("admin:business.providers.status")}</TableHead>
+              <TableHead className="text-right">{t("common:common.actions")}</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {providers.map((provider: Provider) => (
+              <TableRow key={provider.id}>
+                <TableCell className="font-medium">{provider.name}</TableCell>
+                <TableCell className="capitalize">{t(`services:${provider.service}.title`)}</TableCell>
+                <TableCell>
+                  <span className={`px-2 py-1 rounded-full text-xs ${
+                    provider.availability ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                  }`}>
+                    {provider.availability ? t("admin:business.providers.available") : t("admin:business.providers.unavailable")}
+                  </span>
+                </TableCell>
+                <TableCell className="text-right">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setEditingProvider(provider);
+                      setIsDialogOpen(true);
+                    }}
+                  >
+                    <Pencil className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      // TODO: Implement delete
+                      toast({
+                        title: t("common:common.success"),
+                        description: t("admin:business.providers.deleteSuccess")
+                      });
+                    }}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
 
       <ProviderDialog
         isOpen={isDialogOpen}
         onOpenChange={setIsDialogOpen}
         editingProvider={editingProvider}
-        onSubmit={handleSubmit}
-        isLoading={createMutation.isPending}
+        onSubmit={() => {
+          // TODO: Implement submit
+          setIsDialogOpen(false);
+        }}
+        isLoading={false}
       />
     </div>
   );

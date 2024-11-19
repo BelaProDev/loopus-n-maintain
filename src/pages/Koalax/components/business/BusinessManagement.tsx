@@ -1,63 +1,89 @@
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Receipt, Users, UserCog } from "lucide-react";
-import { useNavigate, useLocation, Outlet } from "react-router-dom";
+import { Card } from "@/components/ui/card";
+import { useQuery } from "@tanstack/react-query";
+import { businessQueries } from "@/lib/fauna/business";
 import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import ClientList from "./ClientList";
+import ProviderList from "./ProviderList";
+import InvoiceList from "./InvoiceList";
 
 const BusinessManagement = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
   const { t } = useTranslation(["admin"]);
-  
-  // Extract the current tab from the URL path
-  const currentTab = location.pathname.split('/').pop() || 'invoices';
+  const navigate = useNavigate();
 
-  const handleTabChange = (value: string) => {
-    navigate(`/admin/business/${value}`);
-  };
+  const { data: clients = [] } = useQuery({
+    queryKey: ['clients'],
+    queryFn: businessQueries.getClients
+  });
+
+  const { data: providers = [] } = useQuery({
+    queryKey: ['providers'],
+    queryFn: businessQueries.getProviders
+  });
+
+  const { data: invoices = [] } = useQuery({
+    queryKey: ['invoices'],
+    queryFn: businessQueries.getInvoices
+  });
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
-      <div className="flex justify-between items-center mb-6">
+    <div className="container mx-auto py-6 space-y-8">
+      <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold tracking-tight">
           {t("admin:business.title")}
         </h1>
+        <div className="space-x-4">
+          <Button 
+            variant="outline"
+            onClick={() => navigate("/admin/business/invoices/new")}
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            {t("admin:business.invoices.add")}
+          </Button>
+        </div>
       </div>
-      
-      <div className="bg-background rounded-lg border shadow-sm">
-        <Tabs 
-          defaultValue={currentTab} 
-          value={currentTab} 
-          onValueChange={handleTabChange} 
-          className="w-full"
-        >
-          <TabsList className="w-full justify-start border-b bg-muted/50 p-0 h-auto">
-            <TabsTrigger 
-              value="invoices"
-              className="flex items-center px-4 py-3 data-[state=active]:bg-background data-[state=active]:shadow-none"
-            >
-              <Receipt className="w-4 h-4 mr-2" />
-              {t("admin:business.invoices.title")}
-            </TabsTrigger>
-            <TabsTrigger 
-              value="clients"
-              className="flex items-center px-4 py-3 data-[state=active]:bg-background data-[state=active]:shadow-none"
-            >
-              <Users className="w-4 h-4 mr-2" />
-              {t("admin:business.clients.title")}
-            </TabsTrigger>
-            <TabsTrigger 
-              value="providers"
-              className="flex items-center px-4 py-3 data-[state=active]:bg-background data-[state=active]:shadow-none"
-            >
-              <UserCog className="w-4 h-4 mr-2" />
-              {t("admin:business.providers.title")}
-            </TabsTrigger>
-          </TabsList>
 
-          <div className="p-6">
-            <Outlet />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Clients Section */}
+        <Card className="p-6 bg-blue-50 border-blue-200">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-semibold text-blue-900">
+              {t("admin:business.clients.title")}
+            </h2>
+            <span className="text-sm text-blue-600 font-medium">
+              {clients.length} {t("admin:business.clients.total")}
+            </span>
           </div>
-        </Tabs>
+          <ClientList />
+        </Card>
+
+        {/* Providers Section */}
+        <Card className="p-6 bg-blue-50 border-blue-200">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-semibold text-blue-900">
+              {t("admin:business.providers.title")}
+            </h2>
+            <span className="text-sm text-blue-600 font-medium">
+              {providers.length} {t("admin:business.providers.total")}
+            </span>
+          </div>
+          <ProviderList />
+        </Card>
+
+        {/* Invoices Section - Full Width */}
+        <Card className="p-6 bg-blue-50 border-blue-200 lg:col-span-2">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-semibold text-blue-900">
+              {t("admin:business.invoices.title")}
+            </h2>
+            <span className="text-sm text-blue-600 font-medium">
+              {invoices.length} {t("admin:business.invoices.total")}
+            </span>
+          </div>
+          <InvoiceList />
+        </Card>
       </div>
     </div>
   );
