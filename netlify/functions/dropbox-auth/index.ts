@@ -20,6 +20,10 @@ const handler: Handler = async (event) => {
     
     return {
       statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
       body: JSON.stringify({ authUrl, state })
     };
   }
@@ -40,12 +44,11 @@ const handler: Handler = async (event) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Basic ${Buffer.from(`${DROPBOX_APP_KEY}:${DROPBOX_APP_SECRET}`).toString('base64')}`
         },
         body: new URLSearchParams({
           code,
           grant_type: 'authorization_code',
-          client_id: DROPBOX_APP_KEY,
-          client_secret: DROPBOX_APP_SECRET,
           redirect_uri: REDIRECT_URI,
         }).toString(),
       });
@@ -58,6 +61,10 @@ const handler: Handler = async (event) => {
 
       return {
         statusCode: 200,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type',
+        },
         body: JSON.stringify(data)
       };
     } catch (error) {
