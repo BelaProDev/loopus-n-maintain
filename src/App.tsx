@@ -34,7 +34,7 @@ import Koalax from "./pages/Koalax";
 import Documentation from "./pages/Documentation";
 import EmailManagement from "./pages/Koalax/components/email/EmailManagement";
 import SiteSettings from "./pages/Koalax/SiteSettings";
-import BusinessManagement from "./pages/Koalax/components/BusinessManagement";
+import BusinessManagement from "./pages/Koalax/components/business/BusinessManagement";
 import MessageManagement from "./pages/Koalax/components/messages/MessageManagement";
 import MessageList from "./pages/Koalax/components/messages/MessageList";
 import WhatsAppSettings from "./pages/Koalax/components/WhatsAppSettings";
@@ -51,11 +51,6 @@ import Audio from "./pages/tools/Audio";
 import Chat from "./pages/tools/Chat";
 import PhotoGallery from "./pages/tools/PhotoGallery";
 import Invoicing from "./pages/tools/Invoicing";
-
-// Import business components
-import ClientList from "./pages/Koalax/components/business/ClientList";
-import ProviderList from "./pages/Koalax/components/business/ProviderList";
-import InvoiceList from "./pages/Koalax/components/business/InvoiceList";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -122,14 +117,7 @@ const App = () => {
                           <Route path="whatsapp" element={<WhatsAppSettings />} />
                           <Route path="logo" element={<LogoSettings />} />
                         </Route>
-                        <Route path="business">
-                          <Route index element={<BusinessManagement />} />
-                          <Route path="invoices" element={<InvoiceList />} />
-                          <Route path="invoices/new" element={<InvoicePage />} />
-                          <Route path="invoices/:invoiceId" element={<InvoicePage />} />
-                          <Route path="clients" element={<ClientList />} />
-                          <Route path="providers" element={<ProviderList />} />
-                        </Route>
+                        <Route path="business" element={<BusinessManagement />} />
                         <Route path="messages" element={<MessageManagement />}>
                           <Route index element={<MessageList service="electrics" />} />
                           <Route path="electrics" element={<MessageList service="electrics" />} />
