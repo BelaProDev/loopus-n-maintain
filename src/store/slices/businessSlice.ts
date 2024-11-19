@@ -1,11 +1,6 @@
-import { createSlice, createAsyncThunk, PayloadAction, Action } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import type { Client, Provider, Invoice } from '@/types/business';
 import { businessQueries } from '@/lib/db/businessDb';
-
-// Simple async thunks
-export const fetchClients = createAsyncThunk('business/fetchClients', businessQueries.getClients);
-export const fetchProviders = createAsyncThunk('business/fetchProviders', businessQueries.getProviders);
-export const fetchInvoices = createAsyncThunk('business/fetchInvoices', businessQueries.getInvoices);
 
 interface BusinessState {
   clients: Client[];
@@ -23,53 +18,64 @@ const initialState: BusinessState = {
   error: null,
 };
 
-interface AsyncThunkAction extends Action {
-  payload?: any;
-  error?: { message: string };
-}
+export const fetchClients = createAsyncThunk('business/fetchClients', async () => {
+  return await businessQueries.getClients();
+});
+
+export const fetchProviders = createAsyncThunk('business/fetchProviders', async () => {
+  return await businessQueries.getProviders();
+});
+
+export const fetchInvoices = createAsyncThunk('business/fetchInvoices', async () => {
+  return await businessQueries.getInvoices();
+});
 
 const businessSlice = createSlice({
   name: 'business',
   initialState,
-  reducers: {
-    resetState: () => initialState,
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
-      .addMatcher(
-        (action): action is AsyncThunkAction => action.type.endsWith('/pending'),
-        (state) => {
-          state.loading = true;
-          state.error = null;
-        }
-      )
-      .addMatcher(
-        (action): action is AsyncThunkAction => action.type.endsWith('/fulfilled'),
-        (state, action) => {
-          state.loading = false;
-          const actionType = action.type.split('/')[1];
-          switch (actionType) {
-            case 'fetchClients':
-              state.clients = action.payload;
-              break;
-            case 'fetchProviders':
-              state.providers = action.payload;
-              break;
-            case 'fetchInvoices':
-              state.invoices = action.payload;
-              break;
-          }
-        }
-      )
-      .addMatcher(
-        (action): action is AsyncThunkAction => action.type.endsWith('/rejected'),
-        (state, action) => {
-          state.loading = false;
-          state.error = action.error?.message || 'An error occurred';
-        }
-      );
+      // Fetch Clients
+      .addCase(fetchClients.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchClients.fulfilled, (state, action) => {
+        state.loading = false;
+        state.clients = action.payload;
+      })
+      .addCase(fetchClients.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Failed to fetch clients';
+      })
+      // Fetch Providers
+      .addCase(fetchProviders.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchProviders.fulfilled, (state, action) => {
+        state.loading = false;
+        state.providers = action.payload;
+      })
+      .addCase(fetchProviders.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Failed to fetch providers';
+      })
+      // Fetch Invoices
+      .addCase(fetchInvoices.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchInvoices.fulfilled, (state, action) => {
+        state.loading = false;
+        state.invoices = action.payload;
+      })
+      .addCase(fetchInvoices.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Failed to fetch invoices';
+      });
   },
 });
 
-export const { resetState } = businessSlice.actions;
 export default businessSlice.reducer;
