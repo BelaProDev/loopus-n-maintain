@@ -15,11 +15,9 @@ const InvoicePage = () => {
   const { toast } = useToast();
   const { handleCreateInvoice, handleUpdateInvoice, isCreating, isUpdating } = useInvoiceOperations();
 
-  const { data: invoice } = useQuery({
+  const { data: invoice, isLoading } = useQuery({
     queryKey: ['invoices', invoiceId],
-    queryFn: () => invoiceId ? businessQueries.getInvoices().then(invoices => 
-      invoices.find(inv => inv.id === invoiceId)
-    ) : null,
+    queryFn: () => invoiceId ? businessQueries.getInvoiceById(invoiceId) : null,
     enabled: !!invoiceId
   });
 
@@ -27,15 +25,17 @@ const InvoicePage = () => {
     try {
       if (invoiceId) {
         await handleUpdateInvoice(invoiceId, formData);
+        toast({
+          title: t("common:status.success"),
+          description: t("admin:business.invoices.updateSuccess")
+        });
       } else {
         await handleCreateInvoice(formData);
+        toast({
+          title: t("common:status.success"),
+          description: t("admin:business.invoices.createSuccess")
+        });
       }
-      toast({
-        title: t("common:status.success"),
-        description: invoiceId 
-          ? t("admin:business.invoices.updateSuccess")
-          : t("admin:business.invoices.createSuccess")
-      });
       navigate("/admin/business/invoices");
     } catch (error) {
       toast({
@@ -46,11 +46,15 @@ const InvoicePage = () => {
     }
   };
 
+  if (isLoading) {
+    return <div className="p-8 text-center">{t("common:status.loading")}</div>;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="border-b px-6 py-4 flex items-center justify-between bg-white shadow-sm">
         <h1 className="text-2xl font-semibold text-gray-900">
-          {invoice ? t("admin:business.invoices.edit") : t("admin:business.invoices.add")}
+          {invoiceId ? t("admin:business.invoices.edit") : t("admin:business.invoices.add")}
         </h1>
         <Button
           variant="ghost"

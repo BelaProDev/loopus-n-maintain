@@ -6,8 +6,8 @@ import InvoiceTable from "./InvoiceTable";
 import InvoiceToolbar from "./InvoiceToolbar";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
-import ImportInvoiceDialog from "@/components/business/invoice/ImportInvoiceDialog";
 import { useState } from "react";
+import ImportInvoiceDialog from "@/components/business/invoice/ImportInvoiceDialog";
 
 const InvoiceList = () => {
   const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
@@ -18,18 +18,36 @@ const InvoiceList = () => {
 
   const { data: invoices = [], isLoading, error } = useQuery({
     queryKey: ['invoices'],
-    queryFn: async () => {
-      const response = await businessQueries.getInvoices();
-      if (!response) {
-        throw new Error('Failed to fetch invoices');
-      }
-      return response;
-    }
+    queryFn: businessQueries.getInvoices
   });
+
+  const handleCreateClick = () => {
+    navigate("/admin/business/invoices/new");
+  };
+
+  const handleEditClick = (invoiceId: string) => {
+    navigate(`/admin/business/invoices/${invoiceId}`);
+  };
+
+  const handleDeleteClick = async (invoiceId: string) => {
+    try {
+      await deleteMutation.mutateAsync(invoiceId);
+      toast({
+        title: t("common:status.success"),
+        description: t("admin:business.invoices.deleteSuccess")
+      });
+    } catch (error) {
+      toast({
+        title: t("common:status.error"),
+        description: t("admin:business.invoices.deleteError"),
+        variant: "destructive"
+      });
+    }
+  };
 
   if (error) {
     toast({
-      title: t("common:common.error"),
+      title: t("common:status.error"),
       description: t("admin:business.invoices.fetchError"),
       variant: "destructive"
     });
@@ -38,7 +56,7 @@ const InvoiceList = () => {
   return (
     <div className="space-y-4">
       <InvoiceToolbar 
-        onCreateClick={() => navigate("/admin/business/invoices/new")}
+        onCreateClick={handleCreateClick}
         onImportClick={() => setIsImportDialogOpen(true)}
       />
 
@@ -47,8 +65,8 @@ const InvoiceList = () => {
       ) : (
         <InvoiceTable 
           invoices={invoices}
-          onDelete={(id) => deleteMutation.mutate(id)}
-          onEdit={(invoice) => navigate(`/admin/business/invoices/${invoice.id}`)}
+          onDelete={handleDeleteClick}
+          onEdit={handleEditClick}
         />
       )}
 

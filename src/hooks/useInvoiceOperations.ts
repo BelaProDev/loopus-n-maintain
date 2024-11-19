@@ -13,18 +13,6 @@ export const useInvoiceOperations = () => {
     mutationFn: (dto: CreateInvoiceDTO) => invoiceService.createInvoice(dto),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['invoices'] });
-      toast({ 
-        title: t("common:common.success"), 
-        description: t("admin:business.invoices.addSuccess") 
-      });
-    },
-    onError: (error) => {
-      console.error('Create invoice error:', error);
-      toast({ 
-        title: t("common:common.error"), 
-        description: t("admin:business.invoices.addError"), 
-        variant: "destructive" 
-      });
     }
   });
 
@@ -34,18 +22,6 @@ export const useInvoiceOperations = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['invoices'] });
-      toast({ 
-        title: t("common:common.success"), 
-        description: t("admin:business.invoices.updateSuccess") 
-      });
-    },
-    onError: (error) => {
-      console.error('Update invoice error:', error);
-      toast({ 
-        title: t("common:common.error"), 
-        description: t("admin:business.invoices.updateError"), 
-        variant: "destructive" 
-      });
     }
   });
 
@@ -53,59 +29,23 @@ export const useInvoiceOperations = () => {
     mutationFn: invoiceService.deleteInvoice,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['invoices'] });
-      toast({ 
-        title: t("common:common.success"), 
-        description: t("admin:business.invoices.deleteSuccess") 
-      });
-    },
-    onError: (error) => {
-      console.error('Delete invoice error:', error);
-      toast({ 
-        title: t("common:common.error"), 
-        description: t("admin:business.invoices.deleteError"), 
-        variant: "destructive" 
-      });
     }
   });
 
-  const parseInvoiceItems = (itemsString: string) => {
-    try {
-      const items = JSON.parse(itemsString);
-      if (!Array.isArray(items)) {
-        throw new Error('Items must be an array');
-      }
-      return items.map(item => ({
-        ...item,
-        quantity: Number(item.quantity),
-        unitPrice: Number(item.unitPrice),
-        vatRate: Number(item.vatRate),
-        total: Number(item.total)
-      }));
-    } catch (error) {
-      console.error('Error parsing invoice items:', error);
-      return [];
-    }
-  };
-
   const handleCreateInvoice = async (formData: FormData) => {
-    const items = parseInvoiceItems(formData.get("items") as string);
-    
-    const dto: CreateInvoiceDTO = {
-      clientId: formData.get("clientId") as string,
-      providerId: formData.get("providerId") as string,
-      notes: formData.get("notes") as string,
-      items,
-      paymentTerms: formData.get("paymentTerms") as string,
-      currency: formData.get("currency") as string
-    };
-
+    const dto = await prepareInvoiceDTO(formData);
     await createMutation.mutateAsync(dto);
   };
 
   const handleUpdateInvoice = async (id: string, formData: FormData) => {
-    const items = parseInvoiceItems(formData.get("items") as string);
+    const dto = await prepareInvoiceDTO(formData);
+    await updateMutation.mutateAsync({ id, dto });
+  };
+
+  const prepareInvoiceDTO = async (formData: FormData): Promise<CreateInvoiceDTO> => {
+    const items = JSON.parse(formData.get("items") as string);
     
-    const dto: CreateInvoiceDTO = {
+    return {
       clientId: formData.get("clientId") as string,
       providerId: formData.get("providerId") as string,
       notes: formData.get("notes") as string,
@@ -113,8 +53,6 @@ export const useInvoiceOperations = () => {
       paymentTerms: formData.get("paymentTerms") as string,
       currency: formData.get("currency") as string
     };
-
-    await updateMutation.mutateAsync({ id, dto });
   };
 
   return {
