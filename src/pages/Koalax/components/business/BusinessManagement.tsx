@@ -1,7 +1,6 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Receipt, Users, UserCog } from "lucide-react";
 import { useNavigate, useLocation, Outlet } from "react-router-dom";
-import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 const BusinessManagement = () => {
@@ -9,14 +8,8 @@ const BusinessManagement = () => {
   const location = useLocation();
   const { t } = useTranslation(["admin"]);
   
+  // Extract the current tab from the URL path
   const currentTab = location.pathname.split('/').pop() || 'invoices';
-
-  useEffect(() => {
-    // Only redirect if we're exactly at /admin/business
-    if (location.pathname === '/admin/business') {
-      navigate('/admin/business/invoices', { replace: true });
-    }
-  }, []); // Only run once on mount
 
   const handleTabChange = (value: string) => {
     navigate(`/admin/business/${value}`);
@@ -37,24 +30,24 @@ const BusinessManagement = () => {
           onValueChange={handleTabChange} 
           className="w-full"
         >
-          <TabsList className="w-full justify-start border-b bg-muted/50 p-0">
+          <TabsList className="w-full justify-start border-b bg-muted/50 p-0 h-auto">
             <TabsTrigger 
               value="invoices"
-              className="data-[state=active]:bg-background data-[state=active]:shadow-none px-4 py-3"
+              className="flex items-center px-4 py-3 data-[state=active]:bg-background data-[state=active]:shadow-none"
             >
               <Receipt className="w-4 h-4 mr-2" />
               {t("admin:business.invoices.title")}
             </TabsTrigger>
             <TabsTrigger 
               value="clients"
-              className="data-[state=active]:bg-background data-[state=active]:shadow-none px-4 py-3"
+              className="flex items-center px-4 py-3 data-[state=active]:bg-background data-[state=active]:shadow-none"
             >
               <Users className="w-4 h-4 mr-2" />
               {t("admin:business.clients.title")}
             </TabsTrigger>
             <TabsTrigger 
               value="providers"
-              className="data-[state=active]:bg-background data-[state=active]:shadow-none px-4 py-3"
+              className="flex items-center px-4 py-3 data-[state=active]:bg-background data-[state=active]:shadow-none"
             >
               <UserCog className="w-4 h-4 mr-2" />
               {t("admin:business.providers.title")}
