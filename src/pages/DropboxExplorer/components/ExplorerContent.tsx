@@ -4,7 +4,6 @@ import { FileList } from './FileList';
 import { ExplorerToolbar } from './ExplorerToolbar';
 import { NavigationBreadcrumb } from './NavigationBreadcrumb';
 import { toast } from 'sonner';
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { DropboxEntry } from '@/types/dropbox';
 
 export const ExplorerContent = () => {
@@ -137,48 +136,36 @@ export const ExplorerContent = () => {
   };
 
   return (
-    <ResizablePanelGroup direction="horizontal" className="min-h-screen">
-      <ResizablePanel defaultSize={25} minSize={20}>
-        <div className="h-full p-4 border-r">
-          <h2 className="font-semibold mb-4">Favorites</h2>
-        </div>
-      </ResizablePanel>
+    <div className="container mx-auto p-4 space-y-4">
+      <h1 className="text-3xl font-bold">Dropbox Explorer</h1>
       
-      <ResizableHandle />
+      <NavigationBreadcrumb 
+        currentPath={currentPath} 
+        onNavigate={setCurrentPath} 
+      />
       
-      <ResizablePanel defaultSize={75}>
-        <div className="container mx-auto p-4 space-y-4">
-          <h1 className="text-3xl font-bold">Dropbox Explorer</h1>
-          
-          <NavigationBreadcrumb 
-            currentPath={currentPath} 
-            onNavigate={setCurrentPath} 
-          />
-          
-          <ExplorerToolbar
-            onFileSelect={handleFileSelect}
-            isUploading={false}
-            onViewModeChange={setViewMode}
-            viewMode={viewMode}
-            onRefresh={fetchFiles}
-            onCreateFolder={handleCreateFolder}
-            currentPath={currentPath}
-          />
-          
-          {isLoading ? (
-            <div className="flex items-center justify-center h-64">
-              <p className="text-muted-foreground">Loading...</p>
-            </div>
-          ) : (
-            <FileList 
-              files={files} 
-              onNavigate={setCurrentPath}
-              onDrop={handleDrop}
-              currentPath={currentPath}
-            />
-          )}
+      <ExplorerToolbar
+        onFileSelect={handleFileSelect}
+        isUploading={false}
+        onViewModeChange={setViewMode}
+        viewMode={viewMode}
+        onRefresh={fetchFiles}
+        onCreateFolder={handleCreateFolder}
+        currentPath={currentPath}
+      />
+      
+      {isLoading ? (
+        <div className="flex items-center justify-center h-64">
+          <p className="text-muted-foreground">Loading...</p>
         </div>
-      </ResizablePanel>
-    </ResizablePanelGroup>
+      ) : (
+        <FileList 
+          files={files} 
+          onNavigate={setCurrentPath}
+          onDrop={handleDrop}
+          currentPath={currentPath}
+        />
+      )}
+    </div>
   );
 };
