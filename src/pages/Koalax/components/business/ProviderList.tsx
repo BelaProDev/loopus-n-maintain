@@ -20,7 +20,7 @@ const ProviderList = () => {
     queryFn: businessQueries.getProviders
   });
 
-  if (isLoading) return <div>{t("common:common.loading")}</div>;
+  if (isLoading) return <div className="text-gray-700">{t("common:common.loading")}</div>;
 
   return (
     <div className="space-y-4">
@@ -42,17 +42,17 @@ const ProviderList = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>{t("admin:business.providers.name")}</TableHead>
-              <TableHead>{t("admin:business.providers.service")}</TableHead>
-              <TableHead>{t("admin:business.providers.status")}</TableHead>
-              <TableHead className="text-right">{t("common:common.actions")}</TableHead>
+              <TableHead className="text-gray-900">{t("admin:business.providers.name")}</TableHead>
+              <TableHead className="text-gray-900">{t("admin:business.providers.service")}</TableHead>
+              <TableHead className="text-gray-900">{t("admin:business.providers.status")}</TableHead>
+              <TableHead className="text-right text-gray-900">{t("common:common.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {providers.map((provider: Provider) => (
               <TableRow key={provider.id}>
-                <TableCell className="font-medium">{provider.name}</TableCell>
-                <TableCell className="capitalize">{t(`services:${provider.service}.title`)}</TableCell>
+                <TableCell className="font-medium text-gray-900">{provider.name}</TableCell>
+                <TableCell className="capitalize text-gray-700">{t(`services:${provider.service}.title`)}</TableCell>
                 <TableCell>
                   <span className={`px-2 py-1 rounded-full text-xs ${
                     provider.availability ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
@@ -75,7 +75,6 @@ const ProviderList = () => {
                     variant="ghost"
                     size="sm"
                     onClick={() => {
-                      // TODO: Implement delete
                       toast({
                         title: t("common:common.success"),
                         description: t("admin:business.providers.deleteSuccess")
@@ -96,7 +95,6 @@ const ProviderList = () => {
         onOpenChange={setIsDialogOpen}
         editingProvider={editingProvider}
         onSubmit={() => {
-          // TODO: Implement submit
           setIsDialogOpen(false);
         }}
         isLoading={false}

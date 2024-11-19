@@ -20,7 +20,7 @@ const ClientList = () => {
     queryFn: businessQueries.getClients
   });
 
-  if (isLoading) return <div>{t("common:common.loading")}</div>;
+  if (isLoading) return <div className="text-gray-700">{t("common:common.loading")}</div>;
 
   return (
     <div className="space-y-4">
@@ -42,18 +42,18 @@ const ClientList = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>{t("admin:business.clients.name")}</TableHead>
-              <TableHead>{t("admin:business.clients.email")}</TableHead>
-              <TableHead>{t("admin:business.clients.company")}</TableHead>
-              <TableHead className="text-right">{t("common:common.actions")}</TableHead>
+              <TableHead className="text-gray-900">{t("admin:business.clients.name")}</TableHead>
+              <TableHead className="text-gray-900">{t("admin:business.clients.email")}</TableHead>
+              <TableHead className="text-gray-900">{t("admin:business.clients.company")}</TableHead>
+              <TableHead className="text-right text-gray-900">{t("common:common.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {clients.map((client: Client) => (
               <TableRow key={client.id}>
-                <TableCell className="font-medium">{client.name}</TableCell>
-                <TableCell>{client.email}</TableCell>
-                <TableCell>{client.company}</TableCell>
+                <TableCell className="font-medium text-gray-900">{client.name}</TableCell>
+                <TableCell className="text-gray-700">{client.email}</TableCell>
+                <TableCell className="text-gray-700">{client.company}</TableCell>
                 <TableCell className="text-right">
                   <Button
                     variant="ghost"
@@ -69,7 +69,6 @@ const ClientList = () => {
                     variant="ghost"
                     size="sm"
                     onClick={() => {
-                      // TODO: Implement delete
                       toast({
                         title: t("common:common.success"),
                         description: t("admin:business.clients.deleteSuccess")
@@ -90,7 +89,6 @@ const ClientList = () => {
         onOpenChange={setIsDialogOpen}
         editingClient={editingClient}
         onSubmit={() => {
-          // TODO: Implement submit
           setIsDialogOpen(false);
         }}
         isLoading={false}
