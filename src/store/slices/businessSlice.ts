@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction, Action } from '@reduxjs/toolkit';
 import type { Client, Provider, Invoice } from '@/types/business';
 import { businessQueries } from '@/lib/db/businessDb';
 
@@ -23,6 +23,11 @@ const initialState: BusinessState = {
   error: null,
 };
 
+interface AsyncThunkAction extends Action {
+  payload?: any;
+  error?: { message: string };
+}
+
 const businessSlice = createSlice({
   name: 'business',
   initialState,
@@ -32,14 +37,14 @@ const businessSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addMatcher(
-        (action) => action.type.endsWith('/pending'),
+        (action): action is AsyncThunkAction => action.type.endsWith('/pending'),
         (state) => {
           state.loading = true;
           state.error = null;
         }
       )
       .addMatcher(
-        (action) => action.type.endsWith('/fulfilled'),
+        (action): action is AsyncThunkAction => action.type.endsWith('/fulfilled'),
         (state, action) => {
           state.loading = false;
           const actionType = action.type.split('/')[1];
@@ -57,7 +62,7 @@ const businessSlice = createSlice({
         }
       )
       .addMatcher(
-        (action) => action.type.endsWith('/rejected'),
+        (action): action is AsyncThunkAction => action.type.endsWith('/rejected'),
         (state, action) => {
           state.loading = false;
           state.error = action.error?.message || 'An error occurred';
