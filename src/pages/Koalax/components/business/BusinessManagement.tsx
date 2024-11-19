@@ -1,5 +1,4 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Receipt, Users, UserCog } from "lucide-react";
 import { useNavigate, useLocation, Outlet } from "react-router-dom";
 import { useEffect } from "react";
@@ -13,10 +12,11 @@ const BusinessManagement = () => {
   const currentTab = location.pathname.split('/').pop() || 'invoices';
 
   useEffect(() => {
+    // Only redirect if we're exactly at /admin/business
     if (location.pathname === '/admin/business') {
-      navigate('/admin/business/invoices');
+      navigate('/admin/business/invoices', { replace: true });
     }
-  }, [location.pathname, navigate]);
+  }, []); // Only run once on mount
 
   const handleTabChange = (value: string) => {
     navigate(`/admin/business/${value}`);
