@@ -7,15 +7,15 @@ import { NavigationBreadcrumb } from './components/NavigationBreadcrumb';
 import { toast } from 'sonner';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { DropboxEntry } from '@/types/dropbox';
-import { files } from 'dropbox';
+import AuthMethodSelector from '@/components/business/dropbox/AuthMethodSelector';
 
 const DropboxExplorer = () => {
-  const { isAuthenticated, connect, client } = useDropbox();
+  const { isAuthenticated, connect, client, showAuthSelector } = useDropbox();
   const [currentPath, setCurrentPath] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const [files, setFiles] = useState<DropboxEntry[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const fetchFiles = async () => {
     if (!client) return;
     
@@ -27,7 +27,6 @@ const DropboxExplorer = () => {
         include_non_downloadable_files: true
       });
 
-      // Map the response entries to our DropboxEntry type
       const mappedEntries: DropboxEntry[] = response.result.entries.map(entry => {
         const baseMetadata = {
           '.tag': entry['.tag'],
@@ -60,7 +59,6 @@ const DropboxExplorer = () => {
           };
         }
 
-        // Handle deleted entries
         return {
           ...baseMetadata,
           '.tag': 'deleted' as const,
@@ -155,9 +153,14 @@ const DropboxExplorer = () => {
       <div className="flex flex-col items-center justify-center min-h-screen p-4">
         <h1 className="text-3xl font-bold mb-6">Dropbox Explorer</h1>
         <p className="text-muted-foreground mb-8">Connect to Dropbox to start exploring your files</p>
-        <Button onClick={connect}>
-          Connect to Dropbox
-        </Button>
+        
+        {showAuthSelector ? (
+          <AuthMethodSelector onSelectMethod={(method) => connect(method)} />
+        ) : (
+          <Button onClick={() => connect()}>
+            Connect to Dropbox
+          </Button>
+        )}
       </div>
     );
   }

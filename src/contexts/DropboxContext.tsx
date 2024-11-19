@@ -1,12 +1,15 @@
 import React, { createContext, useContext, useState } from 'react';
 import { Dropbox } from 'dropbox';
 import { toast } from 'sonner';
+import AuthMethodSelector from '@/components/business/dropbox/AuthMethodSelector';
 
 interface DropboxContextType {
   client: Dropbox | null;
   isAuthenticated: boolean;
-  connect: () => Promise<void>;
+  connect: (method?: 'callback' | 'offline') => Promise<void>;
   disconnect: () => void;
+  showAuthSelector: boolean;
+  setShowAuthSelector: (show: boolean) => void;
 }
 
 const DropboxContext = createContext<DropboxContextType | null>(null);
@@ -22,8 +25,9 @@ export const useDropbox = () => {
 export const DropboxProvider = ({ children }: { children: React.ReactNode }) => {
   const [client, setClient] = useState<Dropbox | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showAuthSelector, setShowAuthSelector] = useState(false);
 
-  const connect = async () => {
+  const connectWithCallback = async () => {
     try {
       const dbx = new Dropbox({
         clientId: import.meta.env.VITE_DROPBOX_APP_KEY,
@@ -31,7 +35,6 @@ export const DropboxProvider = ({ children }: { children: React.ReactNode }) => 
 
       const authUrl = `https://www.dropbox.com/oauth2/authorize?client_id=${import.meta.env.VITE_DROPBOX_APP_KEY}&response_type=token&redirect_uri=${encodeURIComponent(`${window.location.origin}/dropbox-explorer/callback`)}`;
 
-      // Open popup window
       const width = 800;
       const height = 600;
       const left = window.screen.width / 2 - width / 2;
@@ -47,22 +50,16 @@ export const DropboxProvider = ({ children }: { children: React.ReactNode }) => 
         throw new Error('Popup blocked. Please allow popups for this site.');
       }
 
-      // Listen for the callback
       const handleMessage = (event: MessageEvent) => {
         if (event.origin !== window.location.origin) return;
         
         if (event.data?.type === 'DROPBOX_AUTH_SUCCESS') {
           const { accessToken } = event.data;
-          
-          // Set up client with the received token
           const newClient = new Dropbox({ accessToken });
           setClient(newClient);
           setIsAuthenticated(true);
-          
           window.localStorage.setItem('dropboxToken', accessToken);
           toast.success('Successfully connected to Dropbox');
-          
-          // Clean up
           window.removeEventListener('message', handleMessage);
           popup.close();
         }
@@ -77,6 +74,36 @@ export const DropboxProvider = ({ children }: { children: React.ReactNode }) => 
     }
   };
 
+  const connectWithOfflineAccess = async () => {
+    try {
+      const response = await fetch('/.netlify/functions/dropbox-auth');
+      const { authUrl } = await response.json();
+      
+      if (!authUrl) {
+        throw new Error('Failed to get authentication URL');
+      }
+
+      window.location.href = authUrl;
+    } catch (error) {
+      console.error('Dropbox offline auth error:', error);
+      toast.error('Failed to initiate offline authentication');
+    }
+  };
+
+  const connect = async (method?: 'callback' | 'offline') => {
+    if (!method) {
+      setShowAuthSelector(true);
+      return;
+    }
+
+    setShowAuthSelector(false);
+    if (method === 'callback') {
+      await connectWithCallback();
+    } else {
+      await connectWithOfflineAccess();
+    }
+  };
+
   const disconnect = () => {
     setClient(null);
     setIsAuthenticated(false);
@@ -85,7 +112,14 @@ export const DropboxProvider = ({ children }: { children: React.ReactNode }) => 
   };
 
   return (
-    <DropboxContext.Provider value={{ client, isAuthenticated, connect, disconnect }}>
+    <DropboxContext.Provider value={{ 
+      client, 
+      isAuthenticated, 
+      connect, 
+      disconnect,
+      showAuthSelector,
+      setShowAuthSelector
+    }}>
       {children}
     </DropboxContext.Provider>
   );
