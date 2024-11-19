@@ -8,7 +8,7 @@ import { Card } from "@/components/ui/card";
 
 interface InvoiceTableProps {
   invoices: Invoice[];
-  onDelete: (id: string) => void;
+  onDelete: (invoice: Invoice) => void;
   onEdit: (invoice: Invoice) => void;
 }
 
@@ -41,7 +41,7 @@ const InvoiceTable = ({ invoices, onDelete, onEdit }: InvoiceTableProps) => {
               <TableCell className="text-right">
                 <InvoiceActions
                   invoice={invoice}
-                  onDelete={() => onDelete(invoice.id)}
+                  onDelete={() => onDelete(invoice)}
                   onEdit={() => onEdit(invoice)}
                 />
               </TableCell>

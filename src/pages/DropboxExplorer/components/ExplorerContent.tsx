@@ -25,15 +25,40 @@ export const ExplorerContent = () => {
         include_non_downloadable_files: true
       });
 
-      // Map the response entries to match DropboxEntry type
-      const mappedEntries: DropboxEntry[] = response.result.entries.map(entry => ({
-        ...entry,
-        id: entry.id || entry.path_lower || entry.path_display || '',
-        name: entry.name,
-        path_lower: entry.path_lower,
-        path_display: entry.path_display,
-        '.tag': entry['.tag']
-      }));
+      const mappedEntries: DropboxEntry[] = response.result.entries.map(entry => {
+        const baseEntry = {
+          id: entry.path_lower || entry.path_display || crypto.randomUUID(),
+          name: entry.name,
+          path_lower: entry.path_lower,
+          path_display: entry.path_display,
+          '.tag': entry['.tag'] as DropboxEntry['.tag']
+        };
+
+        if (entry['.tag'] === 'file') {
+          return {
+            ...baseEntry,
+            '.tag': 'file' as const,
+            size: entry.size,
+            is_downloadable: entry.is_downloadable,
+            client_modified: entry.client_modified,
+            server_modified: entry.server_modified,
+            rev: entry.rev,
+            content_hash: entry.content_hash
+          };
+        }
+
+        if (entry['.tag'] === 'folder') {
+          return {
+            ...baseEntry,
+            '.tag': 'folder' as const
+          };
+        }
+
+        return {
+          ...baseEntry,
+          '.tag': 'deleted' as const
+        };
+      });
 
       setFiles(mappedEntries);
     } catch (error) {
