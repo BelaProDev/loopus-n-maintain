@@ -47,29 +47,31 @@ const InvoicePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="border-b px-6 py-4 flex items-center justify-between bg-card">
-        <h1 className="text-2xl font-semibold">
+    <div className="min-h-screen bg-gray-50">
+      <div className="border-b px-6 py-4 flex items-center justify-between bg-white shadow-sm">
+        <h1 className="text-2xl font-semibold text-gray-900">
           {invoice ? t("admin:business.invoices.edit") : t("admin:business.invoices.add")}
         </h1>
         <Button
           variant="ghost"
           size="icon"
           onClick={() => navigate("/admin/business/invoices")}
-          className="rounded-full"
+          className="rounded-full hover:bg-gray-100"
         >
-          <X className="h-4 w-4" />
+          <X className="h-4 w-4 text-gray-600" />
         </Button>
       </div>
 
       <div className="p-6">
         <div className="max-w-5xl mx-auto">
-          <InvoiceForm
-            editingInvoice={invoice || null}
-            onSubmit={handleSubmit}
-            isLoading={isCreating || isUpdating}
-            onCancel={() => navigate("/admin/business/invoices")}
-          />
+          <div className="bg-white rounded-lg shadow-md p-8 animate-fade-in">
+            <InvoiceForm
+              editingInvoice={invoice || null}
+              onSubmit={handleSubmit}
+              isLoading={isCreating || isUpdating}
+              onCancel={() => navigate("/admin/business/invoices")}
+            />
+          </div>
         </div>
       </div>
     </div>

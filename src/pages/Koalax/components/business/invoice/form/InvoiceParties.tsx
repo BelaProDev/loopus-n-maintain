@@ -22,11 +22,11 @@ const InvoiceParties = ({ formData, clients, providers, onChange }: InvoiceParti
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <Card className="p-6 bg-muted/5 border-primary/20">
+      <Card className="p-6 bg-gray-50/50 border border-gray-200/60">
         <div className="space-y-4">
           <div className="flex items-center space-x-3">
             <Building2 className="w-5 h-5 text-primary" />
-            <h3 className="font-semibold text-lg">
+            <h3 className="font-semibold text-lg text-gray-900">
               {t("admin:business.invoices.provider")}
             </h3>
           </div>
@@ -35,7 +35,7 @@ const InvoiceParties = ({ formData, clients, providers, onChange }: InvoiceParti
             value={formData.providerId}
             onValueChange={(value) => onChange("providerId", value)}
           >
-            <SelectTrigger className="h-12">
+            <SelectTrigger className="h-12 bg-white">
               <SelectValue placeholder={t("admin:business.invoices.selectProvider")} />
             </SelectTrigger>
             <SelectContent>
@@ -47,7 +47,7 @@ const InvoiceParties = ({ formData, clients, providers, onChange }: InvoiceParti
             </SelectContent>
           </Select>
           {selectedProvider && (
-            <div className="text-sm text-muted-foreground space-y-1">
+            <div className="text-sm text-gray-600 space-y-1 p-3 bg-white rounded-md">
               <p>{selectedProvider.email}</p>
               <p>{selectedProvider.phone}</p>
             </div>
@@ -55,11 +55,11 @@ const InvoiceParties = ({ formData, clients, providers, onChange }: InvoiceParti
         </div>
       </Card>
 
-      <Card className="p-6 bg-muted/5 border-primary/20">
+      <Card className="p-6 bg-gray-50/50 border border-gray-200/60">
         <div className="space-y-4">
           <div className="flex items-center space-x-3">
             <Building className="w-5 h-5 text-primary" />
-            <h3 className="font-semibold text-lg">
+            <h3 className="font-semibold text-lg text-gray-900">
               {t("admin:business.invoices.client")}
             </h3>
           </div>
@@ -68,7 +68,7 @@ const InvoiceParties = ({ formData, clients, providers, onChange }: InvoiceParti
             value={formData.clientId}
             onValueChange={(value) => onChange("clientId", value)}
           >
-            <SelectTrigger className="h-12">
+            <SelectTrigger className="h-12 bg-white">
               <SelectValue placeholder={t("admin:business.invoices.selectClient")} />
             </SelectTrigger>
             <SelectContent>
@@ -80,7 +80,7 @@ const InvoiceParties = ({ formData, clients, providers, onChange }: InvoiceParti
             </SelectContent>
           </Select>
           {selectedClient && (
-            <div className="text-sm text-muted-foreground space-y-1">
+            <div className="text-sm text-gray-600 space-y-1 p-3 bg-white rounded-md">
               <p>{selectedClient.email}</p>
               <p>{selectedClient.phone}</p>
             </div>
