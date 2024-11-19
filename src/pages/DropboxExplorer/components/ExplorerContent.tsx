@@ -25,7 +25,17 @@ export const ExplorerContent = () => {
         include_non_downloadable_files: true
       });
 
-      setFiles(response.result.entries);
+      // Map the response entries to match DropboxEntry type
+      const mappedEntries: DropboxEntry[] = response.result.entries.map(entry => ({
+        ...entry,
+        id: entry.id || entry.path_lower || entry.path_display || '',
+        name: entry.name,
+        path_lower: entry.path_lower,
+        path_display: entry.path_display,
+        '.tag': entry['.tag']
+      }));
+
+      setFiles(mappedEntries);
     } catch (error) {
       console.error('Error fetching files:', error);
       toast.error('Failed to fetch files');

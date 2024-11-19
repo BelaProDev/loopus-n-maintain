@@ -8,6 +8,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ImportInvoiceDialog from "@/components/business/invoice/ImportInvoiceDialog";
+import { Invoice } from "@/types/invoice";
 
 const InvoiceList = () => {
   const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
@@ -25,13 +26,13 @@ const InvoiceList = () => {
     navigate("/admin/business/invoices/new");
   };
 
-  const handleEditClick = (invoiceId: string) => {
-    navigate(`/admin/business/invoices/${invoiceId}`);
+  const handleEditClick = (invoice: Invoice) => {
+    navigate(`/admin/business/invoices/${invoice.id}`);
   };
 
-  const handleDeleteClick = async (invoiceId: string) => {
+  const handleDeleteClick = async (invoice: Invoice) => {
     try {
-      await deleteMutation.mutateAsync(invoiceId);
+      await deleteMutation.mutateAsync(invoice.id);
       toast({
         title: t("common:status.success"),
         description: t("admin:business.invoices.deleteSuccess")
