@@ -4,12 +4,14 @@ import { businessQueries } from "@/lib/fauna/business";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import ClientList from "./ClientList";
 import ProviderList from "./ProviderList";
 import InvoiceList from "./InvoiceList";
 
 const BusinessManagement = () => {
   const { t } = useTranslation(["admin"]);
+  const navigate = useNavigate();
 
   const { data: clients = [] } = useQuery({
     queryKey: ['clients'],
@@ -26,6 +28,10 @@ const BusinessManagement = () => {
     queryFn: businessQueries.getInvoices
   });
 
+  const handleAddInvoice = () => {
+    navigate("/admin/business/invoices/new");
+  };
+
   return (
     <div className="container mx-auto py-6 space-y-8">
       <div className="flex justify-between items-center">
@@ -35,7 +41,8 @@ const BusinessManagement = () => {
         <div className="space-x-4">
           <Button 
             variant="outline"
-            onClick={() => {}}
+            onClick={handleAddInvoice}
+            className="hover:bg-primary/10"
           >
             <Plus className="w-4 h-4 mr-2" />
             {t("admin:business.invoices.add")}
