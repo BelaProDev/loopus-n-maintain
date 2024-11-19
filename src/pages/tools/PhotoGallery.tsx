@@ -94,7 +94,7 @@ const PhotoGallery = () => {
           <div className="text-center space-y-4">
             <h1 className="text-4xl font-bold">Media Gallery</h1>
             <p className="text-lg text-gray-600">Connect to Dropbox to manage your photos and videos</p>
-            <Button onClick={connect} className="mt-4">
+            <Button onClick={() => connect()} className="mt-4">
               <Image className="w-4 h-4 mr-2" />
               Connect to Dropbox
             </Button>
