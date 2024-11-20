@@ -62,7 +62,7 @@ const InvoiceList = () => {
       />
 
       {isLoading ? (
-        <div className="text-center py-4">{t("common:common.loading")}</div>
+        <div className="text-center py-4">{t("common:status.loading")}</div>
       ) : (
         <InvoiceTable 
           invoices={invoices}

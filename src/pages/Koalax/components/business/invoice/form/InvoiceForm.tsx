@@ -75,7 +75,7 @@ const InvoiceForm = ({
     
     if (!formData.clientId || !formData.providerId) {
       toast({
-        title: t("common:common.error"),
+        title: t("common:status.error"),
         description: t("admin:business.invoices.missingParties"),
         variant: "destructive"
       });
@@ -84,7 +84,7 @@ const InvoiceForm = ({
 
     if (items.length === 0) {
       toast({
-        title: t("common:common.error"),
+        title: t("common:status.error"),
         description: t("admin:business.invoices.noItems"),
         variant: "destructive"
       });
@@ -119,7 +119,7 @@ const InvoiceForm = ({
     } catch (error) {
       console.error('Error submitting invoice:', error);
       toast({
-        title: t("common:common.error"),
+        title: t("common:status.error"),
         description: t("admin:business.invoices.submitError"),
         variant: "destructive"
       });
@@ -168,7 +168,7 @@ const InvoiceForm = ({
             className="min-w-[120px]"
           >
             {isLoading ? (
-              <span>{t("common:common.loading")}</span>
+              <span>{t("common:status.loading")}</span>
             ) : (
               <span>
                 {editingInvoice ? t("common:actions.update") : t("common:actions.create")}
