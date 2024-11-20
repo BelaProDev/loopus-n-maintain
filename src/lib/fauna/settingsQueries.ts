@@ -100,11 +100,12 @@ export const settingsQueries = {
       }
 
       const result = await client.query(fql`
-        let doc = site_settings.firstWhere(.key == "logo")
-        doc.value
+        let settings = site_settings.all()
+        let logo = settings.firstWhere(.key == "logo")
+        logo?.value || null
       `);
 
-      return result.data as string;
+      return result.data as string | null;
     } catch (error) {
       console.error('Error fetching logo:', error);
       return null;
@@ -119,14 +120,15 @@ export const settingsQueries = {
       }
 
       await client.query(fql`
-        let doc = site_settings.firstWhere(.key == "logo")
-        if (doc == null) {
+        let settings = site_settings.all()
+        let logo = settings.firstWhere(.key == "logo")
+        if (logo == null) {
           site_settings.create({
             key: "logo",
             value: ${base64String}
           })
         } else {
-          doc.update({
+          logo.update({
             value: ${base64String}
           })
         }
