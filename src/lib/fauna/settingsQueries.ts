@@ -102,7 +102,11 @@ export const settingsQueries = {
       const result = await client.query(fql`
         let settings = site_settings.all()
         let logo = settings.firstWhere(.key == "logo")
-        logo?.value || null
+        if (logo == null) {
+          null
+        } else {
+          logo.value
+        }
       `);
 
       return result.data as string | null;
