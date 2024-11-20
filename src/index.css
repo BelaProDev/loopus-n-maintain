@@ -60,35 +60,35 @@
 
 @layer components {
   .dialog-content {
-    @apply fixed inset-0 m-auto max-w-4xl w-[95%] h-[90vh] bg-background border-2 border-border rounded-lg shadow-lg overflow-hidden;
+    @apply fixed inset-0 m-auto max-w-5xl w-[98%] h-[95vh] bg-background border border-border rounded-lg shadow-lg overflow-hidden;
   }
 
   .dialog-header {
-    @apply flex items-center justify-between p-6 border-b bg-muted/5;
+    @apply flex items-center justify-between p-4 border-b bg-muted/5;
   }
 
   .dialog-title {
-    @apply text-2xl font-semibold text-foreground;
+    @apply text-xl font-medium text-foreground;
   }
 
   .dialog-body {
-    @apply h-[calc(90vh-5rem)] overflow-y-auto p-6;
+    @apply h-[calc(95vh-4rem)] overflow-y-auto px-4 py-6;
   }
 
   .form-container {
-    @apply max-w-[90%] mx-auto space-y-6;
+    @apply w-full max-w-4xl mx-auto space-y-4;
   }
 
   .form-section {
-    @apply bg-muted/5 rounded-lg border p-6 space-y-4;
+    @apply bg-muted/5 rounded-lg border p-4 space-y-3;
   }
 
   .form-grid {
-    @apply grid grid-cols-1 md:grid-cols-2 gap-6;
+    @apply grid grid-cols-1 md:grid-cols-2 gap-4;
   }
 
   .form-field {
-    @apply space-y-2;
+    @apply space-y-1.5;
   }
 
   .form-label {
@@ -96,6 +96,6 @@
   }
 
   .form-input {
-    @apply w-full h-10 px-3 rounded-md border bg-background;
+    @apply w-full h-9 px-3 rounded-md border bg-background text-sm;
   }
 }

@@ -49,7 +49,7 @@ const InvoiceDialog = ({
             variant="ghost"
             size="icon"
             onClick={() => onOpenChange(false)}
-            className="rounded-full"
+            className="rounded-full hover:bg-muted/10"
           >
             <X className="h-4 w-4" />
           </Button>
