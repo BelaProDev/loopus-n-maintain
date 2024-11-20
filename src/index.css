@@ -83,7 +83,8 @@
     @apply h-[calc(92vh-5rem)] 
            px-8 py-6
            overflow-y-auto
-           scrollbar-thin scrollbar-thumb-border/40 scrollbar-track-transparent;
+           scrollbar scrollbar-track-transparent
+           scrollbar-thumb-border/40 hover:scrollbar-thumb-border/60;
   }
 
   .form-container {
