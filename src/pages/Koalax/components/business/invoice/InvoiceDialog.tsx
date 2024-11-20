@@ -30,10 +30,10 @@ const InvoiceDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-full h-screen inset-0 p-0">
-        <div className="h-full flex flex-col bg-background">
+      <DialogContent className="max-w-4xl w-full bg-background border-2 border-border">
+        <div className="flex flex-col h-full max-h-[90vh]">
           {/* Header */}
-          <div className="border-b px-6 py-4 flex items-center justify-between">
+          <div className="border-b px-6 py-4 flex items-center justify-between bg-background">
             <h1 className="text-2xl font-semibold">
               {editingInvoice ? t("admin:business.invoices.edit") : t("admin:business.invoices.add")}
             </h1>
@@ -48,15 +48,13 @@ const InvoiceDialog = ({
           </div>
 
           {/* Content */}
-          <div className="flex-1 overflow-y-auto px-6 py-8">
-            <div className="max-w-5xl mx-auto">
-              <InvoiceForm
-                editingInvoice={formattedInvoice}
-                onSubmit={onSubmit}
-                isLoading={isLoading}
-                onCancel={() => onOpenChange(false)}
-              />
-            </div>
+          <div className="flex-1 overflow-y-auto p-6">
+            <InvoiceForm
+              editingInvoice={formattedInvoice}
+              onSubmit={onSubmit}
+              isLoading={isLoading}
+              onCancel={() => onOpenChange(false)}
+            />
           </div>
         </div>
       </DialogContent>

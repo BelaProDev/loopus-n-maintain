@@ -1,79 +1,89 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { businessQueries } from "@/lib/fauna/business";
-import { useTranslation } from "react-i18next";
 import { useInvoiceOperations } from "@/hooks/useInvoiceOperations";
-import InvoiceTable from "./InvoiceTable";
-import InvoiceToolbar from "./InvoiceToolbar";
 import { useToast } from "@/components/ui/use-toast";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import ImportInvoiceDialog from "@/components/business/invoice/ImportInvoiceDialog";
+import { useTranslation } from "react-i18next";
+import InvoiceDialog from "./InvoiceDialog";
+import InvoiceToolbar from "./InvoiceToolbar";
+import InvoiceTable from "./InvoiceTable";
 import { Invoice } from "@/types/invoice";
+import { Loader2 } from "lucide-react";
 
 const InvoiceList = () => {
-  const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null);
   const { t } = useTranslation(["admin", "common"]);
-  const { deleteMutation } = useInvoiceOperations();
   const { toast } = useToast();
-  const navigate = useNavigate();
+  const { handleCreateInvoice, handleUpdateInvoice, isCreating, isUpdating } = useInvoiceOperations();
 
-  const { data: invoices = [], isLoading, error } = useQuery({
+  const { data: invoices = [], isLoading } = useQuery({
     queryKey: ['invoices'],
-    queryFn: businessQueries.getInvoices
+    queryFn: businessQueries.getInvoices,
   });
 
-  const handleCreateClick = () => {
-    navigate("/admin/business/invoices/new");
+  const handleEdit = (invoice: Invoice) => {
+    setEditingInvoice(invoice);
+    setIsDialogOpen(true);
   };
 
-  const handleEditClick = (invoice: Invoice) => {
-    navigate(`/admin/business/invoices/${invoice.id}`);
-  };
-
-  const handleDeleteClick = async (invoice: Invoice) => {
+  const handleSubmit = async (formData: FormData) => {
     try {
-      await deleteMutation.mutateAsync(invoice.id);
-      toast({
-        title: t("common:status.success"),
-        description: t("admin:business.invoices.deleteSuccess")
-      });
+      if (editingInvoice) {
+        await handleUpdateInvoice(editingInvoice.id, formData);
+        toast({
+          title: t("common:status.success"),
+          description: t("admin:business.invoices.updateSuccess")
+        });
+      } else {
+        await handleCreateInvoice(formData);
+        toast({
+          title: t("common:status.success"),
+          description: t("admin:business.invoices.createSuccess")
+        });
+      }
+      setIsDialogOpen(false);
+      setEditingInvoice(null);
     } catch (error) {
       toast({
         title: t("common:status.error"),
-        description: t("admin:business.invoices.deleteError"),
+        description: t("admin:business.invoices.submitError"),
         variant: "destructive"
       });
     }
   };
 
-  if (error) {
-    toast({
-      title: t("common:status.error"),
-      description: t("admin:business.invoices.fetchError"),
-      variant: "destructive"
-    });
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
   }
 
   return (
     <div className="space-y-4">
-      <InvoiceToolbar 
-        onCreateClick={handleCreateClick}
-        onImportClick={() => setIsImportDialogOpen(true)}
+      <InvoiceToolbar
+        onCreateNew={() => {
+          setEditingInvoice(null);
+          setIsDialogOpen(true);
+        }}
       />
 
-      {isLoading ? (
-        <div className="text-center py-4">{t("common:status.loading")}</div>
-      ) : (
-        <InvoiceTable 
-          invoices={invoices}
-          onDelete={handleDeleteClick}
-          onEdit={handleEditClick}
-        />
-      )}
+      <InvoiceTable
+        invoices={invoices}
+        onEdit={handleEdit}
+      />
 
-      <ImportInvoiceDialog
-        isOpen={isImportDialogOpen}
-        onOpenChange={setIsImportDialogOpen}
+      <InvoiceDialog
+        isOpen={isDialogOpen}
+        onOpenChange={(open) => {
+          setIsDialogOpen(open);
+          if (!open) setEditingInvoice(null);
+        }}
+        editingInvoice={editingInvoice}
+        onSubmit={handleSubmit}
+        isLoading={isCreating || isUpdating}
       />
     </div>
   );

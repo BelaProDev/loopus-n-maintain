@@ -71,3 +71,9 @@
     @apply bg-background border-2 border-border rounded-lg p-6;
   }
 }
+
+/* Dialog specific styles */
+[data-radix-dialog-content] {
+  max-height: 90vh !important;
+  margin-top: 5vh !important;
+}
