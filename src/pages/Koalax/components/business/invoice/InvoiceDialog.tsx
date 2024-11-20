@@ -40,33 +40,31 @@ const InvoiceDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl w-[95vw] max-h-[90vh] p-0 gap-0 bg-background border-2 border-border">
-        <div className="flex flex-col h-full">
-          <div className="flex items-center justify-between px-6 py-4 border-b">
-            <h1 className="text-2xl font-semibold">
-              {editingInvoice ? t("admin:business.invoices.edit") : t("admin:business.invoices.add")}
-            </h1>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => onOpenChange(false)}
-              className="rounded-full"
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-
-          <ScrollArea className="flex-1 p-6">
-            <div className="max-w-[95%] mx-auto">
-              <InvoiceForm
-                editingInvoice={formattedInvoice}
-                onSubmit={handleSubmit}
-                isLoading={isLoading}
-                onCancel={() => onOpenChange(false)}
-              />
-            </div>
-          </ScrollArea>
+      <DialogContent className="dialog-content">
+        <div className="dialog-header">
+          <h1 className="dialog-title">
+            {editingInvoice ? t("admin:business.invoices.edit") : t("admin:business.invoices.add")}
+          </h1>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => onOpenChange(false)}
+            className="rounded-full"
+          >
+            <X className="h-4 w-4" />
+          </Button>
         </div>
+
+        <ScrollArea className="dialog-body">
+          <div className="form-container">
+            <InvoiceForm
+              editingInvoice={formattedInvoice}
+              onSubmit={handleSubmit}
+              isLoading={isLoading}
+              onCancel={() => onOpenChange(false)}
+            />
+          </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

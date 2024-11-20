@@ -60,20 +60,42 @@
 
 @layer components {
   .dialog-content {
-    @apply bg-background border-2 border-border shadow-lg;
+    @apply fixed inset-0 m-auto max-w-4xl w-[95%] h-[90vh] bg-background border-2 border-border rounded-lg shadow-lg overflow-hidden;
   }
 
-  .card-base {
-    @apply bg-background border-2 border-border shadow-md;
+  .dialog-header {
+    @apply flex items-center justify-between p-6 border-b bg-muted/5;
   }
 
-  .form-base {
-    @apply bg-background border-2 border-border rounded-lg p-6;
+  .dialog-title {
+    @apply text-2xl font-semibold text-foreground;
   }
-}
 
-/* Dialog specific styles */
-[data-radix-dialog-content] {
-  max-height: 90vh !important;
-  margin-top: 5vh !important;
+  .dialog-body {
+    @apply h-[calc(90vh-5rem)] overflow-y-auto p-6;
+  }
+
+  .form-container {
+    @apply max-w-[90%] mx-auto space-y-6;
+  }
+
+  .form-section {
+    @apply bg-muted/5 rounded-lg border p-6 space-y-4;
+  }
+
+  .form-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-6;
+  }
+
+  .form-field {
+    @apply space-y-2;
+  }
+
+  .form-label {
+    @apply text-sm font-medium text-foreground;
+  }
+
+  .form-input {
+    @apply w-full h-10 px-3 rounded-md border bg-background;
+  }
 }
