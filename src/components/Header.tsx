@@ -7,6 +7,8 @@ import { Badge } from "./ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
+import { useQuery } from "@tanstack/react-query";
+import { settingsQueries } from "@/lib/fauna/settingsQueries";
 
 const tools = [
   { name: "documents", path: "/tools/documents", icon: "📄" },
@@ -20,6 +22,11 @@ const Header = () => {
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
   const { isAuthenticated, logout } = useAuth();
   const { t } = useTranslation(["common", "tools", "auth"]);
+
+  const { data: logo } = useQuery({
+    queryKey: ['site-logo'],
+    queryFn: settingsQueries.getLogo,
+  });
 
   useEffect(() => {
     const handleStatusChange = () => {
@@ -51,11 +58,19 @@ const Header = () => {
             to="/" 
             className="flex items-center gap-2 hover:opacity-80 transition-opacity"
           >
-            <img 
-              src="/forest-lidar.png" 
-              alt="Forest Lidar Logo" 
-              className="h-8 w-auto border-[3px] border-primary rounded-lg"
-            />
+            {logo ? (
+              <img 
+                src={`data:image/png;base64,${logo}`}
+                alt="Site Logo" 
+                className="h-8 w-auto border-[3px] border-primary rounded-lg"
+              />
+            ) : (
+              <img 
+                src="/forest-lidar.png" 
+                alt="Forest Lidar Logo" 
+                className="h-8 w-auto border-[3px] border-primary rounded-lg"
+              />
+            )}
           </Link>
 
           <div className="flex items-center gap-4">

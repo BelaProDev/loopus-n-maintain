@@ -90,5 +90,50 @@ export const settingsQueries = {
       console.error('Error updating navigation link:', error);
       throw error;
     }
+  },
+
+  getLogo: async (): Promise<string | null> => {
+    try {
+      const client = getFaunaClient();
+      if (!client) {
+        throw new Error('Fauna client not initialized');
+      }
+
+      const result = await client.query(fql`
+        let doc = site_settings.firstWhere(.key == "logo")
+        doc.value
+      `);
+
+      return result.data as string;
+    } catch (error) {
+      console.error('Error fetching logo:', error);
+      return null;
+    }
+  },
+
+  updateLogo: async (base64String: string): Promise<void> => {
+    try {
+      const client = getFaunaClient();
+      if (!client) {
+        throw new Error('Fauna client not initialized');
+      }
+
+      await client.query(fql`
+        let doc = site_settings.firstWhere(.key == "logo")
+        if (doc == null) {
+          site_settings.create({
+            key: "logo",
+            value: ${base64String}
+          })
+        } else {
+          doc.update({
+            value: ${base64String}
+          })
+        }
+      `);
+    } catch (error) {
+      console.error('Error updating logo:', error);
+      throw error;
+    }
   }
 };
