@@ -31,9 +31,22 @@ const LogoSettings = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Accept any image format
     if (!file.type.startsWith('image/')) {
       toast({
         title: t("logo.invalidType"),
+        description: t("logo.mustBeImage"),
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check file size (max 5MB)
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      toast({
+        title: t("logo.invalidSize"),
+        description: t("logo.maxSize"),
         variant: "destructive",
       });
       return;

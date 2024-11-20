@@ -10,7 +10,7 @@ export const settingsQueries = {
         throw new Error('Fauna client not initialized');
       }
 
-      const result = await client.query(fql`
+      const whatsappSettings = await client.query(fql`
         let doc = whatsapp_numbers.all().first()!
         {
           electrics: doc.electrics,
@@ -21,7 +21,7 @@ export const settingsQueries = {
         }
       `);
 
-      return result.data as WhatsAppNumbers;
+      return whatsappSettings.data as WhatsAppNumbers;
     } catch (error) {
       console.error('Error fetching WhatsApp numbers:', error);
       return {
@@ -100,12 +100,11 @@ export const settingsQueries = {
       }
 
       const result = await client.query(fql`
-        let settings = site_settings.all()
-        let logo = settings.firstWhere(.key == "logo")
-        if (logo == null) {
-          null
-        } else {
+        let logo = site_settings.all().firstWhere(.key == "logo")
+        if (logo != null) {
           logo.value
+        } else {
+          null
         }
       `);
 
@@ -116,7 +115,7 @@ export const settingsQueries = {
     }
   },
 
-  updateLogo: async (base64String: string): Promise<void> => {
+  updateLogo: async (imageData: string): Promise<void> => {
     try {
       const client = getFaunaClient();
       if (!client) {
@@ -124,16 +123,15 @@ export const settingsQueries = {
       }
 
       await client.query(fql`
-        let settings = site_settings.all()
-        let logo = settings.firstWhere(.key == "logo")
-        if (logo == null) {
-          site_settings.create({
-            key: "logo",
-            value: ${base64String}
+        let existingLogo = site_settings.all().firstWhere(.key == "logo")
+        if (existingLogo != null) {
+          existingLogo.update({
+            value: ${imageData}
           })
         } else {
-          logo.update({
-            value: ${base64String}
+          site_settings.create({
+            key: "logo",
+            value: ${imageData}
           })
         }
       `);
