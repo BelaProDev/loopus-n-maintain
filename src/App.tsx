@@ -117,7 +117,7 @@ const App = () => {
                           <Route path="whatsapp" element={<WhatsAppSettings />} />
                           <Route path="logo" element={<LogoSettings />} />
                         </Route>
-                        <Route path="business" element={<BusinessManagement />} />
+                        <Route path="business/*" element={<BusinessManagement />} />
                         <Route path="messages" element={<MessageManagement />}>
                           <Route index element={<MessageList service="electrics" />} />
                           <Route path="electrics" element={<MessageList service="electrics" />} />

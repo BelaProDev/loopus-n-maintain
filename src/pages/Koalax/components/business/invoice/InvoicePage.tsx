@@ -1,12 +1,11 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
-import { useTranslation } from "react-i18next";
-import InvoiceForm from "./form/InvoiceForm";
 import { useQuery } from "@tanstack/react-query";
 import { businessQueries } from "@/lib/fauna/business";
 import { useInvoiceOperations } from "@/hooks/useInvoiceOperations";
 import { useToast } from "@/components/ui/use-toast";
+import { useTranslation } from "react-i18next";
+import InvoiceForm from "./form/InvoiceForm";
+import { Loader2 } from "lucide-react";
 
 const InvoicePage = () => {
   const { t } = useTranslation(["admin", "common"]);
@@ -47,35 +46,29 @@ const InvoicePage = () => {
   };
 
   if (isLoading) {
-    return <div className="p-8 text-center">{t("common:status.loading")}</div>;
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="border-b px-6 py-4 flex items-center justify-between bg-white shadow-sm">
-        <h1 className="text-2xl font-semibold text-gray-900">
-          {invoiceId ? t("admin:business.invoices.edit") : t("admin:business.invoices.add")}
-        </h1>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => navigate("/admin/business/invoices")}
-          className="rounded-full hover:bg-gray-100"
-        >
-          <X className="h-4 w-4 text-gray-600" />
-        </Button>
-      </div>
+    <div className="container mx-auto py-6 px-4 sm:px-6 lg:px-8">
+      <div className="bg-background">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-semibold">
+            {invoiceId ? t("admin:business.invoices.edit") : t("admin:business.invoices.create")}
+          </h1>
+        </div>
 
-      <div className="p-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="bg-white rounded-lg shadow-md p-8 animate-fade-in">
-            <InvoiceForm
-              editingInvoice={invoice || null}
-              onSubmit={handleSubmit}
-              isLoading={isCreating || isUpdating}
-              onCancel={() => navigate("/admin/business/invoices")}
-            />
-          </div>
+        <div className="bg-card rounded-lg shadow-sm p-6">
+          <InvoiceForm
+            editingInvoice={invoice || null}
+            onSubmit={handleSubmit}
+            isLoading={isCreating || isUpdating}
+            onCancel={() => navigate("/admin/business/invoices")}
+          />
         </div>
       </div>
     </div>
