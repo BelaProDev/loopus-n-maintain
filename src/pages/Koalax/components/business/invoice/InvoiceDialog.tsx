@@ -28,11 +28,19 @@ const InvoiceDialog = ({
     currency: editingInvoice.currency || 'EUR'
   } : null;
 
+  const handleSubmit = async (formData: FormData) => {
+    try {
+      await onSubmit(formData);
+      onOpenChange(false); // Close dialog after successful submission
+    } catch (error) {
+      console.error('Error submitting invoice:', error);
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl w-full bg-background border-2 border-border">
         <div className="flex flex-col h-full max-h-[90vh]">
-          {/* Header */}
           <div className="border-b px-6 py-4 flex items-center justify-between bg-background">
             <h1 className="text-2xl font-semibold">
               {editingInvoice ? t("admin:business.invoices.edit") : t("admin:business.invoices.add")}
@@ -47,11 +55,10 @@ const InvoiceDialog = ({
             </Button>
           </div>
 
-          {/* Content */}
           <div className="flex-1 overflow-y-auto p-6">
             <InvoiceForm
               editingInvoice={formattedInvoice}
-              onSubmit={onSubmit}
+              onSubmit={handleSubmit}
               isLoading={isLoading}
               onCancel={() => onOpenChange(false)}
             />
