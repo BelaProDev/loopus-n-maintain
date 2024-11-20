@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import InvoiceForm from "./form/InvoiceForm";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface InvoiceDialogProps {
   isOpen: boolean;
@@ -49,7 +48,7 @@ const InvoiceDialog = ({
             variant="ghost"
             size="icon"
             onClick={() => onOpenChange(false)}
-            className="h-8 w-8 rounded-full hover:bg-muted/10"
+            className="h-9 w-9 rounded-full hover:bg-muted/20"
           >
             <X className="h-4 w-4" />
           </Button>
