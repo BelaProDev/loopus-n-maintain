@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import InvoiceForm from "./form/InvoiceForm";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface InvoiceDialogProps {
   isOpen: boolean;
@@ -31,7 +32,7 @@ const InvoiceDialog = ({
   const handleSubmit = async (formData: FormData) => {
     try {
       await onSubmit(formData);
-      onOpenChange(false); // Close dialog after successful submission
+      onOpenChange(false);
     } catch (error) {
       console.error('Error submitting invoice:', error);
     }
@@ -39,9 +40,9 @@ const InvoiceDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl w-full bg-background border-2 border-border">
-        <div className="flex flex-col h-full max-h-[90vh]">
-          <div className="border-b px-6 py-4 flex items-center justify-between bg-background">
+      <DialogContent className="max-w-4xl w-[95vw] max-h-[90vh] p-0 gap-0 bg-background border-2 border-border">
+        <div className="flex flex-col h-full">
+          <div className="flex items-center justify-between px-6 py-4 border-b">
             <h1 className="text-2xl font-semibold">
               {editingInvoice ? t("admin:business.invoices.edit") : t("admin:business.invoices.add")}
             </h1>
@@ -55,14 +56,16 @@ const InvoiceDialog = ({
             </Button>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-6">
-            <InvoiceForm
-              editingInvoice={formattedInvoice}
-              onSubmit={handleSubmit}
-              isLoading={isLoading}
-              onCancel={() => onOpenChange(false)}
-            />
-          </div>
+          <ScrollArea className="flex-1 p-6">
+            <div className="max-w-[95%] mx-auto">
+              <InvoiceForm
+                editingInvoice={formattedInvoice}
+                onSubmit={handleSubmit}
+                isLoading={isLoading}
+                onCancel={() => onOpenChange(false)}
+              />
+            </div>
+          </ScrollArea>
         </div>
       </DialogContent>
     </Dialog>
