@@ -60,35 +60,35 @@
 
 @layer components {
   .dialog-content {
-    @apply fixed inset-0 m-auto max-w-5xl w-[98%] h-[95vh] bg-background border border-border rounded-lg shadow-lg overflow-hidden;
+    @apply fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-[1200px] h-[85vh] bg-background border border-border/40 rounded-lg shadow-lg;
   }
 
   .dialog-header {
-    @apply flex items-center justify-between p-4 border-b bg-muted/5;
+    @apply sticky top-0 flex items-center justify-between px-6 py-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60;
   }
 
   .dialog-title {
-    @apply text-xl font-medium text-foreground;
+    @apply text-lg font-medium text-foreground;
   }
 
   .dialog-body {
-    @apply h-[calc(95vh-4rem)] overflow-y-auto px-4 py-6;
+    @apply h-[calc(85vh-4rem)] overflow-y-auto px-6 py-4;
   }
 
   .form-container {
-    @apply w-full max-w-4xl mx-auto space-y-4;
+    @apply w-full max-w-5xl mx-auto space-y-6;
   }
 
   .form-section {
-    @apply bg-muted/5 rounded-lg border p-4 space-y-3;
+    @apply bg-muted/5 rounded-lg border p-5 space-y-4;
   }
 
   .form-grid {
-    @apply grid grid-cols-1 md:grid-cols-2 gap-4;
+    @apply grid grid-cols-1 md:grid-cols-2 gap-5;
   }
 
   .form-field {
-    @apply space-y-1.5;
+    @apply space-y-2;
   }
 
   .form-label {
@@ -96,6 +96,6 @@
   }
 
   .form-input {
-    @apply w-full h-9 px-3 rounded-md border bg-background text-sm;
+    @apply w-full h-10 px-3 rounded-md border bg-background text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
   }
 }

@@ -42,20 +42,20 @@ const InvoiceDialog = ({
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="dialog-content">
         <div className="dialog-header">
-          <h1 className="dialog-title">
+          <h2 className="dialog-title">
             {editingInvoice ? t("admin:business.invoices.edit") : t("admin:business.invoices.add")}
-          </h1>
+          </h2>
           <Button
             variant="ghost"
             size="icon"
             onClick={() => onOpenChange(false)}
-            className="rounded-full hover:bg-muted/10"
+            className="h-8 w-8 rounded-full hover:bg-muted/10"
           >
             <X className="h-4 w-4" />
           </Button>
         </div>
 
-        <ScrollArea className="dialog-body">
+        <div className="dialog-body">
           <div className="form-container">
             <InvoiceForm
               editingInvoice={formattedInvoice}
@@ -64,7 +64,7 @@ const InvoiceDialog = ({
               onCancel={() => onOpenChange(false)}
             />
           </div>
-        </ScrollArea>
+        </div>
       </DialogContent>
     </Dialog>
   );
