@@ -61,49 +61,50 @@
 @layer components {
   .dialog-content {
     @apply fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
-           w-[95%] max-w-[1400px] h-[92vh] 
+           w-[95%] max-w-[1400px] h-[90vh] sm:h-[92vh]
            bg-background/95 backdrop-blur-sm
-           border border-border/30 shadow-2xl rounded-xl;
+           border border-border/30 shadow-2xl rounded-xl
+           overflow-hidden;
   }
 
   .dialog-header {
     @apply sticky top-0 z-50
            flex items-center justify-between 
-           px-8 py-5
+           px-4 sm:px-8 py-4 sm:py-5
            border-b border-border/40
            bg-background/80 backdrop-blur-md
            supports-[backdrop-filter]:bg-background/60;
   }
 
   .dialog-title {
-    @apply text-xl font-semibold tracking-tight text-foreground;
+    @apply text-lg sm:text-xl font-semibold tracking-tight text-foreground;
   }
 
   .dialog-body {
-    @apply h-[calc(92vh-5rem)] 
-           px-8 py-6
+    @apply h-[calc(90vh-4rem)] sm:h-[calc(92vh-5rem)]
+           px-4 sm:px-8 py-4 sm:py-6
            overflow-y-auto
            scrollbar scrollbar-track-transparent
            scrollbar-thumb-border/40 hover:scrollbar-thumb-border/60;
   }
 
   .form-container {
-    @apply w-full max-w-6xl mx-auto space-y-8;
+    @apply w-full max-w-6xl mx-auto space-y-6 sm:space-y-8;
   }
 
   .form-section {
     @apply bg-muted/[0.02] rounded-xl
            border border-border/50
-           p-6 space-y-5
+           p-4 sm:p-6 space-y-4 sm:space-y-5
            hover:border-border/80 transition-colors;
   }
 
   .form-grid {
-    @apply grid grid-cols-1 md:grid-cols-2 gap-6;
+    @apply grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6;
   }
 
   .form-field {
-    @apply space-y-2.5;
+    @apply space-y-2 sm:space-y-2.5;
   }
 
   .form-label {
@@ -111,7 +112,7 @@
   }
 
   .form-input {
-    @apply w-full h-11 px-4
+    @apply w-full h-9 sm:h-11 px-3 sm:px-4
            rounded-lg border border-input/80
            bg-background/60
            text-sm

@@ -127,8 +127,8 @@ const InvoiceForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
-      <div className="grid gap-8">
+    <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
+      <div className="grid gap-6 sm:gap-8">
         <InvoiceHeader
           formData={formData}
           onChange={(name, value) => setFormData(prev => ({ ...prev, [name]: value }))}
@@ -153,19 +153,19 @@ const InvoiceForm = ({
           onChange={(name, value) => setFormData(prev => ({ ...prev, [name]: value }))}
         />
 
-        <div className="flex justify-end gap-4 pt-8 border-t">
+        <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 pt-6 sm:pt-8 border-t">
           <Button 
             type="button" 
             variant="outline" 
             onClick={onCancel}
-            className="min-w-[120px]"
+            className="w-full sm:w-auto sm:min-w-[120px]"
           >
             {t("common:actions.cancel")}
           </Button>
           <Button 
             type="submit" 
             disabled={isLoading}
-            className="min-w-[120px]"
+            className="w-full sm:w-auto sm:min-w-[120px]"
           >
             {isLoading ? (
               <span>{t("common:status.loading")}</span>
