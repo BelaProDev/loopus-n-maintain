@@ -1,19 +1,21 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDropbox } from '@/contexts/DropboxContext';
 import { FileList } from './FileList';
 import { ExplorerToolbar } from './ExplorerToolbar';
 import { NavigationBreadcrumb } from './NavigationBreadcrumb';
 import { toast } from 'sonner';
 import { DropboxEntry } from '@/types/dropbox';
+import { dropboxAuth } from '@/lib/api/dropboxAuth';
 
 export const ExplorerContent = () => {
-  const { client } = useDropbox();
+  const { isAuthenticated } = useDropbox();
   const [currentPath, setCurrentPath] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const [files, setFiles] = useState<DropboxEntry[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchFiles = async () => {
+    const client = dropboxAuth.getClient();
     if (!client) return;
     
     setIsLoading(true);
@@ -68,8 +70,15 @@ export const ExplorerContent = () => {
     }
   };
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchFiles();
+    }
+  }, [isAuthenticated, currentPath]);
+
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
+    const client = dropboxAuth.getClient();
     if (!files || !client) return;
 
     for (const file of Array.from(files)) {
@@ -83,18 +92,19 @@ export const ExplorerContent = () => {
             mode: { '.tag': 'add' },
             autorename: true
           });
+          toast.success(`Uploaded ${file.name}`);
+          fetchFiles();
         };
         reader.readAsArrayBuffer(file);
-        toast.success(`Uploading ${file.name}`);
       } catch (error) {
         console.error('Upload error:', error);
         toast.error(`Failed to upload ${file.name}`);
       }
     }
-    fetchFiles();
   };
 
   const handleDrop = async (files: FileList, path: string) => {
+    const client = dropboxAuth.getClient();
     if (!client) return;
     
     for (const file of Array.from(files)) {
@@ -108,10 +118,10 @@ export const ExplorerContent = () => {
             mode: { '.tag': 'add' },
             autorename: true
           });
+          toast.success(`Uploaded ${file.name}`);
           fetchFiles();
         };
         reader.readAsArrayBuffer(file);
-        toast.success(`Uploading ${file.name}`);
       } catch (error) {
         console.error('Upload error:', error);
         toast.error(`Failed to upload ${file.name}`);
@@ -120,6 +130,7 @@ export const ExplorerContent = () => {
   };
 
   const handleCreateFolder = async (name: string) => {
+    const client = dropboxAuth.getClient();
     if (!client) return;
     
     try {
