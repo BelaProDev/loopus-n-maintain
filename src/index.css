@@ -61,14 +61,14 @@
 @layer components {
   .dialog-content {
     @apply fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
-           w-[95%] max-w-[1400px] h-[90vh] sm:h-[92vh]
+           w-[95%] max-w-[1400px] max-h-[90vh] sm:max-h-[92vh]
            bg-background/95 backdrop-blur-sm
            border border-border/30 shadow-2xl rounded-xl
-           overflow-hidden;
+           flex flex-col;
   }
 
   .dialog-header {
-    @apply sticky top-0 z-50
+    @apply flex-none
            flex items-center justify-between 
            px-4 sm:px-8 py-4 sm:py-5
            border-b border-border/40
@@ -81,7 +81,7 @@
   }
 
   .dialog-body {
-    @apply h-[calc(90vh-4rem)] sm:h-[calc(92vh-5rem)]
+    @apply flex-1 min-h-0
            px-4 sm:px-8 py-4 sm:py-6
            overflow-y-auto
            scrollbar scrollbar-track-transparent
