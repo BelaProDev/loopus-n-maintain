@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Dropbox } from 'dropbox';
 import { toast } from 'sonner';
 import AuthMethodSelector from '@/components/business/dropbox/AuthMethodSelector';
@@ -24,13 +24,38 @@ export const useDropbox = () => {
 
 export const DropboxProvider = ({ children }: { children: React.ReactNode }) => {
   const [client, setClient] = useState<Dropbox | null>(() => {
-    const token = window.localStorage.getItem('dropboxToken');
+    const token = localStorage.getItem('dropboxToken');
     return token ? new Dropbox({ accessToken: token }) : null;
   });
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return !!window.localStorage.getItem('dropboxToken');
+    return !!localStorage.getItem('dropboxToken');
   });
   const [showAuthSelector, setShowAuthSelector] = useState(false);
+
+  useEffect(() => {
+    const checkTokenExpiry = () => {
+      const expiryTime = localStorage.getItem('dropboxTokenExpiry');
+      if (expiryTime && Number(expiryTime) < Date.now()) {
+        disconnect();
+      }
+    };
+
+    checkTokenExpiry();
+    const interval = setInterval(checkTokenExpiry, 60000); // Check every minute
+    return () => clearInterval(interval);
+  }, []);
+
+  const initializeClient = (accessToken: string, expiresIn?: number) => {
+    const newClient = new Dropbox({ accessToken });
+    setClient(newClient);
+    setIsAuthenticated(true);
+    localStorage.setItem('dropboxToken', accessToken);
+    
+    if (expiresIn) {
+      const expiryTime = Date.now() + (expiresIn * 1000);
+      localStorage.setItem('dropboxTokenExpiry', expiryTime.toString());
+    }
+  };
 
   const connectWithCallback = async () => {
     try {
@@ -60,10 +85,7 @@ export const DropboxProvider = ({ children }: { children: React.ReactNode }) => 
         
         if (event.data?.type === 'DROPBOX_AUTH_SUCCESS') {
           const { accessToken } = event.data;
-          const newClient = new Dropbox({ accessToken });
-          setClient(newClient);
-          setIsAuthenticated(true);
-          window.localStorage.setItem('dropboxToken', accessToken);
+          initializeClient(accessToken);
           toast.success('Successfully connected to Dropbox');
           window.removeEventListener('message', handleMessage);
           popup.close();
@@ -94,7 +116,7 @@ export const DropboxProvider = ({ children }: { children: React.ReactNode }) => 
         throw new Error('Failed to get authentication URL');
       }
 
-      window.localStorage.setItem('dropboxAuthState', state);
+      localStorage.setItem('dropboxAuthState', state);
       
       const width = 800;
       const height = 600;
@@ -117,7 +139,7 @@ export const DropboxProvider = ({ children }: { children: React.ReactNode }) => 
         if (event.data?.type === 'DROPBOX_AUTH_CODE') {
           const { code, state: returnedState } = event.data;
           
-          const savedState = window.localStorage.getItem('dropboxAuthState');
+          const savedState = localStorage.getItem('dropboxAuthState');
           if (returnedState !== savedState) {
             throw new Error('Invalid state parameter');
           }
@@ -136,11 +158,8 @@ export const DropboxProvider = ({ children }: { children: React.ReactNode }) => 
             throw new Error(tokens.error);
           }
 
-          const newClient = new Dropbox({ accessToken: tokens.access_token });
-          setClient(newClient);
-          setIsAuthenticated(true);
-          window.localStorage.setItem('dropboxToken', tokens.access_token);
-          window.localStorage.setItem('dropboxRefreshToken', tokens.refresh_token);
+          initializeClient(tokens.access_token, tokens.expires_in);
+          localStorage.setItem('dropboxRefreshToken', tokens.refresh_token);
           
           toast.success('Successfully connected to Dropbox');
           window.removeEventListener('message', handleMessage);
@@ -173,9 +192,10 @@ export const DropboxProvider = ({ children }: { children: React.ReactNode }) => 
   const disconnect = () => {
     setClient(null);
     setIsAuthenticated(false);
-    window.localStorage.removeItem('dropboxToken');
-    window.localStorage.removeItem('dropboxRefreshToken');
-    window.localStorage.removeItem('dropboxAuthState');
+    localStorage.removeItem('dropboxToken');
+    localStorage.removeItem('dropboxTokenExpiry');
+    localStorage.removeItem('dropboxRefreshToken');
+    localStorage.removeItem('dropboxAuthState');
     toast.success('Disconnected from Dropbox');
   };
 
