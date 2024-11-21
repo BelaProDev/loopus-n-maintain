@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { dropboxAuth } from '@/lib/api/dropboxAuth';
+import { Dropbox } from 'dropbox';
 import AuthMethodSelector from '@/components/business/dropbox/AuthMethodSelector';
 
 interface DropboxContextType {
@@ -9,6 +10,7 @@ interface DropboxContextType {
   disconnect: () => void;
   showAuthSelector: boolean;
   setShowAuthSelector: (show: boolean) => void;
+  client: Dropbox | null;
 }
 
 const DropboxContext = createContext<DropboxContextType | null>(null);
@@ -24,6 +26,7 @@ export const useDropbox = () => {
 export const DropboxProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(() => dropboxAuth.isAuthenticated());
   const [showAuthSelector, setShowAuthSelector] = useState(false);
+  const [client, setClient] = useState<Dropbox | null>(() => dropboxAuth.getClient());
 
   useEffect(() => {
     const checkTokenExpiry = () => {
@@ -52,6 +55,7 @@ export const DropboxProvider = ({ children }: { children: React.ReactNode }) => 
         await dropboxAuth.connectWithOfflineAccess();
       }
       setIsAuthenticated(true);
+      setClient(dropboxAuth.getClient());
       toast.success('Successfully connected to Dropbox');
     } catch (error) {
       console.error('Dropbox connection error:', error);
@@ -62,6 +66,7 @@ export const DropboxProvider = ({ children }: { children: React.ReactNode }) => 
   const disconnect = () => {
     dropboxAuth.disconnect();
     setIsAuthenticated(false);
+    setClient(null);
     toast.success('Disconnected from Dropbox');
   };
 
@@ -71,7 +76,8 @@ export const DropboxProvider = ({ children }: { children: React.ReactNode }) => 
       connect, 
       disconnect,
       showAuthSelector,
-      setShowAuthSelector
+      setShowAuthSelector,
+      client
     }}>
       {children}
     </DropboxContext.Provider>

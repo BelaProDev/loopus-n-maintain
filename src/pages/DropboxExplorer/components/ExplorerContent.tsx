@@ -5,17 +5,15 @@ import { ExplorerToolbar } from './ExplorerToolbar';
 import { NavigationBreadcrumb } from './NavigationBreadcrumb';
 import { toast } from 'sonner';
 import { DropboxEntry } from '@/types/dropbox';
-import { dropboxAuth } from '@/lib/api/dropboxAuth';
 
 export const ExplorerContent = () => {
-  const { isAuthenticated } = useDropbox();
+  const { isAuthenticated, client } = useDropbox();
   const [currentPath, setCurrentPath] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const [files, setFiles] = useState<DropboxEntry[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchFiles = async () => {
-    const client = dropboxAuth.getClient();
     if (!client) {
       toast.error('Dropbox client not initialized');
       return;
@@ -35,7 +33,7 @@ export const ExplorerContent = () => {
 
       const mappedEntries: DropboxEntry[] = response.result.entries.map(entry => {
         const baseEntry = {
-          id: entry.id || entry.path_lower || entry.path_display || crypto.randomUUID(),
+          id: entry.path_lower || entry.path_display || crypto.randomUUID(),
           name: entry.name,
           path_lower: entry.path_lower,
           path_display: entry.path_display,
@@ -78,10 +76,10 @@ export const ExplorerContent = () => {
   };
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && client) {
       fetchFiles();
     }
-  }, [isAuthenticated, currentPath]);
+  }, [isAuthenticated, currentPath, client]);
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
