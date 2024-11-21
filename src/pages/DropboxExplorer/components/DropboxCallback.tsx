@@ -34,6 +34,11 @@ const DropboxCallback = () => {
           );
         }
       }
+
+      // Close the window if we couldn't process the auth
+      setTimeout(() => {
+        window.close();
+      }, 1000);
     };
 
     processAuth();

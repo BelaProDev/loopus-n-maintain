@@ -38,7 +38,6 @@ export const DropboxProvider = ({ children }: { children: React.ReactNode }) => 
         clientId: import.meta.env.VITE_DROPBOX_APP_KEY,
       });
 
-      // Generate authentication URL using the correct method
       const authUrl = `https://www.dropbox.com/oauth2/authorize?client_id=${import.meta.env.VITE_DROPBOX_APP_KEY}&response_type=token&redirect_uri=${encodeURIComponent(`${window.location.origin}/dropbox-explorer/callback`)}&token_access_type=legacy`;
 
       const width = 800;
@@ -81,14 +80,20 @@ export const DropboxProvider = ({ children }: { children: React.ReactNode }) => 
 
   const connectWithOfflineAccess = async () => {
     try {
-      const response = await fetch('/.netlify/functions/dropbox-auth');
+      const response = await fetch('/.netlify/functions/dropbox-auth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ action: 'initiate' }),
+      });
+      
       const { authUrl, state } = await response.json();
       
       if (!authUrl) {
         throw new Error('Failed to get authentication URL');
       }
 
-      // Store state for verification
       window.localStorage.setItem('dropboxAuthState', state);
       
       const width = 800;
@@ -119,6 +124,9 @@ export const DropboxProvider = ({ children }: { children: React.ReactNode }) => 
 
           const tokenResponse = await fetch('/.netlify/functions/dropbox-auth', {
             method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
             body: JSON.stringify({ code }),
           });
           

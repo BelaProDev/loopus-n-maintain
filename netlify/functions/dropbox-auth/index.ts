@@ -13,8 +13,8 @@ const handler: Handler = async (event) => {
     };
   }
 
-  // Handle the initial auth request
-  if (event.httpMethod === 'GET') {
+  // Handle the initial auth request for offline access
+  if (event.httpMethod === 'POST' && event.body && JSON.parse(event.body).action === 'initiate') {
     const state = crypto.randomBytes(16).toString('hex');
     const authUrl = `https://www.dropbox.com/oauth2/authorize?client_id=${DROPBOX_APP_KEY}&response_type=code&redirect_uri=${REDIRECT_URI}&state=${state}&token_access_type=offline`;
     
@@ -29,9 +29,9 @@ const handler: Handler = async (event) => {
   }
 
   // Handle the token exchange
-  if (event.httpMethod === 'POST') {
+  if (event.httpMethod === 'POST' && event.body && JSON.parse(event.body).code) {
     try {
-      const { code } = JSON.parse(event.body || '{}');
+      const { code } = JSON.parse(event.body);
       
       if (!code) {
         return {
@@ -76,6 +76,19 @@ const handler: Handler = async (event) => {
         })
       };
     }
+  }
+
+  // Handle CORS preflight
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 204,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
+      body: ''
+    };
   }
 
   return {
