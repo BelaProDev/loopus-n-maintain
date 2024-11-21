@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 export class DropboxAuthManager {
   private static instance: DropboxAuthManager;
   private client: Dropbox | null = null;
+  private accessToken: string | null = null;
 
   private constructor() {}
 
@@ -15,16 +16,33 @@ export class DropboxAuthManager {
   }
 
   getClient(): Dropbox | null {
+    if (!this.client && this.accessToken) {
+      this.client = new Dropbox({ accessToken: this.accessToken });
+    }
     return this.client;
   }
 
   async initializeClient(accessToken: string, expiresIn?: number) {
+    this.accessToken = accessToken;
     this.client = new Dropbox({ accessToken });
     localStorage.setItem('dropboxToken', accessToken);
     
     if (expiresIn) {
       const expiryTime = Date.now() + (expiresIn * 1000);
       localStorage.setItem('dropboxTokenExpiry', expiryTime.toString());
+    }
+
+    // Test the token immediately
+    try {
+      await this.client.filesListFolder({
+        path: '',
+        include_mounted_folders: true,
+        include_non_downloadable_files: true
+      });
+    } catch (error) {
+      console.error('Token validation failed:', error);
+      this.disconnect();
+      throw new Error('Failed to validate access token');
     }
   }
 
@@ -33,7 +51,7 @@ export class DropboxAuthManager {
       import.meta.env.VITE_DROPBOX_APP_KEY
     }&response_type=token&redirect_uri=${
       encodeURIComponent(`${window.location.origin}/dropbox-explorer/callback`)
-    }&token_access_type=legacy`;
+    }`;
 
     const width = 800;
     const height = 600;
@@ -56,21 +74,24 @@ export class DropboxAuthManager {
         
         if (event.data?.type === 'DROPBOX_AUTH_SUCCESS') {
           const { accessToken } = event.data;
-          await this.initializeClient(accessToken);
-          window.removeEventListener('message', handleMessage);
-          popup.close();
-          resolve();
+          try {
+            await this.initializeClient(accessToken);
+            window.removeEventListener('message', handleMessage);
+            popup.close();
+            resolve();
+          } catch (error) {
+            reject(error);
+          }
         }
       };
 
       window.addEventListener('message', handleMessage);
       
-      // Set a timeout to close the popup if authentication fails
       setTimeout(() => {
         popup.close();
         window.removeEventListener('message', handleMessage);
         reject(new Error('Authentication timeout'));
-      }, 300000); // 5 minutes timeout
+      }, 300000);
     });
   }
 
@@ -144,21 +165,25 @@ export class DropboxAuthManager {
 
       window.addEventListener('message', handleMessage);
       
-      // Set a timeout to close the popup if authentication fails
       setTimeout(() => {
         popup.close();
         window.removeEventListener('message', handleMessage);
         reject(new Error('Authentication timeout'));
-      }, 300000); // 5 minutes timeout
+      }, 300000);
     });
   }
 
   disconnect(): void {
     this.client = null;
+    this.accessToken = null;
     localStorage.removeItem('dropboxToken');
     localStorage.removeItem('dropboxTokenExpiry');
     localStorage.removeItem('dropboxRefreshToken');
     localStorage.removeItem('dropboxAuthState');
+  }
+
+  isAuthenticated(): boolean {
+    return !!this.accessToken || !!localStorage.getItem('dropboxToken');
   }
 }
 

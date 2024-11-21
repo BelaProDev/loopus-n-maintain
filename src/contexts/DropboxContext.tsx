@@ -1,11 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Dropbox } from 'dropbox';
 import { toast } from 'sonner';
 import { dropboxAuth } from '@/lib/api/dropboxAuth';
 import AuthMethodSelector from '@/components/business/dropbox/AuthMethodSelector';
 
 interface DropboxContextType {
-  client: Dropbox | null;
   isAuthenticated: boolean;
   connect: (method?: 'callback' | 'offline') => Promise<void>;
   disconnect: () => void;
@@ -24,9 +22,7 @@ export const useDropbox = () => {
 };
 
 export const DropboxProvider = ({ children }: { children: React.ReactNode }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return !!localStorage.getItem('dropboxToken');
-  });
+  const [isAuthenticated, setIsAuthenticated] = useState(() => dropboxAuth.isAuthenticated());
   const [showAuthSelector, setShowAuthSelector] = useState(false);
 
   useEffect(() => {
@@ -71,7 +67,6 @@ export const DropboxProvider = ({ children }: { children: React.ReactNode }) => 
 
   return (
     <DropboxContext.Provider value={{ 
-      client: dropboxAuth.getClient(), 
       isAuthenticated, 
       connect, 
       disconnect,

@@ -16,7 +16,10 @@ export const ExplorerContent = () => {
 
   const fetchFiles = async () => {
     const client = dropboxAuth.getClient();
-    if (!client) return;
+    if (!client) {
+      toast.error('Dropbox client not initialized');
+      return;
+    }
     
     setIsLoading(true);
     try {
@@ -26,9 +29,13 @@ export const ExplorerContent = () => {
         include_non_downloadable_files: true
       });
 
+      if (!response.result.entries) {
+        throw new Error('No entries in response');
+      }
+
       const mappedEntries: DropboxEntry[] = response.result.entries.map(entry => {
         const baseEntry = {
-          id: entry.path_lower || entry.path_display || crypto.randomUUID(),
+          id: entry.id || entry.path_lower || entry.path_display || crypto.randomUUID(),
           name: entry.name,
           path_lower: entry.path_lower,
           path_display: entry.path_display,
