@@ -90,6 +90,7 @@ export const invoiceQueries = {
       
       const query = fql`
         let invoice = invoices.byId(${id})
+        let currentMetadata = invoice.metadata
         invoice.update({
           number: ${data.number},
           date: ${data.date},
@@ -104,9 +105,9 @@ export const invoiceQueries = {
           paymentTerms: ${data.paymentTerms || 'net30'},
           currency: ${data.currency || 'EUR'},
           metadata: {
-            ...invoice.metadata,
+            createdAt: currentMetadata.createdAt,
             updatedAt: ${now},
-            version: invoice.metadata.version + 1
+            version: currentMetadata.version + 1
           }
         })
       `;
