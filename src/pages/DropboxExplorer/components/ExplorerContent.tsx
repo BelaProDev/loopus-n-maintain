@@ -83,7 +83,6 @@ export const ExplorerContent = () => {
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-    const client = dropboxAuth.getClient();
     if (!files || !client) return;
 
     for (const file of Array.from(files)) {
@@ -109,7 +108,6 @@ export const ExplorerContent = () => {
   };
 
   const handleDrop = async (files: FileList, path: string) => {
-    const client = dropboxAuth.getClient();
     if (!client) return;
     
     for (const file of Array.from(files)) {
@@ -135,7 +133,6 @@ export const ExplorerContent = () => {
   };
 
   const handleCreateFolder = async (name: string) => {
-    const client = dropboxAuth.getClient();
     if (!client) return;
     
     try {
