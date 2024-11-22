@@ -27,8 +27,9 @@ const Header = () => {
     queryKey: ['site-logo'],
     queryFn: settingsQueries.getLogo,
     retry: false,
-    // If there's an error fetching the logo, we'll just use the default
-    useErrorBoundary: false
+    meta: {
+      errorBoundary: false // This is the correct way to disable error boundary in v5
+    }
   });
 
   useEffect(() => {
