@@ -8,7 +8,11 @@ import {
   Book, 
   Sparkles, 
   Settings, 
-  Code2
+  Code2,
+  Server,
+  Layout,
+  Database,
+  Globe
 } from "lucide-react";
 
 import OverviewTab from "./Documentation/OverviewTab";
@@ -39,6 +43,22 @@ const Documentation = () => {
                 <Sparkles className="h-4 w-4" />
                 <span className="hidden sm:inline">Features</span>
               </TabsTrigger>
+              <TabsTrigger value="architecture" className="flex items-center gap-2">
+                <Server className="h-4 w-4" />
+                <span className="hidden sm:inline">Architecture</span>
+              </TabsTrigger>
+              <TabsTrigger value="frontend" className="flex items-center gap-2">
+                <Layout className="h-4 w-4" />
+                <span className="hidden sm:inline">Frontend</span>
+              </TabsTrigger>
+              <TabsTrigger value="backend" className="flex items-center gap-2">
+                <Database className="h-4 w-4" />
+                <span className="hidden sm:inline">Backend</span>
+              </TabsTrigger>
+              <TabsTrigger value="i18n" className="flex items-center gap-2">
+                <Globe className="h-4 w-4" />
+                <span className="hidden sm:inline">i18n</span>
+              </TabsTrigger>
               <TabsTrigger value="admin" className="flex items-center gap-2">
                 <Settings className="h-4 w-4" />
                 <span className="hidden sm:inline">Admin</span>
@@ -56,6 +76,56 @@ const Documentation = () => {
 
               <TabsContent value="features">
                 <FeaturesTab />
+              </TabsContent>
+
+              <TabsContent value="architecture">
+                <div className="space-y-6">
+                  <h2 className="text-2xl font-bold">Platform Architecture</h2>
+                  <ul className="list-disc pl-6 space-y-2">
+                    <li>Server-Side Rendering with Remix</li>
+                    <li>Progressive Web App capabilities</li>
+                    <li>Redux for state management</li>
+                    <li>Real-time updates and synchronization</li>
+                    <li>Mobile-first responsive design</li>
+                  </ul>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="frontend">
+                <div className="space-y-6">
+                  <h2 className="text-2xl font-bold">Frontend Stack</h2>
+                  <ul className="list-disc pl-6 space-y-2">
+                    <li>React 18 with TypeScript</li>
+                    <li>Redux & Redux Toolkit for state management</li>
+                    <li>TanStack Query for data fetching</li>
+                    <li>Tailwind CSS & shadcn/ui for styling</li>
+                    <li>Framer Motion for animations</li>
+                  </ul>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="backend">
+                <div className="space-y-6">
+                  <h2 className="text-2xl font-bold">Backend Services</h2>
+                  <ul className="list-disc pl-6 space-y-2">
+                    <li>Netlify Functions for serverless operations</li>
+                    <li>FaunaDB for data persistence</li>
+                    <li>Dropbox API integration</li>
+                    <li>Email service integration</li>
+                  </ul>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="i18n">
+                <div className="space-y-6">
+                  <h2 className="text-2xl font-bold">Internationalization</h2>
+                  <ul className="list-disc pl-6 space-y-2">
+                    <li>Multi-language support (EN, ES, FR)</li>
+                    <li>i18next integration</li>
+                    <li>Language detection</li>
+                    <li>Translation management</li>
+                  </ul>
+                </div>
               </TabsContent>
 
               <TabsContent value="admin">

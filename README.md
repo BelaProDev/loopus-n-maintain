@@ -13,6 +13,7 @@ Where building maintenance meets good vibes! Our platform keeps buildings happy 
 - 🎨 **Modern UI/UX** - Responsive design with shadcn/ui & Tailwind CSS
 - 🔄 **Real-time Updates** - Live data synchronization
 - 📱 **Mobile-First Design** - Fully responsive across all devices
+- 🔄 **State Management** - Centralized with Redux & RTK
 
 ### Maintenance Services
 - ⚡ **Electrical Systems**
@@ -41,6 +42,7 @@ Where building maintenance meets good vibes! Our platform keeps buildings happy 
 ### Frontend
 - Remix (SSR Framework)
 - React 18 with TypeScript
+- Redux & Redux Toolkit
 - TanStack Query
 - Tailwind CSS & shadcn/ui
 - Framer Motion
