@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import SynthesizerCore from "@/components/audio/synth/SynthesizerCore";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DrumSequencer from "@/components/audio/DrumSequencer";
+import TransportControls from "@/components/audio/TransportControls";
 import { useState } from "react";
 import BackToHome from "@/components/BackToHome";
 
@@ -13,6 +14,10 @@ const AudioStudio = () => {
   const { t } = useTranslation(["tools"]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [bpm, setBpm] = useState(120);
+
+  const handlePlayStop = () => {
+    setIsPlaying(!isPlaying);
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -29,6 +34,13 @@ const AudioStudio = () => {
             </div>
             <Music className="h-8 w-8 text-primary" />
           </div>
+
+          <Card className="p-4">
+            <TransportControls 
+              isPlaying={isPlaying} 
+              onPlayStop={handlePlayStop} 
+            />
+          </Card>
 
           <Tabs defaultValue="synth" className="space-y-4">
             <TabsList>
