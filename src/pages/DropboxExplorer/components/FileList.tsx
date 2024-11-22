@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { DropboxEntry } from '@/types/dropbox';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { File, Folder } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
+import { File, Folder, Eye, Download, Share2, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { toast } from 'sonner';
+import { formatDistanceToNow } from 'date-fns';
 
 interface FileListProps {
   files: DropboxEntry[];
@@ -14,6 +17,7 @@ interface FileListProps {
 
 export const FileList = ({ files, onNavigate, onDrop, currentPath }: FileListProps) => {
   const [isDragging, setIsDragging] = useState(false);
+  const [previewFile, setPreviewFile] = useState<DropboxEntry | null>(null);
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -31,6 +35,29 @@ export const FileList = ({ files, onNavigate, onDrop, currentPath }: FileListPro
     if (e.dataTransfer.files && onDrop) {
       onDrop(e.dataTransfer.files, currentPath);
     }
+  };
+
+  const handleShare = (file: DropboxEntry) => {
+    // In a real app, this would generate a sharing link
+    toast.success("Share link copied to clipboard");
+  };
+
+  const handleDownload = (file: DropboxEntry) => {
+    // In a real app, this would trigger the file download
+    toast.success(`Downloading ${file.name}`);
+  };
+
+  const handleDelete = (file: DropboxEntry) => {
+    // In a real app, this would delete the file
+    toast.success(`Deleted ${file.name}`);
+  };
+
+  const getFilePreviewUrl = (file: DropboxEntry) => {
+    const extension = file.name.split('.').pop()?.toLowerCase();
+    if (['jpg', 'jpeg', 'png', 'gif'].includes(extension || '')) {
+      return `https://api.dropboxapi.com/2/files/get_thumbnail?path=${encodeURIComponent(file.path_display || '')}`;
+    }
+    return null;
   };
 
   return (
@@ -55,6 +82,7 @@ export const FileList = ({ files, onNavigate, onDrop, currentPath }: FileListPro
             <TableHead>Name</TableHead>
             <TableHead>Size</TableHead>
             <TableHead>Modified</TableHead>
+            <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -80,10 +108,67 @@ export const FileList = ({ files, onNavigate, onDrop, currentPath }: FileListPro
                   ? formatDistanceToNow(new Date(file.server_modified), { addSuffix: true })
                   : '-'}
               </TableCell>
+              <TableCell>
+                <div className="flex items-center space-x-2" onClick={(e) => e.stopPropagation()}>
+                  {file['.tag'] === 'file' && (
+                    <>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setPreviewFile(file)}
+                      >
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleDownload(file)}
+                      >
+                        <Download className="w-4 h-4" />
+                      </Button>
+                    </>
+                  )}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleShare(file)}
+                  >
+                    <Share2 className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleDelete(file)}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+
+      <Dialog open={!!previewFile} onOpenChange={() => setPreviewFile(null)}>
+        <DialogContent className="max-w-4xl">
+          {previewFile && (
+            <div className="p-4">
+              <h2 className="text-xl font-semibold mb-4">{previewFile.name}</h2>
+              {getFilePreviewUrl(previewFile) ? (
+                <img
+                  src={getFilePreviewUrl(previewFile)}
+                  alt={previewFile.name}
+                  className="max-h-[600px] object-contain mx-auto"
+                />
+              ) : (
+                <div className="flex items-center justify-center h-[400px] bg-muted rounded-lg">
+                  <p className="text-muted-foreground">Preview not available</p>
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
