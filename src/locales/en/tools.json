@@ -1,36 +1,30 @@
 {
   "title": "Digital Tools",
-  "common": {
-    "loading": "Loading...",
-    "error": "Error",
-    "success": "Success",
-    "save": "Save",
-    "cancel": "Cancel",
-    "add": "Add",
-    "edit": "Edit",
-    "delete": "Delete",
-    "search": "Search",
-    "filter": "Filter",
-    "sort": "Sort",
-    "export": "Export",
-    "import": "Import",
-    "preview": "Preview",
-    "download": "Download",
-    "upload": "Upload",
-    "close": "Close"
-  },
   "photoGallery": {
     "title": "Photo Gallery",
     "description": "Organize and manage your photo collection"
   },
   "invoicing": {
     "title": "Invoice Manager",
-    "description": "Create and manage professional invoices",
-    "new": "New Invoice",
-    "edit": "Edit Invoice",
-    "delete": "Delete Invoice",
-    "preview": "Preview Invoice",
-    "download": "Download Invoice",
-    "send": "Send Invoice"
+    "description": "Create and manage professional invoices"
+  },
+  "analytics": {
+    "title": "Analytics Dashboard",
+    "description": "Track and analyze your data"
+  },
+  "documents": {
+    "title": "Document Manager",
+    "description": "Create, edit and manage your documents"
+  },
+  "audio": {
+    "title": "Audio Studio",
+    "description": "Professional audio tools"
+  },
+  "chat": {
+    "title": "Community Hub",
+    "description": "Real-time communication"
+  },
+  "business": {
+    "title": "Business Management"
   }
 }

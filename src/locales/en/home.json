@@ -1,0 +1,10 @@
+{
+  "welcome": "Welcome to Digital Toolbox",
+  "description": "Your Swiss Army Knife for Digital Tools",
+  "news": {
+    "latest": "Latest News"
+  },
+  "services": {
+    "recentActivities": "Recent Activities"
+  }
+}

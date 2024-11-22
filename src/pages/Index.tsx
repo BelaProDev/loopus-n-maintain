@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 
 const Index = () => {
-  const { t } = useTranslation(["tools", "common"]);
+  const { t } = useTranslation(["tools", "home"]);
 
   const tools: Tool[] = [
     {
@@ -77,10 +77,10 @@ const Index = () => {
         <div className="section-container">
           <div className="text-center space-y-4 mb-12">
             <h1 className="text-4xl md:text-5xl lg:text-6xl gradient-heading">
-              {t("common:app.welcome")}
+              {t("home:welcome")}
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-              {t("common:app.description")}
+              {t("home:description")}
             </p>
           </div>
 
@@ -90,12 +90,12 @@ const Index = () => {
           
           <section className="grid md:grid-cols-2 gap-8">
             <div className="glass-panel p-6">
-              <h2 className="text-2xl font-semibold mb-6">{t("common:news.latest")}</h2>
+              <h2 className="text-2xl font-semibold mb-6">{t("home:news.latest")}</h2>
               <HackerNewsSection />
             </div>
 
             <div className="glass-panel p-6">
-              <h2 className="text-2xl font-semibold mb-6">{t("common:services.recentActivities")}</h2>
+              <h2 className="text-2xl font-semibold mb-6">{t("home:services.recentActivities")}</h2>
               <div className="space-y-1">
                 {!isLoading && recentActivities?.map((activity) => (
                   <Link 
