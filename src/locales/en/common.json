@@ -1,11 +1,7 @@
 {
   "app": {
     "name": "Digital Toolbox",
-    "description": "Your Swiss Army Knife for Digital Tools",
-    "welcome": "Welcome to Digital Toolbox",
-    "news": {
-      "latest": "Latest News"
-    }
+    "description": "Your Swiss Army Knife for Digital Tools"
   },
   "nav": {
     "home": "Home",

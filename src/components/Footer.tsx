@@ -21,7 +21,7 @@ const Footer = () => {
               <a 
                 href="tel:+32489127067" 
                 className="hover:text-primary flex items-center transition-colors group"
-                aria-label={t("contact.phone")}
+                aria-label={t("nav.contact")}
               >
                 <div className="p-2 rounded-full bg-primary/10 group-hover:bg-primary/20 mr-3">
                   <Phone className="h-4 w-4" />
@@ -31,7 +31,7 @@ const Footer = () => {
               <a 
                 href="mailto:pro.belalawson@gmail.com" 
                 className="hover:text-primary flex items-center transition-colors group"
-                aria-label={t("contact.email")}
+                aria-label={t("nav.contact")}
               >
                 <div className="p-2 rounded-full bg-primary/10 group-hover:bg-primary/20 mr-3">
                   <Mail className="h-4 w-4" />
@@ -43,7 +43,7 @@ const Footer = () => {
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="hover:text-primary flex items-center transition-colors group"
-                aria-label={t("contact.github")}
+                aria-label={t("nav.contact")}
               >
                 <div className="p-2 rounded-full bg-primary/10 group-hover:bg-primary/20 mr-3">
                   <Github className="h-4 w-4" />
