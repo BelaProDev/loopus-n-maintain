@@ -22,9 +22,10 @@
   },
   "chat": {
     "title": "Community Hub",
-    "description": "Real-time communication"
+    "description": "Connect and collaborate in real-time"
   },
   "business": {
-    "title": "Business Management"
+    "title": "Business Management",
+    "description": "Manage your business operations"
   }
 }

@@ -5,55 +5,54 @@ import ToolGrid from "@/components/tools/ToolGrid";
 import HackerNewsSection from "@/components/home/HackerNewsSection";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Separator } from "@/components/ui/separator";
 import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 
 const Index = () => {
-  const { t } = useTranslation(["tools", "home"]);
+  const { t } = useTranslation(["tools", "common"]);
 
   const tools: Tool[] = [
     {
       id: "documents",
       icon: FileText,
-      title: t("documents.title"),
-      description: t("documents.description"),
+      title: t("tools:documents.title"),
+      description: t("tools:documents.description"),
       to: "/tools/documents"
     },
     {
       id: "analytics",
       icon: BarChart,
-      title: t("analytics.title"),
-      description: t("analytics.description"),
+      title: t("tools:analytics.title"),
+      description: t("tools:analytics.description"),
       to: "/tools/analytics"
     },
     {
       id: "audio",
       icon: Mic,
-      title: t("audio.title"),
-      description: t("audio.description"),
+      title: t("tools:audio.title"),
+      description: t("tools:audio.description"),
       to: "/tools/audio"
     },
     {
       id: "chat",
       icon: MessageCircle,
-      title: t("chat.title"),
-      description: t("chat.description"),
+      title: t("tools:chat.title"),
+      description: t("tools:chat.description"),
       to: "/tools/chat"
     },
     {
       id: "photo-gallery",
       icon: Camera,
-      title: t("photoGallery.title"),
-      description: t("photoGallery.description"),
+      title: t("tools:photoGallery.title"),
+      description: t("tools:photoGallery.description"),
       to: "/tools/photo-gallery"
     },
     {
       id: "invoicing",
       icon: FileSpreadsheet,
-      title: t("invoicing.title"),
-      description: t("invoicing.description"),
+      title: t("tools:invoicing.title"),
+      description: t("tools:invoicing.description"),
       to: "/tools/invoicing"
     }
   ];
@@ -77,10 +76,10 @@ const Index = () => {
         <div className="section-container">
           <div className="text-center space-y-4 mb-12">
             <h1 className="text-4xl md:text-5xl lg:text-6xl gradient-heading">
-              {t("home:welcome")}
+              {t("common:app.welcome")}
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-              {t("home:description")}
+              {t("common:app.description")}
             </p>
           </div>
 
@@ -90,12 +89,12 @@ const Index = () => {
           
           <section className="grid md:grid-cols-2 gap-8">
             <div className="glass-panel p-6">
-              <h2 className="text-2xl font-semibold mb-6">{t("home:news.latest")}</h2>
+              <h2 className="text-2xl font-semibold mb-6">{t("common:app.news.latest")}</h2>
               <HackerNewsSection />
             </div>
 
             <div className="glass-panel p-6">
-              <h2 className="text-2xl font-semibold mb-6">{t("home:services.recentActivities")}</h2>
+              <h2 className="text-2xl font-semibold mb-6">{t("common:services.recentActivities")}</h2>
               <div className="space-y-1">
                 {!isLoading && recentActivities?.map((activity) => (
                   <Link 

@@ -17,12 +17,6 @@
     "chat": "Chat",
     "gallery": "Photo Gallery"
   },
-  "services": {
-    "recentActivities": "Recent Activities"
-  },
-  "business": {
-    "title": "Business Management"
-  },
   "status": {
     "loading": "Loading...",
     "success": "Success",
