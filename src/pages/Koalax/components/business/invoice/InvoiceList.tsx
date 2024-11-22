@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { businessQueries } from "@/lib/fauna/business";
+import { useInvoiceList } from "./hooks/useInvoiceList";
 import { useInvoiceOperations } from "@/hooks/useInvoiceOperations";
 import { useToast } from "@/components/ui/use-toast";
 import { useTranslation } from "react-i18next";
 import InvoiceDialog from "./InvoiceDialog";
 import InvoiceToolbar from "./InvoiceToolbar";
-import InvoiceTable from "./InvoiceTable";
+import InvoiceListContent from "./InvoiceListContent";
 import { Invoice } from "@/types/invoice";
 import { Loader2 } from "lucide-react";
 
@@ -16,11 +15,7 @@ const InvoiceList = () => {
   const { t } = useTranslation(["admin", "common"]);
   const { toast } = useToast();
   const { handleCreateInvoice, handleUpdateInvoice, deleteMutation, isCreating, isUpdating } = useInvoiceOperations();
-
-  const { data: invoices = [], isLoading } = useQuery({
-    queryKey: ['invoices'],
-    queryFn: businessQueries.getInvoices,
-  });
+  const { invoices, isLoading } = useInvoiceList();
 
   const handleEdit = (invoice: Invoice) => {
     setEditingInvoice(invoice);
@@ -90,7 +85,7 @@ const InvoiceList = () => {
         }}
       />
 
-      <InvoiceTable
+      <InvoiceListContent
         invoices={invoices}
         onEdit={handleEdit}
         onDelete={handleDelete}
