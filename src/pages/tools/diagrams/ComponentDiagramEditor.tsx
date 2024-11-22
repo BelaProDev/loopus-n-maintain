@@ -6,17 +6,28 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
   addEdge,
-  Connection
+  Connection,
+  Panel,
+  MarkerType
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { Button } from "@/components/ui/button";
 import { Component, Box, ArrowRight } from 'lucide-react';
+import CustomNode from './nodes/CustomNode';
+
+const nodeTypes = {
+  custom: CustomNode,
+};
 
 const initialNodes: Node[] = [
   {
     id: '1',
-    type: 'input',
-    data: { label: 'App Component' },
+    type: 'custom',
+    data: { 
+      label: 'App Component',
+      type: 'service',
+      description: 'Root application component'
+    },
     position: { x: 250, y: 25 },
   }
 ];
@@ -26,14 +37,22 @@ const ComponentDiagramEditor = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
   const onConnect = (params: Connection) => {
-    setEdges((eds) => addEdge(params, eds));
+    setEdges((eds) => addEdge({
+      ...params,
+      markerEnd: { type: MarkerType.ArrowClosed },
+      animated: true
+    }, eds));
   };
 
   const addNode = (type: string) => {
     const newNode: Node = {
       id: (nodes.length + 1).toString(),
-      type: 'default',
-      data: { label: type },
+      type: 'custom',
+      data: { 
+        label: `${type} ${nodes.length + 1}`,
+        type: 'service',
+        description: `New ${type.toLowerCase()}`
+      },
       position: { 
         x: Math.random() * 500, 
         y: Math.random() * 500 
@@ -64,10 +83,17 @@ const ComponentDiagramEditor = () => {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        nodeTypes={nodeTypes}
         fitView
       >
         <Controls />
         <Background />
+        <Panel position="top-right" className="bg-background/80 p-2 rounded-lg">
+          <div className="text-sm font-medium">Component Diagram</div>
+          <div className="text-xs text-muted-foreground mt-1">
+            Connect components to show relationships
+          </div>
+        </Panel>
       </ReactFlow>
     </div>
   );

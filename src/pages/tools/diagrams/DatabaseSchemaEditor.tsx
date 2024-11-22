@@ -6,17 +6,28 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
   addEdge,
-  Connection
+  Connection,
+  Panel,
+  MarkerType
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { Button } from "@/components/ui/button";
 import { Database, Table, Key } from 'lucide-react';
+import CustomNode from './nodes/CustomNode';
+
+const nodeTypes = {
+  custom: CustomNode,
+};
 
 const initialNodes: Node[] = [
   {
     id: '1',
-    type: 'input',
-    data: { label: 'Users Table' },
+    type: 'custom',
+    data: { 
+      label: 'Users Table',
+      type: 'database',
+      description: 'User information storage'
+    },
     position: { x: 250, y: 25 },
   }
 ];
@@ -26,14 +37,22 @@ const DatabaseSchemaEditor = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
   const onConnect = (params: Connection) => {
-    setEdges((eds) => addEdge(params, eds));
+    setEdges((eds) => addEdge({
+      ...params,
+      markerEnd: { type: MarkerType.ArrowClosed },
+      animated: true
+    }, eds));
   };
 
   const addNode = (type: string) => {
     const newNode: Node = {
       id: (nodes.length + 1).toString(),
-      type: 'default',
-      data: { label: type },
+      type: 'custom',
+      data: { 
+        label: `${type} ${nodes.length + 1}`,
+        type: 'database',
+        description: `New ${type.toLowerCase()}`
+      },
       position: { 
         x: Math.random() * 500, 
         y: Math.random() * 500 
@@ -64,10 +83,17 @@ const DatabaseSchemaEditor = () => {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        nodeTypes={nodeTypes}
         fitView
       >
         <Controls />
         <Background />
+        <Panel position="top-right" className="bg-background/80 p-2 rounded-lg">
+          <div className="text-sm font-medium">Database Schema</div>
+          <div className="text-xs text-muted-foreground mt-1">
+            Drag to connect tables and keys
+          </div>
+        </Panel>
       </ReactFlow>
     </div>
   );
