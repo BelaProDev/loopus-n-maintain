@@ -22,7 +22,6 @@
         "mediaGallery": "Photo and video management"
       },
       "diagrams": {
-        "title": "System Designer",
         "types": ["System Architecture", "Network Infrastructure", "Database Schema", "Component Interaction"]
       },
       "audio": {
@@ -65,6 +64,21 @@
       "realtime": "Real-time updates",
       "secure": "Secure authentication",
       "i18n": "Internationalization"
+    },
+    "database": {
+      "title": "Database Architecture",
+      "fauna": "FaunaDB Integration with GraphQL Support",
+      "queries": "Optimized Query System with Caching",
+      "caching": "Intelligent Response Caching Layer",
+      "sync": "Real-time Data Synchronization"
+    },
+    "pwa": {
+      "title": "Progressive Web App Features",
+      "offline": "Full Offline Functionality",
+      "notifications": "Push Notification System",
+      "workers": "Service Worker Implementation",
+      "storage": "IndexedDB Storage Management",
+      "updates": "Background Updates & Sync"
     }
   }
 }
