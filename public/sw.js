@@ -9,26 +9,13 @@ const urlsToCache = [
 
 let dropboxTokens = null;
 
-// Enhanced cache management
-const cacheFiles = async () => {
-  const cache = await caches.open(CACHE_NAME);
-  return cache.addAll(urlsToCache);
-};
-
-// Improved message handler with structured responses
 self.addEventListener('message', (event) => {
   if (event.data.type === 'CLEAR_CACHE') {
     event.waitUntil(
       caches.keys()
         .then(cacheNames => Promise.all(cacheNames.map(cacheName => caches.delete(cacheName))))
-        .then(() => event.ports[0].postMessage({ 
-          status: 'success',
-          message: 'Cache cleared successfully' 
-        }))
-        .catch(error => event.ports[0].postMessage({ 
-          status: 'error',
-          message: error.message 
-        }))
+        .then(() => event.ports[0].postMessage({ status: 'success' }))
+        .catch(error => event.ports[0].postMessage({ status: 'error', message: error.message }))
     );
   } else if (event.data.type === 'STORE_DROPBOX_TOKENS') {
     dropboxTokens = event.data.tokens;
@@ -37,58 +24,52 @@ self.addEventListener('message', (event) => {
         cache.put('/_dropbox_tokens', new Response(JSON.stringify(dropboxTokens)));
       });
     }
-  } else if (event.data.type === 'GET_DROPBOX_TOKENS') {
-    event.ports[0].postMessage({ tokens: dropboxTokens });
   }
 });
 
-// Enhanced fetch handler with better error handling
 self.addEventListener('fetch', (event) => {
-  if (event.request.url.includes('api.dropboxapi.com')) {
-    event.respondWith((async () => {
+  event.respondWith(
+    (async () => {
+      // Try to get the response from cache first
+      const cachedResponse = await caches.match(event.request);
+      if (cachedResponse) {
+        return cachedResponse;
+      }
+
       try {
-        if (!dropboxTokens) {
-          const cache = await caches.open(CACHE_NAME);
-          const tokenResponse = await cache.match('/_dropbox_tokens');
-          if (tokenResponse) {
-            dropboxTokens = await tokenResponse.json();
+        // For Dropbox API requests, handle token authentication
+        if (event.request.url.includes('api.dropboxapi.com')) {
+          if (!dropboxTokens?.access_token) {
+            return new Response('Unauthorized', { status: 401 });
           }
-        }
 
-        if (!dropboxTokens?.access_token) {
-          return new Response('Unauthorized', { 
-            status: 401,
-            statusText: 'No valid access token found'
+          const modifiedRequest = new Request(event.request, {
+            headers: {
+              ...Object.fromEntries(event.request.headers.entries()),
+              'Authorization': `Bearer ${dropboxTokens.access_token}`
+            }
           });
+
+          return fetch(modifiedRequest);
         }
 
-        const modifiedRequest = new Request(event.request, {
-          headers: {
-            ...Object.fromEntries(event.request.headers.entries()),
-            'Authorization': `Bearer ${dropboxTokens.access_token}`
-          }
-        });
-
-        const response = await fetch(modifiedRequest);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        // For all other requests, try network first
+        const response = await fetch(event.request);
+        
+        // Cache successful GET requests
+        if (event.request.method === 'GET' && response.status === 200) {
+          const cache = await caches.open(CACHE_NAME);
+          cache.put(event.request, response.clone());
+        }
+        
         return response;
       } catch (error) {
-        return new Response(error.message, { 
-          status: 503,
-          statusText: 'Service Unavailable'
-        });
+        return new Response('Network error', { status: 503 });
       }
-    })());
-  } else {
-    event.respondWith(
-      caches.match(event.request)
-        .then(response => response || fetch(event.request))
-        .catch(() => new Response('Network error', { status: 503 }))
-    );
-  }
+    })()
+  );
 });
 
-// Improved activation handler
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     Promise.all([
@@ -102,11 +83,10 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Add install handler
 self.addEventListener('install', (event) => {
   event.waitUntil(
     Promise.all([
-      cacheFiles(),
+      caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)),
       self.skipWaiting()
     ])
   );
