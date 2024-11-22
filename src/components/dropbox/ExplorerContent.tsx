@@ -5,7 +5,7 @@ import { ExplorerToolbar } from '@/pages/DropboxExplorer/components/ExplorerTool
 import { NavigationBreadcrumb } from '@/pages/DropboxExplorer/components/NavigationBreadcrumb';
 import { useFileOperations } from '@/hooks/useFileOperations';
 import { toast } from 'sonner';
-import { DropboxEntry, DropboxFile, DropboxFolder } from '@/types/dropbox';
+import { DropboxEntry, DropboxFile, DropboxFolder, files } from '@/types/dropbox';
 
 export const ExplorerContent = () => {
   const { client } = useDropbox();
@@ -30,6 +30,7 @@ export const ExplorerContent = () => {
 
       const mappedEntries: DropboxEntry[] = response.result.entries.map(entry => {
         const baseEntry = {
+          id: entry.path_lower || entry.path_display || crypto.randomUUID(),
           name: entry.name,
           path_lower: entry.path_lower || '',
           path_display: entry.path_display || '',
