@@ -1,5 +1,4 @@
-// Import all translations
-import * as enCommon from '../../locales/en/common.json';
+import * as enCore from '../../locales/en/core.json';
 import * as enServices from '../../locales/en/services.json';
 import * as enAdmin from '../../locales/en/admin.json';
 import * as enAuth from '../../locales/en/auth.json';
@@ -9,7 +8,7 @@ import * as enApp from '../../locales/en/app.json';
 import * as enSettings from '../../locales/en/settings.json';
 import * as enTools from '../../locales/en/tools.json';
 
-import * as esCommon from '../../locales/es/common.json';
+import * as esCore from '../../locales/es/core.json';
 import * as esServices from '../../locales/es/services.json';
 import * as esAdmin from '../../locales/es/admin.json';
 import * as esAuth from '../../locales/es/auth.json';
@@ -19,7 +18,7 @@ import * as esApp from '../../locales/es/app.json';
 import * as esSettings from '../../locales/es/settings.json';
 import * as esTools from '../../locales/es/tools.json';
 
-import * as frCommon from '../../locales/fr/common.json';
+import * as frCore from '../../locales/fr/core.json';
 import * as frServices from '../../locales/fr/services.json';
 import * as frAdmin from '../../locales/fr/admin.json';
 import * as frAuth from '../../locales/fr/auth.json';
@@ -31,7 +30,7 @@ import * as frTools from '../../locales/fr/tools.json';
 
 export const getLanguageResources = () => ({
   en: {
-    common: enCommon,
+    core: enCore,
     services: enServices,
     admin: enAdmin,
     auth: enAuth,
@@ -42,7 +41,7 @@ export const getLanguageResources = () => ({
     tools: enTools
   },
   es: {
-    common: esCommon,
+    core: esCore,
     services: esServices,
     admin: esAdmin,
     auth: esAuth,
@@ -53,7 +52,7 @@ export const getLanguageResources = () => ({
     tools: esTools
   },
   fr: {
-    common: frCommon,
+    core: frCore,
     services: frServices,
     admin: frAdmin,
     auth: frAuth,

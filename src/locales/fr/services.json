@@ -1,7 +1,7 @@
 {
   "electrical": {
     "title": "Électricité",
-    "description": "Services professionnels de maintenance et réparation électrique",
+    "description": "Services professionnels de maintenance et de réparation électrique.",
     "issues": {
       "powerOutage": "Panne de Courant",
       "circuitBreaker": "Problèmes de Disjoncteur",
@@ -11,7 +11,7 @@
   },
   "plumbing": {
     "title": "Plomberie",
-    "description": "Solutions expertes en plomberie",
+    "description": "Solutions expertes en plomberie pour votre maison ou entreprise.",
     "issues": {
       "leaks": "Fuites",
       "clogs": "Canalisations Bouchées",
@@ -19,9 +19,9 @@
       "waterHeater": "Problèmes de Chauffe-eau"
     }
   },
-  "woodwork": {
+  "woodworking": {
     "title": "Menuiserie",
-    "description": "Services experts de menuiserie",
+    "description": "Services experts de menuiserie et d'ébénisterie.",
     "issues": {
       "repairs": "Réparations de Meubles",
       "restoration": "Restauration de Bois",
@@ -31,7 +31,7 @@
   },
   "ironwork": {
     "title": "Ferronnerie",
-    "description": "Services professionnels de ferronnerie",
+    "description": "Services professionnels de ferronnerie.",
     "issues": {
       "rust": "Rouille et Corrosion",
       "structuralDamage": "Dommages Structurels",
@@ -41,60 +41,12 @@
   },
   "architecture": {
     "title": "Architecture",
-    "description": "Conception architecturale professionnelle",
+    "description": "Services professionnels de conception architecturale.",
     "issues": {
       "designConsultation": "Consultation de Design",
       "permitAssistance": "Assistance aux Permis",
       "renovationPlanning": "Planification de Rénovation",
       "structuralAssessment": "Évaluation Structurelle"
     }
-  },
-  "faq": {
-    "title": "Questions Fréquentes",
-    "electrical": {
-      "safetyQ": "Quelles mesures de sécurité suivez-vous ?",
-      "safetyA": "Nous suivons tous les codes et réglementations de sécurité électrique, en utilisant des équipements et des protections appropriés.",
-      "costQ": "Comment déterminez-vous le coût ?",
-      "costA": "Les coûts sont basés sur le type de travail, les matériaux nécessaires et le temps requis. Nous fournissons des devis détaillés avant de commencer.",
-      "emergencyQ": "Proposez-vous des services d'urgence ?",
-      "emergencyA": "Oui, nous proposons des services électriques d'urgence 24h/24 et 7j/7 pour les problèmes urgents."
-    },
-    "plumbing": {
-      "preventionQ": "Comment puis-je prévenir les problèmes de plomberie ?",
-      "preventionA": "L'entretien régulier, éviter les produits chimiques agressifs et faire attention à ce qui va dans les canalisations peut prévenir la plupart des problèmes courants.",
-      "winterQ": "Comment préparer la plomberie pour l'hiver ?",
-      "winterA": "Isoler les tuyaux, colmater les fuites et maintenir un chauffage adéquat pour prévenir le gel pendant le temps froid.",
-      "waterBillQ": "Pourquoi ma facture d'eau est-elle soudainement plus élevée ?",
-      "waterBillA": "Les augmentations soudaines indiquent souvent des fuites, des toilettes qui fuient ou des installations inefficaces. Nous pouvons aider à identifier et résoudre la cause."
-    },
-    "woodwork": {
-      "materialsQ": "Avec quels types de bois travaillez-vous ?",
-      "materialsA": "Nous travaillons avec une large gamme de bois, y compris les bois durs, les bois tendres et les produits de bois d'ingénierie.",
-      "finishingQ": "Quelles options de finition sont disponibles ?",
-      "finishingA": "Nous proposons diverses finitions, notamment des teintures, vernis, huiles et peintures pour protéger et embellir votre menuiserie.",
-      "customQ": "Pouvez-vous assortir la menuiserie existante ?",
-      "customA": "Oui, nous pouvons assortir les styles, couleurs et finitions de menuiserie existante pour une intégration parfaite."
-    },
-    "ironwork": {
-      "customQ": "Créez-vous des designs personnalisés ?",
-      "customA": "Oui, nous créons des designs de ferronnerie personnalisés adaptés à vos besoins et préférences spécifiques.",
-      "maintenanceQ": "Comment entretenir la ferronnerie ?",
-      "maintenanceA": "Le nettoyage régulier et les traitements anti-rouille aident à maintenir la ferronnerie en bon état.",
-      "repairQ": "La ferronnerie endommagée peut-elle être réparée ?",
-      "repairA": "La plupart des ouvrages de ferronnerie peuvent être réparés par soudure, renforcement ou remplacement de pièces."
-    },
-    "architecture": {
-      "processQ": "Quel est votre processus de conception ?",
-      "processA": "Notre processus comprend la consultation initiale, le développement du concept, la conception détaillée et la planification de la mise en œuvre.",
-      "timelineQ": "Combien de temps prend le processus de conception ?",
-      "timelineA": "Le délai varie selon la portée du projet, généralement de plusieurs semaines à plusieurs mois.",
-      "sustainableQ": "Proposez-vous des options de conception durable ?",
-      "sustainableA": "Oui, nous intégrons des principes de conception durable et écoénergétique dans nos projets."
-    }
-  },
-  "quickHelp": "Aide Rapide",
-  "whatsapp": {
-    "contact": "Contacter via WhatsApp",
-    "message": "Bonjour, j'ai besoin d'aide avec les problèmes suivants : {{issues}}"
   }
 }

@@ -11,8 +11,8 @@ i18nInstance
   .init({
     resources: getLanguageResources(),
     fallbackLng: 'en',
-    defaultNS: 'common',
-    ns: ['common', 'services', 'admin', 'auth', 'docs', 'ui', 'app', 'settings', 'tools'],
+    defaultNS: 'core',
+    ns: ['core', 'services', 'admin', 'auth', 'docs', 'ui', 'app', 'settings', 'tools'],
     interpolation: {
       escapeValue: false
     },

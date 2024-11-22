@@ -1,7 +1,7 @@
 {
   "electrical": {
     "title": "Electrics",
-    "description": "Professional electrical maintenance and repair services",
+    "description": "Professional electrical maintenance and repair services.",
     "issues": {
       "powerOutage": "Power Outage",
       "circuitBreaker": "Circuit Breaker Issues",
@@ -11,7 +11,7 @@
   },
   "plumbing": {
     "title": "Plumbing",
-    "description": "Expert plumbing solutions",
+    "description": "Expert plumbing solutions for your home or business.",
     "issues": {
       "leaks": "Leaks",
       "clogs": "Clogged Drains",
@@ -19,9 +19,9 @@
       "waterHeater": "Water Heater Issues"
     }
   },
-  "woodwork": {
+  "woodworking": {
     "title": "Woodwork",
-    "description": "Expert woodworking and carpentry services",
+    "description": "Expert woodworking and carpentry services.",
     "issues": {
       "repairs": "Furniture Repairs",
       "restoration": "Wood Restoration",
@@ -31,7 +31,7 @@
   },
   "ironwork": {
     "title": "Ironwork",
-    "description": "Professional ironwork services",
+    "description": "Professional ironwork services.",
     "issues": {
       "rust": "Rust and Corrosion",
       "structuralDamage": "Structural Damage",
@@ -41,60 +41,12 @@
   },
   "architecture": {
     "title": "Architecture",
-    "description": "Professional architectural design and planning",
+    "description": "Professional architectural design services.",
     "issues": {
       "designConsultation": "Design Consultation",
       "permitAssistance": "Building Permit Assistance",
       "renovationPlanning": "Renovation Planning",
       "structuralAssessment": "Structural Assessment"
     }
-  },
-  "faq": {
-    "title": "Frequently Asked Questions",
-    "electrical": {
-      "safetyQ": "What safety measures do you follow?",
-      "safetyA": "We follow all electrical safety codes and regulations, using proper equipment and protective gear.",
-      "costQ": "How do you determine the cost?",
-      "costA": "Costs are based on the type of work, materials needed, and time required. We provide detailed quotes before starting.",
-      "emergencyQ": "Do you offer emergency services?",
-      "emergencyA": "Yes, we offer 24/7 emergency electrical services for urgent issues."
-    },
-    "plumbing": {
-      "preventionQ": "How can I prevent plumbing issues?",
-      "preventionA": "Regular maintenance, avoiding harsh chemicals, and being mindful of what goes down drains can prevent most common issues.",
-      "winterQ": "How do I prepare my plumbing for winter?",
-      "winterA": "Insulate pipes, seal leaks, and maintain proper heating to prevent freezing during cold weather.",
-      "waterBillQ": "Why is my water bill suddenly higher?",
-      "waterBillA": "Sudden increases often indicate leaks, running toilets, or inefficient fixtures. We can help identify and fix the cause."
-    },
-    "woodwork": {
-      "materialsQ": "What types of wood do you work with?",
-      "materialsA": "We work with a wide range of woods including hardwoods, softwoods, and engineered wood products.",
-      "finishingQ": "What finishing options are available?",
-      "finishingA": "We offer various finishes including stains, varnishes, oils, and paints to protect and beautify your woodwork.",
-      "customQ": "Can you match existing woodwork?",
-      "customA": "Yes, we can match existing woodwork styles, colors, and finishes for seamless integration."
-    },
-    "ironwork": {
-      "customQ": "Do you create custom designs?",
-      "customA": "Yes, we create custom ironwork designs tailored to your specific needs and preferences.",
-      "maintenanceQ": "How do I maintain ironwork?",
-      "maintenanceA": "Regular cleaning and rust prevention treatments help maintain ironwork in good condition.",
-      "repairQ": "Can damaged ironwork be repaired?",
-      "repairA": "Most ironwork can be repaired through welding, reinforcement, or part replacement."
-    },
-    "architecture": {
-      "processQ": "What is your design process?",
-      "processA": "Our process includes initial consultation, concept development, detailed design, and implementation planning.",
-      "timelineQ": "How long does the design process take?",
-      "timelineA": "Timeline varies by project scope, typically ranging from several weeks to months.",
-      "sustainableQ": "Do you offer sustainable design options?",
-      "sustainableA": "Yes, we incorporate sustainable and energy-efficient design principles in our projects."
-    }
-  },
-  "quickHelp": "Quick Help",
-  "whatsapp": {
-    "contact": "Contact via WhatsApp",
-    "message": "Hello, I need help with the following issues: {{issues}}"
   }
 }
