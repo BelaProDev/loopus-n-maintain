@@ -1,16 +1,21 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { toast } from 'sonner';
-import { dropboxAuth } from '@/lib/api/dropboxAuth';
 import { Dropbox } from 'dropbox';
-import AuthMethodSelector from '@/components/business/dropbox/AuthMethodSelector';
+import { toast } from 'sonner';
+import { 
+  getStoredTokens, 
+  storeTokens, 
+  clearTokens, 
+  isTokenExpired,
+  createDropboxClient 
+} from '@/lib/auth/dropboxAuthUtils';
 
 interface DropboxContextType {
   isAuthenticated: boolean;
+  client: Dropbox | null;
   connect: (method?: 'callback' | 'offline') => Promise<void>;
   disconnect: () => void;
   showAuthSelector: boolean;
   setShowAuthSelector: (show: boolean) => void;
-  client: Dropbox | null;
 }
 
 const DropboxContext = createContext<DropboxContextType | null>(null);
@@ -24,19 +29,20 @@ export const useDropbox = () => {
 };
 
 export const DropboxProvider = ({ children }: { children: React.ReactNode }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(() => dropboxAuth.isAuthenticated());
+  const [client, setClient] = useState<Dropbox | null>(() => {
+    const tokens = getStoredTokens();
+    return tokens?.access_token ? createDropboxClient(tokens.access_token) : null;
+  });
+  const [isAuthenticated, setIsAuthenticated] = useState(() => !!getStoredTokens());
   const [showAuthSelector, setShowAuthSelector] = useState(false);
-  const [client, setClient] = useState<Dropbox | null>(() => dropboxAuth.getClient());
 
   useEffect(() => {
     const checkTokenExpiry = () => {
-      const expiryTime = localStorage.getItem('dropboxTokenExpiry');
-      if (expiryTime && Number(expiryTime) < Date.now()) {
+      if (isTokenExpired()) {
         disconnect();
       }
     };
 
-    checkTokenExpiry();
     const interval = setInterval(checkTokenExpiry, 60000);
     return () => clearInterval(interval);
   }, []);
@@ -48,15 +54,26 @@ export const DropboxProvider = ({ children }: { children: React.ReactNode }) => 
     }
 
     setShowAuthSelector(false);
+    const DROPBOX_APP_KEY = import.meta.env.VITE_DROPBOX_APP_KEY;
+    const REDIRECT_URI = `${window.location.origin}/dropbox-explorer/callback`;
+
     try {
       if (method === 'callback') {
-        await dropboxAuth.connectWithCallback();
+        const authUrl = `https://www.dropbox.com/oauth2/authorize?client_id=${DROPBOX_APP_KEY}&response_type=token&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
+        window.location.href = authUrl;
       } else {
-        await dropboxAuth.connectWithOfflineAccess();
+        const response = await fetch('/.netlify/functions/dropbox-auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'initiate' }),
+        });
+        
+        const { authUrl, state } = await response.json();
+        if (!authUrl) throw new Error('Failed to get authentication URL');
+        
+        localStorage.setItem('dropbox_state', state);
+        window.location.href = authUrl;
       }
-      setIsAuthenticated(true);
-      setClient(dropboxAuth.getClient());
-      toast.success('Successfully connected to Dropbox');
     } catch (error) {
       console.error('Dropbox connection error:', error);
       toast.error(error instanceof Error ? error.message : 'Failed to connect to Dropbox');
@@ -64,20 +81,20 @@ export const DropboxProvider = ({ children }: { children: React.ReactNode }) => 
   };
 
   const disconnect = () => {
-    dropboxAuth.disconnect();
-    setIsAuthenticated(false);
+    clearTokens();
     setClient(null);
+    setIsAuthenticated(false);
     toast.success('Disconnected from Dropbox');
   };
 
   return (
     <DropboxContext.Provider value={{ 
       isAuthenticated, 
+      client,
       connect, 
       disconnect,
       showAuthSelector,
       setShowAuthSelector,
-      client
     }}>
       {children}
     </DropboxContext.Provider>
