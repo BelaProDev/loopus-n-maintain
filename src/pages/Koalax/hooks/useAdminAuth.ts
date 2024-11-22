@@ -26,7 +26,7 @@ export const useAdminAuth = () => {
         
         sessionStorage.setItem('koalax_auth', JSON.stringify(sessionData));
         
-        const from = location.state?.from?.pathname || "/koalax/emails";
+        const from = location.state?.from?.pathname || "/admin/emails";
         navigate(from, { replace: true });
         
         toast({
