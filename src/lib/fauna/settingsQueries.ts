@@ -102,7 +102,7 @@ export const settingsQueries = {
       const result = await client.query(fql`
         let logo = site_settings.all().firstWhere(.key == "logo")
         if (logo != null) {
-          logo.value
+          logo!.value
         } else {
           null
         }
