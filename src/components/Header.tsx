@@ -23,9 +23,12 @@ const Header = () => {
   const { isAuthenticated, logout } = useAuth();
   const { t } = useTranslation(["common", "tools", "auth"]);
 
-  const { data: logo } = useQuery({
+  const { data: logo, isError } = useQuery({
     queryKey: ['site-logo'],
     queryFn: settingsQueries.getLogo,
+    retry: false,
+    // If there's an error fetching the logo, we'll just use the default
+    useErrorBoundary: false
   });
 
   useEffect(() => {
@@ -58,7 +61,7 @@ const Header = () => {
             to="/" 
             className="flex items-center gap-2 hover:opacity-80 transition-opacity"
           >
-            {logo ? (
+            {!isError && logo ? (
               <img 
                 src={`data:image/png;base64,${logo}`}
                 alt="Site Logo" 
