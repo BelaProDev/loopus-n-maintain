@@ -1,5 +1,13 @@
 {
   "title": "Outils Numériques",
+  "photoGallery": {
+    "title": "Galerie Photos",
+    "description": "Organisez et gérez votre collection de photos"
+  },
+  "invoicing": {
+    "title": "Gestionnaire de Factures",
+    "description": "Créez et gérez des factures professionnelles"
+  },
   "common": {
     "loading": "Chargement...",
     "error": "Erreur",
@@ -18,48 +26,5 @@
     "download": "Télécharger",
     "upload": "Téléverser",
     "close": "Fermer"
-  },
-  "invoices": {
-    "title": "Gestionnaire de Factures",
-    "description": "Créer et gérer des factures professionnelles",
-    "new": "Nouvelle Facture",
-    "edit": "Modifier Facture",
-    "delete": "Supprimer Facture",
-    "preview": "Aperçu",
-    "download": "Télécharger Facture",
-    "send": "Envoyer Facture",
-    "items": "Éléments de Facture",
-    "addItem": "Ajouter Élément",
-    "sku": "SKU",
-    "description": "Description",
-    "unit": "Unité",
-    "quantity": "Qté",
-    "price": "Prix",
-    "vat": "TVA",
-    "total": "Total",
-    "subtotal": "Sous-total",
-    "tax": "Taxe",
-    "notes": "Notes",
-    "status": {
-      "draft": "Brouillon",
-      "sent": "Envoyée",
-      "paid": "Payée",
-      "overdue": "En retard"
-    },
-    "units": {
-      "unit": "Unité",
-      "hour": "Heure",
-      "day": "Jour",
-      "month": "Mois",
-      "piece": "Pièce",
-      "service": "Service"
-    },
-    "placeholders": {
-      "sku": "Saisir SKU",
-      "description": "Saisir description",
-      "quantity": "Saisir quantité",
-      "price": "Saisir prix",
-      "notes": "Saisir notes"
-    }
   }
 }

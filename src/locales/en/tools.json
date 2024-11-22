@@ -19,7 +19,11 @@
     "upload": "Upload",
     "close": "Close"
   },
-  "invoices": {
+  "photoGallery": {
+    "title": "Photo Gallery",
+    "description": "Organize and manage your photo collection"
+  },
+  "invoicing": {
     "title": "Invoice Manager",
     "description": "Create and manage professional invoices",
     "new": "New Invoice",
@@ -27,89 +31,6 @@
     "delete": "Delete Invoice",
     "preview": "Preview Invoice",
     "download": "Download Invoice",
-    "send": "Send Invoice",
-    "items": "Invoice Items",
-    "addItem": "Add Item",
-    "sku": "SKU",
-    "description": "Description",
-    "unit": "Unit",
-    "quantity": "Qty",
-    "price": "Price",
-    "vat": "VAT",
-    "total": "Total",
-    "subtotal": "Subtotal",
-    "tax": "Tax",
-    "notes": "Notes",
-    "status": {
-      "draft": "Draft",
-      "sent": "Sent",
-      "paid": "Paid",
-      "overdue": "Overdue"
-    },
-    "units": {
-      "unit": "Unit",
-      "hour": "Hour",
-      "day": "Day",
-      "month": "Month",
-      "piece": "Piece",
-      "service": "Service"
-    },
-    "placeholders": {
-      "sku": "Enter SKU",
-      "description": "Enter description",
-      "quantity": "Enter quantity",
-      "price": "Enter price",
-      "notes": "Enter notes"
-    }
-  },
-  "documents": {
-    "title": "Document Manager",
-    "description": "Create, edit and manage your documents",
-    "features": {
-      "dropboxLens": "Advanced document search",
-      "mediaGallery": "Media management",
-      "sharing": "Secure sharing",
-      "versioning": "Version control"
-    }
-  },
-  "diagrams": {
-    "title": "System Designer",
-    "description": "Design system architectures",
-    "features": {
-      "systemArchitecture": "System architecture",
-      "networkDiagrams": "Network diagrams",
-      "databaseSchemas": "Database schemas",
-      "componentDiagrams": "Component diagrams"
-    }
-  },
-  "analytics": {
-    "title": "Analytics Dashboard",
-    "description": "Track and analyze data",
-    "features": {
-      "realtime": "Real-time monitoring",
-      "reports": "Custom reports",
-      "insights": "Business insights",
-      "export": "Data export"
-    }
-  },
-  "audio": {
-    "title": "Audio Studio",
-    "description": "Professional audio tools",
-    "features": {
-      "synthesizer": "Synthesizer",
-      "sequencer": "Sequencer",
-      "effects": "Audio effects",
-      "recording": "Recording"
-    }
-  },
-  "chat": {
-    "title": "Community Hub",
-    "description": "Real-time communication",
-    "features": {
-      "rooms": "Chat rooms",
-      "sharing": "File sharing",
-      "notifications": "Notifications",
-      "search": "Message search"
-    }
+    "send": "Send Invoice"
   }
 }

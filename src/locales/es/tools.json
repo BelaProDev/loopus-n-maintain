@@ -19,47 +19,40 @@
     "upload": "Subir",
     "close": "Cerrar"
   },
-  "invoices": {
+  "photoGallery": {
+    "title": "Galería de Fotos",
+    "description": "Organiza y gestiona tu colección de fotos"
+  },
+  "invoicing": {
     "title": "Gestor de Facturas",
-    "description": "Crear y gestionar facturas profesionales",
-    "new": "Nueva Factura",
-    "edit": "Editar Factura",
-    "delete": "Eliminar Factura",
-    "preview": "Vista Previa",
-    "download": "Descargar Factura",
-    "send": "Enviar Factura",
-    "items": "Elementos de Factura",
-    "addItem": "Añadir Elemento",
-    "sku": "SKU",
-    "description": "Descripción",
-    "unit": "Unidad",
-    "quantity": "Cant.",
-    "price": "Precio",
-    "vat": "IVA",
-    "total": "Total",
-    "subtotal": "Subtotal",
-    "tax": "Impuesto",
-    "notes": "Notas",
-    "status": {
-      "draft": "Borrador",
-      "sent": "Enviada",
-      "paid": "Pagada",
-      "overdue": "Vencida"
-    },
-    "units": {
-      "unit": "Unidad",
-      "hour": "Hora",
-      "day": "Día",
-      "month": "Mes",
-      "piece": "Pieza",
-      "service": "Servicio"
-    },
-    "placeholders": {
-      "sku": "Introducir SKU",
-      "description": "Introducir descripción",
-      "quantity": "Introducir cantidad",
-      "price": "Introducir precio",
-      "notes": "Introducir notas"
-    }
+    "description": "Crea y gestiona facturas profesionales"
+  },
+  "documents": {
+    "title": "Gestor de Documentos",
+    "description": "Crea, edita y gestiona tus documentos"
+  },
+  "analytics": {
+    "title": "Panel de Analítica",
+    "description": "Monitorea y analiza datos"
+  },
+  "audio": {
+    "title": "Estudio de Audio",
+    "description": "Herramientas profesionales de audio"
+  },
+  "chat": {
+    "title": "Centro Comunitario",
+    "description": "Comunicación en tiempo real"
+  },
+  "tools": {
+    "title": "Herramientas Digitales",
+    "description": "Tu navaja suiza para herramientas digitales"
+  },
+  "documents": {
+    "title": "Gestor de Documentos",
+    "description": "Crea, edita y gestiona tus documentos"
+  },
+  "diagrams": {
+    "title": "Diseñador de Sistemas",
+    "description": "Diseña arquitecturas de sistema"
   }
 }

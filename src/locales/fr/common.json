@@ -1,7 +1,11 @@
 {
   "app": {
     "name": "Boîte à Outils Numérique",
-    "description": "Votre Couteau Suisse pour les Outils Numériques"
+    "description": "Votre Couteau Suisse pour les Outils Numériques",
+    "welcome": "Bienvenue dans la Boîte à Outils Numérique",
+    "news": {
+      "latest": "Dernières Nouvelles"
+    }
   },
   "nav": {
     "home": "Accueil",
@@ -12,6 +16,12 @@
     "dropbox": "Explorateur Dropbox",
     "chat": "Chat",
     "gallery": "Galerie Photos"
+  },
+  "services": {
+    "recentActivities": "Activités Récentes"
+  },
+  "business": {
+    "title": "Gestion d'Entreprise"
   },
   "status": {
     "loading": "Chargement...",
@@ -25,10 +35,12 @@
     "loadingMore": "Chargement...",
     "endOfList": "Fin de la liste"
   },
-  "language": {
-    "change": "Changer de langue",
+  "language": "Changer de langue",
+  "languageChanged": "Langue changée en {{lng}}",
+  "languageChangeError": "Échec du changement de langue",
+  "languages": {
     "en": "Anglais",
-    "es": "Espagnol", 
+    "es": "Espagnol",
     "fr": "Français"
   },
   "theme": {

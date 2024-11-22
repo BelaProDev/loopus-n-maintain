@@ -1,7 +1,11 @@
 {
   "app": {
     "name": "Digital Toolbox",
-    "description": "Your Swiss Army Knife for Digital Tools"
+    "description": "Your Swiss Army Knife for Digital Tools",
+    "welcome": "Welcome to Digital Toolbox",
+    "news": {
+      "latest": "Latest News"
+    }
   },
   "nav": {
     "home": "Home",
@@ -12,6 +16,12 @@
     "dropbox": "Dropbox Explorer",
     "chat": "Chat",
     "gallery": "Photo Gallery"
+  },
+  "services": {
+    "recentActivities": "Recent Activities"
+  },
+  "business": {
+    "title": "Business Management"
   },
   "status": {
     "loading": "Loading...",

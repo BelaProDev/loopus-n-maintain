@@ -1,7 +1,11 @@
 {
   "app": {
     "name": "Caja de Herramientas Digital",
-    "description": "Tu Navaja Suiza para Herramientas Digitales"
+    "description": "Tu Navaja Suiza para Herramientas Digitales",
+    "welcome": "Bienvenido a la Caja de Herramientas Digital",
+    "news": {
+      "latest": "Últimas Noticias"
+    }
   },
   "nav": {
     "home": "Inicio",
