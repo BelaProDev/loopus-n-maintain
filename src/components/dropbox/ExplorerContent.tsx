@@ -5,7 +5,7 @@ import { ExplorerToolbar } from '@/pages/DropboxExplorer/components/ExplorerTool
 import { NavigationBreadcrumb } from '@/pages/DropboxExplorer/components/NavigationBreadcrumb';
 import { useFileOperations } from '@/hooks/useFileOperations';
 import { toast } from 'sonner';
-import { DropboxEntry } from '@/types/dropbox';
+import { DropboxEntry, DropboxFile, DropboxFolder } from '@/types/dropbox';
 
 export const ExplorerContent = () => {
   const { client } = useDropbox();
@@ -28,21 +28,39 @@ export const ExplorerContent = () => {
         include_non_downloadable_files: true
       });
 
-      const mappedEntries: DropboxEntry[] = response.result.entries.map(entry => ({
-        id: entry.id || entry.path_lower || entry.path_display || crypto.randomUUID(),
-        name: entry.name,
-        path_lower: entry.path_lower,
-        path_display: entry.path_display,
-        '.tag': entry['.tag'] as DropboxEntry['.tag'],
-        ...(entry['.tag'] === 'file' ? {
-          size: entry.size,
-          is_downloadable: entry.is_downloadable,
-          client_modified: entry.client_modified,
-          server_modified: entry.server_modified,
-          rev: entry.rev,
-          content_hash: entry.content_hash
-        } : {})
-      }));
+      const mappedEntries: DropboxEntry[] = response.result.entries.map(entry => {
+        const baseEntry = {
+          name: entry.name,
+          path_lower: entry.path_lower || '',
+          path_display: entry.path_display || '',
+          '.tag': entry['.tag'] as DropboxEntry['.tag']
+        };
+
+        if (entry['.tag'] === 'file') {
+          return {
+            ...baseEntry,
+            '.tag': 'file' as const,
+            size: (entry as files.FileMetadata).size,
+            is_downloadable: (entry as files.FileMetadata).is_downloadable,
+            client_modified: (entry as files.FileMetadata).client_modified,
+            server_modified: (entry as files.FileMetadata).server_modified,
+            rev: (entry as files.FileMetadata).rev,
+            content_hash: (entry as files.FileMetadata).content_hash
+          } as DropboxFile;
+        }
+
+        if (entry['.tag'] === 'folder') {
+          return {
+            ...baseEntry,
+            '.tag': 'folder' as const
+          } as DropboxFolder;
+        }
+
+        return {
+          ...baseEntry,
+          '.tag': 'deleted' as const
+        };
+      });
 
       setFiles(mappedEntries);
     } catch (error) {
