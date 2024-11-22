@@ -71,43 +71,51 @@ const Index = () => {
   });
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
+    <div className="page-container">
       <Header />
-      <main className="flex-1 container mx-auto px-4 py-8 space-y-12">
-        <section>
-          <ToolGrid tools={tools} />
-        </section>
-        
-        <section className="bg-card rounded-lg p-6 shadow-lg">
-          <h2 className="text-2xl font-semibold mb-6">{t("common:news.latest")}</h2>
-          <HackerNewsSection />
-        </section>
-
-        <section className="mt-8">
-          <Separator className="my-4" />
-          <div className="max-w-2xl mx-auto">
-            <h3 className="text-sm font-medium text-muted-foreground mb-4 text-center">
-              {t("common:services.recentActivities")}
-            </h3>
-            <div className="space-y-1">
-              {!isLoading && recentActivities?.map((activity) => (
-                <Link 
-                  key={activity.id}
-                  to={activity.path}
-                  className="flex items-center justify-between py-1 text-sm text-muted-foreground hover:bg-accent/5 rounded-sm px-2 transition-colors block"
-                >
-                  <div className="flex items-center gap-2">
-                    <Badge variant="secondary" className="text-xs">
-                      {activity.service}
-                    </Badge>
-                    <span>{activity.action}</span>
-                  </div>
-                  <span className="text-xs">{activity.time}</span>
-                </Link>
-              ))}
-            </div>
+      <main className="content-container">
+        <div className="section-container">
+          <div className="text-center space-y-4 mb-12">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl gradient-heading">
+              {t("common:app.welcome")}
+            </h1>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+              {t("common:app.description")}
+            </p>
           </div>
-        </section>
+
+          <section className="glass-panel p-8 mb-12">
+            <ToolGrid tools={tools} />
+          </section>
+          
+          <section className="grid md:grid-cols-2 gap-8">
+            <div className="glass-panel p-6">
+              <h2 className="text-2xl font-semibold mb-6">{t("common:news.latest")}</h2>
+              <HackerNewsSection />
+            </div>
+
+            <div className="glass-panel p-6">
+              <h2 className="text-2xl font-semibold mb-6">{t("common:services.recentActivities")}</h2>
+              <div className="space-y-1">
+                {!isLoading && recentActivities?.map((activity) => (
+                  <Link 
+                    key={activity.id}
+                    to={activity.path}
+                    className="flex items-center justify-between py-2 px-3 rounded-md hover:bg-accent/10 transition-colors"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Badge variant="secondary" className="text-xs">
+                        {activity.service}
+                      </Badge>
+                      <span className="text-sm text-muted-foreground">{activity.action}</span>
+                    </div>
+                    <span className="text-xs text-muted-foreground">{activity.time}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        </div>
       </main>
       <Footer />
     </div>

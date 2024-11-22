@@ -43,7 +43,7 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-sm border-b">
+    <header className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-sm border-b border-border/40">
       {isOffline && (
         <Badge 
           variant="destructive" 
@@ -80,18 +80,17 @@ const Header = () => {
                 <Link
                   key={tool.name}
                   to={tool.path}
-                  className="nav-link relative group overflow-hidden flex items-center gap-2"
+                  className="nav-link"
                 >
                   <span className="text-lg">{tool.icon}</span>
-                  <span className="relative z-10">{t(`tools:${tool.name}.title`)}</span>
-                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-primary via-secondary to-accent transform origin-left scale-x-0 transition-transform group-hover:scale-x-100" />
+                  <span className="ml-2">{t(`tools:${tool.name}.title`)}</span>
                 </Link>
               ))}
               {isAuthenticated ? (
                 <Button
                   onClick={logout}
                   variant="outline"
-                  className="ml-4 gradient-border"
+                  className="gradient-border"
                 >
                   {t("auth:signOut")}
                 </Button>
@@ -99,7 +98,7 @@ const Header = () => {
                 <Button
                   asChild
                   variant="outline"
-                  className="ml-4 gradient-border"
+                  className="gradient-border"
                 >
                   <Link to="/login">
                     {t("auth:signIn")}

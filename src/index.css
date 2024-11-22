@@ -54,11 +54,43 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
   }
 }
 
 @layer components {
+  .glass-panel {
+    @apply bg-white/10 backdrop-blur-lg border border-white/20 rounded-lg shadow-xl;
+  }
+
+  .gradient-heading {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600 font-bold;
+  }
+
+  .page-container {
+    @apply min-h-screen flex flex-col bg-gradient-to-br from-background to-background/95;
+  }
+
+  .content-container {
+    @apply container mx-auto px-4 py-8 flex-1;
+  }
+
+  .section-container {
+    @apply space-y-8 animate-fade-in;
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+  }
+
+  .nav-link {
+    @apply relative px-3 py-2 text-sm font-medium text-muted-foreground rounded-md hover:text-foreground hover:bg-accent transition-colors;
+  }
+
+  .gradient-border {
+    @apply relative before:absolute before:inset-0 before:p-[1px] before:bg-gradient-to-r before:from-primary/50 before:to-purple-600/50 before:rounded-lg before:-z-10 hover:before:opacity-100 before:opacity-50 transition-all;
+  }
+
   .dialog-content {
     @apply fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
            w-[95%] max-w-[1400px] max-h-[90vh] 
@@ -86,41 +118,5 @@
            overflow-y-auto
            scrollbar scrollbar-track-transparent
            scrollbar-thumb-border/40 hover:scrollbar-thumb-border/60;
-  }
-
-  .form-container {
-    @apply w-full max-w-6xl mx-auto space-y-6 sm:space-y-8;
-  }
-
-  .form-section {
-    @apply bg-muted/[0.02] rounded-xl
-           border border-border/50
-           p-4 sm:p-6 space-y-4 sm:space-y-5
-           hover:border-border/80 transition-colors;
-  }
-
-  .form-grid {
-    @apply grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6;
-  }
-
-  .form-field {
-    @apply space-y-2 sm:space-y-2.5;
-  }
-
-  .form-label {
-    @apply text-sm font-medium text-foreground/90;
-  }
-
-  .form-input {
-    @apply w-full h-9 sm:h-11 px-3 sm:px-4
-           rounded-lg border border-input/80
-           bg-background/60
-           text-sm
-           ring-offset-background
-           placeholder:text-muted-foreground/50
-           focus-visible:outline-none 
-           focus-visible:ring-2 
-           focus-visible:ring-ring 
-           focus-visible:ring-offset-2;
   }
 }
