@@ -20,9 +20,9 @@ const DropboxCallback = () => {
           throw new Error('No authorization code received');
         }
 
-        const accessToken = await dropboxAuth.handleCallback(code);
+        const success = await dropboxAuth.handleCallback(code);
         
-        if (accessToken) {
+        if (success) {
           dispatch(setAuthenticated(true));
           toast({
             title: 'Success',

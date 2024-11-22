@@ -41,7 +41,7 @@ class DropboxAuthManager {
     }
   }
 
-  async handleCallback(code: string): Promise<void> {
+  async handleCallback(code: string): Promise<boolean> {
     try {
       const response = await fetch('/.netlify/functions/dropbox-auth', {
         method: 'POST',
@@ -56,10 +56,26 @@ class DropboxAuthManager {
       const tokens: DropboxTokens = await response.json();
       this.setTokens(tokens);
       toast.success('Successfully connected to Dropbox');
+      return true;
     } catch (error) {
       toast.error('Authentication failed');
       throw error;
     }
+  }
+
+  async getValidAccessToken(): Promise<string | null> {
+    const tokensStr = localStorage.getItem(DROPBOX_AUTH_KEY);
+    if (!tokensStr) return null;
+
+    const tokens: DropboxTokens = JSON.parse(tokensStr);
+    if (!tokens.access_token) return null;
+
+    const expiry = localStorage.getItem('dropbox_token_expiry');
+    if (expiry && Number(expiry) <= Date.now()) {
+      return null;
+    }
+
+    return tokens.access_token;
   }
 
   private setTokens(tokens: DropboxTokens): void {
