@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { FileText, Download, Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -6,13 +7,14 @@ import Footer from "@/components/Footer";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import BackToHome from "@/components/BackToHome";
 import InvoicingHeader from "./invoicing/InvoicingHeader";
 import InvoicingStats from "./invoicing/InvoicingStats";
 import InvoicingActions from "./invoicing/InvoicingActions";
 import RecentInvoices from "./invoicing/RecentInvoices";
+import { useQuery } from "@tanstack/react-query";
+import { invoiceService } from "@/services/invoiceService";
 
 const Invoicing = () => {
   const { t } = useTranslation(["tools"]);
@@ -20,18 +22,22 @@ const Invoicing = () => {
   const [filterStatus, setFilterStatus] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
+  const { data: invoices = [] } = useQuery({
+    queryKey: ['invoices'],
+    queryFn: invoiceService.getInvoices
+  });
+
   const handleCreateInvoice = () => {
-    // This would open the invoice creation dialog in a real app
     toast({
       title: "Coming Soon",
-      description: "Invoice creation will be available in the next update.",
+      description: "Invoice creation will be available in the next update."
     });
   };
 
   const handleExportData = () => {
     toast({
       title: "Exporting Data",
-      description: "Your invoice data is being prepared for export.",
+      description: "Your invoice data is being prepared for export."
     });
   };
 
@@ -45,16 +51,18 @@ const Invoicing = () => {
 
           <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
             <div className="flex gap-2 w-full md:w-auto">
-              <Input
-                placeholder="Search invoices..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="max-w-xs"
-                prefix={<Search className="w-4 h-4 text-muted-foreground" />}
-              />
+              <div className="relative flex-1 md:flex-none">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search invoices..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9 max-w-xs"
+                />
+              </div>
               <Select value={filterStatus} onValueChange={setFilterStatus}>
                 <SelectTrigger className="w-[160px]">
-                  <SelectValue />
+                  <SelectValue placeholder="Filter by status" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Invoices</SelectItem>
@@ -65,30 +73,33 @@ const Invoicing = () => {
               </Select>
             </div>
             <div className="flex gap-2 w-full md:w-auto">
-              <Button onClick={handleCreateInvoice}>
+              <Button onClick={handleCreateInvoice} className="flex-1 md:flex-none">
                 <Plus className="w-4 h-4 mr-2" />
                 New Invoice
               </Button>
-              <Button variant="outline" onClick={handleExportData}>
+              <Button variant="outline" onClick={handleExportData} className="flex-1 md:flex-none">
                 <Download className="w-4 h-4 mr-2" />
                 Export
               </Button>
             </div>
           </div>
 
-          <InvoicingStats />
+          <InvoicingStats invoices={invoices} />
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
               <Card className="p-6">
                 <h2 className="text-lg font-semibold mb-4">Recent Invoices</h2>
-                <RecentInvoices filterStatus={filterStatus} searchQuery={searchQuery} />
+                <RecentInvoices invoices={invoices} />
               </Card>
             </div>
             <div>
               <Card className="p-6">
                 <h2 className="text-lg font-semibold mb-4">Quick Actions</h2>
-                <InvoicingActions />
+                <InvoicingActions 
+                  invoicesCount={invoices.length} 
+                  clientsCount={0} // This would come from a clients query in a real implementation
+                />
               </Card>
             </div>
           </div>
