@@ -5,6 +5,7 @@ Where building maintenance meets good vibes! Our platform keeps buildings happy 
 ## Core Features 🚀
 
 ### Platform Architecture
+- 🚀 **Server-Side Rendering** - Built with Remix for optimal performance and SEO
 - 📱 **Progressive Web App** - Full offline capabilities & installable
 - 🌍 **Multi-language Support** - EN, ES, FR with i18next
 - 🔐 **Role-based Authentication** - Secure admin and user access levels
@@ -15,94 +16,41 @@ Where building maintenance meets good vibes! Our platform keeps buildings happy 
 
 ### Maintenance Services
 - ⚡ **Electrical Systems**
-  - Circuit diagnostics
-  - Maintenance scheduling
-  - Emergency response
 - 🔧 **Plumbing Solutions**
-  - Leak detection
-  - System maintenance
-  - Emergency repairs
 - ⚒️ **Ironwork Services**
-  - Structural repairs
-  - Custom fabrication
-  - Welding services
 - 🪚 **Woodworking**
-  - Custom carpentry
-  - Restoration work
-  - Furniture repair
 - 🏗️ **Architecture**
-  - Design consultation
-  - Project planning
-  - Structural assessment
 
 ### Digital Tools Suite
-- 📄 **Document Management**
-  - Dropbox integration
-  - File organization
-  - Version control
-- 📊 **System Diagrams**
-  - Interactive architecture tools
-  - Network mapping
-  - System visualization
-- 📈 **Business Analytics**
-  - Real-time data visualization
-  - Performance metrics
-  - Custom reports
-- 🎵 **Audio Studio**
-  - Professional processing
-  - Multi-track editing
-  - Effect chains
-- 📋 **Invoice System**
-  - Smart generation
-  - Template management
-  - Payment tracking
-- 💬 **Chat Platform**
-  - Real-time messaging
-  - File sharing
-  - User presence
-- 🖼️ **Media Management**
-  - Photo organization
-  - Gallery creation
-  - Image processing
+- 📄 **Document Management** - Dropbox integration
+- 📊 **System Diagrams** - Interactive architecture tools
+- 📈 **Business Analytics** - Real-time visualization
+- 🎵 **Audio Studio** - Professional processing
+- 📋 **Invoice System** - Smart generation
+- 💬 **Chat Platform** - Real-time messaging
+- 🖼️ **Media Management** - Photo organization
 
 ### Admin Features
 - 📚 **Documentation Center**
-  - Platform guides
-  - API documentation
-  - User manuals
 - 📂 **Dropbox Explorer**
-  - Advanced file management
-  - Folder organization
-  - File sharing
 - ⚙️ **Admin Panel**
-  - User management
-  - System settings
-  - Access control
 - 📧 **Email Management**
-  - Template system
-  - Automated responses
-  - Contact management
 
 ## Tech Stack 🛠️
 
 ### Frontend
+- Remix (SSR Framework)
 - React 18 with TypeScript
-- TanStack Query for data fetching
+- TanStack Query
 - Tailwind CSS & shadcn/ui
-- Framer Motion animations
-- i18next for translations
+- Framer Motion
+- i18next
 
 ### Backend Services
 - Netlify Functions
 - FaunaDB
 - Dropbox API
 - Email Services
-
-### Development Tools
-- Vite
-- ESLint & Prettier
-- Jest & Testing Library
-- TypeScript
 
 ## Getting Started 🚀
 
