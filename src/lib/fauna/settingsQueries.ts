@@ -125,7 +125,7 @@ export const settingsQueries = {
       await client.query(fql`
         let existingLogo = site_settings.all().firstWhere(.key == "logo")
         if (existingLogo != null) {
-          existingLogo.update({
+          existingLogo!.update({
             value: ${imageData}
           })
         } else {
