@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useDropbox } from '@/contexts/DropboxContext';
 import { toast } from 'sonner';
@@ -53,8 +52,10 @@ export const useFileList = (path: string) => {
         };
       });
     },
-    onError: () => {
-      toast.error('Failed to fetch files');
+    meta: {
+      onError: () => {
+        toast.error('Failed to fetch files');
+      }
     }
   });
 };

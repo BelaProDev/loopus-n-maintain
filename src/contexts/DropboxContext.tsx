@@ -1,7 +1,6 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext } from 'react';
 import { Dropbox } from 'dropbox';
 import { useDropboxAuth } from '@/hooks/useDropboxAuth';
-import { createDropboxClient } from '@/lib/auth/dropboxAuthUtils';
 
 interface DropboxContextType {
   isAuthenticated: boolean;
@@ -22,11 +21,11 @@ export const useDropbox = () => {
 };
 
 export const DropboxProvider = ({ children }: { children: React.ReactNode }) => {
-  const [client, setClient] = useState<Dropbox | null>(null);
-  const { isAuthenticated, isLoading, initiateAuth, logout } = useDropboxAuth();
+  const { isAuthenticated, isLoading, login, logout } = useDropboxAuth();
+  const [client, setClient] = React.useState<Dropbox | null>(null);
 
   const connect = async () => {
-    await initiateAuth();
+    await login();
   };
 
   const disconnect = () => {
