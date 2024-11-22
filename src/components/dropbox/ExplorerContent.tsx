@@ -1,24 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useDropbox } from '@/contexts/DropboxContext';
 import { FileList } from '@/pages/DropboxExplorer/components/FileList';
 import { ExplorerToolbar } from '@/pages/DropboxExplorer/components/ExplorerToolbar';
 import { NavigationBreadcrumb } from '@/pages/DropboxExplorer/components/NavigationBreadcrumb';
 import { useFileOperations } from '@/hooks/useFileOperations';
-import { useDropboxFiles } from '@/hooks/useDropboxFiles';
+import { useFileList } from '@/hooks/useFileList';
 
 export const ExplorerContent = () => {
   const { client } = useDropbox();
   const [currentPath, setCurrentPath] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   
-  const { files, isLoading, fetchFiles } = useDropboxFiles(currentPath);
-  const { uploadFiles, createFolder, isUploading } = useFileOperations(currentPath, fetchFiles);
-
-  useEffect(() => {
-    if (client) {
-      fetchFiles();
-    }
-  }, [client, currentPath]);
+  const { data: files = [], isLoading, refetch } = useFileList(currentPath);
+  const { uploadFiles, createFolder, isUploading } = useFileOperations(currentPath, refetch);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -40,7 +34,7 @@ export const ExplorerContent = () => {
         isUploading={isUploading}
         onViewModeChange={setViewMode}
         viewMode={viewMode}
-        onRefresh={fetchFiles}
+        onRefresh={refetch}
         onCreateFolder={createFolder}
         currentPath={currentPath}
       />
