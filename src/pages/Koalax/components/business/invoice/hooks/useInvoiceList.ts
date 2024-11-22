@@ -12,15 +12,17 @@ export const useInvoiceList = () => {
     data: invoices = [], 
     isLoading,
     error 
-  } = useQuery({
+  } = useQuery<Invoice[], Error>({
     queryKey: ['invoices'],
     queryFn: businessQueries.getInvoices,
-    onError: () => {
-      toast({
-        title: t("common:status.error"),
-        description: t("admin:business.invoices.loadError"),
-        variant: "destructive"
-      });
+    meta: {
+      onError: () => {
+        toast({
+          title: t("common:status.error"),
+          description: t("admin:business.invoices.loadError"),
+          variant: "destructive"
+        });
+      }
     }
   });
 

@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { FileText, BarChart, Mic, MessageCircle, Camera, FileSpreadsheet } from "lucide-react";
-import ToolCard from "@/components/home/ToolCard";
+import { Tool } from "@/utils/toolUtils";
+import ToolGrid from "@/components/tools/ToolGrid";
 import HackerNewsSection from "@/components/home/HackerNewsSection";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -12,38 +13,44 @@ import { Link } from "react-router-dom";
 const Index = () => {
   const { t } = useTranslation(["tools", "common"]);
 
-  const tools = [
+  const tools: Tool[] = [
     {
+      id: "documents",
       icon: FileText,
       title: t("documents.title"),
       description: t("documents.description"),
       to: "/tools/documents"
     },
     {
+      id: "analytics",
       icon: BarChart,
       title: t("analytics.title"),
       description: t("analytics.description"),
       to: "/tools/analytics"
     },
     {
+      id: "audio",
       icon: Mic,
       title: t("audio.title"),
       description: t("audio.description"),
       to: "/tools/audio"
     },
     {
+      id: "chat",
       icon: MessageCircle,
       title: t("chat.title"),
       description: t("chat.description"),
       to: "/tools/chat"
     },
     {
+      id: "photo-gallery",
       icon: Camera,
       title: t("photoGallery.title"),
       description: t("photoGallery.description"),
       to: "/tools/photo-gallery"
     },
     {
+      id: "invoicing",
       icon: FileSpreadsheet,
       title: t("invoicing.title"),
       description: t("invoicing.description"),
@@ -51,8 +58,7 @@ const Index = () => {
     }
   ];
 
-  // Mock query for recent service activities
-  const { data: recentActivities } = useQuery({
+  const { data: recentActivities, isLoading } = useQuery({
     queryKey: ['recentActivities'],
     queryFn: () => Promise.resolve([
       { id: 1, service: 'Electrical', action: 'Maintenance completed', time: '2h ago', path: '/electrics' },
@@ -68,16 +74,8 @@ const Index = () => {
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
       <main className="flex-1 container mx-auto px-4 py-8 space-y-12">
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {tools.map((tool) => (
-            <ToolCard
-              key={tool.title}
-              icon={tool.icon}
-              title={tool.title}
-              description={tool.description}
-              to={tool.to}
-            />
-          ))}
+        <section>
+          <ToolGrid tools={tools} />
         </section>
         
         <section className="bg-card rounded-lg p-6 shadow-lg">
@@ -85,7 +83,6 @@ const Index = () => {
           <HackerNewsSection />
         </section>
 
-        {/* Recent Service Activities */}
         <section className="mt-8">
           <Separator className="my-4" />
           <div className="max-w-2xl mx-auto">
@@ -93,7 +90,7 @@ const Index = () => {
               {t("common:services.recentActivities")}
             </h3>
             <div className="space-y-1">
-              {recentActivities?.map((activity) => (
+              {!isLoading && recentActivities?.map((activity) => (
                 <Link 
                   key={activity.id}
                   to={activity.path}
