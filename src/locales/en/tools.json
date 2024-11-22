@@ -1,5 +1,13 @@
 {
   "title": "Digital Tools",
+  "nav": {
+    "home": "Home",
+    "admin": "Admin",
+    "docs": "Documentation",
+    "dropbox": "Dropbox",
+    "chat": "Chat",
+    "gallery": "Gallery"
+  },
   "photoGallery": {
     "title": "Photo Gallery",
     "description": "Organize and manage your photo collection"
@@ -15,6 +23,10 @@
   "documents": {
     "title": "Document Manager",
     "description": "Create, edit and manage your documents"
+  },
+  "diagrams": {
+    "title": "System Designer",
+    "description": "Design system architectures"
   },
   "audio": {
     "title": "Audio Studio",

@@ -12,7 +12,7 @@ i18nInstance
     resources: getLanguageResources(),
     fallbackLng: 'en',
     defaultNS: 'core',
-    ns: ['core', 'services', 'admin', 'auth', 'docs', 'ui', 'app', 'settings', 'tools', 'home'],
+    ns: ['core', 'services', 'admin', 'auth', 'docs', 'ui', 'app', 'settings', 'tools', 'home', 'common'],
     interpolation: {
       escapeValue: false
     },
