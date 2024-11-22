@@ -1,7 +1,7 @@
 import { useDropbox } from '@/contexts/DropboxContext';
 import { Button } from '@/components/ui/button';
 import AuthMethodSelector from '@/components/business/dropbox/AuthMethodSelector';
-import { ExplorerContent } from './components/ExplorerContent';
+import { ExplorerContent } from '@/components/dropbox/ExplorerContent';
 
 const DropboxExplorer = () => {
   const { isAuthenticated, connect, showAuthSelector } = useDropbox();
