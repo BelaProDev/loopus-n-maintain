@@ -1,102 +1,122 @@
+import { useState } from 'react';
 import { Card } from "@/components/ui/card";
-import { Server, Network, Database, Computer } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import { useTranslation } from "react-i18next";
-import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import SystemArchitectureEditor from "./diagrams/SystemArchitectureEditor";
-import NetworkDiagramEditor from "./diagrams/NetworkDiagramEditor";
-import DatabaseSchemaEditor from "./diagrams/DatabaseSchemaEditor";
-import ComponentDiagramEditor from "./diagrams/ComponentDiagramEditor";
-
-const tools = [
-  {
-    icon: Server,
-    title: "System Architecture",
-    description: "Design system architectures with drag-and-drop components",
-  },
-  {
-    icon: Network,
-    title: "Network Diagram",
-    description: "Map out network infrastructure and connections",
-  },
-  {
-    icon: Database,
-    title: "Database Schema",
-    description: "Create and visualize database relationships",
-  },
-  {
-    icon: Computer,
-    title: "Component Diagram",
-    description: "Design software component interactions",
-  },
-];
+import { Button } from "@/components/ui/button";
+import { Download, Upload, Save, Share2 } from "lucide-react";
+import { toast } from "sonner";
+import DatabaseSchemaEditor from './diagrams/DatabaseSchemaEditor';
+import ComponentDiagramEditor from './diagrams/ComponentDiagramEditor';
+import NetworkDiagramEditor from './diagrams/NetworkDiagramEditor';
+import SystemArchitectureEditor from './diagrams/SystemArchitectureEditor';
 
 const Diagrams = () => {
-  const { t } = useTranslation(["tools"]);
-  const [selectedTool, setSelectedTool] = useState("system-architecture");
+  const [activeTab, setActiveTab] = useState('system');
+
+  const handleSave = () => {
+    toast.success("Diagram saved successfully");
+  };
+
+  const handleExport = () => {
+    toast.success("Diagram exported successfully");
+  };
+
+  const handleShare = () => {
+    toast.success("Share link copied to clipboard");
+  };
+
+  const handleImport = () => {
+    toast.success("Diagram imported successfully");
+  };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-      <Header />
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="space-y-8">
-          <div className="text-center space-y-4">
-            <h1 className="text-4xl font-bold text-gradient animate-fade-in">
-              {t("diagrams.title")}
-            </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              {t("diagrams.description")}
-            </p>
-          </div>
-
-          <Tabs value={selectedTool} onValueChange={setSelectedTool} className="space-y-6">
-            <TabsList className="w-full h-auto p-4 grid grid-cols-2 lg:grid-cols-4 gap-4 bg-transparent">
-              {tools.map((tool) => (
-                <TabsTrigger
-                  key={tool.title.toLowerCase().replace(/\s+/g, "-")}
-                  value={tool.title.toLowerCase().replace(/\s+/g, "-")}
-                  className="w-full p-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                >
-                  <div className="flex flex-col items-center gap-3">
-                    <tool.icon className="h-10 w-10" />
-                    <span className="font-medium text-lg">{tool.title}</span>
-                    <p className="text-sm text-muted-foreground hidden lg:block">
-                      {tool.description}
-                    </p>
-                  </div>
-                </TabsTrigger>
-              ))}
-            </TabsList>
-
-            <TabsContent value="system-architecture">
-              <Card className="p-0 overflow-hidden">
-                <SystemArchitectureEditor />
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="network-diagram">
-              <Card className="p-0 overflow-hidden">
-                <NetworkDiagramEditor />
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="database-schema">
-              <Card className="p-0 overflow-hidden">
-                <DatabaseSchemaEditor />
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="component-diagram">
-              <Card className="p-0 overflow-hidden">
-                <ComponentDiagramEditor />
-              </Card>
-            </TabsContent>
-          </Tabs>
+    <div className="container mx-auto p-4 space-y-4">
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold">System Designer</h1>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={handleImport}>
+            <Upload className="w-4 h-4 mr-2" />
+            Import
+          </Button>
+          <Button variant="outline" onClick={handleExport}>
+            <Download className="w-4 h-4 mr-2" />
+            Export
+          </Button>
+          <Button variant="outline" onClick={handleShare}>
+            <Share2 className="w-4 h-4 mr-2" />
+            Share
+          </Button>
+          <Button onClick={handleSave}>
+            <Save className="w-4 h-4 mr-2" />
+            Save
+          </Button>
         </div>
-      </main>
-      <Footer />
+      </div>
+
+      <Card className="p-4">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="w-full justify-start">
+            <TabsTrigger value="system">System Architecture</TabsTrigger>
+            <TabsTrigger value="component">Component Diagram</TabsTrigger>
+            <TabsTrigger value="database">Database Schema</TabsTrigger>
+            <TabsTrigger value="network">Network Diagram</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="system" className="mt-4">
+            <SystemArchitectureEditor />
+          </TabsContent>
+
+          <TabsContent value="component" className="mt-4">
+            <ComponentDiagramEditor />
+          </TabsContent>
+
+          <TabsContent value="database" className="mt-4">
+            <DatabaseSchemaEditor />
+          </TabsContent>
+
+          <TabsContent value="network" className="mt-4">
+            <NetworkDiagramEditor />
+          </TabsContent>
+        </Tabs>
+      </Card>
+
+      <Card className="p-4">
+        <h2 className="text-lg font-semibold mb-4">Diagram Properties</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div>
+            <label className="text-sm text-muted-foreground">Name</label>
+            <input 
+              type="text" 
+              className="w-full px-3 py-1 rounded-md border" 
+              placeholder="Diagram name"
+            />
+          </div>
+          <div>
+            <label className="text-sm text-muted-foreground">Author</label>
+            <input 
+              type="text" 
+              className="w-full px-3 py-1 rounded-md border" 
+              placeholder="Author name"
+            />
+          </div>
+          <div>
+            <label className="text-sm text-muted-foreground">Version</label>
+            <input 
+              type="text" 
+              className="w-full px-3 py-1 rounded-md border" 
+              placeholder="1.0.0"
+            />
+          </div>
+          <div>
+            <label className="text-sm text-muted-foreground">Last Modified</label>
+            <input 
+              type="text" 
+              className="w-full px-3 py-1 rounded-md border" 
+              value={new Date().toLocaleDateString()}
+              readOnly
+            />
+          </div>
+        </div>
+      </Card>
     </div>
   );
 };
