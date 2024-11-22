@@ -1,4 +1,4 @@
-import { dropboxAuth } from '@/lib/auth/dropbox';
+import { dropboxAuth } from '@/lib/auth/dropboxAuth';
 import { files } from 'dropbox/types/dropbox_types';
 
 export interface FileMetadata {

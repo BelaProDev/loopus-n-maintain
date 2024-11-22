@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from "@/components/ui/use-toast";
-import { dropboxAuth } from '@/lib/auth/dropbox';
+import { dropboxAuth } from '@/lib/auth/dropboxAuth';
 
 const DropboxCallback = () => {
   const { toast } = useToast();

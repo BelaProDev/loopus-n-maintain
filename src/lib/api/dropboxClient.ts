@@ -1,5 +1,5 @@
 import { Dropbox } from 'dropbox';
-import { dropboxAuth } from '@/lib/auth/dropbox';
+import { dropboxAuth } from '@/lib/auth/dropboxAuth';
 import { 
   DropboxEntry,
   DropboxFile,
