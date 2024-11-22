@@ -1,0 +1,9 @@
+{
+  "title": "Analytics Dashboard",
+  "description": "Track and analyze your data",
+  "charts": {
+    "usage": "Usage Statistics",
+    "trends": "Trends Analysis",
+    "performance": "Performance Metrics"
+  }
+}

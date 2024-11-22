@@ -1,0 +1,9 @@
+{
+  "title": "Audio Studio",
+  "description": "Professional audio tools",
+  "features": {
+    "recorder": "Audio Recorder",
+    "editor": "Sound Editor",
+    "effects": "Effects Processor"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "title": "Document Manager",
+  "description": "Create, edit and manage your documents",
+  "actions": {
+    "upload": "Upload File",
+    "createFolder": "Create Folder",
+    "refresh": "Refresh",
+    "disconnect": "Disconnect Dropbox",
+    "preview": "Preview",
+    "download": "Download"
+  },
+  "status": {
+    "connecting": "Connecting to Dropbox...",
+    "wait": "Please wait while authenticating.",
+    "success": "Successfully connected to Dropbox",
+    "error": "Failed to connect to Dropbox"
+  }
+}
