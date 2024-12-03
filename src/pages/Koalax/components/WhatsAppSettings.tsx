@@ -11,6 +11,7 @@ const WhatsAppSettings = () => {
   useEffect(() => {
     const fetchWhatsappNumbers = async () => {
       try {
+        if (!user?.id) return;
         const response = await fetch(`/api/whatsapp-numbers?userId=${user.id}`);
         const data = await response.json();
         setWhatsappNumbers(data);

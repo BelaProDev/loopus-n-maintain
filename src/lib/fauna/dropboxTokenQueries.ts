@@ -36,15 +36,15 @@ export const dropboxTokenQueries = {
     try {
       const query = fql`
         let doc = dropbox_tokens.firstWhere(.userId == ${userId})
-        {
+        doc ? {
           userId: doc.userId,
           refreshToken: doc.refreshToken,
           lastUpdated: doc.lastUpdated
-        }
+        } : null
       `;
       
-      const result = await client.query<{ data: DropboxTokenData }>(query);
-      return result.data || null;
+      const result = await client.query<DropboxTokenData | null>(query);
+      return result.data;
     } catch (error) {
       console.error('Failed to get Dropbox token:', error);
       return null;

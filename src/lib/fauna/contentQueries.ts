@@ -1,5 +1,5 @@
 import { getFaunaClient, fql, handleFaunaError } from './client';
-import { ContentData, ToQueryArg } from './types';
+import { ContentData } from '@/types/dropbox';
 
 export const contentQueries = {
   getAllContent: async () => {
@@ -24,7 +24,7 @@ export const contentQueries = {
       const result = await client.query(fql`
         contents.firstWhere(.key == ${key} && .language == ${language})
       `);
-      return result.data;
+      return result.data as ContentData;
     } catch (error) {
       return handleFaunaError(error, null);
     }
@@ -35,16 +35,15 @@ export const contentQueries = {
     if (!client) throw new Error('Fauna client not initialized');
 
     try {
-      const queryData: ToQueryArg<ContentData> = { ...data };
       const result = await client.query(fql`
         let doc = contents.firstWhere(.key == ${data.key} && .language == ${data.language})
         if (doc == null) {
-          contents.create(${queryData})
+          contents.create(${data})
         } else {
-          doc.update(${queryData})
+          doc.update(${data})
         }
       `);
-      return result;
+      return result.data as ContentData;
     } catch (error) {
       return handleFaunaError(error, null);
     }

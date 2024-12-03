@@ -1,6 +1,5 @@
 import { getFaunaClient, fql } from "./client";
-import { WhatsAppNumbers, NavigationLink } from "./types";
-import { ToQueryArg } from "./types";
+import { WhatsAppNumbers } from "@/types/dropbox";
 
 export const settingsQueries = {
   getWhatsAppNumbers: async (): Promise<WhatsAppNumbers> => {
@@ -13,11 +12,15 @@ export const settingsQueries = {
       const whatsappSettings = await client.query(fql`
         let doc = whatsapp_numbers.all().first()!
         {
-          electrics: doc.electrics,
-          plumbing: doc.plumbing,
-          ironwork: doc.ironwork,
-          woodwork: doc.woodwork,
-          architecture: doc.architecture
+          number: doc.number,
+          name: doc.name,
+          services: {
+            electrics: doc.services.electrics,
+            plumbing: doc.services.plumbing,
+            ironwork: doc.services.ironwork,
+            woodwork: doc.services.woodwork,
+            architecture: doc.services.architecture
+          }
         }
       `);
 
@@ -25,11 +28,9 @@ export const settingsQueries = {
     } catch (error) {
       console.error('Error fetching WhatsApp numbers:', error);
       return {
-        electrics: "",
-        plumbing: "",
-        ironwork: "",
-        woodwork: "",
-        architecture: ""
+        number: "",
+        name: "",
+        services: {}
       };
     }
   },

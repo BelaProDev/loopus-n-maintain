@@ -99,6 +99,7 @@ export interface DropboxTokenData {
 }
 
 export interface ContentData {
+  id?: string;
   key: string;
   language: string;
   content: string;
@@ -109,4 +110,11 @@ export interface WhatsAppNumbers {
   id?: string;
   number: string;
   name: string;
+  services: {
+    electrics?: string;
+    plumbing?: string;
+    ironwork?: string;
+    woodwork?: string;
+    architecture?: string;
+  };
 }
