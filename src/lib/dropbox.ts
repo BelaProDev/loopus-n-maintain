@@ -1,1 +1,2 @@
-export { dropboxClient } from './api/dropboxClient';
+import DropboxClient from './api/dropboxClient';
+export default DropboxClient;

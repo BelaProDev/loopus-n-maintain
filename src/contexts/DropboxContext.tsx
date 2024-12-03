@@ -1,19 +1,14 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import DropboxClient from '@/lib/api/dropboxClient';
 import { useToast } from '@/components/ui/use-toast';
-
-interface DropboxContextType {
-  client: DropboxClient | null;
-  isAuthenticated: boolean;
-  isInitializing: boolean;
-  initialize: (token: string) => Promise<void>;
-}
+import type { DropboxContextType } from '@/types/dropbox';
 
 const DropboxContext = createContext<DropboxContextType>({
   client: null,
   isAuthenticated: false,
   isInitializing: true,
   initialize: async () => {},
+  connect: async () => {},
 });
 
 export const DropboxProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -38,6 +33,20 @@ export const DropboxProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   };
 
+  const connect = async () => {
+    try {
+      const authUrl = `https://www.dropbox.com/oauth2/authorize?client_id=${process.env.DROPBOX_APP_KEY}&response_type=token&redirect_uri=${window.location.origin}/callback`;
+      window.location.href = authUrl;
+    } catch (error) {
+      console.error('Failed to connect to Dropbox:', error);
+      toast({
+        title: "Error",
+        description: "Failed to connect to Dropbox",
+        variant: "destructive",
+      });
+    }
+  };
+
   useEffect(() => {
     const token = localStorage.getItem('dropbox_access_token');
     if (token) {
@@ -52,6 +61,7 @@ export const DropboxProvider: React.FC<{ children: React.ReactNode }> = ({ child
     isAuthenticated: client?.isInitialized() || false,
     isInitializing,
     initialize,
+    connect,
   };
 
   return (

@@ -1,31 +1,17 @@
-import { DropboxAuthOperations } from './dropbox/auth';
-import { DropboxFileOperations } from './dropbox/files';
-import { DropboxSharingOperations } from './dropbox/sharing';
-import { DropboxUserOperations } from './dropbox/user';
+import { Dropbox } from 'dropbox';
 import type { 
   DropboxEntry, 
   DropboxSearchResult, 
-  DropboxFileProperty, 
-  DropboxTag,
-  DropboxResponse 
+  DropboxResponse,
+  DropboxTag
 } from '@/types/dropbox';
 
 class DropboxClient {
   private static instance: DropboxClient;
-  private client: any;
+  private client: Dropbox | null = null;
   private accessToken: string | null = null;
 
-  auth: DropboxAuthOperations;
-  files: DropboxFileOperations;
-  sharing: DropboxSharingOperations;
-  user: DropboxUserOperations;
-
-  private constructor() {
-    this.auth = new DropboxAuthOperations();
-    this.files = new DropboxFileOperations();
-    this.sharing = new DropboxSharingOperations();
-    this.user = new DropboxUserOperations();
-  }
+  private constructor() {}
 
   public static getInstance(): DropboxClient {
     if (!DropboxClient.instance) {
@@ -36,16 +22,8 @@ class DropboxClient {
 
   async initialize(accessToken: string): Promise<void> {
     this.accessToken = accessToken;
-    // Initialize Dropbox client with access token
-    await this.getClient();
-  }
-
-  async getClient() {
-    if (!this.client && this.accessToken) {
-      const { Dropbox } = await import('dropbox');
-      this.client = new Dropbox({ accessToken: this.accessToken });
-    }
-    return this.client;
+    const { Dropbox } = await import('dropbox');
+    this.client = new Dropbox({ accessToken });
   }
 
   isInitialized(): boolean {
@@ -53,91 +31,63 @@ class DropboxClient {
   }
 
   async listFolder(path: string): Promise<DropboxEntry[]> {
-    const client = await this.getClient();
-    try {
-      const response = await client.filesListFolder({ path });
-      return response.result.entries.map(this.mapToDropboxEntry);
-    } catch (error) {
-      console.error('Error listing folder:', error);
-      throw error;
-    }
+    if (!this.client) throw new Error('Client not initialized');
+    
+    const response = await this.client.filesListFolder({ path });
+    return response.result.entries.map(this.mapToDropboxEntry);
   }
 
   async search(query: string): Promise<DropboxSearchResult> {
-    const client = await this.getClient();
-    try {
-      const response = await client.filesSearchV2({ query });
-      return response.result;
-    } catch (error) {
-      console.error('Error searching:', error);
-      throw error;
-    }
+    if (!this.client) throw new Error('Client not initialized');
+    
+    const response = await this.client.filesSearchV2({ query });
+    return response.result;
   }
 
   async download(path: string): Promise<Blob> {
-    const client = await this.getClient();
-    try {
-      const response = await client.filesDownload({ path });
-      return response.result.fileBlob;
-    } catch (error) {
-      console.error('Error downloading file:', error);
-      throw error;
-    }
+    if (!this.client) throw new Error('Client not initialized');
+    
+    const response = await this.client.filesDownload({ path });
+    return (response as any).result.fileBlob;
   }
 
   async upload(path: string, contents: ArrayBuffer | Blob): Promise<DropboxEntry> {
-    const client = await this.getClient();
-    try {
-      const response = await client.filesUpload({
-        path,
-        contents,
-        mode: { '.tag': 'add' },
-        autorename: true
-      });
-      return this.mapToDropboxEntry(response.result);
-    } catch (error) {
-      console.error('Error uploading file:', error);
-      throw error;
-    }
+    if (!this.client) throw new Error('Client not initialized');
+    
+    const response = await this.client.filesUpload({
+      path,
+      contents,
+      mode: { '.tag': 'add' },
+      autorename: true
+    });
+    return this.mapToDropboxEntry(response.result);
   }
 
   async delete(path: string): Promise<void> {
-    const client = await this.getClient();
-    try {
-      await client.filesDeleteV2({ path });
-    } catch (error) {
-      console.error('Error deleting file:', error);
-      throw error;
-    }
+    if (!this.client) throw new Error('Client not initialized');
+    
+    await this.client.filesDeleteV2({ path });
   }
 
   async createFolder(path: string): Promise<DropboxEntry> {
-    const client = await this.getClient();
-    try {
-      const response = await client.filesCreateFolderV2({ path });
-      return this.mapToDropboxEntry(response.result.metadata);
-    } catch (error) {
-      console.error('Error creating folder:', error);
-      throw error;
-    }
+    if (!this.client) throw new Error('Client not initialized');
+    
+    const response = await this.client.filesCreateFolderV2({ path });
+    return this.mapToDropboxEntry(response.result.metadata);
   }
 
   async getTags(path: string): Promise<DropboxTag[]> {
-    const client = await this.getClient();
-    try {
-      const response = await client.filesTagsGet({ paths: [path] }) as DropboxResponse<{
-        entries?: Array<{ tags?: DropboxTag[] }>;
-      }>;
-      
-      if (!response.result.entries?.[0]?.tags) {
-        return [];
-      }
-      
-      return response.result.entries[0].tags;
-    } catch (error) {
-      console.error('Error getting tags:', error);
+    if (!this.client) throw new Error('Client not initialized');
+    
+    const response = await this.client.filesTagsGet({ paths: [path] }) as DropboxResponse<{
+      entries?: Array<{ tags?: DropboxTag[] }>;
+    }>;
+    
+    if (!response.result.entries?.[0]?.tags) {
       return [];
     }
+    
+    return response.result.entries[0].tags;
   }
 
   private mapToDropboxEntry(entry: any): DropboxEntry {
