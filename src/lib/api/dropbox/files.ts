@@ -1,10 +1,20 @@
 import { Dropbox, files } from 'dropbox';
 import { DropboxEntryMetadata, DropboxUploadSessionCursor, DropboxUploadSessionStartResult } from '@/types/dropboxFiles';
 
+const UPLOAD_SESSION_CHUNK_SIZE = 8 * 1024 * 1024; // 8MB chunks
+
 export class DropboxFileOperations {
   constructor(private client: Dropbox) {}
 
+  // Core upload operations
   async uploadFile(path: string, contents: ArrayBuffer): Promise<DropboxEntryMetadata> {
+    if (contents.byteLength <= UPLOAD_SESSION_CHUNK_SIZE) {
+      return this.uploadSmallFile(path, contents);
+    }
+    return this.uploadLargeFile(path, contents);
+  }
+
+  private async uploadSmallFile(path: string, contents: ArrayBuffer): Promise<DropboxEntryMetadata> {
     const response = await this.client.filesUpload({
       path,
       contents,
@@ -14,11 +24,45 @@ export class DropboxFileOperations {
     return this.mapFileMetadata(response.result);
   }
 
+  private async uploadLargeFile(path: string, contents: ArrayBuffer): Promise<DropboxEntryMetadata> {
+    // Start upload session
+    const sessionStart = await this.startUploadSession(contents.slice(0, UPLOAD_SESSION_CHUNK_SIZE));
+    let offset = UPLOAD_SESSION_CHUNK_SIZE;
+
+    // Upload chunks
+    const cursor: DropboxUploadSessionCursor = {
+      session_id: sessionStart.session_id,
+      offset
+    };
+
+    while (offset < contents.byteLength) {
+      const chunk = contents.slice(offset, offset + UPLOAD_SESSION_CHUNK_SIZE);
+      const isLastChunk = offset + chunk.byteLength >= contents.byteLength;
+
+      if (isLastChunk) {
+        return this.finishUploadSession(cursor, path, chunk);
+      } else {
+        await this.appendToUploadSession(cursor, chunk);
+        offset += chunk.byteLength;
+        cursor.offset = offset;
+      }
+    }
+
+    throw new Error('Upload failed to complete');
+  }
+
+  // Core download operations
   async downloadFile(path: string): Promise<Blob> {
     const response = await this.client.filesDownload({ path }) as any;
     return response.result.fileBlob;
   }
 
+  async getTemporaryLink(path: string): Promise<string> {
+    const response = await this.client.filesGetTemporaryLink({ path });
+    return response.result.link;
+  }
+
+  // Core folder operations
   async createFolder(path: string): Promise<DropboxEntryMetadata> {
     const response = await this.client.filesCreateFolderV2({
       path,
@@ -59,40 +103,7 @@ export class DropboxFileOperations {
     return this.mapFileMetadata(response.result.metadata);
   }
 
-  async getMetadata(path: string): Promise<DropboxEntryMetadata> {
-    const response = await this.client.filesGetMetadata({ path });
-    return this.mapFileMetadata(response.result);
-  }
-
-  private mapFileMetadata(entry: files.FileMetadataReference | files.FolderMetadataReference): DropboxEntryMetadata {
-    const baseMetadata = {
-      '.tag': entry['.tag'],
-      id: entry.id,
-      name: entry.name,
-      path_lower: entry.path_lower,
-      path_display: entry.path_display
-    };
-
-    if (entry['.tag'] === 'file') {
-      return {
-        ...baseMetadata,
-        '.tag': 'file',
-        size: entry.size,
-        is_downloadable: entry.is_downloadable,
-        client_modified: entry.client_modified,
-        server_modified: entry.server_modified,
-        rev: entry.rev,
-        content_hash: entry.content_hash
-      };
-    } else {
-      return {
-        ...baseMetadata,
-        '.tag': 'folder'
-      };
-    }
-  }
-
-  // Large file upload methods
+  // Upload session methods
   async startUploadSession(contents: ArrayBuffer): Promise<DropboxUploadSessionStartResult> {
     const response = await this.client.filesUploadSessionStart({
       contents,
@@ -128,5 +139,35 @@ export class DropboxFileOperations {
       contents
     });
     return this.mapFileMetadata(response.result);
+  }
+
+  // Helper methods
+  private mapFileMetadata(entry: files.FileMetadataReference | files.FolderMetadataReference): DropboxEntryMetadata {
+    const baseMetadata = {
+      '.tag': entry['.tag'],
+      id: entry.id,
+      name: entry.name,
+      path_lower: entry.path_lower,
+      path_display: entry.path_display
+    };
+
+    if (entry['.tag'] === 'file') {
+      const fileEntry = entry as files.FileMetadata;
+      return {
+        ...baseMetadata,
+        '.tag': 'file',
+        size: fileEntry.size,
+        is_downloadable: fileEntry.is_downloadable,
+        client_modified: fileEntry.client_modified,
+        server_modified: fileEntry.server_modified,
+        rev: fileEntry.rev,
+        content_hash: fileEntry.content_hash
+      };
+    } else {
+      return {
+        ...baseMetadata,
+        '.tag': 'folder'
+      };
+    }
   }
 }

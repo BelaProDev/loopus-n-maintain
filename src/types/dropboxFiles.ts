@@ -1,5 +1,3 @@
-import { files } from 'dropbox';
-
 export interface DropboxFileMetadata {
   '.tag': 'file';
   id: string;
@@ -22,24 +20,7 @@ export interface DropboxFolderMetadata {
   path_display: string;
 }
 
-export interface DropboxSharedLinkMetadata {
-  url: string;
-  name: string;
-  link_permissions: {
-    can_revoke: boolean;
-    resolved_visibility: {
-      '.tag': string;
-    };
-    revoke_failure_reason?: {
-      '.tag': string;
-    };
-  };
-  path_lower?: string;
-  client_modified?: string;
-  server_modified?: string;
-  rev?: string;
-  size?: number;
-}
+export type DropboxEntryMetadata = DropboxFileMetadata | DropboxFolderMetadata;
 
 export interface DropboxUploadSessionCursor {
   session_id: string;
@@ -49,5 +30,3 @@ export interface DropboxUploadSessionCursor {
 export interface DropboxUploadSessionStartResult {
   session_id: string;
 }
-
-export type DropboxEntryMetadata = DropboxFileMetadata | DropboxFolderMetadata;
