@@ -14,7 +14,7 @@ export interface DropboxBaseMetadata {
 export interface DropboxFile extends DropboxBaseMetadata {
   '.tag': 'file';
   size: number;
-  is_downloadable?: boolean;
+  is_downloadable: boolean;
   client_modified: string;
   server_modified: string;
   rev: string;
@@ -30,20 +30,6 @@ export interface DropboxDeletedFile extends DropboxBaseMetadata {
 }
 
 export type DropboxEntry = DropboxFile | DropboxFolder | DropboxDeletedFile;
-
-export interface DropboxSharedLinkSettings {
-  requested_visibility?: {
-    '.tag': 'public' | 'team_only' | 'password';
-  };
-  audience?: {
-    '.tag': 'public' | 'team' | 'no_one';
-  };
-  access?: {
-    '.tag': 'viewer' | 'editor';
-  };
-  password?: string;
-  expires?: string;
-}
 
 export interface DropboxSharedLinkMetadata {
   url: string;
@@ -64,53 +50,9 @@ export interface DropboxSharedLinkMetadata {
   size?: number;
 }
 
-export interface DropboxUploadSessionCursor {
-  session_id: string;
-  offset: number;
-}
-
-export interface DropboxUploadSessionStartResult {
-  session_id: string;
-}
-
-export interface DropboxSearchResult {
-  matches: Array<{
-    metadata: DropboxEntry;
-    match_type: {
-      '.tag': string;
-    };
-  }>;
-  more: boolean;
-  start: number;
-}
-
-export interface DropboxFileProperty {
-  name: string;
-  value: string;
-}
-
-export interface DropboxTag {
-  tag_name: string;
-}
-
-export interface SpaceAllocation {
-  used: number;
-  allocation: {
-    '.tag': 'individual' | 'team' | 'other';
-    allocated?: number;
-  };
-}
-
-export interface DropboxUserProfile {
-  account_id: string;
-  name: {
-    given_name: string;
-    surname: string;
-    familiar_name: string;
-    display_name: string;
-    abbreviated_name: string;
-  };
-  email: string;
-  email_verified: boolean;
-  profile_photo_url?: string;
+export interface DropboxTokenData {
+  userId: string;
+  refreshToken: string;
+  lastUpdated: string;
+  [key: string]: string; // Index signature for FaunaDB compatibility
 }

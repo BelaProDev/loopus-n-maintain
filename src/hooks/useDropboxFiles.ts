@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useDropbox } from '@/contexts/DropboxContext';
 import { toast } from 'sonner';
-import { DropboxEntry, files } from '@/types/dropbox';
+import type { DropboxEntry } from '@/types/dropbox';
 
 export const useDropboxFiles = (path: string) => {
   const { client } = useDropbox();
@@ -24,7 +24,7 @@ export const useDropboxFiles = (path: string) => {
 
       const mappedEntries: DropboxEntry[] = response.result.entries.map(entry => {
         const baseEntry = {
-          id: entry.path_lower || entry.path_display || crypto.randomUUID(),
+          id: entry.id || crypto.randomUUID(),
           name: entry.name,
           path_lower: entry.path_lower || '',
           path_display: entry.path_display || '',
@@ -35,12 +35,12 @@ export const useDropboxFiles = (path: string) => {
           return {
             ...baseEntry,
             '.tag': 'file' as const,
-            size: (entry as files.FileMetadata).size,
-            is_downloadable: (entry as files.FileMetadata).is_downloadable,
-            client_modified: (entry as files.FileMetadata).client_modified,
-            server_modified: (entry as files.FileMetadata).server_modified,
-            rev: (entry as files.FileMetadata).rev,
-            content_hash: (entry as files.FileMetadata).content_hash
+            size: entry.size || 0,
+            is_downloadable: entry.is_downloadable || false,
+            client_modified: entry.client_modified || new Date().toISOString(),
+            server_modified: entry.server_modified || new Date().toISOString(),
+            rev: entry.rev || '',
+            content_hash: entry.content_hash
           };
         }
 
