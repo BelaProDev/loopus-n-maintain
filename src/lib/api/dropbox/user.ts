@@ -1,5 +1,5 @@
 import { Dropbox } from 'dropbox';
-import { SpaceAllocation, DropboxUserProfile } from '@/types/dropbox';
+import type { DropboxUserProfile, SpaceAllocation } from '@/types/dropbox';
 
 export class DropboxUserOperations {
   constructor(private client: Dropbox) {}
@@ -25,8 +25,7 @@ export class DropboxUserOperations {
     const response = await this.client.usersGetSpaceUsage();
     return {
       used: response.result.used,
-      allocated: response.result.allocation.allocated || 0,
-      '.tag': response.result.allocation['.tag']
+      allocation: response.result.allocation
     };
   }
 }

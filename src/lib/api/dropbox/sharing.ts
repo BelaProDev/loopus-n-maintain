@@ -1,5 +1,5 @@
 import { Dropbox } from 'dropbox';
-import { DropboxSharedLinkMetadata, DropboxSharedLinkSettings } from '@/types/dropbox';
+import type { DropboxSharedLinkMetadata, DropboxSharedLinkSettings } from '@/types/dropbox';
 
 export class DropboxSharingOperations {
   constructor(private client: Dropbox) {}
@@ -13,7 +13,25 @@ export class DropboxSharingOperations {
         access: { '.tag': 'viewer' }
       }
     });
-    return response.result;
+
+    return {
+      url: response.result.url,
+      name: response.result.name,
+      path_lower: response.result.path_lower,
+      link_permissions: {
+        can_revoke: response.result.link_permissions.can_revoke,
+        resolved_visibility: {
+          '.tag': response.result.link_permissions.resolved_visibility['.tag']
+        },
+        revoke_failure_reason: response.result.link_permissions.revoke_failure_reason
+          ? { '.tag': response.result.link_permissions.revoke_failure_reason['.tag'] }
+          : undefined
+      },
+      client_modified: response.result.client_modified,
+      server_modified: response.result.server_modified,
+      rev: response.result.rev,
+      size: response.result.size
+    };
   }
 
   async listSharedLinks(path?: string): Promise<DropboxSharedLinkMetadata[]> {
@@ -21,7 +39,25 @@ export class DropboxSharingOperations {
       path: path || '',
       direct_only: true
     });
-    return response.result.links;
+
+    return response.result.links.map(link => ({
+      url: link.url,
+      name: link.name,
+      path_lower: link.path_lower,
+      link_permissions: {
+        can_revoke: link.link_permissions.can_revoke,
+        resolved_visibility: {
+          '.tag': link.link_permissions.resolved_visibility['.tag']
+        },
+        revoke_failure_reason: link.link_permissions.revoke_failure_reason
+          ? { '.tag': link.link_permissions.revoke_failure_reason['.tag'] }
+          : undefined
+      },
+      client_modified: link.client_modified,
+      server_modified: link.server_modified,
+      rev: link.rev,
+      size: link.size
+    }));
   }
 
   async revokeSharedLink(url: string): Promise<void> {

@@ -37,8 +37,8 @@ export const dropboxTokenQueries = {
         dropbox_tokens.firstWhere(.userId == ${userId})
       `;
       
-      const result = await client.query(query);
-      return result ? result as DropboxTokenData : null;
+      const result = await client.query<DropboxTokenData>(query);
+      return result || null;
     } catch (error) {
       console.error('Failed to get Dropbox token:', error);
       return null;

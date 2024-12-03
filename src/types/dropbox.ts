@@ -1,6 +1,4 @@
-import { files, sharing, users, common } from 'dropbox';
-
-export type { files, sharing };
+import { files } from 'dropbox';
 
 export type DropboxFileTag = 'file' | 'folder' | 'deleted';
 export type MediaType = 'image' | 'video' | 'audio' | 'document' | 'other';
@@ -66,26 +64,6 @@ export interface DropboxSharedLinkMetadata {
   size?: number;
 }
 
-export interface SpaceAllocation {
-  used: number;
-  allocated: number;
-  '.tag': 'individual' | 'team' | 'other';
-}
-
-export interface DropboxUserProfile {
-  account_id: string;
-  name: {
-    given_name: string;
-    surname: string;
-    familiar_name: string;
-    display_name: string;
-    abbreviated_name: string;
-  };
-  email: string;
-  email_verified: boolean;
-  profile_photo_url?: string;
-}
-
 export interface DropboxUploadSessionCursor {
   session_id: string;
   offset: number;
@@ -113,4 +91,26 @@ export interface DropboxFileProperty {
 
 export interface DropboxTag {
   tag_name: string;
+}
+
+export interface SpaceAllocation {
+  used: number;
+  allocation: {
+    '.tag': 'individual' | 'team' | 'other';
+    allocated?: number;
+  };
+}
+
+export interface DropboxUserProfile {
+  account_id: string;
+  name: {
+    given_name: string;
+    surname: string;
+    familiar_name: string;
+    display_name: string;
+    abbreviated_name: string;
+  };
+  email: string;
+  email_verified: boolean;
+  profile_photo_url?: string;
 }

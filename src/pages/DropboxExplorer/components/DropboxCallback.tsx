@@ -1,80 +1,51 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useToast } from "@/components/ui/use-toast";
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
 import { dropboxAuth } from '@/lib/auth/dropboxAuth';
+import { toast } from 'sonner';
 
-const DropboxCallback = () => {
-  const { toast } = useToast();
+export const DropboxCallback = () => {
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
-    const handleAuth = async () => {
+    const handleCallback = async () => {
+      const code = searchParams.get('code');
+      const state = searchParams.get('state');
+      const error = searchParams.get('error');
+      const storedState = localStorage.getItem('dropbox_state');
+
+      if (error) {
+        toast.error('Authentication failed');
+        navigate('/dropbox-explorer');
+        return;
+      }
+
+      if (!code || !state || state !== storedState) {
+        toast.error('Invalid authentication response');
+        navigate('/dropbox-explorer');
+        return;
+      }
+
       try {
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
-        const state = urlParams.get('state');
-        const error = urlParams.get('error');
-        const errorDescription = urlParams.get('error_description');
-
-        if (error || errorDescription) {
-          throw new Error(errorDescription || 'Authentication failed');
-        }
-
-        if (!code) {
-          throw new Error('No authorization code received');
-        }
-
-        // Verify state to prevent CSRF attacks
-        const savedState = localStorage.getItem('dropbox_state');
-        if (state !== savedState) {
-          throw new Error('Invalid state parameter');
-        }
-
-        await dropboxAuth.handleCallback(code);
-        
-        toast({
-          title: "Success",
-          description: "Successfully connected to Dropbox",
-        });
-
-        // Clean up state
-        localStorage.removeItem('dropbox_state');
-        
-        // Close popup if in popup mode
-        if (window.opener) {
-          window.opener.postMessage(
-            { type: 'DROPBOX_AUTH_SUCCESS' },
-            window.location.origin
-          );
-          window.close();
-        } else {
-          navigate('/tools/documents');
-        }
+        if (!user?.id) throw new Error('User not authenticated');
+        await dropboxAuth.handleCallback(code, user.id);
+        toast.success('Successfully connected to Dropbox');
+        navigate('/dropbox-explorer');
       } catch (error) {
-        console.error('Auth error:', error);
-        toast({
-          title: "Authentication Error",
-          description: error instanceof Error ? error.message : 'Failed to complete authentication',
-          variant: "destructive",
-        });
-        navigate('/tools/documents');
+        console.error('Callback error:', error);
+        toast.error('Failed to complete authentication');
+        navigate('/dropbox-explorer');
       }
     };
 
-    handleAuth();
-  }, [toast, navigate]);
+    handleCallback();
+  }, [searchParams, navigate, user]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background">
-      <div className="text-center space-y-4 p-6 max-w-md mx-auto">
-        <h1 className="text-2xl font-bold">Connecting to Dropbox...</h1>
-        <p className="text-muted-foreground">
-          Please wait while we complete the authentication process.
-        </p>
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-      </div>
+    <div className="flex items-center justify-center h-screen">
+      <p className="text-lg">Completing authentication...</p>
     </div>
   );
 };
-
-export default DropboxCallback;

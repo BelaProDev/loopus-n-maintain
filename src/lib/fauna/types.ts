@@ -35,3 +35,33 @@ export interface FaunaDocument<T> {
   ts: number;
   data: T;
 }
+
+export interface ContactMessage {
+  id?: string;
+  service: 'electrics' | 'plumbing' | 'ironwork' | 'woodwork' | 'architecture';
+  name: string;
+  email: string;
+  message: string;
+  status?: 'new' | 'read' | 'replied';
+  createdAt?: string;
+}
+
+export interface WhatsAppNumbers {
+  id?: string;
+  number: string;
+  name: string;
+}
+
+export interface NavigationLink {
+  id?: string;
+  text: string;
+  url: string;
+}
+
+export interface ContentData {
+  id?: string;
+  type: string;
+  content: string;
+}
+
+export type ToQueryArg<T> = Omit<T, 'id'>;

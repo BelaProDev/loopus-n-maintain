@@ -1,19 +1,19 @@
 import { Dropbox, files } from 'dropbox';
-import { DropboxEntryMetadata } from '@/types/dropboxFiles';
+import type { DropboxEntry, DropboxUploadSessionCursor, DropboxUploadSessionStartResult } from '@/types/dropbox';
 
 const UPLOAD_SESSION_CHUNK_SIZE = 8 * 1024 * 1024; // 8MB chunks
 
 export class DropboxFileOperations {
   constructor(private client: Dropbox) {}
 
-  async uploadFile(path: string, contents: ArrayBuffer): Promise<DropboxEntryMetadata> {
+  async uploadFile(path: string, contents: ArrayBuffer): Promise<DropboxEntry> {
     if (contents.byteLength <= UPLOAD_SESSION_CHUNK_SIZE) {
       return this.uploadSmallFile(path, contents);
     }
     return this.uploadLargeFile(path, contents);
   }
 
-  private async uploadSmallFile(path: string, contents: ArrayBuffer): Promise<DropboxEntryMetadata> {
+  private async uploadSmallFile(path: string, contents: ArrayBuffer): Promise<DropboxEntry> {
     const response = await this.client.filesUpload({
       path,
       contents,
@@ -23,12 +23,10 @@ export class DropboxFileOperations {
     return this.mapFileMetadata(response.result);
   }
 
-  private async uploadLargeFile(path: string, contents: ArrayBuffer): Promise<DropboxEntryMetadata> {
-    // Start upload session
+  private async uploadLargeFile(path: string, contents: ArrayBuffer): Promise<DropboxEntry> {
     const sessionStart = await this.startUploadSession(contents.slice(0, UPLOAD_SESSION_CHUNK_SIZE));
     let offset = UPLOAD_SESSION_CHUNK_SIZE;
 
-    // Upload chunks
     const cursor: DropboxUploadSessionCursor = {
       session_id: sessionStart.session_id,
       offset
@@ -50,7 +48,6 @@ export class DropboxFileOperations {
     throw new Error('Upload failed to complete');
   }
 
-  // Core download operations
   async downloadFile(path: string): Promise<Blob> {
     const response = await this.client.filesDownload({ path }) as any;
     return response.result.fileBlob;
@@ -61,8 +58,7 @@ export class DropboxFileOperations {
     return response.result.link;
   }
 
-  // Core folder operations
-  async createFolder(path: string): Promise<DropboxEntryMetadata> {
+  async createFolder(path: string): Promise<DropboxEntry> {
     const response = await this.client.filesCreateFolderV2({
       path,
       autorename: true
@@ -74,7 +70,7 @@ export class DropboxFileOperations {
     await this.client.filesDeleteV2({ path });
   }
 
-  async listFolder(path: string, recursive: boolean = false): Promise<DropboxEntryMetadata[]> {
+  async listFolder(path: string, recursive: boolean = false): Promise<DropboxEntry[]> {
     const response = await this.client.filesListFolder({
       path: path || '',
       recursive,
@@ -84,7 +80,7 @@ export class DropboxFileOperations {
     return response.result.entries.map(entry => this.mapFileMetadata(entry));
   }
 
-  async moveFile(fromPath: string, toPath: string): Promise<DropboxEntryMetadata> {
+  async moveFile(fromPath: string, toPath: string): Promise<DropboxEntry> {
     const response = await this.client.filesMoveV2({
       from_path: fromPath,
       to_path: toPath,
@@ -93,7 +89,7 @@ export class DropboxFileOperations {
     return this.mapFileMetadata(response.result.metadata);
   }
 
-  async copyFile(fromPath: string, toPath: string): Promise<DropboxEntryMetadata> {
+  async copyFile(fromPath: string, toPath: string): Promise<DropboxEntry> {
     const response = await this.client.filesCopyV2({
       from_path: fromPath,
       to_path: toPath,
@@ -102,8 +98,7 @@ export class DropboxFileOperations {
     return this.mapFileMetadata(response.result.metadata);
   }
 
-  // Upload session methods
-  async startUploadSession(contents: ArrayBuffer): Promise<DropboxUploadSessionStartResult> {
+  private async startUploadSession(contents: ArrayBuffer): Promise<DropboxUploadSessionStartResult> {
     const response = await this.client.filesUploadSessionStart({
       contents,
       close: false
@@ -111,7 +106,7 @@ export class DropboxFileOperations {
     return response.result;
   }
 
-  async appendToUploadSession(
+  private async appendToUploadSession(
     cursor: DropboxUploadSessionCursor,
     contents: ArrayBuffer,
     close: boolean = false
@@ -123,11 +118,11 @@ export class DropboxFileOperations {
     });
   }
 
-  async finishUploadSession(
+  private async finishUploadSession(
     cursor: DropboxUploadSessionCursor,
     path: string,
     contents: ArrayBuffer
-  ): Promise<DropboxEntryMetadata> {
+  ): Promise<DropboxEntry> {
     const response = await this.client.filesUploadSessionFinish({
       cursor,
       commit: {
@@ -140,11 +135,10 @@ export class DropboxFileOperations {
     return this.mapFileMetadata(response.result);
   }
 
-  // Helper methods
-  private mapFileMetadata(entry: files.FileMetadataReference | files.FolderMetadataReference): DropboxEntryMetadata {
+  private mapFileMetadata(entry: files.FileMetadataReference | files.FolderMetadataReference | files.DeletedMetadataReference): DropboxEntry {
     const baseMetadata = {
       '.tag': entry['.tag'],
-      id: entry.id,
+      id: entry.id || crypto.randomUUID(),
       name: entry.name,
       path_lower: entry.path_lower,
       path_display: entry.path_display
@@ -154,7 +148,7 @@ export class DropboxFileOperations {
       const fileEntry = entry as files.FileMetadata;
       return {
         ...baseMetadata,
-        '.tag': 'file',
+        '.tag': 'file' as const,
         size: fileEntry.size,
         is_downloadable: fileEntry.is_downloadable,
         client_modified: fileEntry.client_modified,
@@ -162,11 +156,18 @@ export class DropboxFileOperations {
         rev: fileEntry.rev,
         content_hash: fileEntry.content_hash
       };
-    } else {
+    }
+
+    if (entry['.tag'] === 'folder') {
       return {
         ...baseMetadata,
-        '.tag': 'folder'
+        '.tag': 'folder' as const
       };
     }
+
+    return {
+      ...baseMetadata,
+      '.tag': 'deleted' as const
+    };
   }
 }

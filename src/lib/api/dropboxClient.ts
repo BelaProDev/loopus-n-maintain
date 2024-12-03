@@ -1,10 +1,9 @@
 import { Dropbox } from 'dropbox';
-import { dropboxAuth } from './dropbox';
+import { dropboxAuth } from '../auth/dropboxAuth';
 import { DropboxFileOperations } from './dropbox/files';
 import { DropboxSharingOperations } from './dropbox/sharing';
 import { DropboxUserOperations } from './dropbox/user';
-import { DropboxEntryMetadata } from '@/types/dropboxFiles';
-import { DropboxSharedLinkMetadata, DropboxSharedLinkSettings, DropboxSearchResult, DropboxFileProperty, DropboxTag } from '@/types/dropbox';
+import type { DropboxEntry, DropboxSearchResult, DropboxFileProperty, DropboxTag } from '@/types/dropbox';
 
 class DropboxClient {
   private static instance: DropboxClient;
@@ -54,7 +53,7 @@ class DropboxClient {
   }
 
   // File operations
-  async uploadFile(file: File, path: string): Promise<DropboxEntryMetadata> {
+  async uploadFile(file: File, path: string): Promise<DropboxEntry> {
     const fileOps = await this.getFileOps();
     const buffer = await file.arrayBuffer();
     return fileOps.uploadFile(`${path}/${file.name}`, buffer);
@@ -70,51 +69,24 @@ class DropboxClient {
     return fileOps.deleteFile(path);
   }
 
-  async createFolder(path: string): Promise<DropboxEntryMetadata> {
+  async createFolder(path: string): Promise<DropboxEntry> {
     const fileOps = await this.getFileOps();
     return fileOps.createFolder(path);
   }
 
-  async moveFile(fromPath: string, toPath: string): Promise<DropboxEntryMetadata> {
+  async moveFile(fromPath: string, toPath: string): Promise<DropboxEntry> {
     const fileOps = await this.getFileOps();
     return fileOps.moveFile(fromPath, toPath);
   }
 
-  async copyFile(fromPath: string, toPath: string): Promise<DropboxEntryMetadata> {
+  async copyFile(fromPath: string, toPath: string): Promise<DropboxEntry> {
     const fileOps = await this.getFileOps();
     return fileOps.copyFile(fromPath, toPath);
   }
 
-  async listFolder(path: string): Promise<DropboxEntryMetadata[]> {
+  async listFolder(path: string): Promise<DropboxEntry[]> {
     const fileOps = await this.getFileOps();
     return fileOps.listFolder(path);
-  }
-
-  // Sharing operations
-  async createSharedLink(path: string, settings?: DropboxSharedLinkSettings): Promise<DropboxSharedLinkMetadata> {
-    const sharingOps = await this.getSharingOps();
-    return sharingOps.createSharedLink(path, settings);
-  }
-
-  async listSharedLinks(path?: string): Promise<DropboxSharedLinkMetadata[]> {
-    const sharingOps = await this.getSharingOps();
-    return sharingOps.listSharedLinks(path);
-  }
-
-  async revokeSharedLink(url: string): Promise<void> {
-    const sharingOps = await this.getSharingOps();
-    return sharingOps.revokeSharedLink(url);
-  }
-
-  // User operations
-  async getCurrentAccount() {
-    const userOps = await this.getUserOps();
-    return userOps.getCurrentAccount();
-  }
-
-  async getSpaceUsage() {
-    const userOps = await this.getUserOps();
-    return userOps.getSpaceUsage();
   }
 
   // Search operations
@@ -126,7 +98,15 @@ class DropboxClient {
       mode: { '.tag': 'filename_and_content' },
       max_results: 100
     });
-    return response.result;
+
+    return {
+      matches: response.result.matches.map(match => ({
+        metadata: this.fileOps!.mapFileMetadata(match.metadata),
+        match_type: { '.tag': match.match_type['.tag'] }
+      })),
+      more: response.result.more,
+      start: response.result.start
+    };
   }
 
   // File properties operations
@@ -134,7 +114,13 @@ class DropboxClient {
     const client = await this.getClient();
     await client.filePropertiesPropertiesAdd({
       path,
-      properties
+      property_groups: [{
+        template_id: 'ptid:custom_properties',
+        fields: properties.map(prop => ({
+          name: prop.name,
+          value: prop.value
+        }))
+      }]
     });
   }
 
@@ -149,24 +135,30 @@ class DropboxClient {
   // Tags operations
   async addTags(path: string, tags: string[]): Promise<void> {
     const client = await this.getClient();
-    await client.filesTagsAdd({
-      path,
-      tag_text: tags
-    });
+    for (const tag of tags) {
+      await client.filesTagsAdd({
+        path,
+        tag_text: tag
+      });
+    }
   }
 
   async removeTags(path: string, tags: string[]): Promise<void> {
     const client = await this.getClient();
-    await client.filesTagsRemove({
-      path,
-      tag_text: tags
-    });
+    for (const tag of tags) {
+      await client.filesTagsRemove({
+        path,
+        tag_text: tag
+      });
+    }
   }
 
   async getTags(path: string): Promise<DropboxTag[]> {
     const client = await this.getClient();
-    const response = await client.filesTagsGet({ path });
-    return response.result.tags;
+    const response = await client.filesTagsGet({ paths: [path] });
+    return response.result.entries[0].tags.map(tag => ({
+      tag_name: tag.tag_text
+    }));
   }
 }
 
