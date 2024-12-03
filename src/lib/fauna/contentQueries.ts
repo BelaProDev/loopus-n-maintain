@@ -1,51 +1,47 @@
-import { getFaunaClient, fql, handleFaunaError } from './client';
-import { ContentData } from '@/types/dropbox';
+import { query as q } from 'faunadb';
+import { client } from './client';
+import type { ContentData } from '@/types/dropbox';
 
-export const contentQueries = {
-  getAllContent: async () => {
-    const client = getFaunaClient();
-    if (!client) throw new Error('Fauna client not initialized');
+export const createContent = async (data: ContentData) => {
+  const result = await client.query(
+    q.Create(
+      q.Collection('content'),
+      { 
+        data: {
+          title: data.title,
+          content: data.content,
+          key: data.key,
+          language: data.language,
+          id: data.id
+        } 
+      }
+    )
+  );
+  return result;
+};
 
-    try {
-      const result = await client.query(fql`
-        contents.all().map(doc => doc.data)
-      `);
-      return result.data;
-    } catch (error) {
-      return handleFaunaError(error, []);
-    }
-  },
+export const getContentByKey = async (key: string) => {
+  const result = await client.query(
+    q.Get(
+      q.Match(q.Index('content_by_key'), key)
+    )
+  );
+  return result;
+};
 
-  getContent: async (key: string, language: string = 'en') => {
-    const client = getFaunaClient();
-    if (!client) throw new Error('Fauna client not initialized');
+export const updateContentById = async (id: string, data: Partial<ContentData>) => {
+  const result = await client.query(
+    q.Update(
+      q.Ref(q.Collection('content'), id),
+      { data }
+    )
+  );
+  return result;
+};
 
-    try {
-      const result = await client.query(fql`
-        contents.firstWhere(.key == ${key} && .language == ${language})
-      `);
-      return result.data as ContentData;
-    } catch (error) {
-      return handleFaunaError(error, null);
-    }
-  },
-
-  updateContent: async (data: ContentData) => {
-    const client = getFaunaClient();
-    if (!client) throw new Error('Fauna client not initialized');
-
-    try {
-      const result = await client.query(fql`
-        let doc = contents.firstWhere(.key == ${data.key} && .language == ${data.language})
-        if (doc == null) {
-          contents.create(${data})
-        } else {
-          doc.update(${data})
-        }
-      `);
-      return result.data as ContentData;
-    } catch (error) {
-      return handleFaunaError(error, null);
-    }
-  }
+export const deleteContentById = async (id: string) => {
+  const result = await client.query(
+    q.Delete(q.Ref(q.Collection('content'), id))
+  );
+  return result;
 };

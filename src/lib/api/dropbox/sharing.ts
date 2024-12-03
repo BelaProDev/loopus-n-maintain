@@ -22,7 +22,7 @@ export class DropboxSharingOperations {
       link_permissions: {
         can_revoke: result.link_permissions.can_revoke,
         resolved_visibility: {
-          '.tag': result.link_permissions.resolved_visibility['.tag'] as any
+          '.tag': result.link_permissions.resolved_visibility['.tag'] as 'public' | 'team_only' | 'password' | 'team_and_password' | 'shared_folder_only'
         },
         revoke_failure_reason: result.link_permissions.revoke_failure_reason
           ? { '.tag': result.link_permissions.revoke_failure_reason['.tag'] }
@@ -48,7 +48,7 @@ export class DropboxSharingOperations {
       link_permissions: {
         can_revoke: link.link_permissions.can_revoke,
         resolved_visibility: {
-          '.tag': link.link_permissions.resolved_visibility['.tag']
+          '.tag': link.link_permissions.resolved_visibility['.tag'] as 'public' | 'team_only' | 'password' | 'team_and_password' | 'shared_folder_only'
         },
         revoke_failure_reason: link.link_permissions.revoke_failure_reason
           ? { '.tag': link.link_permissions.revoke_failure_reason['.tag'] }

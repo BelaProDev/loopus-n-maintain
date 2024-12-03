@@ -1,4 +1,14 @@
 import DropboxClient from './api/dropboxClient';
 
-export const dropboxClient = new DropboxClient();
+let instance: DropboxClient | null = null;
+
+export const dropboxClient = {
+  getInstance: () => {
+    if (!instance) {
+      instance = DropboxClient.getInstance();
+    }
+    return instance;
+  }
+};
+
 export default DropboxClient;

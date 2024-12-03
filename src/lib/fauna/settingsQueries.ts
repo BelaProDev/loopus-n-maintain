@@ -1,145 +1,59 @@
-import { getFaunaClient, fql } from "./client";
-import { WhatsAppNumbers, NavigationLink } from "@/types/dropbox";
-import { QueryArgument } from "./types";
+import { query as q } from 'faunadb';
+import { client } from './client';
+import type { WhatsAppNumbers } from '@/types/dropbox';
 
-export const settingsQueries = {
-  getWhatsAppNumbers: async (): Promise<WhatsAppNumbers> => {
-    try {
-      const client = getFaunaClient();
-      if (!client) {
-        throw new Error('Fauna client not initialized');
-      }
-
-      const whatsappSettings = await client.query(fql`
-        let doc = whatsapp_numbers.all().first()!
-        {
-          number: doc.number,
-          name: doc.name,
-          services: {
-            electrics: doc.services.electrics,
-            plumbing: doc.services.plumbing,
-            ironwork: doc.services.ironwork,
-            woodwork: doc.services.woodwork,
-            architecture: doc.services.architecture
-          }
+export const updateWhatsAppNumbers = async (numbers: WhatsAppNumbers) => {
+  const result = await client.query(
+    q.Update(
+      q.Select(
+        ['ref'],
+        q.Get(q.Match(q.Index('whatsapp_numbers_by_id'), numbers.id))
+      ),
+      {
+        data: {
+          name: numbers.name,
+          number: numbers.number,
+          primary: numbers.primary,
+          secondary: numbers.secondary
         }
-      `);
-
-      return whatsappSettings.data as WhatsAppNumbers;
-    } catch (error) {
-      console.error('Error fetching WhatsApp numbers:', error);
-      return {
-        number: "",
-        name: "",
-        services: {}
-      };
-    }
-  },
-
-  updateWhatsAppNumbers: async (numbers: WhatsAppNumbers): Promise<WhatsAppNumbers> => {
-    try {
-      const client = getFaunaClient();
-      if (!client) {
-        throw new Error('Fauna client not initialized');
       }
+    )
+  );
+  return result;
+};
 
-      const result = await client.query(fql`
-        let doc = whatsapp_numbers.all().first()!
-        doc.update(${numbers})
-      `);
-      return result.data as WhatsAppNumbers;
-    } catch (error) {
-      console.error('Error updating WhatsApp numbers:', error);
-      throw error;
-    }
-  },
-
-  getNavigationLinks: async (): Promise<NavigationLink[]> => {
-    try {
-      const client = getFaunaClient();
-      if (!client) {
-        throw new Error('Fauna client not initialized');
-      }
-
-      const result = await client.query(fql`
-        navigation_links.all().map(link => {
-          {
-            label: link.label,
-            url: link.url,
-            location: link.location
-          }
-        })
-      `);
-      return (Array.isArray(result.data) ? result.data : []) as NavigationLink[];
-    } catch (error) {
-      console.error('Error fetching navigation links:', error);
-      return [];
-    }
-  },
-
-  updateNavigationLink: async (link: QueryArgument): Promise<NavigationLink> => {
-    try {
-      const client = getFaunaClient();
-      if (!client) {
-        throw new Error('Fauna client not initialized');
-      }
-
-      const result = await client.query(fql`
-        navigation_links.create(${link})
-      `);
-      return result.data as NavigationLink;
-    } catch (error) {
-      console.error('Error updating navigation link:', error);
-      throw error;
-    }
-  },
-
-  getLogo: async (): Promise<string | null> => {
-    try {
-      const client = getFaunaClient();
-      if (!client) {
-        throw new Error('Fauna client not initialized');
-      }
-
-      const result = await client.query(fql`
-        let logo = site_settings.all().firstWhere(.key == "logo")
-        if (logo != null) {
-          logo!.value
-        } else {
-          null
+export const createWhatsAppNumber = async (numbers: WhatsAppNumbers) => {
+  const result = await client.query(
+    q.Create(
+      q.Collection('whatsapp_numbers'),
+      {
+        data: {
+          name: numbers.name,
+          number: numbers.number,
+          primary: numbers.primary,
+          secondary: numbers.secondary
         }
-      `);
-
-      return result.data as string | null;
-    } catch (error) {
-      console.error('Error fetching logo:', error);
-      return null;
-    }
-  },
-
-  updateLogo: async (imageData: string): Promise<void> => {
-    try {
-      const client = getFaunaClient();
-      if (!client) {
-        throw new Error('Fauna client not initialized');
       }
+    )
+  );
+  return result;
+};
 
-      await client.query(fql`
-        let existingLogo = site_settings.all().firstWhere(.key == "logo")
-        if (existingLogo != null) {
-          existingLogo!.update({
-            value: ${imageData}
-          })
-        } else {
-          site_settings.create({
-            key: "logo",
-            value: ${imageData}
-          })
-        }
-      `);
-    } catch (error) {
-      console.error('Error updating logo:', error);
-      throw error;
-    }
-  }
+export const deleteWhatsAppNumber = async (id: string) => {
+  const result = await client.query(
+    q.Delete(
+      q.Select(
+        ['ref'],
+        q.Get(q.Match(q.Index('whatsapp_numbers_by_id'), id))
+      )
+    )
+  );
+  return result;
+};
+
+export const getWhatsAppNumbers = async () => {
+  const result = await client.query(
+    q.Paginate(q.Documents(q.Collection('whatsapp_numbers')))
+  );
+  return result.data;
 };

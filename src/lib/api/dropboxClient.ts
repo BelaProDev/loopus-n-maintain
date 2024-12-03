@@ -2,8 +2,7 @@ import { Dropbox } from 'dropbox';
 import type { 
   DropboxEntry, 
   DropboxSearchResult, 
-  DropboxResponse,
-  DropboxTag
+  DropboxResponse 
 } from '@/types/dropbox';
 
 class DropboxClient {
@@ -22,7 +21,6 @@ class DropboxClient {
 
   async initialize(accessToken: string): Promise<void> {
     this.accessToken = accessToken;
-    const { Dropbox } = await import('dropbox');
     this.client = new Dropbox({ accessToken });
   }
 
@@ -41,7 +39,13 @@ class DropboxClient {
     if (!this.client) throw new Error('Client not initialized');
     
     const response = await this.client.filesSearchV2({ query });
-    return response.result;
+    return {
+      matches: response.result.matches.map(match => ({
+        metadata: this.mapToDropboxEntry(match.metadata.metadata)
+      })),
+      has_more: response.result.has_more,
+      cursor: response.result.cursor
+    };
   }
 
   async download(path: string): Promise<Blob> {
@@ -76,26 +80,12 @@ class DropboxClient {
     return this.mapToDropboxEntry(response.result.metadata);
   }
 
-  async getTags(path: string): Promise<DropboxTag[]> {
-    if (!this.client) throw new Error('Client not initialized');
-    
-    const response = await this.client.filesTagsGet({ paths: [path] }) as DropboxResponse<{
-      entries?: Array<{ tags?: DropboxTag[] }>;
-    }>;
-    
-    if (!response.result.entries?.[0]?.tags) {
-      return [];
-    }
-    
-    return response.result.entries[0].tags;
-  }
-
   private mapToDropboxEntry(entry: any): DropboxEntry {
     return {
-      id: entry.id || entry.path_lower || entry.path_display,
+      id: entry.id || entry.path_lower || entry.path_display || crypto.randomUUID(),
       name: entry.name,
-      path_lower: entry.path_lower,
-      path_display: entry.path_display,
+      path_lower: entry.path_lower || '',
+      path_display: entry.path_display || '',
       '.tag': entry['.tag'],
       size: entry.size,
       is_downloadable: entry.is_downloadable,
