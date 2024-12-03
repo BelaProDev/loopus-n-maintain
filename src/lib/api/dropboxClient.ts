@@ -4,6 +4,7 @@ import { DropboxFileOperations } from './dropbox/files';
 import { DropboxSharingOperations } from './dropbox/sharing';
 import { DropboxUserOperations } from './dropbox/user';
 import type { DropboxEntry, DropboxSearchResult, DropboxFileProperty, DropboxTag } from '@/types/dropbox';
+import type { GetTagsResult } from '@/lib/fauna/types';
 
 class DropboxClient {
   private static instance: DropboxClient;
@@ -151,7 +152,7 @@ class DropboxClient {
 
   async getTags(path: string): Promise<DropboxTag[]> {
     const client = await this.getClient();
-    const response = await client.filesTagsGet({ paths: [path] });
+    const response = await client.filesTagsGet({ paths: [path] }) as GetTagsResult;
     if (!response.result.entries?.[0]?.tags) {
       return [];
     }
