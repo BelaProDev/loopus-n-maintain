@@ -71,7 +71,7 @@ export interface DropboxSharedLinkMetadata {
   link_permissions: {
     can_revoke: boolean;
     resolved_visibility: {
-      '.tag': string;
+      '.tag': 'public' | 'team_only' | 'password' | 'team_and_password' | 'shared_folder_only';
     };
     revoke_failure_reason?: {
       '.tag': string;
@@ -85,21 +85,24 @@ export interface DropboxSharedLinkMetadata {
 
 export interface DropboxSharedLinkSettings {
   requested_visibility?: {
-    '.tag': string;
+    '.tag': 'public' | 'team_only' | 'password';
   };
   audience?: {
-    '.tag': string;
+    '.tag': 'public' | 'team' | 'password' | 'team_and_password' | 'shared_folder_only';
   };
   access?: {
-    '.tag': string;
+    '.tag': 'viewer' | 'editor' | 'max';
   };
 }
 
 export type MediaType = 'image' | 'video' | 'audio' | 'document' | 'other';
 
 export interface WhatsAppNumbers {
-  primary?: string;
-  secondary?: string;
+  id: string;
+  name: string;
+  number: string;
+  primary?: boolean;
+  secondary?: boolean;
 }
 
 export interface NavigationLink {
@@ -112,6 +115,8 @@ export interface ContentData {
   id: string;
   title: string;
   content: string;
+  key: string;
+  language: string;
 }
 
 export interface DropboxTokenData {
@@ -121,7 +126,7 @@ export interface DropboxTokenData {
 }
 
 export interface DropboxContextType {
-  client: DropboxClient | null;
+  client: any;
   isAuthenticated: boolean;
   isInitializing: boolean;
   initialize: (token: string) => Promise<void>;

@@ -7,7 +7,7 @@ export class DropboxSharingOperations {
   async createSharedLink(path: string, settings?: DropboxSharedLinkSettings): Promise<DropboxSharedLinkMetadata> {
     const response = await this.client.sharingCreateSharedLinkWithSettings({
       path,
-      settings: settings || {
+      settings: {
         requested_visibility: { '.tag': 'public' },
         audience: { '.tag': 'public' },
         access: { '.tag': 'viewer' }
@@ -22,16 +22,16 @@ export class DropboxSharingOperations {
       link_permissions: {
         can_revoke: result.link_permissions.can_revoke,
         resolved_visibility: {
-          '.tag': result.link_permissions.resolved_visibility['.tag']
+          '.tag': result.link_permissions.resolved_visibility['.tag'] as any
         },
         revoke_failure_reason: result.link_permissions.revoke_failure_reason
           ? { '.tag': result.link_permissions.revoke_failure_reason['.tag'] }
           : undefined
       },
-      client_modified: 'client_modified' in result ? result.client_modified : undefined,
-      server_modified: 'server_modified' in result ? result.server_modified : undefined,
-      rev: 'rev' in result ? result.rev : undefined,
-      size: 'size' in result ? result.size : undefined
+      client_modified: result.client_modified,
+      server_modified: result.server_modified,
+      rev: result.rev,
+      size: result.size
     };
   }
 

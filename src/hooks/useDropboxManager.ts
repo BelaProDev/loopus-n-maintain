@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useToast } from "@/components/ui/use-toast";
-import { dropboxClient } from '@/lib/api/dropboxClient';
+import { dropboxClient } from '@/lib/dropbox';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { DropboxEntry } from '@/types/dropbox';
 
