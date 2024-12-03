@@ -1,6 +1,6 @@
-import { files } from 'dropbox';
+import { files, sharing } from 'dropbox';
 
-export type { files };
+export type { files, sharing };
 
 export type DropboxFileTag = 'file' | 'folder' | 'deleted';
 export type MediaType = 'image' | 'video' | 'audio' | 'document' | 'other';
@@ -51,4 +51,50 @@ export interface DropboxSearchResponse {
   matches: DropboxSearchMatch[];
   more: boolean;
   start: number;
+}
+
+export interface DropboxSharedLinkSettings {
+  requested_visibility?: {
+    '.tag': 'public' | 'team_only' | 'password';
+  };
+  audience?: {
+    '.tag': 'public' | 'team' | 'no_one';
+  };
+  access?: {
+    '.tag': 'viewer' | 'editor';
+  };
+  password?: string;
+  expires?: string;
+}
+
+export interface DropboxSharedLinkMetadata {
+  url: string;
+  name: string;
+  path_lower?: string;
+  link_permissions: {
+    can_revoke: boolean;
+    resolved_visibility: {
+      '.tag': string;
+    };
+    revoke_failure_reason?: {
+      '.tag': string;
+    };
+  };
+  client_modified?: string;
+  server_modified?: string;
+  rev?: string;
+  size?: number;
+}
+
+export interface DropboxFolderMember {
+  access_type: {
+    '.tag': string;
+  };
+  user: {
+    account_id: string;
+    email: string;
+    display_name: string;
+  };
+  permissions: string[];
+  is_inherited?: boolean;
 }

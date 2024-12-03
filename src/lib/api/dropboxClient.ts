@@ -6,7 +6,10 @@ import {
   DropboxFolder,
   DropboxSearchResponse,
   DropboxListFolderResult,
-  files
+  files,
+  DropboxSharedLinkSettings,
+  DropboxSharedLinkMetadata,
+  DropboxFolderMember
 } from '@/types/dropbox';
 
 class DropboxClient {
@@ -66,6 +69,98 @@ class DropboxClient {
       ...baseMetadata,
       '.tag': 'deleted' as const
     };
+  }
+
+  // Sharing Methods
+  async createSharedLink(path: string, settings?: DropboxSharedLinkSettings): Promise<DropboxSharedLinkMetadata> {
+    const client = await this.getClient();
+    try {
+      const response = await client.sharingCreateSharedLinkWithSettings({
+        path,
+        settings: settings || {
+          requested_visibility: { '.tag': 'public' },
+          audience: { '.tag': 'public' },
+          access: { '.tag': 'viewer' }
+        }
+      });
+      return response.result;
+    } catch (error) {
+      console.error('Dropbox create shared link error:', error);
+      throw error;
+    }
+  }
+
+  async listSharedLinks(path?: string): Promise<DropboxSharedLinkMetadata[]> {
+    const client = await this.getClient();
+    try {
+      const response = await client.sharingListSharedLinks({
+        path: path || '',
+        direct_only: true
+      });
+      return response.result.links;
+    } catch (error) {
+      console.error('Dropbox list shared links error:', error);
+      throw error;
+    }
+  }
+
+  async revokeSharedLink(url: string): Promise<void> {
+    const client = await this.getClient();
+    try {
+      await client.sharingRevokeSharedLink({ url });
+    } catch (error) {
+      console.error('Dropbox revoke shared link error:', error);
+      throw error;
+    }
+  }
+
+  async addFolderMember(path: string, members: { email: string; accessLevel: 'viewer' | 'editor' }[]): Promise<void> {
+    const client = await this.getClient();
+    try {
+      await client.sharingAddFolderMember({
+        shared_folder_id: path,
+        members: members.map(member => ({
+          member: {
+            '.tag': 'email',
+            email: member.email
+          },
+          access_level: { '.tag': member.accessLevel }
+        }))
+      });
+    } catch (error) {
+      console.error('Dropbox add folder member error:', error);
+      throw error;
+    }
+  }
+
+  async listFolderMembers(path: string): Promise<DropboxFolderMember[]> {
+    const client = await this.getClient();
+    try {
+      const response = await client.sharingListFolderMembers({
+        shared_folder_id: path
+      });
+      return response.result.users;
+    } catch (error) {
+      console.error('Dropbox list folder members error:', error);
+      throw error;
+    }
+  }
+
+  async removeFolderMember(path: string, member: { email: string }): Promise<void> {
+    const client = await this.getClient();
+    try {
+      await client.sharingRemoveFolderMember({
+        shared_folder_id: path,
+        member: {
+          '.tag': 'email',
+          email: member.email
+        },
+        leave_a_copy: false
+      });
+    } catch (error) {
+      console.error('Dropbox remove folder member error:', error);
+      throw error;
+    }
   }
 
   async listFolder(path: string, recursive: boolean = false): Promise<DropboxEntry[]> {
