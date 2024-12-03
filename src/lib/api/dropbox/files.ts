@@ -64,6 +64,34 @@ export class DropboxFileOperations {
     return this.mapFileMetadata(response.result);
   }
 
+  private mapFileMetadata(entry: files.FileMetadataReference | files.FolderMetadataReference): DropboxEntryMetadata {
+    const baseMetadata = {
+      '.tag': entry['.tag'],
+      id: entry.id,
+      name: entry.name,
+      path_lower: entry.path_lower,
+      path_display: entry.path_display
+    };
+
+    if (entry['.tag'] === 'file') {
+      return {
+        ...baseMetadata,
+        '.tag': 'file',
+        size: entry.size,
+        is_downloadable: entry.is_downloadable,
+        client_modified: entry.client_modified,
+        server_modified: entry.server_modified,
+        rev: entry.rev,
+        content_hash: entry.content_hash
+      };
+    } else {
+      return {
+        ...baseMetadata,
+        '.tag': 'folder'
+      };
+    }
+  }
+
   // Large file upload methods
   async startUploadSession(contents: ArrayBuffer): Promise<DropboxUploadSessionStartResult> {
     const response = await this.client.filesUploadSessionStart({
@@ -100,31 +128,5 @@ export class DropboxFileOperations {
       contents
     });
     return this.mapFileMetadata(response.result);
-  }
-
-  private mapFileMetadata(entry: files.FileMetadataReference | files.FolderMetadataReference): DropboxEntryMetadata {
-    if (entry['.tag'] === 'file') {
-      return {
-        '.tag': 'file',
-        id: entry.id,
-        name: entry.name,
-        path_lower: entry.path_lower,
-        path_display: entry.path_display,
-        size: entry.size,
-        is_downloadable: entry.is_downloadable,
-        client_modified: entry.client_modified,
-        server_modified: entry.server_modified,
-        rev: entry.rev,
-        content_hash: entry.content_hash
-      };
-    } else {
-      return {
-        '.tag': 'folder',
-        id: entry.id,
-        name: entry.name,
-        path_lower: entry.path_lower,
-        path_display: entry.path_display
-      };
-    }
   }
 }

@@ -1,4 +1,4 @@
-import { files, sharing } from 'dropbox';
+import { files, sharing, users, common } from 'dropbox';
 
 export type { files, sharing };
 
@@ -97,4 +97,39 @@ export interface DropboxFolderMember {
   };
   permissions: string[];
   is_inherited?: boolean;
+}
+
+export interface DropboxUserProfile {
+  account_id: string;
+  name: {
+    given_name: string;
+    surname: string;
+    familiar_name: string;
+    display_name: string;
+    abbreviated_name: string;
+  };
+  email: string;
+  email_verified: boolean;
+  profile_photo_url?: string;
+  team?: {
+    id: string;
+    name: string;
+    sharing_policies: {
+      shared_folder_member_policy: {
+        '.tag': string;
+      };
+      shared_folder_join_policy: {
+        '.tag': string;
+      };
+      shared_link_create_policy: {
+        '.tag': string;
+      };
+    };
+  };
+}
+
+export interface SpaceAllocation {
+  used: number;
+  allocated: number;
+  '.tag': 'individual' | 'team' | 'other';
 }

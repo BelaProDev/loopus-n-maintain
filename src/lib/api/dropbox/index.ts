@@ -1,3 +1,3 @@
 export { dropboxAuth } from './auth';
-export { dropboxUser } from './user';
-export type { DropboxUserProfile } from './user';
+export { createDropboxUser } from './user';
+export type { DropboxUserProfile } from '@/types/dropbox';
