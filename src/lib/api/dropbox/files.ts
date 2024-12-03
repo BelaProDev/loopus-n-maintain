@@ -1,12 +1,11 @@
 import { Dropbox, files } from 'dropbox';
-import { DropboxEntryMetadata, DropboxUploadSessionCursor, DropboxUploadSessionStartResult } from '@/types/dropboxFiles';
+import { DropboxEntryMetadata } from '@/types/dropboxFiles';
 
 const UPLOAD_SESSION_CHUNK_SIZE = 8 * 1024 * 1024; // 8MB chunks
 
 export class DropboxFileOperations {
   constructor(private client: Dropbox) {}
 
-  // Core upload operations
   async uploadFile(path: string, contents: ArrayBuffer): Promise<DropboxEntryMetadata> {
     if (contents.byteLength <= UPLOAD_SESSION_CHUNK_SIZE) {
       return this.uploadSmallFile(path, contents);

@@ -1,12 +1,16 @@
 import { Dropbox } from 'dropbox';
 import { dropboxAuth } from './dropbox';
 import { DropboxFileOperations } from './dropbox/files';
-import { DropboxEntryMetadata, DropboxSharedLinkMetadata } from '@/types/dropboxFiles';
-import { DropboxFolderMember } from '@/types/dropbox';
+import { DropboxSharingOperations } from './dropbox/sharing';
+import { DropboxUserOperations } from './dropbox/user';
+import { DropboxEntryMetadata } from '@/types/dropboxFiles';
+import { DropboxSharedLinkMetadata, DropboxSharedLinkSettings } from '@/types/dropbox';
 
 class DropboxClient {
   private static instance: DropboxClient;
   private fileOps: DropboxFileOperations | null = null;
+  private sharingOps: DropboxSharingOperations | null = null;
+  private userOps: DropboxUserOperations | null = null;
 
   private constructor() {}
 
@@ -33,6 +37,22 @@ class DropboxClient {
     return this.fileOps;
   }
 
+  private async getSharingOps(): Promise<DropboxSharingOperations> {
+    if (!this.sharingOps) {
+      const client = await this.getClient();
+      this.sharingOps = new DropboxSharingOperations(client);
+    }
+    return this.sharingOps;
+  }
+
+  private async getUserOps(): Promise<DropboxUserOperations> {
+    if (!this.userOps) {
+      const client = await this.getClient();
+      this.userOps = new DropboxUserOperations(client);
+    }
+    return this.userOps;
+  }
+
   // File operations
   async uploadFile(file: File, path: string): Promise<DropboxEntryMetadata> {
     const fileOps = await this.getFileOps();
@@ -50,105 +70,44 @@ class DropboxClient {
     return fileOps.createFolder(path);
   }
 
-  async deleteFile(path: string): Promise<void> {
+  async moveFile(fromPath: string, toPath: string): Promise<DropboxEntryMetadata> {
     const fileOps = await this.getFileOps();
-    return fileOps.deleteFile(path);
+    return fileOps.moveFile(fromPath, toPath);
   }
 
-  async listFolder(path: string, recursive: boolean = false): Promise<DropboxEntryMetadata[]> {
+  async copyFile(fromPath: string, toPath: string): Promise<DropboxEntryMetadata> {
     const fileOps = await this.getFileOps();
-    return fileOps.listFolder(path, recursive);
+    return fileOps.copyFile(fromPath, toPath);
+  }
+
+  async listFolder(path: string): Promise<DropboxEntryMetadata[]> {
+    const fileOps = await this.getFileOps();
+    return fileOps.listFolder(path);
   }
 
   async createSharedLink(path: string, settings?: DropboxSharedLinkSettings): Promise<DropboxSharedLinkMetadata> {
-    const client = await this.getClient();
-    try {
-      const response = await client.sharingCreateSharedLinkWithSettings({
-        path,
-        settings: settings || {
-          requested_visibility: { '.tag': 'public' },
-          audience: { '.tag': 'public' },
-          access: { '.tag': 'viewer' }
-        }
-      });
-      return response.result;
-    } catch (error) {
-      console.error('Dropbox create shared link error:', error);
-      throw error;
-    }
+    const sharingOps = await this.getSharingOps();
+    return sharingOps.createSharedLink(path, settings);
   }
 
   async listSharedLinks(path?: string): Promise<DropboxSharedLinkMetadata[]> {
-    const client = await this.getClient();
-    try {
-      const response = await client.sharingListSharedLinks({
-        path: path || '',
-        direct_only: true
-      });
-      return response.result.links;
-    } catch (error) {
-      console.error('Dropbox list shared links error:', error);
-      throw error;
-    }
+    const sharingOps = await this.getSharingOps();
+    return sharingOps.listSharedLinks(path);
   }
 
   async revokeSharedLink(url: string): Promise<void> {
-    const client = await this.getClient();
-    try {
-      await client.sharingRevokeSharedLink({ url });
-    } catch (error) {
-      console.error('Dropbox revoke shared link error:', error);
-      throw error;
-    }
+    const sharingOps = await this.getSharingOps();
+    return sharingOps.revokeSharedLink(url);
   }
 
-  async addFolderMember(path: string, members: { email: string; accessLevel: 'viewer' | 'editor' }[]): Promise<void> {
-    const client = await this.getClient();
-    try {
-      await client.sharingAddFolderMember({
-        shared_folder_id: path,
-        members: members.map(member => ({
-          member: {
-            '.tag': 'email',
-            email: member.email
-          },
-          access_level: { '.tag': member.accessLevel }
-        }))
-      });
-    } catch (error) {
-      console.error('Dropbox add folder member error:', error);
-      throw error;
-    }
+  async getCurrentAccount() {
+    const userOps = await this.getUserOps();
+    return userOps.getCurrentAccount();
   }
 
-  async listFolderMembers(path: string): Promise<DropboxFolderMember[]> {
-    const client = await this.getClient();
-    try {
-      const response = await client.sharingListFolderMembers({
-        shared_folder_id: path
-      });
-      return response.result.users;
-    } catch (error) {
-      console.error('Dropbox list folder members error:', error);
-      throw error;
-    }
-  }
-
-  async removeFolderMember(path: string, member: { email: string }): Promise<void> {
-    const client = await this.getClient();
-    try {
-      await client.sharingRemoveFolderMember({
-        shared_folder_id: path,
-        member: {
-          '.tag': 'email',
-          email: member.email
-        },
-        leave_a_copy: false
-      });
-    } catch (error) {
-      console.error('Dropbox remove folder member error:', error);
-      throw error;
-    }
+  async getSpaceUsage() {
+    const userOps = await this.getUserOps();
+    return userOps.getSpaceUsage();
   }
 }
 

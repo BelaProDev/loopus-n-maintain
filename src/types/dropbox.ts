@@ -4,7 +4,6 @@ export type { files, sharing };
 
 export type DropboxFileTag = 'file' | 'folder' | 'deleted';
 export type MediaType = 'image' | 'video' | 'audio' | 'document' | 'other';
-export type FileStatus = files.FileStatus;
 
 export interface DropboxBaseMetadata {
   '.tag': DropboxFileTag;
@@ -33,25 +32,6 @@ export interface DropboxDeletedFile extends DropboxBaseMetadata {
 }
 
 export type DropboxEntry = DropboxFile | DropboxFolder | DropboxDeletedFile;
-
-export interface DropboxListFolderResult {
-  entries: DropboxEntry[];
-  cursor: string;
-  has_more: boolean;
-}
-
-export interface DropboxSearchMatch {
-  match_type: {
-    '.tag': string;
-  };
-  metadata: DropboxEntry;
-}
-
-export interface DropboxSearchResponse {
-  matches: DropboxSearchMatch[];
-  more: boolean;
-  start: number;
-}
 
 export interface DropboxSharedLinkSettings {
   requested_visibility?: {
@@ -99,37 +79,8 @@ export interface DropboxFolderMember {
   is_inherited?: boolean;
 }
 
-export interface DropboxUserProfile {
-  account_id: string;
-  name: {
-    given_name: string;
-    surname: string;
-    familiar_name: string;
-    display_name: string;
-    abbreviated_name: string;
-  };
-  email: string;
-  email_verified: boolean;
-  profile_photo_url?: string;
-  team?: {
-    id: string;
-    name: string;
-    sharing_policies: {
-      shared_folder_member_policy: {
-        '.tag': string;
-      };
-      shared_folder_join_policy: {
-        '.tag': string;
-      };
-      shared_link_create_policy: {
-        '.tag': string;
-      };
-    };
-  };
-}
-
 export interface SpaceAllocation {
   used: number;
-  allocated: number;
+  allocation: number;
   '.tag': 'individual' | 'team' | 'other';
 }
