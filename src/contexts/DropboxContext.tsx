@@ -1,16 +1,65 @@
-import React, { createContext, useContext } from 'react';
-import { Dropbox } from 'dropbox';
-import { useDropboxAuth } from '@/hooks/useDropboxAuth';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import DropboxClient from '@/lib/api/dropboxClient';
+import { useToast } from '@/components/ui/use-toast';
 
 interface DropboxContextType {
+  client: DropboxClient | null;
   isAuthenticated: boolean;
-  client: Dropbox | null;
-  connect: () => Promise<void>;
-  disconnect: () => void;
-  isLoading: boolean;
+  isInitializing: boolean;
+  initialize: (token: string) => Promise<void>;
 }
 
-const DropboxContext = createContext<DropboxContextType | null>(null);
+const DropboxContext = createContext<DropboxContextType>({
+  client: null,
+  isAuthenticated: false,
+  isInitializing: true,
+  initialize: async () => {},
+});
+
+export const DropboxProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [client, setClient] = useState<DropboxClient | null>(null);
+  const [isInitializing, setIsInitializing] = useState(true);
+  const { toast } = useToast();
+
+  const initialize = async (token: string) => {
+    try {
+      const dropboxClient = DropboxClient.getInstance();
+      await dropboxClient.initialize(token);
+      setClient(dropboxClient);
+    } catch (error) {
+      console.error('Failed to initialize Dropbox client:', error);
+      toast({
+        title: "Error",
+        description: "Failed to initialize Dropbox client",
+        variant: "destructive",
+      });
+    } finally {
+      setIsInitializing(false);
+    }
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem('dropbox_access_token');
+    if (token) {
+      initialize(token);
+    } else {
+      setIsInitializing(false);
+    }
+  }, []);
+
+  const value = {
+    client,
+    isAuthenticated: client?.isInitialized() || false,
+    isInitializing,
+    initialize,
+  };
+
+  return (
+    <DropboxContext.Provider value={value}>
+      {children}
+    </DropboxContext.Provider>
+  );
+};
 
 export const useDropbox = () => {
   const context = useContext(DropboxContext);
@@ -18,30 +67,4 @@ export const useDropbox = () => {
     throw new Error('useDropbox must be used within a DropboxProvider');
   }
   return context;
-};
-
-export const DropboxProvider = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated, isLoading, login, logout } = useDropboxAuth();
-  const [client, setClient] = React.useState<Dropbox | null>(null);
-
-  const connect = async () => {
-    await login();
-  };
-
-  const disconnect = () => {
-    setClient(null);
-    logout();
-  };
-
-  return (
-    <DropboxContext.Provider value={{ 
-      isAuthenticated, 
-      client,
-      connect,
-      disconnect,
-      isLoading
-    }}>
-      {children}
-    </DropboxContext.Provider>
-  );
 };
