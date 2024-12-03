@@ -29,8 +29,8 @@ export const DropboxCallback = () => {
       }
 
       try {
-        if (!user?.id) throw new Error('User not authenticated');
-        await dropboxAuth.handleCallback(code, user.id);
+        if (!user) throw new Error('User not authenticated');
+        await dropboxAuth.handleCallback(code, user.toString());
         toast.success('Successfully connected to Dropbox');
         navigate('/dropbox-explorer');
       } catch (error) {

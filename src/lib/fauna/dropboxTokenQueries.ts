@@ -6,10 +6,11 @@ export const dropboxTokenQueries = {
   storeToken: async (userId: string, refreshToken: string): Promise<boolean> => {
     const client = getFaunaClient();
     try {
-      const tokenData: DropboxTokenData = {
+      const tokenData = {
         userId,
         refreshToken,
-        lastUpdated: new Date().toISOString()
+        lastUpdated: new Date().toISOString(),
+        type: 'dropbox_token'
       };
       
       const query = fql`
@@ -34,15 +35,16 @@ export const dropboxTokenQueries = {
     const client = getFaunaClient();
     try {
       const query = fql`
-        dropbox_tokens.firstWhere(.userId == ${userId}) {
-          userId,
-          refreshToken,
-          lastUpdated
+        let doc = dropbox_tokens.firstWhere(.userId == ${userId})
+        {
+          userId: doc.userId,
+          refreshToken: doc.refreshToken,
+          lastUpdated: doc.lastUpdated
         }
       `;
       
-      const result = await client.query<DropboxTokenData>(query);
-      return result || null;
+      const result = await client.query<{ data: DropboxTokenData }>(query);
+      return result.data || null;
     } catch (error) {
       console.error('Failed to get Dropbox token:', error);
       return null;

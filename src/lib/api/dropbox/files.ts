@@ -32,24 +32,6 @@ export class DropboxFileOperations {
     return this.mapFileMetadata(response.result.metadata);
   }
 
-  public async moveFile(fromPath: string, toPath: string): Promise<DropboxEntry> {
-    const response = await this.client.filesMoveV2({
-      from_path: fromPath,
-      to_path: toPath,
-      autorename: true
-    });
-    return this.mapFileMetadata(response.result.metadata);
-  }
-
-  public async copyFile(fromPath: string, toPath: string): Promise<DropboxEntry> {
-    const response = await this.client.filesCopyV2({
-      from_path: fromPath,
-      to_path: toPath,
-      autorename: true
-    });
-    return this.mapFileMetadata(response.result.metadata);
-  }
-
   public async listFolder(path: string, recursive: boolean = false): Promise<DropboxEntry[]> {
     const response = await this.client.filesListFolder({
       path: path || '',
@@ -64,7 +46,6 @@ export class DropboxFileOperations {
   public mapFileMetadata(entry: files.FileMetadataReference | files.FolderMetadataReference | files.DeletedMetadataReference): DropboxEntry {
     const baseEntry = {
       '.tag': entry['.tag'] as DropboxEntry['.tag'],
-      id: entry.id || crypto.randomUUID(),
       name: entry.name,
       path_lower: entry.path_lower || '',
       path_display: entry.path_display || ''

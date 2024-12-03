@@ -1,74 +1,62 @@
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
-import { useTranslation } from "react-i18next";
-import { settingsQueries } from "@/lib/fauna/settingsQueries";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { WhatsAppNumbers } from "@/lib/fauna/types";
-
-const SERVICES = ["electrics", "plumbing", "ironwork", "woodwork", "architecture"] as const;
-type ServiceType = typeof SERVICES[number];
+import React, { useEffect, useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { toast } from 'sonner';
+import { WhatsAppNumbers } from '@/types/dropbox';
 
 const WhatsAppSettings = () => {
-  const { t } = useTranslation(["settings"]);
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
-  const { register, handleSubmit, reset } = useForm<WhatsAppNumbers>();
-
-  const { data: numbers } = useQuery({
-    queryKey: ['whatsapp-numbers'],
-    queryFn: settingsQueries.getWhatsAppNumbers
-  });
+  const { user } = useAuth();
+  const [whatsappNumbers, setWhatsappNumbers] = useState<WhatsAppNumbers[]>([]);
+  const [selectedNumber, setSelectedNumber] = useState<WhatsAppNumbers | null>(null);
 
   useEffect(() => {
-    if (numbers) {
-      reset(numbers);
-    }
-  }, [numbers, reset]);
+    const fetchWhatsappNumbers = async () => {
+      try {
+        const response = await fetch(`/api/whatsapp-numbers?userId=${user.id}`);
+        const data = await response.json();
+        setWhatsappNumbers(data);
+      } catch (error) {
+        console.error('Failed to fetch WhatsApp numbers:', error);
+        toast.error('Failed to fetch WhatsApp numbers');
+      }
+    };
 
-  const updateMutation = useMutation({
-    mutationFn: settingsQueries.updateWhatsAppNumbers,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['whatsapp-numbers'] });
-      toast({
-        title: t("whatsapp.updateSuccess"),
-      });
-    },
-    onError: () => {
-      toast({
-        title: t("whatsapp.updateError"),
-        variant: "destructive",
-      });
+    if (user) {
+      fetchWhatsappNumbers();
     }
-  });
+  }, [user]);
 
-  const onSubmit = (data: WhatsAppNumbers) => {
-    updateMutation.mutate(data);
+  const handleServiceChange = (service: string) => {
+    const serviceNumber = whatsappNumbers.find(n => n.name === service);
+    if (serviceNumber) {
+      setSelectedNumber(serviceNumber);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {SERVICES.map((service) => (
-          <div key={service} className="space-y-2">
-            <Label htmlFor={service}>
-              {t(`services:${service}.title`)} WhatsApp
-            </Label>
-            <Input
-              id={service}
-              {...register(service)}
-              placeholder={t("whatsapp.placeholder", { service: t(`services:${service}.title`) })}
-            />
-          </div>
-        ))}
+    <div>
+      <h1 className="text-2xl font-bold">WhatsApp Settings</h1>
+      <div>
+        <label htmlFor="whatsappNumbers">Select Number:</label>
+        <select
+          id="whatsappNumbers"
+          onChange={(e) => handleServiceChange(e.target.value)}
+          className="mt-2 block w-full"
+        >
+          <option value="">Select a number</option>
+          {whatsappNumbers.map((number) => (
+            <option key={number.id} value={number.name}>
+              {number.number} - {number.name}
+            </option>
+          ))}
+        </select>
       </div>
-      <Button type="submit" disabled={updateMutation.isPending}>
-        {t("whatsapp.update")}
-      </Button>
-    </form>
+      {selectedNumber && (
+        <div className="mt-4">
+          <h2 className="text-lg">Selected Number:</h2>
+          <p>{selectedNumber.number}</p>
+        </div>
+      )}
+    </div>
   );
 };
 
