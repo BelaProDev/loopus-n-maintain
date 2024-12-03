@@ -1,12 +1,10 @@
-import { getFaunaClient } from '../client';
+import { client } from '../client';
 import { fql } from 'fauna';
 import type { Client } from '@/types/business';
 import { extractFaunaData } from '../utils';
 
 export const clientQueries = {
   getClients: async (): Promise<Client[]> => {
-    const client = getFaunaClient();
-    if (!client) return [];
     try {
       const query = fql`clients.all()`;
       const result = await client.query(query);
@@ -19,8 +17,6 @@ export const clientQueries = {
   },
 
   createClient: async (data: Omit<Client, 'id' | 'totalInvoices' | 'totalAmount' | 'status'>) => {
-    const client = getFaunaClient();
-    if (!client) return null;
     try {
       const query = fql`
         clients.create({

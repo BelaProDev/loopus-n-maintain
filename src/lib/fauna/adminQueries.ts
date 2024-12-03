@@ -1,4 +1,4 @@
-import { getFaunaClient } from './client';
+import { client } from './client';
 import { fql } from 'fauna';
 import { extractFaunaData } from './utils';
 import { hashPassword } from '../auth/authUtils';

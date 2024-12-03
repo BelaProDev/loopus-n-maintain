@@ -52,7 +52,8 @@ class DropboxClient {
 
   async deleteFile(path: string): Promise<void> {
     if (!this.client) throw new Error('Client not initialized');
-    await this.client.filesDeleteV2({ path });
+    const response = await this.client.filesDeleteV2({ path });
+    if (response.result) return;
   }
 
   async createFolder(path: string): Promise<DropboxEntry> {
@@ -68,7 +69,7 @@ class DropboxClient {
     const response = await this.client.filesSearchV2({ query });
     return {
       matches: response.result.matches.map(match => ({
-        metadata: this.mapToDropboxEntry(match.metadata.metadata)
+        metadata: this.mapToDropboxEntry(match.metadata)
       })),
       has_more: response.result.has_more,
       cursor: response.result.cursor
