@@ -1,46 +1,37 @@
-export interface WhatsAppNumbers {
-  [key: string]: string;
-  electrics: string;
-  plumbing: string;
-  ironwork: string;
-  woodwork: string;
-  architecture: string;
-}
-
-export interface NavigationLink {
-  label: string;
-  url: string;
-  location: "header" | "footer";
-}
-
 export interface EmailUser {
   email: string;
   password: string;
+  type: 'admin' | 'user';
+  name?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface EmailData {
   email: string;
   name: string;
   type: string;
-  password?: string;
+  password: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
-export type ContactMessage = {
-  id: string;
-  name: string;
-  email: string;
-  message: string;
-  service: 'electrics' | 'plumbing' | 'ironwork' | 'woodwork' | 'architecture';
-  status: 'new' | 'read' | 'archived';
-  createdAt: string;
-};
-
-export interface ContentData {
-  key: string;
-  language: string;
-  content: string;
+export interface DropboxTokenData {
+  userId: string;
+  refreshToken: string;
+  lastUpdated: string;
 }
 
-export type ToQueryArg<T> = {
-  [K in keyof T]: T[K];
-};
+export interface FaunaResponse<T> {
+  data: T[];
+  after?: string;
+  before?: string;
+}
+
+export interface FaunaDocument<T> {
+  ref: {
+    id: string;
+  };
+  ts: number;
+  data: T;
+}

@@ -1,5 +1,6 @@
 import { Dropbox } from 'dropbox';
 import { toast } from 'sonner';
+import { dropboxTokenQueries } from '../fauna/dropboxTokenQueries';
 
 const DROPBOX_AUTH_KEY = 'dropbox_auth';
 
@@ -41,7 +42,7 @@ class DropboxAuthManager {
     }
   }
 
-  async handleCallback(code: string): Promise<boolean> {
+  async handleCallback(code: string, userId: string): Promise<boolean> {
     try {
       const response = await fetch('/.netlify/functions/dropbox-auth', {
         method: 'POST',
@@ -54,12 +55,43 @@ class DropboxAuthManager {
       }
 
       const tokens: DropboxTokens = await response.json();
+      
+      // Store refresh token in FaunaDB if available
+      if (tokens.refresh_token) {
+        await dropboxTokenQueries.storeToken(userId, tokens.refresh_token);
+      }
+      
       this.setTokens(tokens);
       toast.success('Successfully connected to Dropbox');
       return true;
     } catch (error) {
       toast.error('Authentication failed');
       throw error;
+    }
+  }
+
+  async refreshAccessToken(userId: string): Promise<string | null> {
+    try {
+      const tokenData = await dropboxTokenQueries.getToken(userId);
+      if (!tokenData?.refreshToken) return null;
+
+      const response = await fetch('/.netlify/functions/dropbox-auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          action: 'refresh',
+          refresh_token: tokenData.refreshToken 
+        }),
+      });
+
+      if (!response.ok) throw new Error('Failed to refresh token');
+
+      const tokens: DropboxTokens = await response.json();
+      this.setTokens(tokens);
+      return tokens.access_token;
+    } catch (error) {
+      console.error('Failed to refresh token:', error);
+      return null;
     }
   }
 

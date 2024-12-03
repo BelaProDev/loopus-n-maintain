@@ -28,7 +28,56 @@ const handler: Handler = async (event) => {
     };
   }
 
-  // Handle the token exchange
+  // Handle token refresh
+  if (event.httpMethod === 'POST' && event.body && JSON.parse(event.body).action === 'refresh') {
+    try {
+      const { refresh_token } = JSON.parse(event.body);
+      
+      if (!refresh_token) {
+        return {
+          statusCode: 400,
+          body: JSON.stringify({ error: 'Missing refresh token' })
+        };
+      }
+
+      const tokenResponse = await fetch('https://api.dropboxapi.com/oauth2/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Basic ${Buffer.from(`${DROPBOX_APP_KEY}:${DROPBOX_APP_SECRET}`).toString('base64')}`
+        },
+        body: new URLSearchParams({
+          grant_type: 'refresh_token',
+          refresh_token,
+        }).toString(),
+      });
+
+      const data = await tokenResponse.json();
+      
+      if (!tokenResponse.ok) {
+        throw new Error(data.error_description || 'Failed to refresh token');
+      }
+
+      return {
+        statusCode: 200,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type',
+        },
+        body: JSON.stringify(data)
+      };
+    } catch (error) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ 
+          error: 'Token refresh failed',
+          details: error instanceof Error ? error.message : 'Unknown error'
+        })
+      };
+    }
+  }
+
+  // Handle the initial token exchange
   if (event.httpMethod === 'POST' && event.body && JSON.parse(event.body).code) {
     try {
       const { code } = JSON.parse(event.body);
