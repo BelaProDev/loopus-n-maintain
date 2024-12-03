@@ -1,5 +1,5 @@
 import { Dropbox } from 'dropbox';
-import { dropboxAuth } from '@/lib/auth/dropboxAuth';
+import { dropboxAuth } from './dropbox';
 import { 
   DropboxEntry,
   DropboxFile,
@@ -13,7 +13,6 @@ import {
 } from '@/types/dropbox';
 
 class DropboxClient {
-  private client: Dropbox | null = null;
   private static instance: DropboxClient;
 
   private constructor() {}
@@ -26,14 +25,11 @@ class DropboxClient {
   }
 
   private async getClient(): Promise<Dropbox> {
-    if (!this.client) {
-      const accessToken = await dropboxAuth.getValidAccessToken();
-      if (!accessToken) {
-        throw new Error('Not authenticated with Dropbox');
-      }
-      this.client = new Dropbox({ accessToken });
+    const client = await dropboxAuth.getClient();
+    if (!client) {
+      throw new Error('Not authenticated with Dropbox');
     }
-    return this.client;
+    return client;
   }
 
   private mapFileResponse(entry: any): DropboxEntry {
