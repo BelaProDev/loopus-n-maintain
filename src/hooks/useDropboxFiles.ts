@@ -24,7 +24,7 @@ export const useDropboxFiles = (path: string) => {
 
       const mappedEntries: DropboxEntry[] = response.result.entries.map(entry => {
         const baseEntry = {
-          id: entry.id || crypto.randomUUID(),
+          id: entry.path_lower || entry.path_display || crypto.randomUUID(),
           name: entry.name,
           path_lower: entry.path_lower || '',
           path_display: entry.path_display || '',
