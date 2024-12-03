@@ -36,7 +36,9 @@ export const useDropboxManager = (currentPath: string) => {
   });
 
   const createFolderMutation = useMutation({
-    mutationFn: dropboxClient.createFolder,
+    mutationFn: async (path: string) => {
+      await dropboxClient.createFolder(path);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['files'] });
     },
@@ -50,7 +52,9 @@ export const useDropboxManager = (currentPath: string) => {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: dropboxClient.deleteFile,
+    mutationFn: async (path: string) => {
+      await dropboxClient.deleteFile(path);
+    },
     onSuccess: () => {
       toast({
         title: "Success",

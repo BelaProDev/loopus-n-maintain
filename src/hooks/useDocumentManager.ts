@@ -35,7 +35,9 @@ export const useDocumentManager = (currentPath: string) => {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: dropboxClient.deleteFile,
+    mutationFn: async (path: string) => {
+      await dropboxClient.deleteFile(path);
+    },
     onSuccess: () => {
       toast({
         title: "Success",

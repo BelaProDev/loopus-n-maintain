@@ -66,21 +66,51 @@ export interface DropboxSharedLinkMetadata {
   size?: number;
 }
 
-export interface DropboxFolderMember {
-  access_type: {
-    '.tag': string;
-  };
-  user: {
-    account_id: string;
-    email: string;
-    display_name: string;
-  };
-  permissions: string[];
-  is_inherited?: boolean;
-}
-
 export interface SpaceAllocation {
   used: number;
-  allocation: number;
+  allocated: number;
   '.tag': 'individual' | 'team' | 'other';
+}
+
+export interface DropboxUserProfile {
+  account_id: string;
+  name: {
+    given_name: string;
+    surname: string;
+    familiar_name: string;
+    display_name: string;
+    abbreviated_name: string;
+  };
+  email: string;
+  email_verified: boolean;
+  profile_photo_url?: string;
+}
+
+export interface DropboxUploadSessionCursor {
+  session_id: string;
+  offset: number;
+}
+
+export interface DropboxUploadSessionStartResult {
+  session_id: string;
+}
+
+export interface DropboxSearchResult {
+  matches: Array<{
+    metadata: DropboxEntry;
+    match_type: {
+      '.tag': string;
+    };
+  }>;
+  more: boolean;
+  start: number;
+}
+
+export interface DropboxFileProperty {
+  name: string;
+  value: string;
+}
+
+export interface DropboxTag {
+  tag_name: string;
 }

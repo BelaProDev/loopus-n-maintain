@@ -4,7 +4,7 @@ import { DropboxFileOperations } from './dropbox/files';
 import { DropboxSharingOperations } from './dropbox/sharing';
 import { DropboxUserOperations } from './dropbox/user';
 import { DropboxEntryMetadata } from '@/types/dropboxFiles';
-import { DropboxSharedLinkMetadata, DropboxSharedLinkSettings } from '@/types/dropbox';
+import { DropboxSharedLinkMetadata, DropboxSharedLinkSettings, DropboxSearchResult, DropboxFileProperty, DropboxTag } from '@/types/dropbox';
 
 class DropboxClient {
   private static instance: DropboxClient;
@@ -65,6 +65,11 @@ class DropboxClient {
     return fileOps.downloadFile(path);
   }
 
+  async deleteFile(path: string): Promise<void> {
+    const fileOps = await this.getFileOps();
+    return fileOps.deleteFile(path);
+  }
+
   async createFolder(path: string): Promise<DropboxEntryMetadata> {
     const fileOps = await this.getFileOps();
     return fileOps.createFolder(path);
@@ -85,6 +90,7 @@ class DropboxClient {
     return fileOps.listFolder(path);
   }
 
+  // Sharing operations
   async createSharedLink(path: string, settings?: DropboxSharedLinkSettings): Promise<DropboxSharedLinkMetadata> {
     const sharingOps = await this.getSharingOps();
     return sharingOps.createSharedLink(path, settings);
@@ -100,6 +106,7 @@ class DropboxClient {
     return sharingOps.revokeSharedLink(url);
   }
 
+  // User operations
   async getCurrentAccount() {
     const userOps = await this.getUserOps();
     return userOps.getCurrentAccount();
@@ -108,6 +115,58 @@ class DropboxClient {
   async getSpaceUsage() {
     const userOps = await this.getUserOps();
     return userOps.getSpaceUsage();
+  }
+
+  // Search operations
+  async search(query: string, path?: string): Promise<DropboxSearchResult> {
+    const client = await this.getClient();
+    const response = await client.filesSearch({
+      path: path || '',
+      query,
+      mode: { '.tag': 'filename_and_content' },
+      max_results: 100
+    });
+    return response.result;
+  }
+
+  // File properties operations
+  async addProperties(path: string, properties: DropboxFileProperty[]): Promise<void> {
+    const client = await this.getClient();
+    await client.filePropertiesPropertiesAdd({
+      path,
+      properties
+    });
+  }
+
+  async removeProperties(path: string, propertyNames: string[]): Promise<void> {
+    const client = await this.getClient();
+    await client.filePropertiesPropertiesRemove({
+      path,
+      property_template_ids: propertyNames
+    });
+  }
+
+  // Tags operations
+  async addTags(path: string, tags: string[]): Promise<void> {
+    const client = await this.getClient();
+    await client.filesTagsAdd({
+      path,
+      tag_text: tags
+    });
+  }
+
+  async removeTags(path: string, tags: string[]): Promise<void> {
+    const client = await this.getClient();
+    await client.filesTagsRemove({
+      path,
+      tag_text: tags
+    });
+  }
+
+  async getTags(path: string): Promise<DropboxTag[]> {
+    const client = await this.getClient();
+    const response = await client.filesTagsGet({ path });
+    return response.result.tags;
   }
 }
 
