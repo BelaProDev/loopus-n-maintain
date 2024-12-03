@@ -52,7 +52,6 @@ class DropboxClient {
     return this.userOps;
   }
 
-  // File operations
   async uploadFile(file: File, path: string): Promise<DropboxEntry> {
     const fileOps = await this.getFileOps();
     const buffer = await file.arrayBuffer();
@@ -89,7 +88,6 @@ class DropboxClient {
     return fileOps.listFolder(path);
   }
 
-  // Search operations
   async search(query: string, path?: string): Promise<DropboxSearchResult> {
     const client = await this.getClient();
     const response = await client.filesSearch({
@@ -109,7 +107,6 @@ class DropboxClient {
     };
   }
 
-  // File properties operations
   async addProperties(path: string, properties: DropboxFileProperty[]): Promise<void> {
     const client = await this.getClient();
     await client.filePropertiesPropertiesAdd({
@@ -132,7 +129,6 @@ class DropboxClient {
     });
   }
 
-  // Tags operations
   async addTags(path: string, tags: string[]): Promise<void> {
     const client = await this.getClient();
     for (const tag of tags) {
@@ -156,6 +152,9 @@ class DropboxClient {
   async getTags(path: string): Promise<DropboxTag[]> {
     const client = await this.getClient();
     const response = await client.filesTagsGet({ paths: [path] });
+    if (!response.result.entries?.[0]?.tags) {
+      return [];
+    }
     return response.result.entries[0].tags.map(tag => ({
       tag_name: tag.tag_text
     }));

@@ -3,21 +3,15 @@ import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { WhatsAppNumbers } from '@/types/dropbox';
 
-interface User {
-  id: string;
-  // Add other user properties as needed
-}
-
 const WhatsAppSettings = () => {
-  const { user } = useAuth() as { user: User | null };
+  const { user } = useAuth();
   const [whatsappNumbers, setWhatsappNumbers] = useState<WhatsAppNumbers[]>([]);
   const [selectedNumber, setSelectedNumber] = useState<WhatsAppNumbers | null>(null);
 
   useEffect(() => {
     const fetchWhatsappNumbers = async () => {
       try {
-        if (!user?.id) return;
-        const response = await fetch(`/api/whatsapp-numbers?userId=${user.id}`);
+        const response = await fetch(`/api/whatsapp-numbers`);
         const data = await response.json();
         setWhatsappNumbers(data);
       } catch (error) {
@@ -26,10 +20,8 @@ const WhatsAppSettings = () => {
       }
     };
 
-    if (user) {
-      fetchWhatsappNumbers();
-    }
-  }, [user]);
+    fetchWhatsappNumbers();
+  }, []);
 
   const handleServiceChange = (service: string) => {
     const serviceNumber = whatsappNumbers.find(n => n.name === service);

@@ -12,7 +12,9 @@ const LogoSettings = () => {
   const queryClient = useQueryClient();
 
   const logoMutation = useMutation({
-    mutationFn: settingsQueries.updateLogo,
+    mutationFn: async (base64String: string) => {
+      await settingsQueries.updateLogo(base64String);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['site-logo'] });
       toast({
@@ -31,7 +33,6 @@ const LogoSettings = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Accept any image format
     if (!file.type.startsWith('image/')) {
       toast({
         title: t("logo.invalidType"),
@@ -41,8 +42,7 @@ const LogoSettings = () => {
       return;
     }
 
-    // Check file size (max 5MB)
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
       toast({
         title: t("logo.invalidSize"),
