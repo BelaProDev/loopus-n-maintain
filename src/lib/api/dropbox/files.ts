@@ -20,6 +20,36 @@ export class DropboxFileOperations {
     return response.result.fileBlob;
   }
 
+  public async deleteFile(path: string): Promise<void> {
+    await this.client.filesDeleteV2({ path });
+  }
+
+  public async createFolder(path: string): Promise<DropboxEntry> {
+    const response = await this.client.filesCreateFolderV2({
+      path,
+      autorename: true
+    });
+    return this.mapFileMetadata(response.result.metadata);
+  }
+
+  public async moveFile(fromPath: string, toPath: string): Promise<DropboxEntry> {
+    const response = await this.client.filesMoveV2({
+      from_path: fromPath,
+      to_path: toPath,
+      autorename: true
+    });
+    return this.mapFileMetadata(response.result.metadata);
+  }
+
+  public async copyFile(fromPath: string, toPath: string): Promise<DropboxEntry> {
+    const response = await this.client.filesCopyV2({
+      from_path: fromPath,
+      to_path: toPath,
+      autorename: true
+    });
+    return this.mapFileMetadata(response.result.metadata);
+  }
+
   public async listFolder(path: string, recursive: boolean = false): Promise<DropboxEntry[]> {
     const response = await this.client.filesListFolder({
       path: path || '',

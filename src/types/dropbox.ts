@@ -50,9 +50,54 @@ export interface DropboxSharedLinkMetadata {
   size?: number;
 }
 
+export interface DropboxSharedLinkSettings {
+  requested_visibility?: { '.tag': 'public' | 'team_only' | 'password' };
+  audience?: { '.tag': 'public' | 'team' | 'password' };
+  access?: { '.tag': 'viewer' | 'editor' };
+}
+
+export interface DropboxUserProfile {
+  account_id: string;
+  name: {
+    given_name: string;
+    surname: string;
+    familiar_name: string;
+    display_name: string;
+    abbreviated_name: string;
+  };
+  email: string;
+  email_verified: boolean;
+  profile_photo_url?: string;
+}
+
+export interface SpaceAllocation {
+  used: number;
+  allocation: {
+    '.tag': string;
+    allocated: number;
+  };
+}
+
+export interface DropboxSearchResult {
+  matches: Array<{
+    metadata: DropboxEntry;
+    match_type: { '.tag': string };
+  }>;
+  more: boolean;
+  start: number;
+}
+
+export interface DropboxFileProperty {
+  name: string;
+  value: string;
+}
+
+export interface DropboxTag {
+  tag_name: string;
+}
+
 export interface DropboxTokenData {
   userId: string;
   refreshToken: string;
   lastUpdated: string;
-  [key: string]: string; // Index signature for FaunaDB compatibility
 }

@@ -14,23 +14,24 @@ export class DropboxSharingOperations {
       }
     });
 
+    const result = response.result;
     return {
-      url: response.result.url,
-      name: response.result.name,
-      path_lower: response.result.path_lower,
+      url: result.url,
+      name: result.name,
+      path_lower: result.path_lower,
       link_permissions: {
-        can_revoke: response.result.link_permissions.can_revoke,
+        can_revoke: result.link_permissions.can_revoke,
         resolved_visibility: {
-          '.tag': response.result.link_permissions.resolved_visibility['.tag']
+          '.tag': result.link_permissions.resolved_visibility['.tag']
         },
-        revoke_failure_reason: response.result.link_permissions.revoke_failure_reason
-          ? { '.tag': response.result.link_permissions.revoke_failure_reason['.tag'] }
+        revoke_failure_reason: result.link_permissions.revoke_failure_reason
+          ? { '.tag': result.link_permissions.revoke_failure_reason['.tag'] }
           : undefined
       },
-      client_modified: response.result.client_modified,
-      server_modified: response.result.server_modified,
-      rev: response.result.rev,
-      size: response.result.size
+      client_modified: 'client_modified' in result ? result.client_modified : undefined,
+      server_modified: 'server_modified' in result ? result.server_modified : undefined,
+      rev: 'rev' in result ? result.rev : undefined,
+      size: 'size' in result ? result.size : undefined
     };
   }
 
@@ -53,38 +54,14 @@ export class DropboxSharingOperations {
           ? { '.tag': link.link_permissions.revoke_failure_reason['.tag'] }
           : undefined
       },
-      client_modified: link.client_modified,
-      server_modified: link.server_modified,
-      rev: link.rev,
-      size: link.size
+      client_modified: 'client_modified' in link ? link.client_modified : undefined,
+      server_modified: 'server_modified' in link ? link.server_modified : undefined,
+      rev: 'rev' in link ? link.rev : undefined,
+      size: 'size' in link ? link.size : undefined
     }));
   }
 
   async revokeSharedLink(url: string): Promise<void> {
     await this.client.sharingRevokeSharedLink({ url });
-  }
-
-  async addFolderMember(path: string, members: { email: string; accessLevel: 'viewer' | 'editor' }[]): Promise<void> {
-    await this.client.sharingAddFolderMember({
-      shared_folder_id: path,
-      members: members.map(member => ({
-        member: {
-          '.tag': 'email',
-          email: member.email
-        },
-        access_level: { '.tag': member.accessLevel }
-      }))
-    });
-  }
-
-  async removeFolderMember(path: string, member: { email: string }): Promise<void> {
-    await this.client.sharingRemoveFolderMember({
-      shared_folder_id: path,
-      member: {
-        '.tag': 'email',
-        email: member.email
-      },
-      leave_a_copy: false
-    });
   }
 }

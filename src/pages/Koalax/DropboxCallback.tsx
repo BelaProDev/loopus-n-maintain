@@ -15,12 +15,13 @@ const DropboxCallback = () => {
       try {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
+        const state = urlParams.get('state');
         
         if (!code) {
           throw new Error('No authorization code received');
         }
 
-        const success = await dropboxAuth.handleCallback(code);
+        const success = await dropboxAuth.handleCallback(code, state || '');
         
         if (success) {
           dispatch(setAuthenticated(true));
