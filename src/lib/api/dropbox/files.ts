@@ -12,7 +12,10 @@ export class DropboxFileOperations {
       autorename: true
     });
 
-    return this.mapFileMetadata(response.result);
+    return this.mapFileMetadata({
+      ...response.result,
+      '.tag': 'file'
+    });
   }
 
   public async downloadFile(path: string): Promise<Blob> {
@@ -29,7 +32,10 @@ export class DropboxFileOperations {
       path,
       autorename: true
     });
-    return this.mapFileMetadata(response.result.metadata);
+    return this.mapFileMetadata({
+      ...response.result.metadata,
+      '.tag': 'folder'
+    });
   }
 
   public async moveFile(fromPath: string, toPath: string): Promise<DropboxEntry> {

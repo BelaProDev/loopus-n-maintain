@@ -92,18 +92,30 @@ export interface DropboxTag {
   tag_name: string;
 }
 
-export interface DropboxTokenData {
-  userId: string;
-  refreshToken: string;
-  lastUpdated: string;
+export interface NavigationLink {
+  id?: string;
+  label: string;
+  url: string;
+  location: string;
 }
 
-export interface ContentData {
+export interface QueryArgumentObject {
+  [key: string]: any;
+}
+
+// Make ContentData and DropboxTokenData compatible with Fauna's QueryValue
+export interface ContentData extends QueryArgumentObject {
   id?: string;
   key: string;
   language: string;
   content: string;
   type: string;
+}
+
+export interface DropboxTokenData extends QueryArgumentObject {
+  userId: string;
+  refreshToken: string;
+  lastUpdated: string;
 }
 
 export interface WhatsAppNumbers {

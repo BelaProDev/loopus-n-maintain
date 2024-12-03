@@ -3,8 +3,13 @@ import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { WhatsAppNumbers } from '@/types/dropbox';
 
+interface User {
+  id: string;
+  // Add other user properties as needed
+}
+
 const WhatsAppSettings = () => {
-  const { user } = useAuth();
+  const { user } = useAuth() as { user: User | null };
   const [whatsappNumbers, setWhatsappNumbers] = useState<WhatsAppNumbers[]>([]);
   const [selectedNumber, setSelectedNumber] = useState<WhatsAppNumbers | null>(null);
 
