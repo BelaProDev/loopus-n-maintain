@@ -27,11 +27,7 @@ export class DropboxSharingOperations {
         revoke_failure_reason: result.link_permissions.revoke_failure_reason
           ? { '.tag': result.link_permissions.revoke_failure_reason['.tag'] }
           : undefined
-      },
-      client_modified: result.client_modified,
-      server_modified: result.server_modified,
-      rev: result.rev,
-      size: result.size
+      }
     };
   }
 
@@ -53,11 +49,7 @@ export class DropboxSharingOperations {
         revoke_failure_reason: link.link_permissions.revoke_failure_reason
           ? { '.tag': link.link_permissions.revoke_failure_reason['.tag'] }
           : undefined
-      },
-      client_modified: 'client_modified' in link ? link.client_modified : undefined,
-      server_modified: 'server_modified' in link ? link.server_modified : undefined,
-      rev: 'rev' in link ? link.rev : undefined,
-      size: 'size' in link ? link.size : undefined
+      }
     }));
   }
 

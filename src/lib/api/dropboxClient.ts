@@ -1,9 +1,5 @@
 import { Dropbox } from 'dropbox';
-import type { 
-  DropboxEntry, 
-  DropboxSearchResult, 
-  DropboxResponse 
-} from '@/types/dropbox';
+import type { DropboxEntry, DropboxSearchResult } from '@/types/dropbox';
 
 class DropboxClient {
   private static instance: DropboxClient;
@@ -35,6 +31,37 @@ class DropboxClient {
     return response.result.entries.map(this.mapToDropboxEntry);
   }
 
+  async uploadFile(file: File, path: string): Promise<DropboxEntry> {
+    if (!this.client) throw new Error('Client not initialized');
+    
+    const response = await this.client.filesUpload({
+      path,
+      contents: await file.arrayBuffer(),
+      mode: { '.tag': 'add' },
+      autorename: true
+    });
+    return this.mapToDropboxEntry(response.result);
+  }
+
+  async downloadFile(path: string): Promise<Blob> {
+    if (!this.client) throw new Error('Client not initialized');
+    
+    const response = await this.client.filesDownload({ path }) as any;
+    return response.result.fileBlob;
+  }
+
+  async deleteFile(path: string): Promise<void> {
+    if (!this.client) throw new Error('Client not initialized');
+    await this.client.filesDeleteV2({ path });
+  }
+
+  async createFolder(path: string): Promise<DropboxEntry> {
+    if (!this.client) throw new Error('Client not initialized');
+    
+    const response = await this.client.filesCreateFolderV2({ path });
+    return this.mapToDropboxEntry(response.result.metadata);
+  }
+
   async search(query: string): Promise<DropboxSearchResult> {
     if (!this.client) throw new Error('Client not initialized');
     
@@ -46,38 +73,6 @@ class DropboxClient {
       has_more: response.result.has_more,
       cursor: response.result.cursor
     };
-  }
-
-  async download(path: string): Promise<Blob> {
-    if (!this.client) throw new Error('Client not initialized');
-    
-    const response = await this.client.filesDownload({ path });
-    return (response as any).result.fileBlob;
-  }
-
-  async upload(path: string, contents: ArrayBuffer | Blob): Promise<DropboxEntry> {
-    if (!this.client) throw new Error('Client not initialized');
-    
-    const response = await this.client.filesUpload({
-      path,
-      contents,
-      mode: { '.tag': 'add' },
-      autorename: true
-    });
-    return this.mapToDropboxEntry(response.result);
-  }
-
-  async delete(path: string): Promise<void> {
-    if (!this.client) throw new Error('Client not initialized');
-    
-    await this.client.filesDeleteV2({ path });
-  }
-
-  async createFolder(path: string): Promise<DropboxEntry> {
-    if (!this.client) throw new Error('Client not initialized');
-    
-    const response = await this.client.filesCreateFolderV2({ path });
-    return this.mapToDropboxEntry(response.result.metadata);
   }
 
   private mapToDropboxEntry(entry: any): DropboxEntry {
