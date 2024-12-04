@@ -1,10 +1,10 @@
 import { getFaunaClient } from './client';
 import { ContactMessage } from './types';
 import { fql } from 'fauna';
-import { extractFaunaData } from './utils';
+import { extractFaunaData, type FaunaDocument } from './utils';
 
 export const contactQueries = {
-  getAllMessages: async (service: ContactMessage['service']) => {
+  getAllMessages: async (service: ContactMessage['service']): Promise<FaunaDocument<ContactMessage>[]> => {
     const client = getFaunaClient();
     if (!client) throw new Error('Fauna client not initialized');
 
@@ -45,8 +45,7 @@ export const contactQueries = {
         })
       `;
       const result = await client.query(query);
-      const document = extractFaunaData<ContactMessage>(result)[0];
-      return document ? { id: document.ref.id, ...document.data } : null;
+      return extractFaunaData<ContactMessage>(result)[0];
     } catch (error) {
       console.error('Error creating message:', error);
       return null;
@@ -62,8 +61,7 @@ export const contactQueries = {
         contact_messages.byId(${JSON.stringify(id)}).update({ status: ${JSON.stringify(status)} })
       `;
       const result = await client.query(query);
-      const document = extractFaunaData<ContactMessage>(result)[0];
-      return document ? { id: document.ref.id, ...document.data } : null;
+      return extractFaunaData<ContactMessage>(result)[0];
     } catch (error) {
       console.error('Error updating message status:', error);
       return null;

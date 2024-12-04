@@ -1,5 +1,5 @@
 import { ChatRoom, ChatMessage } from '@/lib/fauna/types/chat';
-import { extractFaunaData } from '@/lib/fauna/utils';
+import { extractFaunaData, type FaunaDocument } from '@/lib/fauna/utils';
 
 export const chatService = {
   async listRooms(): Promise<ChatRoom[]> {

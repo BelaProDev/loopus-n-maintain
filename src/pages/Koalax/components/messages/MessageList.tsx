@@ -28,11 +28,6 @@ interface MessageListProps {
   service: ContactMessage['service'];
 }
 
-type MessageWithRef = {
-  ref: { id: string };
-  data: ContactMessage;
-};
-
 const MessageList = ({ service }: MessageListProps) => {
   const { t } = useTranslation(["admin", "services"]);
   const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null);
@@ -65,7 +60,7 @@ const MessageList = ({ service }: MessageListProps) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {(messages as MessageWithRef[]).map((message) => (
+            {messages.map((message) => (
               <TableRow key={message.ref.id}>
                 <TableCell>
                   {message.data.createdAt && format(new Date(message.data.createdAt), 'PPp')}
