@@ -13,3 +13,5 @@ export interface QueryResult<T> {
   after?: string | null;
   before?: string | null;
 }
+
+export type QueryValue = string | number | boolean | null | { [key: string]: any };

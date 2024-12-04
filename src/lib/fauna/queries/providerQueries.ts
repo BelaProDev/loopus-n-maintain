@@ -1,7 +1,7 @@
 import { getFaunaClient } from '../client';
 import { fql } from 'fauna';
 import type { Provider } from '@/types/business';
-import { extractFaunaData, type FaunaDocument } from '../utils';
+import { extractFaunaData } from '../utils';
 
 export const providerQueries = {
   getProviders: async (): Promise<Provider[]> => {
@@ -10,11 +10,7 @@ export const providerQueries = {
     try {
       const query = fql`providers.all()`;
       const result = await client.query(query);
-      const documents = extractFaunaData<Provider>(result);
-      return documents.map(doc => ({
-        id: doc.ref.id,
-        ...doc.data
-      }));
+      return extractFaunaData<Provider>(result);
     } catch (error) {
       console.error('Error fetching providers:', error);
       return [];
@@ -37,11 +33,8 @@ export const providerQueries = {
         })
       `;
       const result = await client.query(query);
-      const document = extractFaunaData<Provider>(result)[0];
-      return document ? {
-        id: document.ref.id,
-        ...document.data
-      } : null;
+      const documents = extractFaunaData<Provider>(result);
+      return documents[0] || null;
     } catch (error) {
       return null;
     }

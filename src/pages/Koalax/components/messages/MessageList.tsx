@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { contactQueries } from "@/lib/fauna/contactQueries";
-import { ContactMessage } from "@/lib/fauna/types/chat";
+import { ChatMessage } from "@/lib/fauna/types/chat";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -25,12 +25,12 @@ import { format } from "date-fns";
 import { useState } from "react";
 
 interface MessageListProps {
-  service: ContactMessage['service'];
+  service: string;
 }
 
 const MessageList = ({ service }: MessageListProps) => {
   const { t } = useTranslation(["admin", "services"]);
-  const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null);
+  const [selectedMessage, setSelectedMessage] = useState<ChatMessage | null>(null);
   
   const { data: messages = [], isLoading } = useQuery({
     queryKey: ['messages', service],
@@ -65,22 +65,14 @@ const MessageList = ({ service }: MessageListProps) => {
                 <TableCell>
                   {message.createdAt && format(new Date(message.createdAt), 'PPp')}
                 </TableCell>
-                <TableCell>{message.name}</TableCell>
-                <TableCell>{message.email}</TableCell>
+                <TableCell>{message.sender}</TableCell>
+                <TableCell>{message.content}</TableCell>
                 <TableCell className="max-w-md">
-                  <p className="truncate">{formatMessagePreview(message.message)}</p>
+                  <p className="truncate">{formatMessagePreview(message.content)}</p>
                 </TableCell>
                 <TableCell>
-                  <Badge
-                    variant={
-                      message.status === 'new'
-                        ? 'default'
-                        : message.status === 'read'
-                        ? 'secondary'
-                        : 'outline'
-                    }
-                  >
-                    {t(`admin:messages.status_${message.status}`)}
+                  <Badge variant="secondary">
+                    {message.timestamp}
                   </Badge>
                 </TableCell>
                 <TableCell>
@@ -103,26 +95,15 @@ const MessageList = ({ service }: MessageListProps) => {
           <DialogHeader>
             <DialogTitle className="space-y-1">
               <div className="flex items-center justify-between">
-                <span>{selectedMessage?.name}</span>
-                <Badge
-                  variant={
-                    selectedMessage?.status === 'new'
-                      ? 'default'
-                      : selectedMessage?.status === 'read'
-                      ? 'secondary'
-                      : 'outline'
-                  }
-                >
-                  {selectedMessage?.status && t(`admin:messages.status_${selectedMessage.status}`)}
+                <span>{selectedMessage?.sender}</span>
+                <Badge variant="secondary">
+                  {selectedMessage?.timestamp}
                 </Badge>
               </div>
-              <p className="text-sm text-muted-foreground">
-                {selectedMessage?.email}
-              </p>
             </DialogTitle>
           </DialogHeader>
           <ScrollArea className="mt-4 h-[400px] rounded-md border p-4">
-            {selectedMessage?.message.split('\n').map((paragraph: string, index: number) => (
+            {selectedMessage?.content.split('\n').map((paragraph: string, index: number) => (
               <p key={index} className="mb-4 leading-relaxed">
                 {paragraph}
               </p>

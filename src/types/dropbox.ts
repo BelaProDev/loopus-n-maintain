@@ -102,3 +102,5 @@ export interface DropboxTokenData {
   updatedAt?: string;
   [key: string]: any; // Add index signature for QueryArgument compatibility
 }
+
+export type MediaType = 'image' | 'video' | 'audio' | 'document' | 'other';

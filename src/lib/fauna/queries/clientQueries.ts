@@ -1,18 +1,14 @@
 import { client } from '../client';
 import { fql } from 'fauna';
 import type { Client } from '@/types/business';
-import { extractFaunaData, type FaunaDocument } from '../utils';
+import { extractFaunaData } from '../utils';
 
 export const clientQueries = {
   getClients: async (): Promise<Client[]> => {
     try {
       const query = fql`clients.all()`;
       const result = await client.query(query);
-      const documents = extractFaunaData<Client>(result);
-      return documents.map(doc => ({
-        id: doc.ref.id,
-        ...doc.data
-      }));
+      return extractFaunaData<Client>(result);
     } catch (error) {
       console.error('Error fetching clients:', error);
       return [];
@@ -32,11 +28,8 @@ export const clientQueries = {
         })
       `;
       const result = await client.query(query);
-      const document = extractFaunaData<Client>(result)[0];
-      return document ? {
-        id: document.ref.id,
-        ...document.data
-      } : null;
+      const documents = extractFaunaData<Client>(result);
+      return documents[0] || null;
     } catch (error) {
       return null;
     }
