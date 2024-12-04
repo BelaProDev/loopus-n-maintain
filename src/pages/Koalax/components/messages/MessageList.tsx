@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { contactQueries } from "@/lib/fauna/contactQueries";
-import { ChatMessage } from "@/lib/fauna/types/chat";
+import { ContactMessage } from "@/lib/fauna/types";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -25,12 +25,12 @@ import { format } from "date-fns";
 import { useState } from "react";
 
 interface MessageListProps {
-  service: string;
+  service: 'electrics' | 'plumbing' | 'ironwork' | 'woodwork' | 'architecture';
 }
 
 const MessageList = ({ service }: MessageListProps) => {
   const { t } = useTranslation(["admin", "services"]);
-  const [selectedMessage, setSelectedMessage] = useState<ChatMessage | null>(null);
+  const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null);
   
   const { data: messages = [], isLoading } = useQuery({
     queryKey: ['messages', service],
@@ -65,14 +65,14 @@ const MessageList = ({ service }: MessageListProps) => {
                 <TableCell>
                   {message.createdAt && format(new Date(message.createdAt), 'PPp')}
                 </TableCell>
-                <TableCell>{message.sender}</TableCell>
-                <TableCell>{message.content}</TableCell>
+                <TableCell>{message.name}</TableCell>
+                <TableCell>{message.email}</TableCell>
                 <TableCell className="max-w-md">
-                  <p className="truncate">{formatMessagePreview(message.content)}</p>
+                  <p className="truncate">{formatMessagePreview(message.message)}</p>
                 </TableCell>
                 <TableCell>
                   <Badge variant="secondary">
-                    {message.timestamp}
+                    {message.status || 'new'}
                   </Badge>
                 </TableCell>
                 <TableCell>
@@ -95,15 +95,15 @@ const MessageList = ({ service }: MessageListProps) => {
           <DialogHeader>
             <DialogTitle className="space-y-1">
               <div className="flex items-center justify-between">
-                <span>{selectedMessage?.sender}</span>
+                <span>{selectedMessage?.name}</span>
                 <Badge variant="secondary">
-                  {selectedMessage?.timestamp}
+                  {selectedMessage?.status || 'new'}
                 </Badge>
               </div>
             </DialogTitle>
           </DialogHeader>
           <ScrollArea className="mt-4 h-[400px] rounded-md border p-4">
-            {selectedMessage?.content.split('\n').map((paragraph: string, index: number) => (
+            {selectedMessage?.message.split('\n').map((paragraph: string, index: number) => (
               <p key={index} className="mb-4 leading-relaxed">
                 {paragraph}
               </p>
