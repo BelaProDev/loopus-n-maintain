@@ -1,65 +1,47 @@
-interface FaunaDocument<T> {
+export interface FaunaDocument<T> {
   ref: { id: string };
   data: T;
-  ts?: { isoString?: string };
+  ts?: number;
 }
 
-interface FaunaResponse<T> {
-  data: FaunaDocument<T>[];
+export interface FaunaResponse<T> {
+  data: Array<FaunaDocument<T>> | FaunaDocument<T>;
 }
 
-export type { FaunaDocument, FaunaResponse };
-
-export const extractFaunaData = <T>(response: any): FaunaDocument<T>[] => {
+export const extractFaunaData = <T>(response: FaunaResponse<T> | null): T[] => {
   if (!response) return [];
 
-  // Handle single document response
-  if (response.ref && response.data) {
-    return [{
-      ref: { id: response.ref.id },
-      data: normalizeDocData(response.data) as T,
-      ts: response.ts ? { isoString: response.ts } : undefined
-    }];
+  // Handle array response
+  if (Array.isArray(response.data)) {
+    return response.data.map(doc => ({
+      id: doc.ref.id,
+      ...doc.data
+    })) as T[];
   }
 
-  // Handle multiple documents response
-  if (Array.isArray(response.data)) {
-    return response.data.map((item: any) => ({
-      ref: { id: item.ref.id },
-      data: normalizeDocData(item.data) as T,
-      ts: item.ts ? { isoString: item.ts } : undefined
-    }));
+  // Handle single document response
+  if (response.data && 'ref' in response.data) {
+    return [{
+      id: response.data.ref.id,
+      ...response.data.data
+    }] as T[];
   }
 
   return [];
 };
 
-const normalizeDocData = (doc: Record<string, any>): any => {
-  if (!doc) return null;
+export const normalizeDocData = <T>(doc: any): T => {
+  if (!doc) return {} as T;
   
-  const normalized: Record<string, any> = {};
+  const normalized: any = { ...doc };
   
-  for (const [key, value] of Object.entries(doc)) {
-    if (key === 'ref' || key === 'ts') continue;
-    
-    if (value && typeof value === 'object') {
-      if ('isoString' in value) {
-        normalized[key] = value.isoString;
-      } else if ('@time' in value) {
-        normalized[key] = new Date(value['@time']).toISOString();
-      } else if ('@int' in value) {
-        normalized[key] = parseInt(value['@int'], 10);
-      } else if (Array.isArray(value)) {
-        normalized[key] = value.map(item => 
-          typeof item === 'object' && item !== null ? normalizeDocData(item) : item
-        );
-      } else {
-        normalized[key] = normalizeDocData(value);
-      }
-    } else {
-      normalized[key] = value;
-    }
+  if (doc.ts) {
+    normalized.createdAt = new Date(doc.ts / 1000).toISOString();
   }
   
-  return normalized;
+  // Remove internal Fauna properties
+  delete normalized.ref;
+  delete normalized.ts;
+  
+  return normalized as T;
 };

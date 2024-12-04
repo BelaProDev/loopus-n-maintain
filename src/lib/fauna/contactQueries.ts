@@ -4,7 +4,7 @@ import { fql } from 'fauna';
 import { extractFaunaData, type FaunaDocument } from './utils';
 
 export const contactQueries = {
-  getAllMessages: async (service: ContactMessage['service']): Promise<FaunaDocument<ContactMessage>[]> => {
+  getAllMessages: async (service: ContactMessage['service']): Promise<ContactMessage[]> => {
     const client = getFaunaClient();
     if (!client) throw new Error('Fauna client not initialized');
 
@@ -20,48 +20,40 @@ export const contactQueries = {
     }
   },
 
-  createMessage: async (data: Omit<ContactMessage, 'id' | 'createdAt' | 'status'>) => {
+  createMessage: async (data: Omit<ContactMessage, 'id' | 'createdAt' | 'status'>): Promise<ContactMessage | null> => {
     const client = getFaunaClient();
     if (!client) throw new Error('Fauna client not initialized');
 
     try {
       const messageData = {
-        service: data.service,
-        name: data.name,
-        email: data.email,
-        message: data.message,
+        ...data,
         status: 'new' as const,
         createdAt: new Date().toISOString()
       };
 
       const query = fql`
-        contact_messages.create({
-          service: ${messageData.service},
-          name: ${messageData.name},
-          email: ${messageData.email},
-          message: ${messageData.message},
-          status: ${messageData.status},
-          createdAt: ${messageData.createdAt}
-        })
+        contact_messages.create(${messageData})
       `;
       const result = await client.query(query);
-      return extractFaunaData<ContactMessage>(result)[0];
+      const messages = extractFaunaData<ContactMessage>(result);
+      return messages[0] || null;
     } catch (error) {
       console.error('Error creating message:', error);
       return null;
     }
   },
 
-  updateMessageStatus: async (service: ContactMessage['service'], id: string, status: ContactMessage['status']) => {
+  updateMessageStatus: async (id: string, status: ContactMessage['status']): Promise<ContactMessage | null> => {
     const client = getFaunaClient();
     if (!client) throw new Error('Fauna client not initialized');
 
     try {
       const query = fql`
-        contact_messages.byId(${JSON.stringify(id)}).update({ status: ${JSON.stringify(status)} })
+        contact_messages.byId(${id}).update({ status: ${status} })
       `;
       const result = await client.query(query);
-      return extractFaunaData<ContactMessage>(result)[0];
+      const messages = extractFaunaData<ContactMessage>(result);
+      return messages[0] || null;
     } catch (error) {
       console.error('Error updating message status:', error);
       return null;
