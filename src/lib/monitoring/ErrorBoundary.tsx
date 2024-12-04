@@ -9,6 +9,7 @@ interface Props {
 interface State {
   hasError: boolean;
   error?: Error;
+  errorInfo?: ErrorInfo;
 }
 
 class ErrorBoundary extends Component<Props, State> {
@@ -23,10 +24,15 @@ class ErrorBoundary extends Component<Props, State> {
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('Uncaught error:', error);
     console.error('Error info:', errorInfo);
+    this.setState({ errorInfo });
   }
 
   private handleRefresh = () => {
     window.location.reload();
+  };
+
+  private handleGoHome = () => {
+    window.location.href = '/';
   };
 
   public render() {
@@ -40,11 +46,16 @@ class ErrorBoundary extends Component<Props, State> {
             Oops! Something went wrong
           </h2>
           <p className="text-muted-foreground mb-6 text-center max-w-md">
-            We're sorry for the inconvenience. Please try refreshing the page.
+            We're sorry for the inconvenience. Please try refreshing the page or going back to the home page.
           </p>
-          <Button onClick={this.handleRefresh} variant="default">
-            Refresh Page
-          </Button>
+          <div className="flex gap-4">
+            <Button onClick={this.handleRefresh} variant="default">
+              Refresh Page
+            </Button>
+            <Button onClick={this.handleGoHome} variant="outline">
+              Go to Home
+            </Button>
+          </div>
         </div>
       );
     }
