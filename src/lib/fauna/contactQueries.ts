@@ -1,7 +1,7 @@
 import { getFaunaClient } from './client';
 import { ContactMessage } from './types';
 import { fql } from 'fauna';
-import { extractFaunaData, type FaunaDocument } from './utils';
+import { extractFaunaData } from './utils';
 
 export const contactQueries = {
   getAllMessages: async (service: ContactMessage['service']): Promise<ContactMessage[]> => {
@@ -10,7 +10,16 @@ export const contactQueries = {
 
     try {
       const query = fql`
-        contact_messages.where(.service == ${service})
+        let messages = contact_messages.where(.service == ${service})
+        messages {
+          id: messages.id,
+          service: messages.service,
+          name: messages.name,
+          email: messages.email,
+          message: messages.message,
+          status: messages.status,
+          createdAt: messages.createdAt
+        }
       `;
       const result = await client.query(query);
       return extractFaunaData<ContactMessage>(result);
@@ -32,7 +41,16 @@ export const contactQueries = {
       };
 
       const query = fql`
-        contact_messages.create(${messageData})
+        let message = contact_messages.create(${messageData})
+        {
+          id: message.id,
+          service: message.service,
+          name: message.name,
+          email: message.email,
+          message: message.message,
+          status: message.status,
+          createdAt: message.createdAt
+        }
       `;
       const result = await client.query(query);
       const messages = extractFaunaData<ContactMessage>(result);
@@ -49,7 +67,16 @@ export const contactQueries = {
 
     try {
       const query = fql`
-        contact_messages.byId(${id}).update({ status: ${status} })
+        let message = contact_messages.byId(${id}).update({ status: ${status} })
+        {
+          id: message.id,
+          service: message.service,
+          name: message.name,
+          email: message.email,
+          message: message.message,
+          status: message.status,
+          createdAt: message.createdAt
+        }
       `;
       const result = await client.query(query);
       const messages = extractFaunaData<ContactMessage>(result);

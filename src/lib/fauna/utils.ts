@@ -6,16 +6,17 @@ export const extractFaunaData = <T>(response: unknown): T[] => {
   const faunaResponse = response as FaunaResponse<T>;
 
   if (Array.isArray(faunaResponse.data)) {
-    return faunaResponse.data.map((doc: FaunaDocument<T>) => ({
-      id: doc.ref.id,
-      ...doc.data
+    return faunaResponse.data.map((item: any) => ({
+      id: item.id || item.ref?.id,
+      ...item.data || item
     })) as T[];
   }
 
-  if (faunaResponse.data && 'ref' in faunaResponse.data) {
+  if (faunaResponse.data) {
+    const data = faunaResponse.data as any;
     return [{
-      id: faunaResponse.data.ref.id,
-      ...faunaResponse.data.data
+      id: data.id || data.ref?.id,
+      ...data.data || data
     }] as T[];
   }
 

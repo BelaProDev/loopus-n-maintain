@@ -18,13 +18,13 @@ export interface EmailUser {
 }
 
 export interface ContactMessage {
-  id?: string;
+  id: string;
   service: 'electrics' | 'plumbing' | 'ironwork' | 'woodwork' | 'architecture';
   name: string;
   email: string;
   message: string;
-  status?: 'new' | 'read' | 'archived';
-  createdAt?: string;
+  status: 'new' | 'read' | 'archived';
+  createdAt: string;
 }
 
 export interface GetTagsResult {
@@ -35,4 +35,10 @@ export interface GetTagsResult {
       }>;
     }>;
   };
+}
+
+export interface FaunaResponse<T> {
+  data: T | T[];
+  after?: string | null;
+  before?: string | null;
 }
