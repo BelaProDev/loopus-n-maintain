@@ -1,6 +1,7 @@
 import { fql } from 'fauna';
 import { client } from './client';
 import type { DropboxTokenData } from '@/types/dropbox';
+import { extractFaunaData } from './utils';
 
 export const dropboxTokenQueries = {
   storeToken: async (userId: string, refreshToken: string): Promise<boolean> => {
@@ -8,15 +9,16 @@ export const dropboxTokenQueries = {
       const tokenData = {
         userId,
         refreshToken,
-        lastUpdated: new Date().toISOString(),
-        type: 'dropbox_token'
+        createdAt: new Date().toISOString()
       };
-      
+
       const query = fql`
-        let tokenDoc = dropbox_tokens.firstWhere(.userId == ${userId})
-        
-        if(tokenDoc != null) {
-          tokenDoc.update(${tokenData})
+        let existing = dropbox_tokens.firstWhere(.userId == ${userId})
+        if (existing != null) {
+          existing.update({
+            refreshToken: ${refreshToken},
+            updatedAt: Time.now()
+          })
         } else {
           dropbox_tokens.create(${tokenData})
         }
@@ -34,15 +36,19 @@ export const dropboxTokenQueries = {
     try {
       const query = fql`
         let doc = dropbox_tokens.firstWhere(.userId == ${userId})
-        doc ? {
-          userId: doc.userId,
-          refreshToken: doc.refreshToken,
-          lastUpdated: doc.lastUpdated
-        } : null
+        if (doc == null) {
+          null
+        } else {
+          {
+            userId: doc.userId,
+            refreshToken: doc.refreshToken,
+            createdAt: doc.createdAt
+          }
+        }
       `;
       
-      const result = await client.query<DropboxTokenData | null>(query);
-      return result || null;
+      const result = await client.query(query);
+      return result ? extractFaunaData<DropboxTokenData>(result)[0] : null;
     } catch (error) {
       console.error('Failed to get Dropbox token:', error);
       return null;

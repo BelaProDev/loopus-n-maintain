@@ -10,25 +10,22 @@ interface FaunaResponse<T> {
 
 export type { FaunaDocument, FaunaResponse };
 
-export const extractFaunaData = <T>(response: any): FaunaDocument<T>[] => {
+export const extractFaunaData = <T>(response: any): T[] => {
   if (!response) return [];
 
   // Handle single document response
   if (response.ref && response.data) {
-    return [{
-      ref: { id: response.ref.id },
-      data: normalizeDocData(response.data) as T,
-      ts: response.ts ? { isoString: response.ts } : undefined
-    }];
+    return [normalizeDocData(response.data)];
   }
 
   // Handle multiple documents response
   if (Array.isArray(response.data)) {
-    return response.data.map((item: any) => ({
-      ref: { id: item.ref.id },
-      data: normalizeDocData(item.data) as T,
-      ts: item.ts ? { isoString: item.ts } : undefined
-    }));
+    return response.data.map((item: any) => normalizeDocData(item.data));
+  }
+
+  // Handle direct data response
+  if (response.data && !Array.isArray(response.data)) {
+    return [normalizeDocData(response.data)];
   }
 
   return [];
