@@ -18,12 +18,22 @@ export const handler: Handler = async (event) => {
       case 'list': {
         console.log('Listing all rooms');
         const listResult = await client.query(fql`
-          Room.all()
+          let rooms = Room.all()
+          rooms {
+            id: rooms.id,
+            name: rooms.name,
+            topic: rooms.topic,
+            createdAt: rooms.createdAt
+          }
         `);
         console.log('Rooms retrieved:', listResult);
         return {
           statusCode: 200,
-          body: JSON.stringify(listResult)
+          body: JSON.stringify({ 
+            data: {
+              data: listResult.data
+            }
+          })
         };
       }
 
@@ -31,11 +41,17 @@ export const handler: Handler = async (event) => {
         const { name, topic } = data;
         console.log('Creating room:', { name, topic });
         const createResult = await client.query(fql`
-          Room.create({
+          let newRoom = Room.create({
             name: ${name},
             topic: ${topic || ''},
             createdAt: Time.now()
           })
+          {
+            id: newRoom.id,
+            name: newRoom.name,
+            topic: newRoom.topic,
+            createdAt: newRoom.createdAt
+          }
         `);
         console.log('Room created:', createResult);
         return {
