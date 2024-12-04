@@ -1,3 +1,5 @@
+import type { FaunaDocument } from '@/types/fauna';
+
 export interface ChatRoom {
   id: string;
   name: string;
@@ -15,12 +17,5 @@ export interface ChatMessage {
   };
 }
 
-export interface ContactMessage {
-  id: string;
-  service: 'electrics' | 'plumbing' | 'ironwork' | 'woodwork' | 'architecture';
-  name: string;
-  email: string;
-  message: string;
-  status: 'new' | 'read' | 'archived';
-  createdAt: string;
-}
+export interface ChatRoomDocument extends FaunaDocument<Omit<ChatRoom, 'id'>> {}
+export interface ChatMessageDocument extends FaunaDocument<Omit<ChatMessage, 'id'>> {}

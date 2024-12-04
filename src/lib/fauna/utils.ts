@@ -1,29 +1,21 @@
-export interface FaunaDocument<T> {
-  ref: { id: string };
-  data: T;
-  ts?: number;
-}
+import type { FaunaDocument, FaunaResponse } from '@/types/fauna';
 
-export interface FaunaResponse<T> {
-  data: Array<FaunaDocument<T>> | FaunaDocument<T>;
-}
-
-export const extractFaunaData = <T>(response: any): T[] => {
+export const extractFaunaData = <T>(response: unknown): T[] => {
   if (!response) return [];
 
-  // Handle array response
-  if (Array.isArray(response.data)) {
-    return response.data.map((doc: FaunaDocument<T>) => ({
+  const faunaResponse = response as FaunaResponse<T>;
+
+  if (Array.isArray(faunaResponse.data)) {
+    return faunaResponse.data.map((doc: FaunaDocument<T>) => ({
       id: doc.ref.id,
       ...doc.data
     })) as T[];
   }
 
-  // Handle single document response
-  if (response.data && 'ref' in response.data) {
+  if (faunaResponse.data && 'ref' in faunaResponse.data) {
     return [{
-      id: response.data.ref.id,
-      ...response.data.data
+      id: faunaResponse.data.ref.id,
+      ...faunaResponse.data.data
     }] as T[];
   }
 

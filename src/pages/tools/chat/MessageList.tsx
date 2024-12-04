@@ -36,14 +36,6 @@ const MessageList = ({ messages, isLoading }: MessageListProps) => {
     );
   }
 
-  const formatMessageTime = (timestamp: string) => {
-    try {
-      return formatDistanceToNow(new Date(timestamp), { addSuffix: true });
-    } catch {
-      return "";
-    }
-  };
-
   return (
     <ScrollArea className="flex-1 pr-4">
       <div className="space-y-3 p-4">
@@ -57,7 +49,7 @@ const MessageList = ({ messages, isLoading }: MessageListProps) => {
                 {message.sender}
               </div>
               <div className="text-xs text-muted-foreground">
-                {formatMessageTime(message.createdAt)}
+                {formatDistanceToNow(new Date(message.createdAt), { addSuffix: true })}
               </div>
             </div>
             <div className="text-sm text-foreground/80 mt-1 break-words">

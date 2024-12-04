@@ -1,5 +1,5 @@
-import { ChatRoom, ChatMessage } from '@/lib/fauna/types/chat';
-import { extractFaunaData, type FaunaDocument } from '@/lib/fauna/utils';
+import type { ChatRoom, ChatMessage, ChatRoomDocument, ChatMessageDocument } from '@/lib/fauna/types/chat';
+import { extractFaunaData } from '@/lib/fauna/utils';
 
 export const chatService = {
   async listRooms(): Promise<ChatRoom[]> {
@@ -14,12 +14,7 @@ export const chatService = {
     }
 
     const result = await response.json();
-    return extractFaunaData<ChatRoom>(result).map(doc => ({
-      id: doc.ref.id,
-      name: doc.data.name,
-      topic: doc.data.topic || '',
-      createdAt: doc.data.createdAt
-    }));
+    return extractFaunaData<ChatRoom>(result);
   },
 
   async createRoom(name: string, topic?: string): Promise<ChatRoom> {
@@ -38,7 +33,8 @@ export const chatService = {
     }
 
     const result = await response.json();
-    return result.data;
+    const rooms = extractFaunaData<ChatRoom>(result.data);
+    return rooms[0];
   },
 
   async listMessages(roomId: string): Promise<ChatMessage[]> {
@@ -56,16 +52,7 @@ export const chatService = {
     }
 
     const result = await response.json();
-    // Handle the triple-nested data structure
-    return result.data.data.data.map((message: any) => ({
-      id: message.id,
-      content: message.content,
-      sender: message.sender,
-      createdAt: message.createdAt.isoString,
-      room: {
-        id: message.room.id
-      }
-    }));
+    return extractFaunaData<ChatMessage>(result.data);
   },
 
   async sendMessage(roomId: string, content: string, sender: string): Promise<ChatMessage> {
@@ -85,6 +72,7 @@ export const chatService = {
     }
 
     const result = await response.json();
-    return result.data;
+    const messages = extractFaunaData<ChatMessage>(result.data);
+    return messages[0];
   }
 };
