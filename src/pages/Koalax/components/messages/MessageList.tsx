@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { contactQueries } from "@/lib/fauna/contactQueries";
-import { ContactMessage } from "@/lib/fauna/types";
+import { ContactMessage } from "@/lib/fauna/types/chat";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -61,33 +61,33 @@ const MessageList = ({ service }: MessageListProps) => {
           </TableHeader>
           <TableBody>
             {messages.map((message) => (
-              <TableRow key={message.ref.id}>
+              <TableRow key={message.id}>
                 <TableCell>
-                  {message.data.createdAt && format(new Date(message.data.createdAt), 'PPp')}
+                  {message.createdAt && format(new Date(message.createdAt), 'PPp')}
                 </TableCell>
-                <TableCell>{message.data.name}</TableCell>
-                <TableCell>{message.data.email}</TableCell>
+                <TableCell>{message.name}</TableCell>
+                <TableCell>{message.email}</TableCell>
                 <TableCell className="max-w-md">
-                  <p className="truncate">{formatMessagePreview(message.data.message)}</p>
+                  <p className="truncate">{formatMessagePreview(message.message)}</p>
                 </TableCell>
                 <TableCell>
                   <Badge
                     variant={
-                      message.data.status === 'new'
+                      message.status === 'new'
                         ? 'default'
-                        : message.data.status === 'read'
+                        : message.status === 'read'
                         ? 'secondary'
                         : 'outline'
                     }
                   >
-                    {t(`admin:messages.status_${message.data.status}`)}
+                    {t(`admin:messages.status_${message.status}`)}
                   </Badge>
                 </TableCell>
                 <TableCell>
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => setSelectedMessage(message.data)}
+                    onClick={() => setSelectedMessage(message)}
                   >
                     <Eye className="h-4 w-4" />
                   </Button>

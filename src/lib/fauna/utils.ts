@@ -8,12 +8,12 @@ export interface FaunaResponse<T> {
   data: Array<FaunaDocument<T>> | FaunaDocument<T>;
 }
 
-export const extractFaunaData = <T>(response: FaunaResponse<T> | null): T[] => {
+export const extractFaunaData = <T>(response: any): T[] => {
   if (!response) return [];
 
   // Handle array response
   if (Array.isArray(response.data)) {
-    return response.data.map(doc => ({
+    return response.data.map((doc: FaunaDocument<T>) => ({
       id: doc.ref.id,
       ...doc.data
     })) as T[];
@@ -30,18 +30,12 @@ export const extractFaunaData = <T>(response: FaunaResponse<T> | null): T[] => {
   return [];
 };
 
-export const normalizeDocData = <T>(doc: any): T => {
-  if (!doc) return {} as T;
+export const normalizeDocData = <T>(doc: FaunaDocument<T>): T & { id: string } => {
+  if (!doc) return {} as T & { id: string };
   
-  const normalized: any = { ...doc };
-  
-  if (doc.ts) {
-    normalized.createdAt = new Date(doc.ts / 1000).toISOString();
-  }
-  
-  // Remove internal Fauna properties
-  delete normalized.ref;
-  delete normalized.ts;
-  
-  return normalized as T;
+  return {
+    id: doc.ref.id,
+    ...doc.data,
+    createdAt: doc.ts ? new Date(doc.ts / 1000).toISOString() : undefined
+  } as T & { id: string };
 };

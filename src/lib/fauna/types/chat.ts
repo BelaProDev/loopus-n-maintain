@@ -10,21 +10,17 @@ export interface ChatMessage {
   content: string;
   sender: string;
   createdAt: string;
-  room?: {
+  room: {
     id: string;
   };
 }
 
-export interface FaunaMessageResponse {
-  data: {
-    data: {
-      data: ChatMessage[];
-    };
-  };
-}
-
-export interface FaunaRoomResponse {
-  data: {
-    data: ChatRoom[];
-  };
+export interface ContactMessage {
+  id: string;
+  service: 'electrics' | 'plumbing' | 'ironwork' | 'woodwork' | 'architecture';
+  name: string;
+  email: string;
+  message: string;
+  status: 'new' | 'read' | 'archived';
+  createdAt: string;
 }
