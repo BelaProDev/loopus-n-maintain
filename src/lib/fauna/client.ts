@@ -1,8 +1,8 @@
-import { Client } from 'faunadb';
+import { Client, fql } from "fauna";
 
-export const client = new Client({
+const client = new Client({
   secret: import.meta.env.VITE_FAUNA_SECRET_KEY || '',
-  domain: 'db.fauna.com',
+  endpoint: new URL('https://db.fauna.com'),
 });
 
-export const getFaunaClient = () => client;
+export { client, fql };

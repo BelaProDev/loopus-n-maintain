@@ -1,51 +1,20 @@
 {
-  "emails": [],
-  "content": [
-    {
-      "key": "home_hero_title",
-      "type": "text",
-      "content": "Welcome to Loopus & Maintain",
-      "language": "en",
-      "lastModified": 1709744400000,
-      "modifiedBy": "admin"
-    },
-    {
-      "key": "home_hero_description",
-      "type": "textarea",
-      "content": "Professional maintenance services for your property",
-      "language": "en",
-      "lastModified": 1709744400000,
-      "modifiedBy": "admin"
-    },
-    {
-      "key": "services_intro",
-      "type": "wysiwyg",
-      "content": "Discover our range of professional services",
-      "language": "en",
-      "lastModified": 1709744400000,
-      "modifiedBy": "admin"
-    }
-  ],
   "settings": [
-    {
-      "key": "koalax_password",
-      "value": "miaouw00"
-    },
     {
       "key": "whatsapp_numbers",
       "value": {
-        "electrics": "32489127062",
-        "plumbing": "32489127062",
-        "ironwork": "32489127062",
-        "woodwork": "32489127062",
-        "architecture": "32489127062"
+        "electrics": "",
+        "plumbing": "",
+        "ironwork": "",
+        "woodwork": "",
+        "architecture": ""
       }
-    }
-  ],
-  "users": [
+    },
     {
-      "email": "pro.belalawson@gmail.com",
-      "password": "miaouw004"
+      "key": "logo",
+      "value": {
+        "logo": null
+      }
     }
   ]
 }
