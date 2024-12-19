@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { DropboxProvider } from '@/contexts/DropboxContext';
 import { DropboxCallback } from './pages/DropboxExplorer/components/DropboxCallback';
@@ -11,13 +11,11 @@ const App = () => {
     <ErrorBoundary>
       <DropboxProvider>
         <Router>
-          <Suspense fallback={<div>Loading...</div>}>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/dropbox" element={<DropboxExplorer />} />
-              <Route path="/dropbox-callback" element={<DropboxCallback />} />
-            </Routes>
-          </Suspense>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/dropbox" element={<DropboxExplorer />} />
+            <Route path="/dropbox-callback" element={<DropboxCallback />} />
+          </Routes>
         </Router>
       </DropboxProvider>
     </ErrorBoundary>

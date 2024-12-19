@@ -4,6 +4,8 @@ import { RemixServer } from "@remix-run/react";
 import { isbot } from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
 import type { EntryContext } from "@remix-run/node";
+import { Provider } from 'react-redux';
+import { store } from './store';
 
 const ABORT_DELAY = 5000;
 
@@ -36,11 +38,13 @@ function handleBotRequest(
 ) {
   return new Promise((resolve, reject) => {
     const { pipe, abort } = renderToPipeableStream(
-      <RemixServer
-        context={remixContext}
-        url={request.url}
-        abortDelay={ABORT_DELAY}
-      />,
+      <Provider store={store}>
+        <RemixServer
+          context={remixContext}
+          url={request.url}
+          abortDelay={ABORT_DELAY}
+        />
+      </Provider>,
       {
         onAllReady() {
           const body = new PassThrough();
@@ -74,11 +78,13 @@ function handleBrowserRequest(
 ) {
   return new Promise((resolve, reject) => {
     const { pipe, abort } = renderToPipeableStream(
-      <RemixServer
-        context={remixContext}
-        url={request.url}
-        abortDelay={ABORT_DELAY}
-      />,
+      <Provider store={store}>
+        <RemixServer
+          context={remixContext}
+          url={request.url}
+          abortDelay={ABORT_DELAY}
+        />
+      </Provider>,
       {
         onShellReady() {
           const body = new PassThrough();
