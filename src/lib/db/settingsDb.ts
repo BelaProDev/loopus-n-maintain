@@ -1,6 +1,16 @@
 import fallbackDb from '../fallback-db.json';
 import type { WhatsAppNumber, WhatsAppNumbers } from '@/types/business';
 
+interface SettingsValue {
+  numbers?: WhatsAppNumber[];
+  logo?: string;
+}
+
+interface Setting {
+  key: string;
+  value: SettingsValue;
+}
+
 const defaultWhatsAppNumbers: WhatsAppNumbers = [
   { id: '1', name: 'Electrics', number: '', service: 'electrics' },
   { id: '2', name: 'Plumbing', number: '', service: 'plumbing' },
@@ -22,7 +32,7 @@ export const settingsQueries = {
 
   updateWhatsAppNumbers: (numbers: WhatsAppNumbers): WhatsAppNumbers => {
     try {
-      const settings = fallbackDb.settings;
+      const settings = fallbackDb.settings as Setting[];
       const index = settings.findIndex(s => s.key === 'whatsapp_numbers');
       
       if (index !== -1) {
@@ -43,7 +53,7 @@ export const settingsQueries = {
 
   getLogo: (): string | null => {
     try {
-      const logoSetting = fallbackDb.settings.find(s => s.key === 'logo');
+      const logoSetting = fallbackDb.settings.find(s => s.key === 'logo') as Setting | undefined;
       return logoSetting?.value?.logo || null;
     } catch (error) {
       console.warn('Error reading from fallback DB:', error);
@@ -53,7 +63,7 @@ export const settingsQueries = {
 
   updateLogo: (base64String: string): string | null => {
     try {
-      const settings = fallbackDb.settings;
+      const settings = fallbackDb.settings as Setting[];
       const index = settings.findIndex(s => s.key === 'logo');
       
       if (index !== -1) {
