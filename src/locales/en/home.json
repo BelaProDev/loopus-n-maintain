@@ -1,6 +1,16 @@
 {
   "welcome": "Welcome to Digital Toolbox",
   "description": "Your Swiss Army Knife for Digital Tools",
+  "features": {
+    "documents": "Document Management",
+    "documentsDesc": "Create, edit and manage your documents efficiently",
+    "tools": "Digital Tools",
+    "toolsDesc": "Access a suite of powerful digital tools",
+    "admin": "Administration",
+    "adminDesc": "Manage your settings and preferences",
+    "chat": "Live Chat",
+    "chatDesc": "Connect and collaborate in real-time"
+  },
   "news": {
     "latest": "Latest News"
   },
