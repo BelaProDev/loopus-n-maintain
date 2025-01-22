@@ -3,18 +3,17 @@
     {
       "key": "whatsapp_numbers",
       "value": {
-        "electrics": "",
-        "plumbing": "",
-        "ironwork": "",
-        "woodwork": "",
-        "architecture": ""
-      }
-    },
-    {
-      "key": "logo",
-      "value": {
-        "logo": null
+        "numbers": [
+          { "id": "1", "name": "Electrics", "number": "", "service": "electrics" },
+          { "id": "2", "name": "Plumbing", "number": "", "service": "plumbing" },
+          { "id": "3", "name": "Ironwork", "number": "", "service": "ironwork" },
+          { "id": "4", "name": "Woodwork", "number": "", "service": "woodwork" },
+          { "id": "5", "name": "Architecture", "number": "", "service": "architecture" }
+        ]
       }
     }
-  ]
+  ],
+  "users": [],
+  "content": [],
+  "emails": []
 }

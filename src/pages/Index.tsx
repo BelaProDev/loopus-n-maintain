@@ -4,7 +4,7 @@ import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useTranslation } from 'react-i18next';
-import { FileText, Tool, Settings, MessageCircle } from 'lucide-react';
+import { FileText, Wrench, Settings, MessageCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Index = () => {
@@ -18,7 +18,7 @@ const Index = () => {
       link: '/tools/documents'
     },
     {
-      icon: <Tool className="h-6 w-6" />,
+      icon: <Wrench className="h-6 w-6" />,
       title: t('home:features.tools'),
       description: t('home:features.toolsDesc'),
       link: '/tools'

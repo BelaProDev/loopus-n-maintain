@@ -1,22 +1,22 @@
 import fallbackDb from '../fallback-db.json';
-import type { WhatsAppNumbers } from '@/types/dropbox';
+import type { WhatsAppNumber, WhatsAppNumbers } from '@/types/business';
 
-const defaultWhatsAppSettings: WhatsAppNumbers = {
-  electrics: "",
-  plumbing: "",
-  ironwork: "",
-  woodwork: "",
-  architecture: ""
-};
+const defaultWhatsAppNumbers: WhatsAppNumbers = [
+  { id: '1', name: 'Electrics', number: '', service: 'electrics' },
+  { id: '2', name: 'Plumbing', number: '', service: 'plumbing' },
+  { id: '3', name: 'Ironwork', number: '', service: 'ironwork' },
+  { id: '4', name: 'Woodwork', number: '', service: 'woodwork' },
+  { id: '5', name: 'Architecture', number: '', service: 'architecture' }
+];
 
 export const settingsQueries = {
   getWhatsAppNumbers: (): WhatsAppNumbers => {
     try {
       const whatsappSettings = fallbackDb.settings.find(s => s.key === 'whatsapp_numbers');
-      return whatsappSettings?.value || defaultWhatsAppSettings;
+      return whatsappSettings?.value?.numbers || defaultWhatsAppNumbers;
     } catch (error) {
       console.warn('Error reading from fallback DB:', error);
-      return defaultWhatsAppSettings;
+      return defaultWhatsAppNumbers;
     }
   },
 
@@ -26,11 +26,11 @@ export const settingsQueries = {
       const index = settings.findIndex(s => s.key === 'whatsapp_numbers');
       
       if (index !== -1) {
-        settings[index].value = numbers;
+        settings[index].value = { numbers };
       } else {
         settings.push({
           key: 'whatsapp_numbers',
-          value: numbers
+          value: { numbers }
         });
       }
       
