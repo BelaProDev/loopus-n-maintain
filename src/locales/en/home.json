@@ -1,20 +1,19 @@
 {
-  "welcome": "Welcome to Digital Toolbox",
-  "description": "Your Swiss Army Knife for Digital Tools",
+  "welcome": "Professional Building Maintenance & Repair Services",
+  "description": "Comprehensive maintenance solutions for your property needs. Expert services in electrical, plumbing, ironwork, woodworking, and architectural solutions.",
   "features": {
+    "title": "Our Digital Tools",
     "documents": "Document Management",
-    "documentsDesc": "Create, edit and manage your documents efficiently",
-    "tools": "Digital Tools",
-    "toolsDesc": "Access a suite of powerful digital tools",
-    "admin": "Administration",
-    "adminDesc": "Manage your settings and preferences",
-    "chat": "Live Chat",
-    "chatDesc": "Connect and collaborate in real-time"
+    "documentsDesc": "Organize and manage all your property documents in one place",
+    "analytics": "Analytics Dashboard",
+    "analyticsDesc": "Track maintenance history and analyze property performance",
+    "invoicing": "Invoicing System",
+    "invoicingDesc": "Generate and manage professional invoices effortlessly",
+    "gallery": "Photo Gallery",
+    "galleryDesc": "Visual documentation of maintenance work and property conditions"
   },
-  "news": {
-    "latest": "Latest News"
-  },
-  "services": {
-    "recentActivities": "Recent Activities"
+  "cta": {
+    "title": "Ready to Get Started?",
+    "description": "Contact us today to learn more about our professional maintenance services and how we can help maintain your property."
   }
 }
