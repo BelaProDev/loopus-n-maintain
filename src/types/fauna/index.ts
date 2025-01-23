@@ -1,4 +1,4 @@
 export * from './document';
 export * from '../chat';
-export * from '../business';
+export { Client, Provider, Invoice, InvoiceItem } from '../business';
 export * from '../dropbox';

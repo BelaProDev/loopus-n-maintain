@@ -1,6 +1,8 @@
+import { getFaunaClient, executeQuery } from './fauna/client';
 export { fallbackQueries as faunaQueries } from './db/fallbackDb';
 export { businessQueries } from './db/businessDb';
 export { settingsQueries } from './db/settingsDb';
 
-// Keep this for compatibility with existing code
-export const client = () => null;
+// Export the client function that returns the FaunaDB client
+export const client = getFaunaClient;
+export { executeQuery };

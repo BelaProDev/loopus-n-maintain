@@ -81,12 +81,6 @@ export interface DropboxFile extends DropboxEntry {
   '.tag': 'file';
 }
 
-export interface WhatsAppNumbers {
-  id: string;
-  name: string;
-  number: string;
-}
-
 export interface ContentData {
   id: string;
   title: string;
@@ -100,7 +94,7 @@ export interface DropboxTokenData {
   refreshToken: string;
   createdAt: string;
   updatedAt?: string;
-  [key: string]: any; // Add index signature for QueryArgument compatibility
+  [key: string]: any;
 }
 
 export type MediaType = 'image' | 'video' | 'audio' | 'document' | 'other';
