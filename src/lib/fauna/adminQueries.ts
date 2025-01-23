@@ -1,7 +1,5 @@
-import { client } from './client';
-import { fql } from 'fauna';
-import { extractFaunaData } from './utils';
-import { hashPassword } from '../auth/authUtils';
+import { getFaunaClient } from './client';
+import { query as q } from 'faunadb';
 
 export interface AdminUser {
   email: string;

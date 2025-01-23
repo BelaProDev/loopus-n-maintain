@@ -1,51 +1,32 @@
-import { fql } from 'fauna';
-import { client } from './client';
-import type { DropboxTokenData } from '@/types/dropbox';
-import { extractFaunaData } from './utils';
+import { getFaunaClient } from './client';
+import { query as q } from 'faunadb';
 
 export const dropboxTokenQueries = {
-  storeToken: async (userId: string, refreshToken: string): Promise<boolean> => {
+  getToken: async () => {
     try {
-      const tokenData: DropboxTokenData = {
-        userId,
-        refreshToken,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-
-      const query = fql`
-        let existing = dropbox_tokens.firstWhere(.userId == ${userId})
-        if (existing != null) {
-          existing.update({
-            refreshToken: ${refreshToken},
-            updatedAt: ${tokenData.updatedAt}
-          })
-        } else {
-          dropbox_tokens.create(${tokenData})
-        }
-      `;
-      
-      await client.query(query);
-      return true;
+      const client = getFaunaClient();
+      const result = await client.query(
+        q.Get(q.Match(q.Index('dropbox_token')))
+      );
+      return result.data.token;
     } catch (error) {
-      console.error('Failed to store Dropbox token:', error);
-      return false;
+      console.warn('Error fetching Dropbox token:', error);
+      return null;
     }
   },
 
-  getToken: async (userId: string): Promise<DropboxTokenData | null> => {
+  updateToken: async (token: string) => {
     try {
-      const query = fql`
-        dropbox_tokens.firstWhere(.userId == ${userId})
-      `;
-      
-      const result = await client.query(query);
-      if (!result) return null;
-
-      const tokens = extractFaunaData<DropboxTokenData>(result);
-      return tokens[0] || null;
+      const client = getFaunaClient();
+      const result = await client.query(
+        q.Update(
+          q.Select('ref', q.Get(q.Match(q.Index('dropbox_token')))),
+          { data: { token } }
+        )
+      );
+      return result.data.token;
     } catch (error) {
-      console.error('Failed to get Dropbox token:', error);
+      console.warn('Error updating Dropbox token:', error);
       return null;
     }
   }

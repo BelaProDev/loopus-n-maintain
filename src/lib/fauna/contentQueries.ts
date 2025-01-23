@@ -1,47 +1,64 @@
+import { getFaunaClient } from './client';
 import { query as q } from 'faunadb';
-import { client } from './client';
-import type { ContentData } from '@/types/dropbox';
+import type { WhatsAppNumbers } from '@/types/business';
+import { settingsQueries as fallbackQueries } from '../db/settingsDb';
 
-export const createContent = async (data: ContentData) => {
-  const result = await client.query(
-    q.Create(
-      q.Collection('content'),
-      { 
-        data: {
-          title: data.title,
-          content: data.content,
-          key: data.key,
-          language: data.language,
-          id: data.id
-        } 
-      }
-    )
-  );
-  return result;
-};
+export const contentQueries = {
+  getWhatsAppNumbers: async () => {
+    try {
+      const client = getFaunaClient();
+      const result = await client.query<{ data: WhatsAppNumbers }>(
+        q.Get(q.Match(q.Index('settings_by_key'), 'whatsapp_numbers'))
+      );
+      return result.data || fallbackQueries.getWhatsAppNumbers();
+    } catch (error) {
+      console.warn('Falling back to local settings:', error);
+      return fallbackQueries.getWhatsAppNumbers();
+    }
+  },
 
-export const getContentByKey = async (key: string) => {
-  const result = await client.query(
-    q.Get(
-      q.Match(q.Index('content_by_key'), key)
-    )
-  );
-  return result;
-};
+  updateWhatsAppNumbers: async (numbers: WhatsAppNumbers) => {
+    try {
+      const client = getFaunaClient();
+      const result = await client.query<{ data: WhatsAppNumbers }>(
+        q.Update(
+          q.Select('ref', q.Get(q.Match(q.Index('settings_by_key'), 'whatsapp_numbers'))),
+          { data: numbers }
+        )
+      );
+      return result.data;
+    } catch (error) {
+      console.warn('Falling back to local settings:', error);
+      return fallbackQueries.updateWhatsAppNumbers(numbers);
+    }
+  },
 
-export const updateContentById = async (id: string, data: Partial<ContentData>) => {
-  const result = await client.query(
-    q.Update(
-      q.Ref(q.Collection('content'), id),
-      { data }
-    )
-  );
-  return result;
-};
+  getLogo: async () => {
+    try {
+      const client = getFaunaClient();
+      const result = await client.query<{ data: { logo: string } }>(
+        q.Get(q.Match(q.Index('settings_by_key'), 'logo'))
+      );
+      return result.data.logo || null;
+    } catch (error) {
+      console.warn('Falling back to local settings:', error);
+      return null;
+    }
+  },
 
-export const deleteContentById = async (id: string) => {
-  const result = await client.query(
-    q.Delete(q.Ref(q.Collection('content'), id))
-  );
-  return result;
+  updateLogo: async (base64String: string) => {
+    try {
+      const client = getFaunaClient();
+      const result = await client.query<{ data: { logo: string } }>(
+        q.Update(
+          q.Select('ref', q.Get(q.Match(q.Index('settings_by_key'), 'logo'))),
+          { data: { logo: base64String } }
+        )
+      );
+      return result.data.logo;
+    } catch (error) {
+      console.warn('Falling back to local settings:', error);
+      return null;
+    }
+  }
 };

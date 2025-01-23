@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
-import { WhatsAppNumbers } from '@/types/dropbox';
+import { WhatsAppNumbers } from '@/types/business';
 
 const WhatsAppSettings = () => {
   const { user } = useAuth();
-  const [whatsappNumbers, setWhatsappNumbers] = useState<WhatsAppNumbers[]>([]);
-  const [selectedNumber, setSelectedNumber] = useState<WhatsAppNumbers | null>(null);
+  const [whatsappNumbers, setWhatsappNumbers] = useState<WhatsAppNumbers>([]);
+  const [selectedNumber, setSelectedNumber] = useState<WhatsAppNumbers[0] | null>(null);
 
   useEffect(() => {
     const fetchWhatsappNumbers = async () => {
