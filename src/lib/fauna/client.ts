@@ -1,5 +1,4 @@
-import { Client, query as q } from 'faunadb';
-import type { ExprArg } from 'faunadb';
+import { Client, fql } from 'fauna';
 
 let faunaClient: Client | null = null;
 
@@ -14,9 +13,9 @@ export const getFaunaClient = (): Client => {
   return faunaClient;
 };
 
-export const executeQuery = async <T = any>(expr: ExprArg): Promise<T> => {
+export const executeQuery = async <T = any>(query: string): Promise<T> => {
   const client = getFaunaClient();
-  return client.query<T>(expr);
+  return client.query<T>(fql(query));
 };
 
 export const handleFaunaError = (error: any): never => {

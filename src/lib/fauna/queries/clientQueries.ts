@@ -8,21 +8,19 @@ export const clientQueries = {
     const client = getFaunaClient();
     if (!client) return [];
     try {
-      const query = fql`
-        let clients = clients.all()
-        clients {
-          id: clients.id,
-          name: clients.name,
-          email: clients.email,
-          phone: clients.phone,
-          company: clients.company,
-          vatNumber: clients.vatNumber,
-          status: clients.status,
-          totalInvoices: clients.totalInvoices || 0,
-          totalAmount: clients.totalAmount || 0
+      const result = await client.query(fql`
+        clients.all() {
+          id: .id,
+          name: .name,
+          email: .email,
+          phone: .phone,
+          company: .company,
+          vatNumber: .vatNumber,
+          status: .status,
+          totalInvoices: .totalInvoices || 0,
+          totalAmount: .totalAmount || 0
         }
-      `;
-      const result = await client.query(query);
+      `);
       return extractFaunaData<Client>(result);
     } catch (error) {
       console.error('Error fetching clients:', error);
@@ -34,7 +32,7 @@ export const clientQueries = {
     const client = getFaunaClient();
     if (!client) return null;
     try {
-      const query = fql`
+      const result = await client.query(fql`
         let newClient = clients.create({
           name: ${data.name},
           email: ${data.email},
@@ -56,8 +54,7 @@ export const clientQueries = {
           totalInvoices: newClient.totalInvoices,
           totalAmount: newClient.totalAmount
         }
-      `;
-      const result = await client.query(query);
+      `);
       const documents = extractFaunaData<Client>(result);
       return documents[0] || null;
     } catch (error) {

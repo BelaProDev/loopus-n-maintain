@@ -39,17 +39,32 @@ i18nInstance
       excludeCacheFor: ['cimode']
     },
     react: {
-      useSuspense: true,
+      useSuspense: false, // Changed to false to prevent suspense issues
       bindI18n: 'languageChanged loaded',
       bindI18nStore: 'added removed',
       nsMode: 'default'
     },
     returnNull: false,
     returnEmptyString: false,
-    returnObjects: false
+    returnObjects: false,
+    debug: true // Added for debugging translation issues
   });
 
+// Add a debug listener to help track translation loading
+i18nInstance.on('initialized', (options) => {
+  console.log('i18n initialized:', options);
+});
+
+i18nInstance.on('loaded', (loaded) => {
+  console.log('i18n loaded:', loaded);
+});
+
+i18nInstance.on('failedLoading', (lng, ns, msg) => {
+  console.error('i18n failed loading:', { lng, ns, msg });
+});
+
 i18nInstance.on('languageChanged', (lng) => {
+  console.log('Language changed to:', lng);
   document.documentElement.lang = lng;
 });
 

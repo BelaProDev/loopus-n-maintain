@@ -13,9 +13,7 @@ import Plumbing from './pages/Plumbing';
 import Ironwork from './pages/Ironwork';
 import Woodwork from './pages/Woodwork';
 import Architecture from './pages/Architecture';
-import ServiceLayout from './pages/ServiceLayout';
 import Koalax from './pages/Koalax';
-import KoalaxRoutes from './pages/Koalax/routes';
 
 const queryClient = new QueryClient({
   defaultOptions: {
