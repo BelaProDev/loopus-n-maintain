@@ -5,9 +5,9 @@ let faunaClient: Client | null = null;
 
 export const getFaunaClient = (): Client => {
   if (!faunaClient) {
-    const faunaSecret = import.meta.env.VITE_FAUNA_SECRET;
+    const faunaSecret = import.meta.env.VITE_FAUNA_SECRET_KEY;
     if (!faunaSecret) {
-      throw new Error('VITE_FAUNA_SECRET is not defined');
+      throw new Error('VITE_FAUNA_SECRET_KEY is not defined');
     }
     faunaClient = new Client({ secret: faunaSecret });
   }
