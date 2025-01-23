@@ -1,23 +1,19 @@
 import { getFaunaClient } from './client';
-import { query as q } from 'faunadb';
+import { fql } from 'fauna';
 
-interface TokenDocument {
-  data: {
-    token: string;
-  };
-  ref?: {
-    id: string;
-  };
+interface TokenData {
+  token: string;
 }
 
 export const dropboxTokenQueries = {
   getToken: async () => {
     try {
       const client = getFaunaClient();
-      const result = await client.query<TokenDocument>(
-        q.Get(q.Match(q.Index('dropbox_token')))
-      );
-      return result.data.token;
+      const result = await client.query(fql`
+        let doc = tokens.firstWhere(.type == "dropbox")
+        { data: { token: doc.data.token } }
+      `);
+      return (result.data as TokenData).token;
     } catch (error) {
       console.warn('Error fetching Dropbox token:', error);
       return null;
@@ -27,13 +23,12 @@ export const dropboxTokenQueries = {
   storeToken: async (token: string) => {
     try {
       const client = getFaunaClient();
-      const result = await client.query<TokenDocument>(
-        q.Update(
-          q.Select('ref', q.Get(q.Match(q.Index('dropbox_token')))),
-          { data: { token } }
-        )
-      );
-      return result.data.token;
+      const result = await client.query(fql`
+        let doc = tokens.firstWhere(.type == "dropbox")
+        doc.update({ data: { token: ${token} } })
+        { data: { token: doc.data.token } }
+      `);
+      return (result.data as TokenData).token;
     } catch (error) {
       console.warn('Error storing Dropbox token:', error);
       return null;

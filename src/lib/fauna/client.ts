@@ -1,4 +1,4 @@
-import { Client, fql } from 'fauna';
+import { Client, QuerySuccess, fql } from 'fauna';
 
 let faunaClient: Client | null = null;
 
@@ -13,9 +13,10 @@ export const getFaunaClient = (): Client => {
   return faunaClient;
 };
 
-export const executeQuery = async <T = any>(query: string): Promise<T> => {
+export const executeQuery = async <T>(query: string): Promise<T> => {
   const client = getFaunaClient();
-  return client.query<T>(fql(query));
+  const result = await client.query<QuerySuccess<T>>(fql([query]));
+  return result.data as T;
 };
 
 export const handleFaunaError = (error: any): never => {
