@@ -28,9 +28,9 @@ const App = () => {
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        <Router>
-          <AuthProvider>
-            <DropboxProvider>
+        <AuthProvider>
+          <DropboxProvider>
+            <Router>
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/login" element={<Login />} />
@@ -43,9 +43,9 @@ const App = () => {
                 <Route path="/dropbox-explorer" element={<DropboxExplorer />} />
                 <Route path="/dropbox-callback" element={<DropboxCallback />} />
               </Routes>
-            </DropboxProvider>
-          </AuthProvider>
-        </Router>
+            </Router>
+          </DropboxProvider>
+        </AuthProvider>
       </QueryClientProvider>
     </ErrorBoundary>
   );
