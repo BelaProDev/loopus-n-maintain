@@ -42,7 +42,7 @@ class DropboxAuthManager {
     }
   }
 
-  async handleCallback(code: string, userId: string): Promise<boolean> {
+  async handleCallback(code: string): Promise<boolean> {
     try {
       const response = await fetch('/.netlify/functions/dropbox-auth', {
         method: 'POST',
@@ -58,7 +58,7 @@ class DropboxAuthManager {
       
       // Store refresh token in FaunaDB if available
       if (tokens.refresh_token) {
-        await dropboxTokenQueries.storeToken(userId, tokens.refresh_token);
+        await dropboxTokenQueries.storeToken(tokens.refresh_token);
       }
       
       this.setTokens(tokens);
@@ -70,17 +70,17 @@ class DropboxAuthManager {
     }
   }
 
-  async refreshAccessToken(userId: string): Promise<string | null> {
+  async refreshAccessToken(): Promise<string | null> {
     try {
-      const tokenData = await dropboxTokenQueries.getToken(userId);
-      if (!tokenData?.refreshToken) return null;
+      const tokenData = await dropboxTokenQueries.getToken();
+      if (!tokenData) return null;
 
       const response = await fetch('/.netlify/functions/dropbox-auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           action: 'refresh',
-          refresh_token: tokenData.refreshToken 
+          refresh_token: tokenData 
         }),
       });
 

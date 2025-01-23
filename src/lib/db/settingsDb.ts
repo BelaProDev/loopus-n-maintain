@@ -17,7 +17,7 @@ const defaultWhatsAppNumbers: WhatsAppNumbers = [
   { id: '3', name: 'Ironwork', number: '', service: 'ironwork' },
   { id: '4', name: 'Woodwork', number: '', service: 'woodwork' },
   { id: '5', name: 'Architecture', number: '', service: 'architecture' }
-];
+] as const;
 
 export const settingsQueries = {
   getWhatsAppNumbers: (): WhatsAppNumbers => {
