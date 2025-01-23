@@ -12,12 +12,12 @@ interface Setting {
 }
 
 const defaultWhatsAppNumbers: WhatsAppNumbers = [
-  { id: '1', name: 'Electrics', number: '', service: 'electrics' },
-  { id: '2', name: 'Plumbing', number: '', service: 'plumbing' },
-  { id: '3', name: 'Ironwork', number: '', service: 'ironwork' },
-  { id: '4', name: 'Woodwork', number: '', service: 'woodwork' },
-  { id: '5', name: 'Architecture', number: '', service: 'architecture' }
-] as const;
+  { id: '1', name: 'Electrics', number: '', service: 'electrics' as const },
+  { id: '2', name: 'Plumbing', number: '', service: 'plumbing' as const },
+  { id: '3', name: 'Ironwork', number: '', service: 'ironwork' as const },
+  { id: '4', name: 'Woodwork', number: '', service: 'woodwork' as const },
+  { id: '5', name: 'Architecture', number: '', service: 'architecture' as const }
+];
 
 export const settingsQueries = {
   getWhatsAppNumbers: (): WhatsAppNumbers => {

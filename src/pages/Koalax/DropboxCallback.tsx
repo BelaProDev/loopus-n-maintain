@@ -21,7 +21,7 @@ const DropboxCallback = () => {
           throw new Error('No authorization code received');
         }
 
-        const success = await dropboxAuth.handleCallback(code, state || '');
+        const success = await dropboxAuth.handleCallback(code);
         
         if (success) {
           dispatch(setAuthenticated(true));

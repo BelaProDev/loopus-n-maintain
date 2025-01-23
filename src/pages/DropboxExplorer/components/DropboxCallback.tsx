@@ -29,8 +29,7 @@ export const DropboxCallback = () => {
       }
 
       try {
-        if (!user) throw new Error('User not authenticated');
-        await dropboxAuth.handleCallback(code, user.toString());
+        await dropboxAuth.handleCallback(code);
         toast.success('Successfully connected to Dropbox');
         navigate('/dropbox-explorer');
       } catch (error) {
@@ -41,7 +40,7 @@ export const DropboxCallback = () => {
     };
 
     handleCallback();
-  }, [searchParams, navigate, user]);
+  }, [searchParams, navigate]);
 
   return (
     <div className="flex items-center justify-center h-screen">
