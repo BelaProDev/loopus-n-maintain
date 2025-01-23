@@ -12,18 +12,22 @@ interface Setting {
 }
 
 const defaultWhatsAppNumbers: WhatsAppNumbers = [
-  { id: '1', name: 'Electrics', number: '', service: 'electrics' as const },
-  { id: '2', name: 'Plumbing', number: '', service: 'plumbing' as const },
-  { id: '3', name: 'Ironwork', number: '', service: 'ironwork' as const },
-  { id: '4', name: 'Woodwork', number: '', service: 'woodwork' as const },
-  { id: '5', name: 'Architecture', number: '', service: 'architecture' as const }
+  { id: '1', name: 'Electrics', number: '', service: 'electrics' } as const,
+  { id: '2', name: 'Plumbing', number: '', service: 'plumbing' } as const,
+  { id: '3', name: 'Ironwork', number: '', service: 'ironwork' } as const,
+  { id: '4', name: 'Woodwork', number: '', service: 'woodwork' } as const,
+  { id: '5', name: 'Architecture', number: '', service: 'architecture' } as const
 ];
 
 export const settingsQueries = {
   getWhatsAppNumbers: (): WhatsAppNumbers => {
     try {
       const whatsappSettings = fallbackDb.settings.find(s => s.key === 'whatsapp_numbers');
-      return whatsappSettings?.value?.numbers || defaultWhatsAppNumbers;
+      const numbers = whatsappSettings?.value?.numbers?.map(n => ({
+        ...n,
+        service: n.service as WhatsAppNumber['service']
+      }));
+      return numbers || defaultWhatsAppNumbers;
     } catch (error) {
       console.warn('Error reading from fallback DB:', error);
       return defaultWhatsAppNumbers;
