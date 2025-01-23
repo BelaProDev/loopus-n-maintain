@@ -36,16 +36,12 @@ const App = () => {
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/login" element={<Login />} />
-                <Route element={<ServiceLayout />}>
-                  <Route path="/electrics" element={<Electrics />} />
-                  <Route path="/plumbing" element={<Plumbing />} />
-                  <Route path="/ironwork" element={<Ironwork />} />
-                  <Route path="/woodwork" element={<Woodwork />} />
-                  <Route path="/architecture" element={<Architecture />} />
-                </Route>
-                <Route path="/koalax/*" element={<Koalax />}>
-                  {KoalaxRoutes}
-                </Route>
+                <Route path="/electrics" element={<Electrics />} />
+                <Route path="/plumbing" element={<Plumbing />} />
+                <Route path="/ironwork" element={<Ironwork />} />
+                <Route path="/woodwork" element={<Woodwork />} />
+                <Route path="/architecture" element={<Architecture />} />
+                <Route path="/koalax/*" element={<Koalax />} />
                 <Route path="/dropbox-explorer" element={<DropboxExplorer />} />
                 <Route path="/dropbox-callback" element={<DropboxCallback />} />
               </Routes>
