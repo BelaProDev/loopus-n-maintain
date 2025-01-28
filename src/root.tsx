@@ -11,7 +11,7 @@ import { store } from './store';
 import { DropboxProvider } from '@/contexts/DropboxContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import CustomErrorBoundary from './lib/monitoring/ErrorBoundary';
+import ErrorBoundary from './lib/monitoring/ErrorBoundary';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -33,7 +33,7 @@ export default function Root() {
       </head>
       <body>
         <Provider store={store}>
-          <CustomErrorBoundary error={null}>
+          <ErrorBoundary>
             <QueryClientProvider client={queryClient}>
               <AuthProvider>
                 <DropboxProvider>
@@ -41,7 +41,7 @@ export default function Root() {
                 </DropboxProvider>
               </AuthProvider>
             </QueryClientProvider>
-          </CustomErrorBoundary>
+          </ErrorBoundary>
         </Provider>
         <ScrollRestoration />
         <Scripts />
