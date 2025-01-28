@@ -2,11 +2,11 @@ import { Client, fql, type Query, type QueryValue } from 'fauna';
 
 let faunaClient: Client | null = null;
 
-const getFaunaClient = (): Client => {
+export const getFaunaClient = (): Client => {
   if (!faunaClient) {
-    const faunaSecret = import.meta.env.VITE_FAUNA_SECRET;
+    const faunaSecret = import.meta.env.VITE_FAUNA_SECRET_KEY;
     if (!faunaSecret) {
-      throw new Error('VITE_FAUNA_SECRET environment variable is not set');
+      throw new Error('VITE_FAUNA_SECRET_KEY is not defined');
     }
     
     faunaClient = new Client({
