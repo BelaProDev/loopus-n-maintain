@@ -9,7 +9,6 @@ interface Props {
 interface State {
   hasError: boolean;
   error?: Error;
-  errorInfo?: ErrorInfo;
 }
 
 export class AppErrorBoundary extends Component<Props, State> {
@@ -24,7 +23,6 @@ export class AppErrorBoundary extends Component<Props, State> {
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('Uncaught error:', error);
     console.error('Error info:', errorInfo);
-    this.setState({ errorInfo });
   }
 
   private handleRefresh = () => {
