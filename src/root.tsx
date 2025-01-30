@@ -32,8 +32,8 @@ export default function Root() {
         <Links />
       </head>
       <body>
-        <Provider store={store}>
-          <AppErrorBoundary>
+        <AppErrorBoundary>
+          <Provider store={store}>
             <QueryClientProvider client={queryClient}>
               <AuthProvider>
                 <DropboxProvider>
@@ -41,8 +41,8 @@ export default function Root() {
                 </DropboxProvider>
               </AuthProvider>
             </QueryClientProvider>
-          </AppErrorBoundary>
-        </Provider>
+          </Provider>
+        </AppErrorBoundary>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
@@ -51,7 +51,7 @@ export default function Root() {
   );
 }
 
-export function ErrorBoundary({ error }: { error: Error }) {
+export function ErrorBoundary() {
   return (
     <html>
       <head>
@@ -60,9 +60,9 @@ export function ErrorBoundary({ error }: { error: Error }) {
         <Links />
       </head>
       <body>
-        <div className="flex flex-col items-center justify-center min-h-screen p-4">
-          <h1 className="text-2xl font-bold mb-4">Something went wrong!</h1>
-          <p className="text-red-500">{error.message}</p>
+        <div className="flex min-h-screen flex-col items-center justify-center p-4">
+          <h1 className="mb-4 text-2xl font-bold">Something went wrong!</h1>
+          <p className="text-red-500">An unexpected error occurred.</p>
         </div>
         <Scripts />
       </body>
