@@ -6,21 +6,9 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-import { Provider } from 'react-redux';
-import { store } from './store';
-import { DropboxProvider } from '@/contexts/DropboxContext';
-import { AuthProvider } from './contexts/AuthContext';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AppErrorBoundary } from './lib/monitoring/ErrorBoundary';
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 5,
-      retry: 1,
-    },
-  },
-});
+import { AuthProvider } from './contexts/AuthContext';
+import { DropboxProvider } from '@/contexts/DropboxContext';
 
 export default function Root() {
   return (
@@ -33,15 +21,11 @@ export default function Root() {
       </head>
       <body>
         <AppErrorBoundary>
-          <Provider store={store}>
-            <QueryClientProvider client={queryClient}>
-              <AuthProvider>
-                <DropboxProvider>
-                  <Outlet />
-                </DropboxProvider>
-              </AuthProvider>
-            </QueryClientProvider>
-          </Provider>
+          <AuthProvider>
+            <DropboxProvider>
+              <Outlet />
+            </DropboxProvider>
+          </AuthProvider>
         </AppErrorBoundary>
         <ScrollRestoration />
         <Scripts />
