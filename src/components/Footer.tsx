@@ -1,108 +1,133 @@
-import { Home, Settings, Mail, Phone, Github, BookOpen, FolderOpen, MessageCircle, Image } from "lucide-react";
-import { Button } from "./ui/button";
+import { Mail, Phone, Github, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 const Footer = () => {
   const { t } = useTranslation(["common"]);
-
   const currentYear = new Date().getFullYear();
 
+  const services = [
+    { name: "Electrical", path: "/services/electrical" },
+    { name: "Plumbing", path: "/services/plumbing" },
+    { name: "Ironwork", path: "/services/ironwork" },
+    { name: "Woodwork", path: "/services/woodwork" },
+    { name: "Architecture", path: "/services/architecture" },
+  ];
+
+  const tools = [
+    { name: "Documents", path: "/tools/documents" },
+    { name: "Analytics", path: "/tools/analytics" },
+    { name: "Invoicing", path: "/tools/invoicing" },
+    { name: "Chat", path: "/tools/chat" },
+  ];
+
   return (
-    <footer className="bg-card/50 backdrop-blur-lg text-card-foreground mt-auto border-t border-border/10">
-      <div className="container mx-auto px-4 py-8 md:py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {/* Contact Section */}
-          <div className="flex flex-col items-center md:items-start glass-panel p-6">
-            <h3 className="text-xl md:text-2xl font-semibold mb-6 gradient-heading">
-              {t("nav.contact")}
-            </h3>
-            <div className="flex flex-col space-y-4">
-              <a 
-                href="tel:+32489127067" 
-                className="hover:text-primary flex items-center transition-colors group"
-                aria-label={t("nav.contact")}
-              >
-                <div className="p-2 rounded-full bg-primary/10 group-hover:bg-primary/20 mr-3">
-                  <Phone className="h-4 w-4" />
-                </div>
-                +32 489 12 70 67
-              </a>
-              <a 
-                href="mailto:pro.belalawson@gmail.com" 
-                className="hover:text-primary flex items-center transition-colors group"
-                aria-label={t("nav.contact")}
-              >
-                <div className="p-2 rounded-full bg-primary/10 group-hover:bg-primary/20 mr-3">
-                  <Mail className="h-4 w-4" />
-                </div>
-                <span className="break-all">pro.belalawson@gmail.com</span>
-              </a>
-              <a 
-                href="https://github.com/BelaProDev/" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="hover:text-primary flex items-center transition-colors group"
-                aria-label={t("nav.contact")}
-              >
-                <div className="p-2 rounded-full bg-primary/10 group-hover:bg-primary/20 mr-3">
-                  <Github className="h-4 w-4" />
-                </div>
-                BelaProDev
-              </a>
-            </div>
-          </div>
-          
-          {/* Navigation Links */}
-          <div className="grid grid-cols-2 gap-2 glass-panel p-6">
-            <Button variant="ghost" size="sm" asChild className="hover:bg-primary/10">
-              <Link to="/" className="flex items-center justify-start w-full">
-                <Home className="h-4 w-4 mr-2" />
-                <span className="text-sm">{t("nav.home")}</span>
-              </Link>
-            </Button>
-            <Button variant="ghost" size="sm" asChild className="hover:bg-primary/10">
-              <Link to="/admin" className="flex items-center justify-start w-full">
-                <Settings className="h-4 w-4 mr-2" />
-                <span className="text-sm">{t("nav.admin")}</span>
-              </Link>
-            </Button>
-            <Button variant="ghost" size="sm" asChild className="hover:bg-primary/10">
-              <Link to="/docs" className="flex items-center justify-start w-full">
-                <BookOpen className="h-4 w-4 mr-2" />
-                <span className="text-sm">{t("nav.docs")}</span>
-              </Link>
-            </Button>
-            <Button variant="ghost" size="sm" asChild className="hover:bg-primary/10">
-              <Link to="/dropbox-explorer" className="flex items-center justify-start w-full">
-                <FolderOpen className="h-4 w-4 mr-2" />
-                <span className="text-sm">{t("nav.dropbox")}</span>
-              </Link>
-            </Button>
-            <Button variant="ghost" size="sm" asChild className="hover:bg-primary/10">
-              <Link to="/tools/chat" className="flex items-center justify-start w-full">
-                <MessageCircle className="h-4 w-4 mr-2" />
-                <span className="text-sm">{t("nav.chat")}</span>
-              </Link>
-            </Button>
-            <Button variant="ghost" size="sm" asChild className="hover:bg-primary/10">
-              <Link to="/tools/photo-gallery" className="flex items-center justify-start w-full">
-                <Image className="h-4 w-4 mr-2" />
-                <span className="text-sm">{t("nav.gallery")}</span>
-              </Link>
-            </Button>
+    <footer className="bg-card border-t border-border/40 mt-auto">
+      <div className="container mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Brand */}
+          <div className="space-y-4">
+            <Link to="/" className="flex items-center gap-2">
+              <div className="h-10 w-10 rounded-lg hero-gradient flex items-center justify-center">
+                <span className="text-xl font-bold text-white">L</span>
+              </div>
+              <span className="text-xl font-semibold">
+                <span className="gradient-text">Loopus</span> & Maintain
+              </span>
+            </Link>
+            <p className="text-sm text-muted-foreground">
+              Professional building maintenance services with modern digital tools for efficient project management.
+            </p>
           </div>
 
-          {/* Copyright */}
-          <div className="text-sm text-muted-foreground text-center md:text-right glass-panel p-6">
-            <Link 
-              to="https://github.com/BelaProDev/loopus-n-maintain#readme"
-              className="hover:text-primary transition-colors"
-              aria-label={t("nav.docs")}
+          {/* Services */}
+          <div>
+            <h3 className="font-semibold mb-4">{t("common:nav.services", "Services")}</h3>
+            <ul className="space-y-2">
+              {services.map((service) => (
+                <li key={service.path}>
+                  <Link
+                    to={service.path}
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {service.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Tools */}
+          <div>
+            <h3 className="font-semibold mb-4">{t("common:nav.tools", "Tools")}</h3>
+            <ul className="space-y-2">
+              {tools.map((tool) => (
+                <li key={tool.path}>
+                  <Link
+                    to={tool.path}
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {tool.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h3 className="font-semibold mb-4">{t("common:nav.contact", "Contact")}</h3>
+            <ul className="space-y-3">
+              <li>
+                <a
+                  href="tel:+32489127067"
+                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <Phone className="h-4 w-4" />
+                  +32 489 12 70 67
+                </a>
+              </li>
+              <li>
+                <a
+                  href="mailto:pro.belalawson@gmail.com"
+                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <Mail className="h-4 w-4" />
+                  pro.belalawson@gmail.com
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://github.com/BelaProDev"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <Github className="h-4 w-4" />
+                  BelaProDev
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Bottom bar */}
+        <div className="mt-12 pt-8 border-t border-border/40 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-sm text-muted-foreground">
+            © {currentYear} Loopus & Maintain. All rights reserved.
+          </p>
+          <div className="flex gap-6">
+            <Link
+              to="/docs"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              © {currentYear} {t("app.name")}
-              <br />
-              {t("nav.docs")}
+              Documentation
+            </Link>
+            <Link
+              to="/admin"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Admin
             </Link>
           </div>
         </div>

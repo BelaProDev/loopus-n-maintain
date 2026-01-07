@@ -1,92 +1,85 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
-import { authQueries, EmailUser } from "@/lib/fauna/authQueries";
+import { supabase } from "@/integrations/supabase/client";
+import type { User, Session } from "@supabase/supabase-js";
 
 interface AuthContextType {
+  user: User | null;
+  session: Session | null;
   isAuthenticated: boolean;
-  userEmail: string | null;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
-  checkAuth: () => boolean;
+  isLoading: boolean;
+  signIn: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string, displayName?: string) => Promise<void>;
+  signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userEmail, setUserEmail] = useState<string | null>(null);
-  const { toast } = useToast();
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    checkAuth();
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setIsLoading(false);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (_event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        setIsLoading(false);
+      }
+    );
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const checkAuth = () => {
-    const session = localStorage.getItem('craft_coordination_session');
-    if (session) {
-      try {
-        const sessionData = JSON.parse(session);
-        if (sessionData.email) {
-          setIsAuthenticated(true);
-          setUserEmail(sessionData.email);
-          return true;
-        }
-      } catch (error) {
-        localStorage.removeItem('craft_coordination_session');
-      }
-    }
-    return false;
-  };
-
-  const login = async (email: string, password: string) => {
-    const user = await authQueries.validateUser(email, password);
-
-    if (user) {
-      setIsAuthenticated(true);
-      setUserEmail(user.email);
-      
-      const sessionData = {
-        email: user.email,
-        timestamp: Date.now()
-      };
-      
-      localStorage.setItem('craft_coordination_session', JSON.stringify(sessionData));
-      
-      toast({
-        title: "Login successful",
-        description: "Welcome back!",
-      });
-    } else {
-      toast({
-        title: "Login failed",
-        description: "Invalid email or password",
-        variant: "destructive",
-      });
-      throw new Error("Invalid credentials");
-    }
-  };
-
-  const logout = () => {
-    setIsAuthenticated(false);
-    setUserEmail(null);
-    localStorage.removeItem('craft_coordination_session');
-    navigate('/');
-    toast({
-      title: "Logged out",
-      description: "You have been successfully logged out.",
+  const signIn = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
     });
+    if (error) throw error;
+  };
+
+  const signUp = async (email: string, password: string, displayName?: string) => {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          display_name: displayName || email.split('@')[0],
+        },
+      },
+    });
+    if (error) throw error;
+  };
+
+  const signOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+    navigate('/');
   };
 
   return (
-    <AuthContext.Provider value={{ 
-      isAuthenticated, 
-      userEmail,
-      login, 
-      logout, 
-      checkAuth 
-    }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        session,
+        isAuthenticated: !!session,
+        isLoading,
+        signIn,
+        signUp,
+        signOut,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

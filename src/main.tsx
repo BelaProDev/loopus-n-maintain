@@ -7,9 +7,14 @@ import { store } from './store';
 import App from './App';
 import './index.css';
 import './i18n';
-import { initVitals } from './lib/monitoring/analytics';
+
+// Pages
 import Index from './pages/Index';
-import { AppErrorBoundary } from './lib/monitoring/ErrorBoundary';
+import Login from './pages/Login';
+import Contact from './pages/Contact';
+import Services from './pages/Services';
+import Tools from './pages/Tools';
+import Documentation from './pages/Documentation';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,36 +30,25 @@ const router = createBrowserRouter([
     path: '/',
     element: <App />,
     children: [
-      {
-        index: true,
-        element: <Index />
-      }
+      { index: true, element: <Index /> },
+      { path: 'login', element: <Login /> },
+      { path: 'contact', element: <Contact /> },
+      { path: 'services', element: <Services /> },
+      { path: 'services/:serviceId', element: <Services /> },
+      { path: 'tools', element: <Tools /> },
+      { path: 'tools/:toolId', element: <Tools /> },
+      { path: 'docs', element: <Documentation /> },
+      { path: 'admin', element: <Login /> },
     ]
   }
 ]);
-
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(registration => {
-        console.log('SW registered:', registration);
-      })
-      .catch(error => {
-        console.log('SW registration failed:', error);
-      });
-  });
-}
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
-        <AppErrorBoundary>
-          <RouterProvider router={router} />
-        </AppErrorBoundary>
+        <RouterProvider router={router} />
       </QueryClientProvider>
     </Provider>
   </React.StrictMode>
 );
-
-initVitals();
