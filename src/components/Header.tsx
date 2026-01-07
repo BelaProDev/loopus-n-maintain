@@ -1,157 +1,180 @@
-import { Menu } from "lucide-react";
+import { Menu, X, LogIn, LogOut, User } from "lucide-react";
 import { Button } from "./ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
-import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from "./ui/sheet";
+import { Link, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { Badge } from "./ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
-import { useQuery } from "@tanstack/react-query";
-import { settingsQueries } from "@/lib/fauna/settingsQueries";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
-const tools = [
-  { name: "documents", path: "/tools/documents", icon: "📄" },
-  { name: "diagrams", path: "/tools/diagrams", icon: "📊" },
-  { name: "analytics", path: "/tools/analytics", icon: "📈" },
-  { name: "audio", path: "/tools/audio", icon: "🎵" },
-  { name: "business", path: "/admin/business", icon: "💼" }
+const navLinks = [
+  { name: "home", path: "/" },
+  { name: "services", path: "/services" },
+  { name: "tools", path: "/tools" },
+  { name: "docs", path: "/docs" },
 ];
 
 const Header = () => {
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
-  const { isAuthenticated, logout } = useAuth();
-  const { t } = useTranslation(["common", "tools", "auth"]);
-
-  const { data: logo, isError } = useQuery({
-    queryKey: ['site-logo'],
-    queryFn: settingsQueries.getLogo,
-    retry: false,
-    meta: {
-      errorBoundary: false // This is the correct way to disable error boundary in v5
-    }
-  });
+  const [isOpen, setIsOpen] = useState(false);
+  const { isAuthenticated, user, signOut, isLoading } = useAuth();
+  const { t } = useTranslation(["common", "auth"]);
+  const location = useLocation();
 
   useEffect(() => {
-    const handleStatusChange = () => {
-      setIsOffline(!navigator.onLine);
-    };
-
-    window.addEventListener('online', handleStatusChange);
-    window.addEventListener('offline', handleStatusChange);
-
+    const handleStatusChange = () => setIsOffline(!navigator.onLine);
+    window.addEventListener("online", handleStatusChange);
+    window.addEventListener("offline", handleStatusChange);
     return () => {
-      window.removeEventListener('online', handleStatusChange);
-      window.removeEventListener('offline', handleStatusChange);
+      window.removeEventListener("online", handleStatusChange);
+      window.removeEventListener("offline", handleStatusChange);
     };
   }, []);
 
+  const isActive = (path: string) => {
+    if (path === "/") return location.pathname === "/";
+    return location.pathname.startsWith(path);
+  };
+
   return (
-    <header className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-sm border-b border-border/40">
+    <header className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-md border-b border-border/40">
       {isOffline && (
-        <Badge 
-          variant="destructive" 
-          className="absolute top-2 right-2 md:right-4 flex items-center gap-1 z-50 animate-pulse"
-        >
-          {t("common:status.offline")}
-        </Badge>
+        <div className="bg-destructive/10 text-destructive text-center py-1 text-sm">
+          {t("common:status.offline", "You are currently offline")}
+        </div>
       )}
-      <div className="container mx-auto px-4 py-4">
-        <nav className="flex flex-wrap items-center justify-between gap-4">
-          <Link 
-            to="/" 
-            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-          >
-            {!isError && logo ? (
-              <img 
-                src={`data:image/png;base64,${logo}`}
-                alt="Site Logo" 
-                className="h-8 w-auto border-[3px] border-primary rounded-lg"
-              />
-            ) : (
-              <img 
-                src="/forest-lidar.png" 
-                alt="Forest Lidar Logo" 
-                className="h-8 w-auto border-[3px] border-primary rounded-lg"
-              />
-            )}
+      <div className="container mx-auto px-4 py-3">
+        <nav className="flex items-center justify-between">
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <div className="h-10 w-10 rounded-lg hero-gradient flex items-center justify-center">
+              <span className="text-xl font-bold text-white">L</span>
+            </div>
+            <span className="text-xl font-semibold hidden sm:block">
+              <span className="gradient-text">Loopus</span>
+            </span>
           </Link>
 
-          <div className="flex items-center gap-4">
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center gap-1">
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                to={link.path}
+                className={`nav-link ${isActive(link.path) ? "nav-link-active" : ""}`}
+              >
+                {t(`common:nav.${link.name}`, link.name)}
+              </Link>
+            ))}
+          </div>
+
+          {/* Right side actions */}
+          <div className="flex items-center gap-3">
             <LanguageSwitcher />
-            <div className="hidden md:flex items-center flex-wrap gap-4">
-              {tools.map((tool) => (
-                <Link
-                  key={tool.name}
-                  to={tool.path}
-                  className="nav-link"
-                >
-                  <span className="text-lg">{tool.icon}</span>
-                  <span className="ml-2">{t(`tools:${tool.name}.title`)}</span>
-                </Link>
-              ))}
-              {isAuthenticated ? (
-                <Button
-                  onClick={logout}
-                  variant="outline"
-                  className="gradient-border"
-                >
-                  {t("auth:signOut")}
+
+            {/* Auth button - Desktop */}
+            <div className="hidden md:block">
+              {isLoading ? (
+                <Button variant="ghost" size="sm" disabled>
+                  <span className="animate-pulse">...</span>
                 </Button>
+              ) : isAuthenticated ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="gap-2">
+                      <User className="h-4 w-4" />
+                      <span className="max-w-24 truncate">
+                        {user?.email?.split("@")[0]}
+                      </span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin">Admin Panel</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={signOut} className="text-destructive">
+                      <LogOut className="h-4 w-4 mr-2" />
+                      {t("auth:signOut", "Sign Out")}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               ) : (
-                <Button
-                  asChild
-                  variant="outline"
-                  className="gradient-border"
-                >
-                  <Link to="/login">
-                    {t("auth:signIn")}
+                <Button variant="default" size="sm" asChild>
+                  <Link to="/login" className="gap-2">
+                    <LogIn className="h-4 w-4" />
+                    {t("auth:signIn", "Sign In")}
                   </Link>
                 </Button>
               )}
             </div>
-          </div>
 
-          <Sheet>
-            <SheetTrigger asChild className="md:hidden">
-              <Button variant="ghost" size="icon">
-                <Menu className="h-6 w-6" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[300px]">
-              <div className="flex flex-col space-y-4 mt-8">
-                {tools.map((tool) => (
-                  <Link
-                    key={tool.name}
-                    to={tool.path}
-                    className="flex items-center gap-2 p-2 hover:bg-accent/10 rounded-md transition-colors"
-                  >
-                    <span>{tool.icon}</span>
-                    {t(`tools:${tool.name}.title`)}
-                  </Link>
-                ))}
-                {isAuthenticated ? (
-                  <Button
-                    onClick={logout}
-                    variant="outline"
-                    className="mt-4"
-                  >
-                    {t("auth:signOut")}
-                  </Button>
-                ) : (
-                  <Button
-                    asChild
-                    variant="outline"
-                    className="mt-4"
-                  >
-                    <Link to="/login">
-                      {t("auth:signIn")}
-                    </Link>
-                  </Button>
-                )}
-              </div>
-            </SheetContent>
-          </Sheet>
+            {/* Mobile menu */}
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
+              <SheetTrigger asChild className="md:hidden">
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-72">
+                <div className="flex flex-col h-full pt-8">
+                  <div className="flex flex-col gap-2">
+                    {navLinks.map((link) => (
+                      <SheetClose asChild key={link.name}>
+                        <Link
+                          to={link.path}
+                          className={`px-4 py-3 rounded-lg transition-colors ${
+                            isActive(link.path)
+                              ? "bg-primary/10 text-primary"
+                              : "hover:bg-muted"
+                          }`}
+                        >
+                          {t(`common:nav.${link.name}`, link.name)}
+                        </Link>
+                      </SheetClose>
+                    ))}
+                  </div>
+
+                  <div className="mt-auto pb-8">
+                    {isAuthenticated ? (
+                      <div className="space-y-2">
+                        <div className="px-4 py-2 text-sm text-muted-foreground">
+                          {user?.email}
+                        </div>
+                        <SheetClose asChild>
+                          <Button
+                            variant="outline"
+                            className="w-full"
+                            onClick={signOut}
+                          >
+                            <LogOut className="h-4 w-4 mr-2" />
+                            {t("auth:signOut", "Sign Out")}
+                          </Button>
+                        </SheetClose>
+                      </div>
+                    ) : (
+                      <SheetClose asChild>
+                        <Button className="w-full" asChild>
+                          <Link to="/login">
+                            <LogIn className="h-4 w-4 mr-2" />
+                            {t("auth:signIn", "Sign In")}
+                          </Link>
+                        </Button>
+                      </SheetClose>
+                    )}
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
         </nav>
       </div>
     </header>
