@@ -16,7 +16,7 @@ const Login = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, isAuthenticated } = useAuth();
+  const { signIn, isAuthenticated } = useAuth();
   const { t } = useTranslation(["common", "auth"]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -26,7 +26,7 @@ const Login = () => {
     setIsLoading(true);
     
     try {
-      await login(email, password);
+      await signIn(email, password);
       const from = location.state?.from?.pathname || "/";
       // Use replace instead of push to avoid history stack issues
       navigate(from, { replace: true });
