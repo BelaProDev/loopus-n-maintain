@@ -16,6 +16,14 @@ import Services from './pages/Services';
 import Tools from './pages/Tools';
 import Documentation from './pages/Documentation';
 
+// Tool Pages
+import Documents from './pages/tools/Documents';
+import Analytics from './pages/tools/Analytics';
+import Audio from './pages/tools/Audio';
+import Invoicing from './pages/tools/Invoicing';
+import Chat from './pages/tools/Chat';
+import PhotoGallery from './pages/tools/PhotoGallery';
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -36,7 +44,12 @@ const router = createBrowserRouter([
       { path: 'services', element: <Services /> },
       { path: 'services/:serviceId', element: <Services /> },
       { path: 'tools', element: <Tools /> },
-      { path: 'tools/:toolId', element: <Tools /> },
+      { path: 'tools/documents', element: <Documents /> },
+      { path: 'tools/analytics', element: <Analytics /> },
+      { path: 'tools/audio', element: <Audio /> },
+      { path: 'tools/invoicing', element: <Invoicing /> },
+      { path: 'tools/chat', element: <Chat /> },
+      { path: 'tools/photo-gallery', element: <PhotoGallery /> },
       { path: 'docs', element: <Documentation /> },
       { path: 'admin', element: <Login /> },
     ]
