@@ -1,18 +1,21 @@
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
+import { defineConfig } from "vite";
+import { componentTagger } from "lovable-tagger";
 
-/** @type {import('vite').UserConfig} */
-export default {
+export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
   },
-  plugins: [react()],
+  plugins: [
+    react(),
+    mode === 'development' && componentTagger(),
+  ].filter(Boolean),
   resolve: {
-    // Prevent duplicate React copies (fixes hooks errors like "Cannot read properties of null (reading 'useState')")
     dedupe: ["react", "react-dom"],
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
   },
-};
+}));
