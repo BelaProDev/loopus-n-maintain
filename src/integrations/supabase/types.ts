@@ -14,6 +14,71 @@ export type Database = {
   }
   public: {
     Tables: {
+      chat_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          is_read: boolean | null
+          room_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          room_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          room_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "chat_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_rooms: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          is_private: boolean | null
+          name: string
+          topic: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_private?: boolean | null
+          name: string
+          topic?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_private?: boolean | null
+          name?: string
+          topic?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       clients: {
         Row: {
           company: string | null
@@ -279,6 +344,60 @@ export type Database = {
         }
         Relationships: []
       }
+      service_requests: {
+        Row: {
+          address: string | null
+          budget_range: string | null
+          created_at: string
+          description: string
+          email: string
+          id: string
+          name: string
+          phone: string | null
+          preferred_date: string | null
+          preferred_time: string | null
+          service_type: string
+          status: string | null
+          updated_at: string
+          urgency: string | null
+          user_id: string | null
+        }
+        Insert: {
+          address?: string | null
+          budget_range?: string | null
+          created_at?: string
+          description: string
+          email: string
+          id?: string
+          name: string
+          phone?: string | null
+          preferred_date?: string | null
+          preferred_time?: string | null
+          service_type: string
+          status?: string | null
+          updated_at?: string
+          urgency?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          address?: string | null
+          budget_range?: string | null
+          created_at?: string
+          description?: string
+          email?: string
+          id?: string
+          name?: string
+          phone?: string | null
+          preferred_date?: string | null
+          preferred_time?: string | null
+          service_type?: string
+          status?: string | null
+          updated_at?: string
+          urgency?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       settings: {
         Row: {
           created_at: string | null
@@ -303,6 +422,86 @@ export type Database = {
           updated_at?: string | null
           user_id?: string | null
           value?: Json | null
+        }
+        Relationships: []
+      }
+      user_documents: {
+        Row: {
+          created_at: string
+          file_path: string | null
+          file_size: number | null
+          file_type: string
+          id: string
+          is_folder: boolean | null
+          is_starred: boolean | null
+          name: string
+          parent_folder_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          file_path?: string | null
+          file_size?: number | null
+          file_type?: string
+          id?: string
+          is_folder?: boolean | null
+          is_starred?: boolean | null
+          name: string
+          parent_folder_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          file_path?: string | null
+          file_size?: number | null
+          file_type?: string
+          id?: string
+          is_folder?: boolean | null
+          is_starred?: boolean | null
+          name?: string
+          parent_folder_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_documents_parent_folder_id_fkey"
+            columns: ["parent_folder_id"]
+            isOneToOne: false
+            referencedRelation: "user_documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_photos: {
+        Row: {
+          category: string | null
+          created_at: string
+          id: string
+          is_liked: boolean | null
+          title: string
+          url: string
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          is_liked?: boolean | null
+          title: string
+          url: string
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          is_liked?: boolean | null
+          title?: string
+          url?: string
+          user_id?: string
         }
         Relationships: []
       }
