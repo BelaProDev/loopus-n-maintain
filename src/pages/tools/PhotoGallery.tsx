@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { 
   Image, Upload, Grid, LayoutGrid, ArrowLeft, Search,
   Download, Trash2, ZoomIn, Heart, Share2, Filter,
-  SlidersHorizontal, X, ChevronLeft, ChevronRight
+  SlidersHorizontal, X, ChevronLeft, ChevronRight, Loader2
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
@@ -13,41 +13,27 @@ import { Link } from "react-router-dom";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import {
-  Dialog,
-  DialogContent,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface Photo {
   id: string;
   url: string;
   title: string;
   category: string;
-  date: Date;
-  liked: boolean;
+  is_liked: boolean;
+  created_at: string;
 }
 
-// Demo photos using placeholder images
-const demoPhotos: Photo[] = [
-  { id: "1", url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800", title: "Mountain Vista", category: "nature", date: new Date(), liked: true },
-  { id: "2", url: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800", title: "Forest Path", category: "nature", date: new Date(), liked: false },
-  { id: "3", url: "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800", title: "Snowy Peaks", category: "nature", date: new Date(), liked: true },
-  { id: "4", url: "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=800", title: "City Skyline", category: "urban", date: new Date(), liked: false },
-  { id: "5", url: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800", title: "Street View", category: "urban", date: new Date(), liked: false },
-  { id: "6", url: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800", title: "Ocean Waves", category: "nature", date: new Date(), liked: true },
-  { id: "7", url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800", title: "Portrait", category: "people", date: new Date(), liked: false },
-  { id: "8", url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800", title: "Smile", category: "people", date: new Date(), liked: true },
-  { id: "9", url: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800", title: "Delicious Food", category: "food", date: new Date(), liked: false },
-  { id: "10", url: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=800", title: "Fresh Salad", category: "food", date: new Date(), liked: false },
-  { id: "11", url: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800", title: "Travel Scene", category: "travel", date: new Date(), liked: true },
-  { id: "12", url: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800", title: "Adventure", category: "travel", date: new Date(), liked: false },
-];
+const categories = ["all", "nature", "urban", "people", "food", "travel", "other"];
 
 const PhotoGallery = () => {
   const { t } = useTranslation(["tools"]);
-  const [photos, setPhotos] = useState<Photo[]>(demoPhotos);
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "masonry">("grid");
@@ -59,7 +45,67 @@ const PhotoGallery = () => {
   const [saturation, setSaturation] = useState([100]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const categories = ["all", "nature", "urban", "people", "food", "travel"];
+  // Fetch photos
+  const { data: photos = [], isLoading } = useQuery({
+    queryKey: ['user-photos'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('user_photos')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data as Photo[];
+    },
+    enabled: !!user,
+  });
+
+  // Upload photo mutation
+  const uploadMutation = useMutation({
+    mutationFn: async (photoData: { url: string; title: string; category: string }) => {
+      const { data, error } = await supabase
+        .from('user_photos')
+        .insert({
+          ...photoData,
+          user_id: user?.id,
+        })
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user-photos'] });
+    },
+  });
+
+  // Toggle like mutation
+  const toggleLikeMutation = useMutation({
+    mutationFn: async ({ id, isLiked }: { id: string; isLiked: boolean }) => {
+      const { error } = await supabase
+        .from('user_photos')
+        .update({ is_liked: !isLiked })
+        .eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user-photos'] });
+    },
+  });
+
+  // Delete photo mutation
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from('user_photos')
+        .delete()
+        .eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user-photos'] });
+      toast.success("Photo deleted");
+    },
+  });
 
   const filteredPhotos = photos.filter(photo => {
     const matchesSearch = photo.title.toLowerCase().includes(searchQuery.toLowerCase());
@@ -67,35 +113,19 @@ const PhotoGallery = () => {
     return matchesSearch && matchesCategory;
   });
 
-  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
 
-    Array.from(files).forEach(file => {
+    for (const file of Array.from(files)) {
       const url = URL.createObjectURL(file);
-      const newPhoto: Photo = {
-        id: Date.now().toString() + Math.random(),
-        url,
-        title: file.name.replace(/\.[^/.]+$/, ""),
-        category: "other",
-        date: new Date(),
-        liked: false,
-      };
-      setPhotos(prev => [newPhoto, ...prev]);
-    });
+      const title = file.name.replace(/\.[^/.]+$/, "");
+      
+      await uploadMutation.mutateAsync({ url, title, category: "other" });
+    }
 
     toast.success(`${files.length} photo(s) uploaded`);
-  };
-
-  const toggleLike = (id: string) => {
-    setPhotos(prev => prev.map(photo => 
-      photo.id === id ? { ...photo, liked: !photo.liked } : photo
-    ));
-  };
-
-  const deletePhoto = (id: string) => {
-    setPhotos(prev => prev.filter(photo => photo.id !== id));
-    toast.success("Photo deleted");
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const openLightbox = (photo: Photo) => {
@@ -116,6 +146,29 @@ const PhotoGallery = () => {
     filter: `brightness(${brightness[0]}%) contrast(${contrast[0]}%) saturate(${saturation[0]}%)`,
   });
 
+  if (!user) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex items-center gap-4 mb-8">
+          <Button variant="ghost" size="icon" asChild>
+            <Link to="/tools"><ArrowLeft className="h-5 w-5" /></Link>
+          </Button>
+          <h1 className="text-3xl font-bold">Photo Gallery</h1>
+        </div>
+        <Card className="max-w-md mx-auto">
+          <CardContent className="p-8 text-center">
+            <Image className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+            <h2 className="text-xl font-semibold mb-2">Login Required</h2>
+            <p className="text-muted-foreground mb-4">
+              Please log in to manage your photos.
+            </p>
+            <Button asChild><Link to="/login">Login</Link></Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <motion.div
@@ -127,9 +180,7 @@ const PhotoGallery = () => {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="icon" asChild>
-              <Link to="/tools">
-                <ArrowLeft className="h-5 w-5" />
-              </Link>
+              <Link to="/tools"><ArrowLeft className="h-5 w-5" /></Link>
             </Button>
             <div>
               <h1 className="text-3xl font-bold flex items-center gap-3">
@@ -165,7 +216,7 @@ const PhotoGallery = () => {
           </Card>
           <Card>
             <CardContent className="p-4 text-center">
-              <p className="text-3xl font-bold text-pink-500">{photos.filter(p => p.liked).length}</p>
+              <p className="text-3xl font-bold text-pink-500">{photos.filter(p => p.is_liked).length}</p>
               <p className="text-sm text-muted-foreground">Favorites</p>
             </CardContent>
           </Card>
@@ -178,9 +229,9 @@ const PhotoGallery = () => {
           <Card>
             <CardContent className="p-4 text-center">
               <p className="text-3xl font-bold text-amber-500">
-                {(photos.reduce((acc, p) => acc + (p.url.length / 1000), 0) / 1000).toFixed(1)} MB
+                {[...new Set(photos.map(p => p.category))].length}
               </p>
-              <p className="text-sm text-muted-foreground">Storage Used</p>
+              <p className="text-sm text-muted-foreground">Used Categories</p>
             </CardContent>
           </Card>
         </div>
@@ -234,62 +285,11 @@ const PhotoGallery = () => {
         </Card>
 
         {/* Gallery */}
-        <div className={`grid gap-4 ${
-          viewMode === "grid" 
-            ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4" 
-            : "columns-2 md:columns-3 lg:columns-4 space-y-4"
-        }`}>
-          <AnimatePresence>
-            {filteredPhotos.map((photo, index) => (
-              <motion.div
-                key={photo.id}
-                layout
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ delay: index * 0.03 }}
-                className={viewMode === "masonry" ? "break-inside-avoid" : ""}
-              >
-                <Card className="group overflow-hidden cursor-pointer hover:shadow-xl transition-all duration-300">
-                  <div className="relative aspect-square overflow-hidden" onClick={() => openLightbox(photo)}>
-                    <img
-                      src={photo.url}
-                      alt={photo.title}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                    <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform">
-                      <p className="text-white font-medium truncate">{photo.title}</p>
-                      <Badge variant="secondary" className="mt-1 capitalize text-xs">
-                        {photo.category}
-                      </Badge>
-                    </div>
-                    <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Button
-                        size="icon"
-                        variant="secondary"
-                        className="h-8 w-8"
-                        onClick={(e) => { e.stopPropagation(); toggleLike(photo.id); }}
-                      >
-                        <Heart className={`h-4 w-4 ${photo.liked ? 'fill-red-500 text-red-500' : ''}`} />
-                      </Button>
-                      <Button
-                        size="icon"
-                        variant="secondary"
-                        className="h-8 w-8"
-                        onClick={(e) => { e.stopPropagation(); deletePhoto(photo.id); }}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </Card>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </div>
-
-        {filteredPhotos.length === 0 && (
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          </div>
+        ) : filteredPhotos.length === 0 ? (
           <Card className="py-12">
             <CardContent className="text-center">
               <Image className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
@@ -306,6 +306,61 @@ const PhotoGallery = () => {
               </Button>
             </CardContent>
           </Card>
+        ) : (
+          <div className={`grid gap-4 ${
+            viewMode === "grid" 
+              ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4" 
+              : "columns-2 md:columns-3 lg:columns-4 space-y-4"
+          }`}>
+            <AnimatePresence>
+              {filteredPhotos.map((photo, index) => (
+                <motion.div
+                  key={photo.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ delay: index * 0.03 }}
+                  className={viewMode === "masonry" ? "break-inside-avoid" : ""}
+                >
+                  <Card className="group overflow-hidden cursor-pointer hover:shadow-xl transition-all duration-300">
+                    <div className="relative aspect-square overflow-hidden" onClick={() => openLightbox(photo)}>
+                      <img
+                        src={photo.url}
+                        alt={photo.title}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform">
+                        <p className="text-white font-medium truncate">{photo.title}</p>
+                        <Badge variant="secondary" className="mt-1 capitalize text-xs">
+                          {photo.category}
+                        </Badge>
+                      </div>
+                      <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button
+                          size="icon"
+                          variant="secondary"
+                          className="h-8 w-8"
+                          onClick={(e) => { e.stopPropagation(); toggleLikeMutation.mutate({ id: photo.id, isLiked: photo.is_liked }); }}
+                        >
+                          <Heart className={`h-4 w-4 ${photo.is_liked ? 'fill-red-500 text-red-500' : ''}`} />
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="secondary"
+                          className="h-8 w-8"
+                          onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(photo.id); }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
         )}
 
         {/* Lightbox */}
@@ -406,22 +461,19 @@ const PhotoGallery = () => {
                 <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
                   <Button
                     variant="secondary"
-                    onClick={() => toggleLike(selectedPhoto.id)}
+                    size="sm"
+                    onClick={() => toggleLikeMutation.mutate({ id: selectedPhoto.id, isLiked: selectedPhoto.is_liked })}
                   >
-                    <Heart className={`h-4 w-4 mr-2 ${selectedPhoto.liked ? 'fill-red-500 text-red-500' : ''}`} />
-                    {selectedPhoto.liked ? 'Liked' : 'Like'}
+                    <Heart className={`h-4 w-4 mr-2 ${selectedPhoto.is_liked ? 'fill-red-500 text-red-500' : ''}`} />
+                    {selectedPhoto.is_liked ? 'Liked' : 'Like'}
                   </Button>
-                  <Button variant="secondary" onClick={() => setEditMode(!editMode)}>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => setEditMode(!editMode)}
+                  >
                     <SlidersHorizontal className="h-4 w-4 mr-2" />
-                    Edit
-                  </Button>
-                  <Button variant="secondary">
-                    <Share2 className="h-4 w-4 mr-2" />
-                    Share
-                  </Button>
-                  <Button variant="secondary">
-                    <Download className="h-4 w-4 mr-2" />
-                    Download
+                    {editMode ? 'Close Editor' : 'Edit'}
                   </Button>
                 </div>
               </div>
